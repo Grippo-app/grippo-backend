@@ -10,7 +10,7 @@ export function setupSwagger(app: INestApplication) {
     ignoreGlobalPrefix: false,
   };
   const config = new DocumentBuilder()
-    .setTitle('Useful Training API')
+    .setTitle('Grippo API')
     .setDescription(`Desc`)
     .setVersion('1.0')
     .addBearerAuth();

@@ -1430,198 +1430,520 @@ INSERT INTO public.exercise_example_bundles VALUES ('611aae5e-da1f-46b4-84a7-0fc
 -- Data for Name: exercise_examples; Type: TABLE DATA; Schema: public; Owner: -
 --
 
-INSERT INTO public.exercise_examples VALUES ('650e9725-d36c-4688-bcab-adf93dfe9e5d', 'EZ Bar Skullcrusher', '2024-08-23 15:44:41.300424', '2024-08-23 15:44:41.300424', 'https://www.mensjournal.com/.image/t_share/MTk2OTg4MTk1NjA1MzI1NDUy/barbellskullcrusher.jpg', 'Select your desired weight and sit on the edge of a flat bench.
-To get into position, lay back and keep the bar close to your chest. Once you are supine, press the weight to lockout.
-Lower the weights towards your head by unlocking the elbows and allowing the ez bar to drop toward your forehead or just above.
-Once your forearms reach parallel or just below, reverse the movement by extending the elbows while flexing the triceps to lockout the weight.
+INSERT INTO public.exercise_examples VALUES ('650e9725-d36c-4688-bcab-adf93dfe9e5d', 'EZ Bar Skullcrusher', '2024-08-23 15:44:41.300424', '2024-08-23 15:44:41.300424', 'https://www.mensjournal.com/.image/t_share/MTk2OTg4MTk1NjA1MzI1NDUy/barbellskullcrusher.jpg', 'Select your desired weight and sit on the edge of a flat bench.
+
+
+To get into position, lay back and keep the bar close to your chest. Once you are supine, press the weight to lockout.
+
+
+Lower the weights towards your head by unlocking the elbows and allowing the ez bar to drop toward your forehead or just above.
+
+
+Once your forearms reach parallel or just below, reverse the movement by extending the elbows while flexing the triceps to lockout the weight.
+
+
 Repeat for the desired number of repetitions.', 'isolation', 'free', 'push', 'beginner');
-INSERT INTO public.exercise_examples VALUES ('3b828d2f-797f-4a45-9d1d-1d3efe38fb54', 'Weighted Tricep Dips', '2024-08-23 15:50:27.637943', '2024-08-23 15:50:27.637943', 'https://steelsupplements.com/cdn/shop/articles/shutterstock_566901937_2000x.jpg?v=1599047555', 'Step up onto the dip station (if possible) and position your hands with a neutral grip.
-Initiate the dip by unlocking the elbows and slowly lowering the body until the forearms are almost parallel with the floor.
-Control the descent to parallel and then drive back to the starting position by pushing through the palms.
+INSERT INTO public.exercise_examples VALUES ('3b828d2f-797f-4a45-9d1d-1d3efe38fb54', 'Weighted Tricep Dips', '2024-08-23 15:50:27.637943', '2024-08-23 15:50:27.637943', 'https://steelsupplements.com/cdn/shop/articles/shutterstock_566901937_2000x.jpg?v=1599047555', 'Step up onto the dip station (if possible) and position your hands with a neutral grip.
+
+
+Initiate the dip by unlocking the elbows and slowly lowering the body until the forearms are almost parallel with the floor.
+
+
+Control the descent to parallel and then drive back to the starting position by pushing through the palms.
+
+
 Repeat for the desired number of repetitions.', 'compound', 'free', 'push', 'advanced');
-INSERT INTO public.exercise_examples VALUES ('b790c6a6-ecd1-4b3a-afbc-22cd82e55658', 'Lying Dumbbell Extension', '2024-08-23 14:29:51.253789', '2024-08-23 14:29:51.253789', 'https://weighttrainingexercises4you.com/wp-content/uploads/Lying-Dumbbell-Triceps-Extension.jpg', 'Grab a pair of dumbbells and sit on the end of a flat bench with the dumbbells resting on your thighs.
-Lie back on the bench and extend the dumbbells above your head. The dumbbells should not be touching and you should be using a neutral grip (palms facing each other).
-Bending at the elbows only, keeping your elbows fixed and pointing at your hips, slowly lower the dumbbells down beside your head until they are about level with your ears.
-Pause and squeeze the triceps. Then raise the dumbbells back to the starting position.
+INSERT INTO public.exercise_examples VALUES ('b790c6a6-ecd1-4b3a-afbc-22cd82e55658', 'Lying Dumbbell Extension', '2024-08-23 14:29:51.253789', '2024-08-23 14:29:51.253789', 'https://weighttrainingexercises4you.com/wp-content/uploads/Lying-Dumbbell-Triceps-Extension.jpg', 'Grab a pair of dumbbells and sit on the end of a flat bench with the dumbbells resting on your thighs.
+
+
+Lie back on the bench and extend the dumbbells above your head. The dumbbells should not be touching and you should be using a neutral grip (palms facing each other).
+
+
+Bending at the elbows only, keeping your elbows fixed and pointing at your hips, slowly lower the dumbbells down beside your head until they are about level with your ears.
+
+
+Pause and squeeze the triceps. Then raise the dumbbells back to the starting position.
+
+
 Do not lock the elbows out, and then repeat for desired reps.', 'isolation', 'free', 'push', 'beginner');
-INSERT INTO public.exercise_examples VALUES ('6cb225d2-be00-461d-9bf0-7f0c87cfea0b', 'Straight Bar Tricep Extension', '2024-08-23 13:51:17.085276', '2024-08-23 13:51:17.085276', 'https://miro.medium.com/v2/resize:fit:683/0*WTHf_Xa35BeFOEAl.jpg', 'Attach a straight bar to a cable stack as high as possible and assume a standing position.
-Grasp the straight bar with a pronated grip (palms facing down) and lean forward slightly by hinging at the hips.
-Initiate the movement by extending the elbows and flexing the triceps.
-Pull the handle downward until the elbows are almost locked out and then slowly lower under control back to the starting position.
+INSERT INTO public.exercise_examples VALUES ('6cb225d2-be00-461d-9bf0-7f0c87cfea0b', 'Straight Bar Tricep Extension', '2024-08-23 13:51:17.085276', '2024-08-23 13:51:17.085276', 'https://miro.medium.com/v2/resize:fit:683/0*WTHf_Xa35BeFOEAl.jpg', 'Attach a straight bar to a cable stack as high as possible and assume a standing position.
+
+
+Grasp the straight bar with a pronated grip (palms facing down) and lean forward slightly by hinging at the hips.
+
+
+Initiate the movement by extending the elbows and flexing the triceps.
+
+
+Pull the handle downward until the elbows are almost locked out and then slowly lower under control back to the starting position.
+
+
 Repeat for the desired number of repetitions.', 'isolation', 'fixed', 'push', 'beginner');
-INSERT INTO public.exercise_examples VALUES ('0e2fe1e8-f8f1-48e6-b360-8c9d4d9991a6', 'Rope Tricep Extension', '2024-08-23 14:53:43.902288', '2024-08-23 14:53:43.902288', 'https://www.dmoose.com/cdn/shop/articles/1_6a24d912-5f74-43d4-bc20-578944bd99f7.jpg?v=1648734107', 'Attach a rope to a cable stack as high as possible and assume a standing position.
-Grasp the rope with a neutral grip (palms facing in) and lean forward slightly by hinging at the hips.
-Initiate the movement by extending the elbows and flexing the triceps.
-Pull the rope downward until the elbows are almost locked out and then slowly lower under control back to the starting position.
+INSERT INTO public.exercise_examples VALUES ('0e2fe1e8-f8f1-48e6-b360-8c9d4d9991a6', 'Rope Tricep Extension', '2024-08-23 14:53:43.902288', '2024-08-23 14:53:43.902288', 'https://www.dmoose.com/cdn/shop/articles/1_6a24d912-5f74-43d4-bc20-578944bd99f7.jpg?v=1648734107', 'Attach a rope to a cable stack as high as possible and assume a standing position.
+
+
+Grasp the rope with a neutral grip (palms facing in) and lean forward slightly by hinging at the hips.
+
+
+Initiate the movement by extending the elbows and flexing the triceps.
+
+
+Pull the rope downward until the elbows are almost locked out and then slowly lower under control back to the starting position.
+
+
 Repeat for the desired number of repetitions.', 'isolation', 'fixed', 'push', 'beginner');
-INSERT INTO public.exercise_examples VALUES ('ab0d7384-444e-446a-911d-f64ac31db8ef', 'Close Grip Bench Press', '2024-08-23 15:30:18.860564', '2024-08-23 15:30:18.860564', 'https://steelsupplements.com/cdn/shop/articles/shutterstock_69079681_2000x.jpg?v=1599316230', 'Lie flat on a bench and set your hands at shoulder width.
-Set your shoulder blades by pinching them together and driving them into the bench.
-Take a deep breath and allow your spotter to help you with the lift off in order to maintain tightness through your upper back.
-Let the weight settle and ensure your upper back remains tight after lift off.
-Inhale and allow the bar to descend slowly by unlocking the elbows.
-Lower the bar in a straight line to the base of the sternum (breastbone) and touch the chest.
-Push the bar back up in a straight line by pressing yourself into the bench, driving your feet into the floor for leg drive, and extending the elbows.
+INSERT INTO public.exercise_examples VALUES ('ab0d7384-444e-446a-911d-f64ac31db8ef', 'Close Grip Bench Press', '2024-08-23 15:30:18.860564', '2024-08-23 15:30:18.860564', 'https://steelsupplements.com/cdn/shop/articles/shutterstock_69079681_2000x.jpg?v=1599316230', 'Lie flat on a bench and set your hands at shoulder width.
+
+
+Set your shoulder blades by pinching them together and driving them into the bench.
+
+
+Take a deep breath and allow your spotter to help you with the lift off in order to maintain tightness through your upper back.
+
+
+Let the weight settle and ensure your upper back remains tight after lift off.
+
+
+Inhale and allow the bar to descend slowly by unlocking the elbows.
+
+
+Lower the bar in a straight line to the base of the sternum (breastbone) and touch the chest.
+
+
+Push the bar back up in a straight line by pressing yourself into the bench, driving your feet into the floor for leg drive, and extending the elbows.
+
+
 Repeat for the desired number of repetitions.', 'compound', 'free', 'push', 'beginner');
-INSERT INTO public.exercise_examples VALUES ('7517ae2f-c198-4a33-8a1d-1dc7327d1430', '45 Degree Lying Tricep Extension (EZ Bar)', '2024-08-23 20:29:25.181737', '2024-08-23 20:29:25.181737', 'https://i0.wp.com/www.muscleandfitness.com/wp-content/uploads/2015/10/triceps-article-social.jpg?quality=86&strip=all', 'Sit on the end of a flat bench width a barbell on your thighs.
-Grip the EZ-bar on the inner grips. Bring the bar up to your chest and lay down on your back.
-Extend your arms straight up above your chest.
-Keeping your arms straight move the bar back so it is angled out past your head.
-Keeping your elbows fixed in place and not pointing out, slowly lower the bar until it is almost touching the top of your head or bench behind your head.
-Pause, and then slowly extend your arms back to the starting position.
+INSERT INTO public.exercise_examples VALUES ('7517ae2f-c198-4a33-8a1d-1dc7327d1430', '45 Degree Lying Tricep Extension (EZ Bar)', '2024-08-23 20:29:25.181737', '2024-08-23 20:29:25.181737', 'https://i0.wp.com/www.muscleandfitness.com/wp-content/uploads/2015/10/triceps-article-social.jpg?quality=86&strip=all', 'Sit on the end of a flat bench width a barbell on your thighs.
+
+
+Grip the EZ-bar on the inner grips. Bring the bar up to your chest and lay down on your back.
+
+
+Extend your arms straight up above your chest.
+
+
+Keeping your arms straight move the bar back so it is angled out past your head.
+
+
+Keeping your elbows fixed in place and not pointing out, slowly lower the bar until it is almost touching the top of your head or bench behind your head.
+
+
+Pause, and then slowly extend your arms back to the starting position.
+
+
 Do not lock your elbows out, and then repeat for desired reps.', 'isolation', 'free', 'push', 'intermediate');
-INSERT INTO public.exercise_examples VALUES ('4aafe702-f2fc-4fa2-a7fb-c31c279adeda', '45 Degree Lying Tricep Extension', '2024-08-23 20:36:43.346849', '2024-08-23 20:36:43.346849', 'https://www.bodybuilding.com/fun/images/2015/your-complete-guide-to-skullcrushers-graphics-45-degree-skullcrusher-700xh.jpg', 'Sit on the end of a flat bench with a barbell on your thighs.
-Grip the barbell with an overhand (palms facing down) with your hands about shoulder width apart.
-Bring the bar up to your chest and lay down on your back.
-Extend your arms straight up above your chest.
-Keeping your arms straight, move the bar back to the position shown in the video above.
-Keeping your elbows fixed in place and not pointing out, slowly lower the bar until it is almost touching the top of your head or bench behind your head.
-Pause, and then slowly extend your arms back to the starting position.
+INSERT INTO public.exercise_examples VALUES ('4aafe702-f2fc-4fa2-a7fb-c31c279adeda', '45 Degree Lying Tricep Extension', '2024-08-23 20:36:43.346849', '2024-08-23 20:36:43.346849', 'https://www.bodybuilding.com/fun/images/2015/your-complete-guide-to-skullcrushers-graphics-45-degree-skullcrusher-700xh.jpg', 'Sit on the end of a flat bench with a barbell on your thighs.
+
+
+Grip the barbell with an overhand (palms facing down) with your hands about shoulder width apart.
+
+
+Bring the bar up to your chest and lay down on your back.
+
+
+Extend your arms straight up above your chest.
+
+
+Keeping your arms straight, move the bar back to the position shown in the video above.
+
+
+Keeping your elbows fixed in place and not pointing out, slowly lower the bar until it is almost touching the top of your head or bench behind your head.
+
+
+Pause, and then slowly extend your arms back to the starting position.
+
+
 Do not lock your elbows out, and then repeat for desired reps.', 'isolation', 'free', 'push', 'beginner');
-INSERT INTO public.exercise_examples VALUES ('faf6674c-2a2a-4b03-ab8b-7a033052b572', 'Alternating Bent-Over Dumbbell Kickback ', '2024-08-24 13:49:36.23273', '2024-08-24 13:49:36.23273', 'https://hips.hearstapps.com/hmg-prod/images/young-man-working-out-with-dumbbell-at-gym-royalty-free-image-1667582833.jpg?crop=1xw:0.84415xh;center,top', 'Select the appropriate dumbbells and place them on the floor in front of you.
-Bending at the knees and keeping your back straight, squat down and pick up the dumbbells with a neutral grip (palms facing inward). Your feet should be around shoulder-width apart.
-Get into the starting position by keeping your back straight, bending slightly at the knees, and bending over at the waist. Your torso should almost be parallel to the floor.
-Tuck your upper arms close to your torso and bend at the elbows, forming a 90-degree angle with your upper arms and forearms. This is the starting position. 
-Beginning with your left arm and moving only at the elbow, raise the dumbbell behind you until your arm is fully extended.
-Pause, and then lower the dumbbell back to the starting position.
+INSERT INTO public.exercise_examples VALUES ('faf6674c-2a2a-4b03-ab8b-7a033052b572', 'Alternating Bent-Over Dumbbell Kickback ', '2024-08-24 13:49:36.23273', '2024-08-24 13:49:36.23273', 'https://hips.hearstapps.com/hmg-prod/images/young-man-working-out-with-dumbbell-at-gym-royalty-free-image-1667582833.jpg?crop=1xw:0.84415xh;center,top', 'Select the appropriate dumbbells and place them on the floor in front of you.
+
+
+Bending at the knees and keeping your back straight, squat down and pick up the dumbbells with a neutral grip (palms facing inward). Your feet should be around shoulder-width apart.
+
+
+Get into the starting position by keeping your back straight, bending slightly at the knees, and bending over at the waist. Your torso should almost be parallel to the floor.
+
+
+Tuck your upper arms close to your torso and bend at the elbows, forming a 90-degree angle with your upper arms and forearms. This is the starting position. 
+
+
+Beginning with your left arm and moving only at the elbow, raise the dumbbell behind you until your arm is fully extended.
+
+
+Pause, and then lower the dumbbell back to the starting position.
+
+
 Repeat this movement with your right arm and then repeat for desired reps.', 'isolation', 'free', 'push', 'beginner');
-INSERT INTO public.exercise_examples VALUES ('c21d3b0f-c8a8-4b7f-92ea-90dc567a1183', 'Close Grip EZ Bar Press', '2024-08-26 14:36:25.633347', '2024-08-26 14:36:25.633347', 'https://s3assets.skimble.com/assets/1141234/image_iphone.jpg', 'Select your desired weight and sit on the edge of a flat bench.
-To get into position, lay back and keep the bar close to your chest using a neutral grip. Once you are supine, press the weight to lockout.
-Unlock the elbows and extend the shoulders to lower the weight to your chest.
-Once the bar touches your chest, reverse the movement by extending the elbows while flexing the triceps to lockout the weight.
+INSERT INTO public.exercise_examples VALUES ('c21d3b0f-c8a8-4b7f-92ea-90dc567a1183', 'Close Grip EZ Bar Press', '2024-08-26 14:36:25.633347', '2024-08-26 14:36:25.633347', 'https://s3assets.skimble.com/assets/1141234/image_iphone.jpg', 'Select your desired weight and sit on the edge of a flat bench.
+
+
+To get into position, lay back and keep the bar close to your chest using a neutral grip. Once you are supine, press the weight to lockout.
+
+
+Unlock the elbows and extend the shoulders to lower the weight to your chest.
+
+
+Once the bar touches your chest, reverse the movement by extending the elbows while flexing the triceps to lockout the weight.
+
+
 Repeat for the desired number of repetitions.', 'isolation', 'free', 'push', 'beginner');
-INSERT INTO public.exercise_examples VALUES ('93e6b1c4-0510-41d4-983c-a1fde003881f', 'Alternating Dumbbell Floor Press', '2024-08-24 13:55:14.325068', '2024-08-24 13:55:14.325068', 'https://cdn.shopify.com/s/files/1/2623/4904/files/Dumbbell_Floor_Press_b2da358c-6c1e-4ab5-98a6-98e24bfa6d52_600x600.png?v=1659337818', 'Begin sitting on the floor in an upright position with your legs straight and the dumbbells vertically balanced on the floor.
-Pick up each dumbbell and set it high in your hip crease while maintaining a tight grip.
-Slowly lay back while keeping the dumbbells close to your chest and bend your knees to roughly 45 degrees and move your feet up slightly.
-Press the weights to full extension by contracting your triceps and chest.
-Slowly lower one dumbbell under control as far as comfortably possible (the handle should be about level with your chest) while keeping the other locked out at the top.
-Contract the chest and triceps to push the dumbbell back to the starting position.
-Slowly lower the other dumbbell under control until your elbow touches the floor while keeping the other locked out at the top.
+INSERT INTO public.exercise_examples VALUES ('93e6b1c4-0510-41d4-983c-a1fde003881f', 'Alternating Dumbbell Floor Press', '2024-08-24 13:55:14.325068', '2024-08-24 13:55:14.325068', 'https://cdn.shopify.com/s/files/1/2623/4904/files/Dumbbell_Floor_Press_b2da358c-6c1e-4ab5-98a6-98e24bfa6d52_600x600.png?v=1659337818', 'Begin sitting on the floor in an upright position with your legs straight and the dumbbells vertically balanced on the floor.
+
+
+Pick up each dumbbell and set it high in your hip crease while maintaining a tight grip.
+
+
+Slowly lay back while keeping the dumbbells close to your chest and bend your knees to roughly 45 degrees and move your feet up slightly.
+
+
+Press the weights to full extension by contracting your triceps and chest.
+
+
+Slowly lower one dumbbell under control as far as comfortably possible (the handle should be about level with your chest) while keeping the other locked out at the top.
+
+
+Contract the chest and triceps to push the dumbbell back to the starting position.
+
+
+Slowly lower the other dumbbell under control until your elbow touches the floor while keeping the other locked out at the top.
+
+
 To complete the exercise, simply lower the weights to the ground in “controlled drop” fashion. It should be a smooth motion but not one requiring excessive effort or one that puts the shoulder under unnecessary risk.', 'compound', 'free', 'push', 'beginner');
-INSERT INTO public.exercise_examples VALUES ('0eaa8980-e29e-4f33-88b0-915db5cf309a', 'Alternating Lying Dumbbell Extension', '2024-08-24 15:00:28.238965', '2024-08-24 15:00:28.238965', 'https://weighttrainingexercises4you.com/wp-content/uploads/Alternating-Lying-Dumbbell-Triceps-Extension.jpg', 'Set up for the exercise by setting a pair of dumbbells at the end of a flat bench.
-Pick up the dumbbells off the floor using a neutral grip (palms facing in), position the ends of the dumbbells on your thighs, and sit down on the bench.
-To get in position you need to rock back pushing the dumbbells back with your thighs and only slightly bending at the elbows.
-Now you should be in a position to start the set, laying back on the bench and holding the dumbbells straight up above your chest with a neutral grip.
-Slowly lower the left dumbbell down by bending only at the elbow. You will be moving in a semi-circular motion until the dumbbell is about even with your left ear. Continue to hold the right dumbbell in place.
-Pause, and then raise the dumbbell back to the starting position. 
+INSERT INTO public.exercise_examples VALUES ('0eaa8980-e29e-4f33-88b0-915db5cf309a', 'Alternating Lying Dumbbell Extension', '2024-08-24 15:00:28.238965', '2024-08-24 15:00:28.238965', 'https://weighttrainingexercises4you.com/wp-content/uploads/Alternating-Lying-Dumbbell-Triceps-Extension.jpg', 'Set up for the exercise by setting a pair of dumbbells at the end of a flat bench.
+
+
+Pick up the dumbbells off the floor using a neutral grip (palms facing in), position the ends of the dumbbells on your thighs, and sit down on the bench.
+
+
+To get in position you need to rock back pushing the dumbbells back with your thighs and only slightly bending at the elbows.
+
+
+Now you should be in a position to start the set, laying back on the bench and holding the dumbbells straight up above your chest with a neutral grip.
+
+
+Slowly lower the left dumbbell down by bending only at the elbow. You will be moving in a semi-circular motion until the dumbbell is about even with your left ear. Continue to hold the right dumbbell in place.
+
+
+Pause, and then raise the dumbbell back to the starting position. 
+
+
 Repeat the movement with your right arm and then repeat for desired reps.', 'isolation', 'free', 'push', 'intermediate');
-INSERT INTO public.exercise_examples VALUES ('9f0c8916-a08b-4fe5-9f24-e1680ef627a8', 'Bench Dip', '2024-08-24 15:05:24.055319', '2024-08-24 15:05:24.055319', 'https://steelsupplements.com/cdn/shop/articles/shutterstock_1526664821_1000x.jpg?v=1644523346', 'Set up for the bench dip by placing 2 flat benches parallel to one another to around 4-5 feet apart (you may need to adjust the width to suit your height).
-Put your heels on the edge of one bench around shoulder-width apart.
-Place your hands on the edge of the other bench. This is the starting position for the exercise.
-Keeping your body close to the bench, slowly dip down until your elbows are at the same height as your shoulders.
-Slowly push back up, squeezing through the triceps.
+INSERT INTO public.exercise_examples VALUES ('9f0c8916-a08b-4fe5-9f24-e1680ef627a8', 'Bench Dip', '2024-08-24 15:05:24.055319', '2024-08-24 15:05:24.055319', 'https://steelsupplements.com/cdn/shop/articles/shutterstock_1526664821_1000x.jpg?v=1644523346', 'Set up for the bench dip by placing 2 flat benches parallel to one another to around 4-5 feet apart (you may need to adjust the width to suit your height).
+
+
+Put your heels on the edge of one bench around shoulder-width apart.
+
+
+Place your hands on the edge of the other bench. This is the starting position for the exercise.
+
+
+Keeping your body close to the bench, slowly dip down until your elbows are at the same height as your shoulders.
+
+
+Slowly push back up, squeezing through the triceps.
+
+
 Do not lock the elbows out at the top of the exercise, and repeat.', 'compound', 'free', 'push', 'beginner');
-INSERT INTO public.exercise_examples VALUES ('547f1f7e-3ee1-4b39-99eb-3462b1ec13af', 'Bent Over Dumbbell Tricep Kickback', '2024-08-24 15:14:04.484126', '2024-08-24 15:14:04.484126', 'https://hips.hearstapps.com/hmg-prod/images/triceps-kickback-1551296273.jpg', 'Select the desired weight from the rack and stand in an open area.
-Hinge forward, row the dumbbells into position, then extend the elbows while flexing the triceps.
+INSERT INTO public.exercise_examples VALUES ('547f1f7e-3ee1-4b39-99eb-3462b1ec13af', 'Bent Over Dumbbell Tricep Kickback', '2024-08-24 15:14:04.484126', '2024-08-24 15:14:04.484126', 'https://hips.hearstapps.com/hmg-prod/images/triceps-kickback-1551296273.jpg', 'Select the desired weight from the rack and stand in an open area.
+
+
+Hinge forward, row the dumbbells into position, then extend the elbows while flexing the triceps.
+
+
 Slowly lower the dumbbells back to the starting position and repeat for the desired number of repetitions.', 'isolation', 'free', 'push', 'beginner');
-INSERT INTO public.exercise_examples VALUES ('275097d4-3c8d-4040-9b2e-5f294919df04', 'Cable Concentration Tricep Extension', '2024-08-24 15:21:25.308798', '2024-08-24 15:21:25.308798', 'https://www.bodybuilding.com/images/2016/june/7-best-triceps-exercises-youre-not-doing-v2-7-700xh.jpg', 'Set up for the exercise by attaching a single grip handle to a high pulley cable machine and selecting the weight you want to use on the stack.
-Grab the handle with an underhand grip (palm facing up) with your right hand.
-Turn so your left side is facing the cable machine and drop your left knee to the floor.
-Your right thigh should be parallel to the floor, as it will be used as a support during the exercise.
-Position the back of your elbow (bottom of the tricep) against your inner right thigh. This is the starting position for the exercise.
-Keeping your body fixed, slowly extend the arm as far as possible.
-Squeeze the tricep, and then slowly lower the weight back to the starting position.
+INSERT INTO public.exercise_examples VALUES ('275097d4-3c8d-4040-9b2e-5f294919df04', 'Cable Concentration Tricep Extension', '2024-08-24 15:21:25.308798', '2024-08-24 15:21:25.308798', 'https://www.bodybuilding.com/images/2016/june/7-best-triceps-exercises-youre-not-doing-v2-7-700xh.jpg', 'Set up for the exercise by attaching a single grip handle to a high pulley cable machine and selecting the weight you want to use on the stack.
+
+
+Grab the handle with an underhand grip (palm facing up) with your right hand.
+
+
+Turn so your left side is facing the cable machine and drop your left knee to the floor.
+
+
+Your right thigh should be parallel to the floor, as it will be used as a support during the exercise.
+
+
+Position the back of your elbow (bottom of the tricep) against your inner right thigh. This is the starting position for the exercise.
+
+
+Keeping your body fixed, slowly extend the arm as far as possible.
+
+
+Squeeze the tricep, and then slowly lower the weight back to the starting position.
+
+
 Repeat for desired reps.', 'isolation', 'fixed', 'push', 'beginner');
-INSERT INTO public.exercise_examples VALUES ('5985d847-0473-444e-8fe0-9da5341ef986', 'Cable Tricep Extension With V-Bar', '2024-08-26 14:10:38.408306', '2024-08-26 14:10:38.408306', 'https://atletiq.com/content/exercises/243/male_1.jpg', 'Attach a v-bar to a cable stack as high as possible and assume a standing position.
-Grasp the v-bar with a semi pronated grip (palms slightly facing) and lean forward slightly by hinging at the hips.
-Initiate the movement by extending the elbows and flexing the triceps.
-Pull the handle downward until the elbows are almost locked out and then slowly lower under control back to the starting position.
+INSERT INTO public.exercise_examples VALUES ('5985d847-0473-444e-8fe0-9da5341ef986', 'Cable Tricep Extension With V-Bar', '2024-08-26 14:10:38.408306', '2024-08-26 14:10:38.408306', 'https://atletiq.com/content/exercises/243/male_1.jpg', 'Attach a v-bar to a cable stack as high as possible and assume a standing position.
+
+
+Grasp the v-bar with a semi pronated grip (palms slightly facing) and lean forward slightly by hinging at the hips.
+
+
+Initiate the movement by extending the elbows and flexing the triceps.
+
+
+Pull the handle downward until the elbows are almost locked out and then slowly lower under control back to the starting position.
+
+
 Repeat for the desired number of repetitions.', 'isolation', 'fixed', 'push', 'beginner');
-INSERT INTO public.exercise_examples VALUES ('11644e17-247a-46b0-a391-b3b2a2a6bba8', 'Cable Tricep Kickback', '2024-08-26 14:15:00.627444', '2024-08-26 14:15:00.627444', 'https://bodybuilding-wizard.com/wp-content/uploads/2015/02/cable-tricep-kickback-2.jpg', 'Set up for the cable tricep kickback by attaching a single grip handle to a low pulley cable machine and selecting the weight you want to use.
-Grab the handle using your left hand with an overhand grip and take a step back from the cable machine.
-Keeping your feet together and knees slightly bent, bend down until your body is around parallel to the floor.
-Use your free right hand to stabilize yourself.
-Bring the elbow up as far as possible and keep it tight by your side. This is the starting position for the exercise.
-Keeping your elbow in place and your body fixed, extend your arm out as far as possible.
-Squeeze the tricep, and then slowly lower the weight back to the starting position.
+INSERT INTO public.exercise_examples VALUES ('11644e17-247a-46b0-a391-b3b2a2a6bba8', 'Cable Tricep Kickback', '2024-08-26 14:15:00.627444', '2024-08-26 14:15:00.627444', 'https://bodybuilding-wizard.com/wp-content/uploads/2015/02/cable-tricep-kickback-2.jpg', 'Set up for the cable tricep kickback by attaching a single grip handle to a low pulley cable machine and selecting the weight you want to use.
+
+
+Grab the handle using your left hand with an overhand grip and take a step back from the cable machine.
+
+
+Keeping your feet together and knees slightly bent, bend down until your body is around parallel to the floor.
+
+
+Use your free right hand to stabilize yourself.
+
+
+Bring the elbow up as far as possible and keep it tight by your side. This is the starting position for the exercise.
+
+
+Keeping your elbow in place and your body fixed, extend your arm out as far as possible.
+
+
+Squeeze the tricep, and then slowly lower the weight back to the starting position.
+
+
 Repeat for desired reps.', 'isolation', 'fixed', 'push', 'beginner');
-INSERT INTO public.exercise_examples VALUES ('50774526-c91f-4d71-82a8-456526b0fbd0', 'California Skullcrusher', '2024-08-26 14:21:24.510891', '2024-08-26 14:21:24.510891', 'https://www.bodybuilding.com/fun/images/2015/your-complete-guide-to-skullcrushers-desktop-2-960x540.jpg', 'Select your desired weight and sit on the edge of a flat bench.
-To get into position, lay back and keep the bar close to your chest using a neutral grip. Once you are supine, press the weight to lockout.
-Unlock the elbows and allow the ez bar to drop toward your forehead or just above.
-Once your forearms reach parallel or just below, allow the upper arms to extend overhead (similar to a pullover).
-As the arms reach full extension, pull the elbows back to the starting position and then extend the elbows while flexing the triceps to lockout the weight.
+INSERT INTO public.exercise_examples VALUES ('50774526-c91f-4d71-82a8-456526b0fbd0', 'California Skullcrusher', '2024-08-26 14:21:24.510891', '2024-08-26 14:21:24.510891', 'https://www.bodybuilding.com/fun/images/2015/your-complete-guide-to-skullcrushers-desktop-2-960x540.jpg', 'Select your desired weight and sit on the edge of a flat bench.
+
+
+To get into position, lay back and keep the bar close to your chest using a neutral grip. Once you are supine, press the weight to lockout.
+
+
+Unlock the elbows and allow the ez bar to drop toward your forehead or just above.
+
+
+Once your forearms reach parallel or just below, allow the upper arms to extend overhead (similar to a pullover).
+
+
+As the arms reach full extension, pull the elbows back to the starting position and then extend the elbows while flexing the triceps to lockout the weight.
+
+
 Repeat for the desired number of repetitions.', 'isolation', 'free', 'push', 'beginner');
-INSERT INTO public.exercise_examples VALUES ('385fb192-7c2c-405a-b483-f36e32e241c8', 'Close Grip Chest Press', '2024-08-26 14:31:15.917591', '2024-08-26 14:31:15.917591', 'https://www.dmoose.com/cdn/shop/articles/1_155d781f-a698-40e7-bdb6-f0de019f9b89.jpg?v=1648738774', 'Set up for the close grip chest press by adjusting the rack height (if adjustable) and loading the weight you want to use on the barbell.
-Lay back on the bench with your feet firmly on the floor.
-Grab the bar with an overhand grip (palms facing your feet) with your hands around 12 inches apart. 
-Take the barbell off the rack and hold it straight above your chest. Bend the elbows slightly to take the weight onto your chest/triceps.
-Slowly lower the bar to your middle chest.
-Pause, then slowly push the bar back to the starting position. Don''t lock your elbows out!
+INSERT INTO public.exercise_examples VALUES ('385fb192-7c2c-405a-b483-f36e32e241c8', 'Close Grip Chest Press', '2024-08-26 14:31:15.917591', '2024-08-26 14:31:15.917591', 'https://www.dmoose.com/cdn/shop/articles/1_155d781f-a698-40e7-bdb6-f0de019f9b89.jpg?v=1648738774', 'Set up for the close grip chest press by adjusting the rack height (if adjustable) and loading the weight you want to use on the barbell.
+
+
+Lay back on the bench with your feet firmly on the floor.
+
+
+Grab the bar with an overhand grip (palms facing your feet) with your hands around 12 inches apart. 
+
+
+Take the barbell off the rack and hold it straight above your chest. Bend the elbows slightly to take the weight onto your chest/triceps.
+
+
+Slowly lower the bar to your middle chest.
+
+
+Pause, then slowly push the bar back to the starting position. Don''t lock your elbows out!
+
+
 Repeat for desired reps.', 'compound', 'free', 'push', 'beginner');
-INSERT INTO public.exercise_examples VALUES ('04d275d8-71df-4695-ace9-899ce6e41b29', 'Seated Dumbbell Tricep Extension', '2024-08-26 14:39:55.622736', '2024-08-26 14:39:55.622736', 'https://www.dmoose.com/cdn/shop/articles/1_f16231a6-e9e2-4ff0-b3f1-b1ccdfbac2dc.jpg?v=1658323250', 'Select the desired weight from the rack and position an adjustable bench at 90 degrees.
-To get into position, sit in an upright position and lift the dumbbell to the top of your shoulder. Take a deep breath, overlap your hands around the dumbbell, then press it into position overhead.
-Maintain an overlapping grip and slowly lower the dumbbell behind your head by unlocking your elbows.
-Once your forearms reach parallel or just below, drive the dumbbell back to the starting point by extending the elbows and flexing the triceps.
+INSERT INTO public.exercise_examples VALUES ('04d275d8-71df-4695-ace9-899ce6e41b29', 'Seated Dumbbell Tricep Extension', '2024-08-26 14:39:55.622736', '2024-08-26 14:39:55.622736', 'https://www.dmoose.com/cdn/shop/articles/1_f16231a6-e9e2-4ff0-b3f1-b1ccdfbac2dc.jpg?v=1658323250', 'Select the desired weight from the rack and position an adjustable bench at 90 degrees.
+
+
+To get into position, sit in an upright position and lift the dumbbell to the top of your shoulder. Take a deep breath, overlap your hands around the dumbbell, then press it into position overhead.
+
+
+Maintain an overlapping grip and slowly lower the dumbbell behind your head by unlocking your elbows.
+
+
+Once your forearms reach parallel or just below, drive the dumbbell back to the starting point by extending the elbows and flexing the triceps.
+
+
 Repeat for the desired number of repetitions.', 'isolation', 'free', 'push', 'beginner');
-INSERT INTO public.exercise_examples VALUES ('1b4402c2-2459-45c1-8d24-356322c71d20', 'Two Arm Standing Dumbbell Extension', '2024-08-26 14:46:34.072768', '2024-08-26 14:46:34.072768', 'https://media.post.rvohealth.io/wp-content/uploads/2021/10/overhead-tricep-extension-dumbbell-732x549-thumbnail.jpg', 'Select the desired weight from the rack and stand in an open area.
-To get into position, lift the dumbbell to the top of your shoulder, take a deep breath, overlap your hands around the dumbbell, then press it into position overhead.
-Maintain an overlapped grip and slowly lower the dumbbell behind your head by unlocking your elbows.
-Once your forearms reach parallel or just below, drive the dumbbell back to the starting point by extending the elbows and flexing the triceps.
+INSERT INTO public.exercise_examples VALUES ('1b4402c2-2459-45c1-8d24-356322c71d20', 'Two Arm Standing Dumbbell Extension', '2024-08-26 14:46:34.072768', '2024-08-26 14:46:34.072768', 'https://media.post.rvohealth.io/wp-content/uploads/2021/10/overhead-tricep-extension-dumbbell-732x549-thumbnail.jpg', 'Select the desired weight from the rack and stand in an open area.
+
+
+To get into position, lift the dumbbell to the top of your shoulder, take a deep breath, overlap your hands around the dumbbell, then press it into position overhead.
+
+
+Maintain an overlapped grip and slowly lower the dumbbell behind your head by unlocking your elbows.
+
+
+Once your forearms reach parallel or just below, drive the dumbbell back to the starting point by extending the elbows and flexing the triceps.
+
+
 Repeat for the desired number of repetitions.', 'isolation', 'free', 'push', 'beginner');
-INSERT INTO public.exercise_examples VALUES ('4f9bdd10-28bc-447e-8cf5-fbf47cd9af79', 'French Press', '2024-08-26 14:52:11.233011', '2024-08-26 14:52:11.233011', 'https://www.guinnessworldrecords.com/world-records/images/619083-most-weight-lifted-by-ez-bar-french-press-french-curl-in-one-minute-header.jpg', 'Set up for the french press by loading a barbell or EZ-bar with the appropriate amount of weight and placing it on the floor in front of you.
-Bend only at the knees and grasp the barbell with an overhand grip (palms facing down) with your hands about 8-12 inches apart.
-Stand up straight with the bar with your feet around shoulder-width apart and a slight bend in your knees.
-Lift the bar above your head and bend at your elbows slightly to take the tension onto your triceps. Your palms are now facing upward. This is the starting position for the exercise.
-Keeping your elbows fixed and pointing straight up toward the ceiling, slowly lower the bar down behind your head as far as comfortably possible.
-Pause, and then slowly raise the bar back to the starting position.
+INSERT INTO public.exercise_examples VALUES ('4f9bdd10-28bc-447e-8cf5-fbf47cd9af79', 'French Press', '2024-08-26 14:52:11.233011', '2024-08-26 14:52:11.233011', 'https://www.guinnessworldrecords.com/world-records/images/619083-most-weight-lifted-by-ez-bar-french-press-french-curl-in-one-minute-header.jpg', 'Set up for the french press by loading a barbell or EZ-bar with the appropriate amount of weight and placing it on the floor in front of you.
+
+
+Bend only at the knees and grasp the barbell with an overhand grip (palms facing down) with your hands about 8-12 inches apart.
+
+
+Stand up straight with the bar with your feet around shoulder-width apart and a slight bend in your knees.
+
+
+Lift the bar above your head and bend at your elbows slightly to take the tension onto your triceps. Your palms are now facing upward. This is the starting position for the exercise.
+
+
+Keeping your elbows fixed and pointing straight up toward the ceiling, slowly lower the bar down behind your head as far as comfortably possible.
+
+
+Pause, and then slowly raise the bar back to the starting position.
+
+
 Don''t lock your elbows out, and then repeat the movement. ', 'isolation', 'free', 'push', 'beginner');
-INSERT INTO public.exercise_examples VALUES ('6a312bde-cc33-450b-8f1d-6091ccffe9cc', 'Reverse Grip Cable Tricep Extension', '2024-08-26 15:16:20.191397', '2024-08-26 15:16:20.191397', 'https://ignorelimits.com/wp-content/uploads/2017/08/how-to-reverse-grip-cable-triceps-pushdown-Copy.jpg', 'Attach a straight bar to a cable stack as high as possible and assume a standing position.
-Grasp the straight bar with a supinated grip (palms facing up) and lean forward slightly by hinging at the hips.
-Initiate the movement by extending the elbows and flexing the triceps.
-Pull the handle downward until the elbows are almost locked out and then slowly lower under control back to the starting position.
+INSERT INTO public.exercise_examples VALUES ('6a312bde-cc33-450b-8f1d-6091ccffe9cc', 'Reverse Grip Cable Tricep Extension', '2024-08-26 15:16:20.191397', '2024-08-26 15:16:20.191397', 'https://ignorelimits.com/wp-content/uploads/2017/08/how-to-reverse-grip-cable-triceps-pushdown-Copy.jpg', 'Attach a straight bar to a cable stack as high as possible and assume a standing position.
+
+
+Grasp the straight bar with a supinated grip (palms facing up) and lean forward slightly by hinging at the hips.
+
+
+Initiate the movement by extending the elbows and flexing the triceps.
+
+
+Pull the handle downward until the elbows are almost locked out and then slowly lower under control back to the starting position.
+
+
 Repeat for the desired number of repetitions.', 'isolation', 'fixed', 'push', 'beginner');
-INSERT INTO public.exercise_examples VALUES ('21e7460d-aa00-448b-8c82-994a73e0164c', 'Dumbbell Tate Press', '2024-08-26 15:20:51.07074', '2024-08-26 15:20:51.07074', 'https://i0.wp.com/www.muscleandfitness.com/wp-content/uploads/2017/06/600-tate-press.jpg?quality=86&strip=all', 'Select the desired weight from the rack and sit down on a flat bench.
-To get into position, lay back and keep the weights close to your chest. Once you are in position, take a deep breath, then press the dumbbells to lockout at the top.
-Maintain a pronated grip (thumbs pointing towards each other) and allow the elbows to bend while lowering the inner portion of the dumbbells to the chest.
-Once the ends of the dumbbells touch your chest, reverse the movement and flex the triceps to lockout the elbows.
+INSERT INTO public.exercise_examples VALUES ('21e7460d-aa00-448b-8c82-994a73e0164c', 'Dumbbell Tate Press', '2024-08-26 15:20:51.07074', '2024-08-26 15:20:51.07074', 'https://i0.wp.com/www.muscleandfitness.com/wp-content/uploads/2017/06/600-tate-press.jpg?quality=86&strip=all', 'Select the desired weight from the rack and sit down on a flat bench.
+
+
+To get into position, lay back and keep the weights close to your chest. Once you are in position, take a deep breath, then press the dumbbells to lockout at the top.
+
+
+Maintain a pronated grip (thumbs pointing towards each other) and allow the elbows to bend while lowering the inner portion of the dumbbells to the chest.
+
+
+Once the ends of the dumbbells touch your chest, reverse the movement and flex the triceps to lockout the elbows.
+
+
 Repeat for the desired number of repetitions.', 'isolation', 'free', 'push', 'beginner');
-INSERT INTO public.exercise_examples VALUES ('ee8cc366-d33b-45a6-84b0-4ab416585ad1', 'Close Grip Press Behind-The-Neck', '2024-08-27 16:05:54.962719', '2024-08-27 16:05:54.962719', 'https://assets.myworkouts.io/exercises-media/b6KbXDksgkfbm3TtY/close_grip_press_behind_neck_male_v5_thumb100Poster_capoff.jpg', 'Set up for the close grip behind the neck press by loading the appropriate weight onto an EZ bar or barbell and sitting on the end of a flat bench or a bench with a back rest.
-Grasp the bar with a close grip (just inside shoulder width) using an overhand grip (palms facing forward).
-Raise the bar straight above your head until your arms are nearly fully extended (keep a slight bend in your elbows). This is the starting position.
-Slowly lower the bar down behind your neck by bending at the elbows. The bar should come down as far as comfortably possible or when your forearms are around parallel to the floor.
-Slowly raise the bar back to the starting position. This is one rep.
+INSERT INTO public.exercise_examples VALUES ('ee8cc366-d33b-45a6-84b0-4ab416585ad1', 'Close Grip Press Behind-The-Neck', '2024-08-27 16:05:54.962719', '2024-08-27 16:05:54.962719', 'https://assets.myworkouts.io/exercises-media/b6KbXDksgkfbm3TtY/close_grip_press_behind_neck_male_v5_thumb100Poster_capoff.jpg', 'Set up for the close grip behind the neck press by loading the appropriate weight onto an EZ bar or barbell and sitting on the end of a flat bench or a bench with a back rest.
+
+
+Grasp the bar with a close grip (just inside shoulder width) using an overhand grip (palms facing forward).
+
+
+Raise the bar straight above your head until your arms are nearly fully extended (keep a slight bend in your elbows). This is the starting position.
+
+
+Slowly lower the bar down behind your neck by bending at the elbows. The bar should come down as far as comfortably possible or when your forearms are around parallel to the floor.
+
+
+Slowly raise the bar back to the starting position. This is one rep.
+
+
 Repeat for desired reps.', 'isolation', 'free', 'push', 'intermediate');
-INSERT INTO public.exercise_examples VALUES ('490df80e-d34c-42cf-bfe5-c27ddd2cd734', 'Decline Lying Dumbbell Extension', '2024-08-27 17:08:58.772907', '2024-08-27 17:08:58.772907', '', 'Select the desired weight from the rack and position an adjustable bench on a slight decline of 15-30 degrees.
-Lay back keeping the weights close to your chest. Once your back is flat against the pad, press the weights to lockout using a neutral grip.
-Lower the weights towards your shoulders by unlocking the elbows while maintaining a neutral grip.
-Once your forearms reach parallel or just below, drive the dumbbell back to the starting point by extending the elbows and flexing the triceps.
+INSERT INTO public.exercise_examples VALUES ('490df80e-d34c-42cf-bfe5-c27ddd2cd734', 'Decline Lying Dumbbell Extension', '2024-08-27 17:08:58.772907', '2024-08-27 17:08:58.772907', '', 'Select the desired weight from the rack and position an adjustable bench on a slight decline of 15-30 degrees.
+
+
+Lay back keeping the weights close to your chest. Once your back is flat against the pad, press the weights to lockout using a neutral grip.
+
+
+Lower the weights towards your shoulders by unlocking the elbows while maintaining a neutral grip.
+
+
+Once your forearms reach parallel or just below, drive the dumbbell back to the starting point by extending the elbows and flexing the triceps.
+
+
 Repeat for the desired number of repetitions.', 'isolation', 'free', 'push', 'beginner');
-INSERT INTO public.exercise_examples VALUES ('e21344ff-b825-4a99-bf8b-a778bf1964d1', 'Decline Close Grip Bench Press', '2024-08-27 17:14:24.425351', '2024-08-27 17:14:24.425351', '', 'Lie flat on an decline bench, set your hands at shoulder width, and hook your feet underneath the pad.
-Set your shoulder blades by pinching them together and driving them into the bench.
-Take a deep breath and allow your spotter to help you with the lift off in order to maintain tightness through your upper back.
-Let the weight settle and ensure your upper back remains tight after lift off.
-Inhale and allow the bar to descend slowly by unlocking the elbows.
-Lower the bar in a straight line to just below your sternum (breastbone) and touch the chest.
-Push the bar back up in a straight line by pressing yourself into the bench and extending the elbows.
+INSERT INTO public.exercise_examples VALUES ('e21344ff-b825-4a99-bf8b-a778bf1964d1', 'Decline Close Grip Bench Press', '2024-08-27 17:14:24.425351', '2024-08-27 17:14:24.425351', '', 'Lie flat on an decline bench, set your hands at shoulder width, and hook your feet underneath the pad.
+
+
+Set your shoulder blades by pinching them together and driving them into the bench.
+
+
+Take a deep breath and allow your spotter to help you with the lift off in order to maintain tightness through your upper back.
+
+
+Let the weight settle and ensure your upper back remains tight after lift off.
+
+
+Inhale and allow the bar to descend slowly by unlocking the elbows.
+
+
+Lower the bar in a straight line to just below your sternum (breastbone) and touch the chest.
+
+
+Push the bar back up in a straight line by pressing yourself into the bench and extending the elbows.
+
+
 Repeat for the desired number of repetitions.', 'compound', 'free', 'push', 'intermediate');
-INSERT INTO public.exercise_examples VALUES ('d6743870-0d5a-4180-9671-181b8f65e03e', 'Decline Lying Tricep Extension (Skullcrusher)', '2024-08-27 17:17:13.831319', '2024-08-27 17:17:13.831319', '', 'Select your desired weight and sit on the edge of an decline bench at roughly 20-30 degrees.
-To get into position, lay back and keep the bar close to your chest. Once you are supine, press the weight to lockout.
-Unlock the elbows and allow the ez bar to drop toward your forehead or just above.
-Once your forearms reach parallel or just below, reverse the movement by extending the elbows while flexing the triceps to lockout the weight.
+INSERT INTO public.exercise_examples VALUES ('d6743870-0d5a-4180-9671-181b8f65e03e', 'Decline Lying Tricep Extension (Skullcrusher)', '2024-08-27 17:17:13.831319', '2024-08-27 17:17:13.831319', '', 'Select your desired weight and sit on the edge of an decline bench at roughly 20-30 degrees.
+
+
+To get into position, lay back and keep the bar close to your chest. Once you are supine, press the weight to lockout.
+
+
+Unlock the elbows and allow the ez bar to drop toward your forehead or just above.
+
+
+Once your forearms reach parallel or just below, reverse the movement by extending the elbows while flexing the triceps to lockout the weight.
+
+
 Repeat for the desired number of repetitions.', 'isolation', 'free', 'push', 'beginner');
-INSERT INTO public.exercise_examples VALUES ('855bd9e5-3546-4cfd-b048-e8017f01bfeb', 'Dumbbell Tricep Kickback', '2024-08-27 17:37:27.234715', '2024-08-27 17:37:27.234715', '', 'Set up for the dumbbell tricep kickback by grabbing a flat bench and sitting a dumbbell on the left-hand side at one end.
-Position yourself on the left side of the bench with your right knee and right hand resting on the bench.
-Using a neutral grip, pick up the dumbbell with your left hand. Keep your back straight and look forward.
-Tuck your left upper arm close to your torso and bend at the elbow, forming a 90-degree angle with your upper arm and forearm. This is the starting position.
-Moving only at the elbow, raise the dumbbell behind you until your arm is fully extended.
-Pause, and then lower the dumbbell back to the starting position.
+INSERT INTO public.exercise_examples VALUES ('855bd9e5-3546-4cfd-b048-e8017f01bfeb', 'Dumbbell Tricep Kickback', '2024-08-27 17:37:27.234715', '2024-08-27 17:37:27.234715', '', 'Set up for the dumbbell tricep kickback by grabbing a flat bench and sitting a dumbbell on the left-hand side at one end.
+
+
+Position yourself on the left side of the bench with your right knee and right hand resting on the bench.
+
+
+Using a neutral grip, pick up the dumbbell with your left hand. Keep your back straight and look forward.
+
+
+Tuck your left upper arm close to your torso and bend at the elbow, forming a 90-degree angle with your upper arm and forearm. This is the starting position.
+
+
+Moving only at the elbow, raise the dumbbell behind you until your arm is fully extended.
+
+
+Pause, and then lower the dumbbell back to the starting position.
+
+
 Repeat this movement for desired reps and then repeat using your right arm.', 'isolation', 'free', 'push', 'beginner');
-INSERT INTO public.exercise_examples VALUES ('53defdc5-bfec-4af4-bfba-60440e3493cc', 'EZ Bar Incline Skullcrusher', '2024-08-27 17:40:04.03333', '2024-08-27 17:40:04.03333', '', 'Select your desired weight and sit on the edge of an adjustable bench set at 20-30 degrees.
-To get into position, lay back and keep the bar close to your chest. Once you are supine, press the weight to lockout.
-Unlock the elbows and allow the ez bar to drop toward your forehead or just above.
-Once your forearms reach parallel or just below, reverse the movement by extending the elbows while flexing the triceps to lockout the weight.
+INSERT INTO public.exercise_examples VALUES ('53defdc5-bfec-4af4-bfba-60440e3493cc', 'EZ Bar Incline Skullcrusher', '2024-08-27 17:40:04.03333', '2024-08-27 17:40:04.03333', '', 'Select your desired weight and sit on the edge of an adjustable bench set at 20-30 degrees.
+
+
+To get into position, lay back and keep the bar close to your chest. Once you are supine, press the weight to lockout.
+
+
+Unlock the elbows and allow the ez bar to drop toward your forehead or just above.
+
+
+Once your forearms reach parallel or just below, reverse the movement by extending the elbows while flexing the triceps to lockout the weight.
+
+
 Repeat for the desired number of repetitions.', 'isolation', 'free', 'push', 'beginner');
-INSERT INTO public.exercise_examples VALUES ('748e0a60-9429-4a9d-8a6b-3ba76a7fc4b2', 'High Pulley Overhead Tricep Extension (Rope Extension)', '2024-08-27 17:41:21.141757', '2024-08-27 17:41:21.141757', '', 'Attach a rope to a cable stack as high as possible and assume a standing position.
-Utilize a split stance, grasp the rope overhead with a neutral grip (palms facing), and lean forward by hinging at the hips.
-Initiate the movement by extending the elbows and flexing the triceps.
-Pull the rope downward until the elbows are almost locked out and then slowly lower under control back to the starting position.
+INSERT INTO public.exercise_examples VALUES ('748e0a60-9429-4a9d-8a6b-3ba76a7fc4b2', 'High Pulley Overhead Tricep Extension (Rope Extension)', '2024-08-27 17:41:21.141757', '2024-08-27 17:41:21.141757', '', 'Attach a rope to a cable stack as high as possible and assume a standing position.
+
+
+Utilize a split stance, grasp the rope overhead with a neutral grip (palms facing), and lean forward by hinging at the hips.
+
+
+Initiate the movement by extending the elbows and flexing the triceps.
+
+
+Pull the rope downward until the elbows are almost locked out and then slowly lower under control back to the starting position.
+
+
 Repeat for the desired number of repetitions.', 'isolation', 'fixed', 'push', 'beginner');
-INSERT INTO public.exercise_examples VALUES ('a90f4822-63c5-42b9-943c-ff0ceacad1eb', 'High Pulley Overhead Tricep Extension', '2024-08-27 17:44:25.490434', '2024-08-27 17:44:25.490434', '', 'Set up for the high pulley tricep extension by attaching a straight bar to a high pulley and selecting the weight you want to use on the stack.
-Facing away from the pulley, grab the bar behind your neck with an overhand grip at shoulder width apart.
-Bend over at the waist until your torso is almost parallel to the floor. This will lift the weight slightly from the stack.
-You can stagger your feet and bend slightly at the knees to help with balance.
-Your upper arms should be parallel to the floor at this point and you should be grabbing the bar behind your head. You are now in the starting position.
-Moving only at your elbow joints, slowly push the bar out in from of your body until your arms are fully extended. 
-Pause, and then slowly bring the bar back to the starting position.
+INSERT INTO public.exercise_examples VALUES ('a90f4822-63c5-42b9-943c-ff0ceacad1eb', 'High Pulley Overhead Tricep Extension', '2024-08-27 17:44:25.490434', '2024-08-27 17:44:25.490434', '', 'Set up for the high pulley tricep extension by attaching a straight bar to a high pulley and selecting the weight you want to use on the stack.
+
+
+Facing away from the pulley, grab the bar behind your neck with an overhand grip at shoulder width apart.
+
+
+Bend over at the waist until your torso is almost parallel to the floor. This will lift the weight slightly from the stack.
+
+
+You can stagger your feet and bend slightly at the knees to help with balance.
+
+
+Your upper arms should be parallel to the floor at this point and you should be grabbing the bar behind your head. You are now in the starting position.
+
+
+Moving only at your elbow joints, slowly push the bar out in from of your body until your arms are fully extended. 
+
+
+Pause, and then slowly bring the bar back to the starting position.
+
+
 Repeat this movement for desired reps.', 'isolation', 'fixed', 'push', 'beginner');
 INSERT INTO public.exercise_examples VALUES ('bbfbcfe2-1f56-492e-afa6-75e595b84fde', 'Standing Barbell Curl', '2024-08-27 20:04:23.470927', '2024-08-27 20:04:23.470927', '', 'The standing barbell curl is the cornerstone of many bicep building routines. Grasp a barbell or Olympic bar at around shoulder width apart using an underhand grip (palms facing up).
 Stand straight up, feet together (you may be more comfortable putting one foot back for stability), back straight, and with your arms fully extended.
@@ -2359,15 +2681,25 @@ INSERT INTO public.exercise_examples_equipments VALUES ('4f31706f-2ff2-4d48-bdc8
 
 INSERT INTO public.exercise_examples_tutorials VALUES ('0a7a066f-3204-4610-8fd2-85c353db0bf5', '2024-08-23 13:51:17.120552', '6cb225d2-be00-461d-9bf0-7f0c87cfea0b', '2024-08-23 13:51:17.120552', 'Tutorial Straight Bar Tricep Extension', 'https://www.youtube.com/watch?v=mpZ9VRisAyw', 'en', 'https://www.muscleandstrength.com', 'youtube_video');
 INSERT INTO public.exercise_examples_tutorials VALUES ('60491dcd-c34d-494b-855b-7d574c7c2c0c', '2024-08-23 14:29:51.296687', 'b790c6a6-ecd1-4b3a-afbc-22cd82e55658', '2024-08-23 14:29:51.296687', 'Straight Bar Tricep Extension', 'https://www.youtube.com/watch?v=mpZ9VRisAyw', 'en', NULL, 'youtube_video');
-INSERT INTO public.exercise_examples_tutorials VALUES ('c33f6813-abc9-41cb-bb27-cff2db6f24e7', '2024-08-23 14:41:48.931538', '4d3a89ab-70ae-4311-8b40-a058b2f3057b', '2024-08-23 14:41:48.931538', 'Seated Overhead Dumbbell Tricep Extension
+INSERT INTO public.exercise_examples_tutorials VALUES ('c33f6813-abc9-41cb-bb27-cff2db6f24e7', '2024-08-23 14:41:48.931538', '4d3a89ab-70ae-4311-8b40-a058b2f3057b', '2024-08-23 14:41:48.931538', 'Seated Overhead Dumbbell Tricep Extension
+
+
 ', 'https://www.youtube.com/watch?v=LlCFtWCQc5s', 'en', NULL, 'youtube_video');
-INSERT INTO public.exercise_examples_tutorials VALUES ('c0dbd0ad-661d-4ced-a393-183e6f058753', '2024-08-23 14:53:43.932664', '0e2fe1e8-f8f1-48e6-b360-8c9d4d9991a6', '2024-08-23 14:53:43.932664', 'Rope Tricep Extension
+INSERT INTO public.exercise_examples_tutorials VALUES ('c0dbd0ad-661d-4ced-a393-183e6f058753', '2024-08-23 14:53:43.932664', '0e2fe1e8-f8f1-48e6-b360-8c9d4d9991a6', '2024-08-23 14:53:43.932664', 'Rope Tricep Extension
+
+
 ', 'https://www.youtube.com/watch?v=LzwgB15UdO8', 'en', NULL, 'youtube_video');
-INSERT INTO public.exercise_examples_tutorials VALUES ('460c09cc-8701-45ad-9491-8588b6e0f3e0', '2024-08-23 15:30:18.909949', 'ab0d7384-444e-446a-911d-f64ac31db8ef', '2024-08-23 15:30:18.909949', 'Bench Press (Close Grip)
+INSERT INTO public.exercise_examples_tutorials VALUES ('460c09cc-8701-45ad-9491-8588b6e0f3e0', '2024-08-23 15:30:18.909949', 'ab0d7384-444e-446a-911d-f64ac31db8ef', '2024-08-23 15:30:18.909949', 'Bench Press (Close Grip)
+
+
 ', 'https://www.youtube.com/watch?v=j-NhORwJDb4', 'en', NULL, 'youtube_video');
-INSERT INTO public.exercise_examples_tutorials VALUES ('90d26987-58eb-4756-8a5c-cf76f791a849', '2024-08-23 15:44:41.345481', '650e9725-d36c-4688-bcab-adf93dfe9e5d', '2024-08-23 15:44:41.345481', 'EZ Bar Skullcrusher
+INSERT INTO public.exercise_examples_tutorials VALUES ('90d26987-58eb-4756-8a5c-cf76f791a849', '2024-08-23 15:44:41.345481', '650e9725-d36c-4688-bcab-adf93dfe9e5d', '2024-08-23 15:44:41.345481', 'EZ Bar Skullcrusher
+
+
 ', 'https://www.youtube.com/watch?v=K6MSN4hCDM4', 'en', NULL, 'youtube_video');
-INSERT INTO public.exercise_examples_tutorials VALUES ('a5bbf4db-4be8-482b-b77f-52d3cb3c3bb7', '2024-08-23 15:50:27.665106', '3b828d2f-797f-4a45-9d1d-1d3efe38fb54', '2024-08-23 15:50:27.665106', 'Dip (Weighted)
+INSERT INTO public.exercise_examples_tutorials VALUES ('a5bbf4db-4be8-482b-b77f-52d3cb3c3bb7', '2024-08-23 15:50:27.665106', '3b828d2f-797f-4a45-9d1d-1d3efe38fb54', '2024-08-23 15:50:27.665106', 'Dip (Weighted)
+
+
 ', 'https://www.youtube.com/watch?v=ZQnPQG5d67E', 'en', NULL, 'youtube_video');
 INSERT INTO public.exercise_examples_tutorials VALUES ('8dc32419-56a2-44c0-9d39-898d48394a9d', '2024-08-23 20:29:25.204889', '7517ae2f-c198-4a33-8a1d-1dc7327d1430', '2024-08-23 20:29:25.204889', 'Instruction', 'https://www.muscleandstrength.com/exercises/ez-bar-back-of-the-head-lying-tricep-extension.html', 'en', NULL, 'video');
 INSERT INTO public.exercise_examples_tutorials VALUES ('d646bbfa-cf3e-411c-92e5-daaa4568d474', '2024-08-23 20:36:43.368496', '4aafe702-f2fc-4fa2-a7fb-c31c279adeda', '2024-08-23 20:36:43.368496', 'Instruction', 'https://www.muscleandstrength.com/exercises/ez-bar-back-of-the-head-lying-tricep-extension.html', 'en', NULL, 'video');
@@ -2663,7 +2995,7 @@ INSERT INTO public.muscles VALUES ('a3a8eae0-6315-4435-8974-f2c07ec3567f', 'Pect
 -- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: -
 --
 
-INSERT INTO public.users VALUES ('5e2eab59-bccb-4679-997a-398e18bc254c', 'alienworkout@admin.panel', '$2a$10$qiW50vCNFhj.A02Gozd3mOGozaY.JHwPXC3oK/wJ2kq8MHoS64aiS', 'Admin User', '2024-08-23 10:23:20.828239', '2024-08-23 10:23:20.828239', 1.65, 'advanced');
+INSERT INTO public.users VALUES ('5e2eab59-bccb-4679-997a-398e18bc254c', 'grippo@admin.panel', '$2a$10$qiW50vCNFhj.A02Gozd3mOGozaY.JHwPXC3oK/wJ2kq8MHoS64aiS', 'Admin User', '2024-08-23 10:23:20.828239', '2024-08-23 10:23:20.828239', 1.65, 'advanced');
 
 
 --

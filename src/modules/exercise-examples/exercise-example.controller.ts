@@ -60,7 +60,7 @@ export class ExerciseExampleController {
     setExerciseExample(@Req() req, @Res() res, @Body() body: ExerciseExampleRequest) {
         const userEmail = req.user.email;
 
-        if (userEmail !== 'alienworkout@admin.panel') {
+        if (userEmail !== 'grippo@admin.panel') {
             return res.status(HttpStatus.FORBIDDEN).json({message: 'Forbidden'});
         }
 
