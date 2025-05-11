@@ -1564,7 +1564,7 @@ Bending at the knees and keeping your back straight, squat down and pick up the 
 Get into the starting position by keeping your back straight, bending slightly at the knees, and bending over at the waist. Your torso should almost be parallel to the floor.
 
 
-Tuck your upper arms close to your torso and bend at the elbows, forming a 90-degree angle with your upper arms and forearms. This is the starting position. 
+Tuck your upper arms close to your torso and bend at the elbows, forming a 90-degree angle with your upper arms and forearms. This is the starting position.
 
 
 Beginning with your left arm and moving only at the elbow, raise the dumbbell behind you until your arm is fully extended.
@@ -1624,7 +1624,7 @@ Now you should be in a position to start the set, laying back on the bench and h
 Slowly lower the left dumbbell down by bending only at the elbow. You will be moving in a semi-circular motion until the dumbbell is about even with your left ear. Continue to hold the right dumbbell in place.
 
 
-Pause, and then raise the dumbbell back to the starting position. 
+Pause, and then raise the dumbbell back to the starting position.
 
 
 Repeat the movement with your right arm and then repeat for desired reps.', 'isolation', 'free', 'push', 'intermediate');
@@ -1730,7 +1730,7 @@ INSERT INTO public.exercise_examples VALUES ('385fb192-7c2c-405a-b483-f36e32e241
 Lay back on the bench with your feet firmly on the floor.
 
 
-Grab the bar with an overhand grip (palms facing your feet) with your hands around 12 inches apart. 
+Grab the bar with an overhand grip (palms facing your feet) with your hands around 12 inches apart.
 
 
 Take the barbell off the rack and hold it straight above your chest. Bend the elbows slightly to take the weight onto your chest/triceps.
@@ -1938,7 +1938,7 @@ You can stagger your feet and bend slightly at the knees to help with balance.
 Your upper arms should be parallel to the floor at this point and you should be grabbing the bar behind your head. You are now in the starting position.
 
 
-Moving only at your elbow joints, slowly push the bar out in from of your body until your arms are fully extended. 
+Moving only at your elbow joints, slowly push the bar out in from of your body until your arms are fully extended.
 
 
 Pause, and then slowly bring the bar back to the starting position.
@@ -3173,11 +3173,11 @@ ALTER TABLE ONLY public.exercise_example_bundles
 
 
 --
--- Name: excluded_equipments FK_3fc2cde19015c5361418979a02a; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: excluded_equipments b17ae8af-2d78-4e77-b45b-39253c28247a; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.excluded_equipments
-    ADD CONSTRAINT "FK_3fc2cde19015c5361418979a02a" FOREIGN KEY (equipment_id) REFERENCES public.equipments(id) ON DELETE CASCADE;
+    ADD CONSTRAINT "b17ae8af-2d78-4e77-b45b-39253c28247a" FOREIGN KEY (equipment_id) REFERENCES public.equipments(id) ON DELETE CASCADE;
 
 
 --
