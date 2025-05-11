@@ -8,46 +8,53 @@ import {
     PrimaryGeneratedColumn,
     UpdateDateColumn,
 } from 'typeorm';
-import {EquipmentGroupsEntity} from "./equipment-groups.entity";
-import {EquipmentEnum} from "../lib/equipment.enum";
-import {ExcludedEquipmentsEntity} from "./excluded-equipments.entity";
-import {ExerciseExamplesEquipmentsEntity} from "./exercise-examples-equipments.entity";
+
+import {EquipmentGroupsEntity} from './equipment-groups.entity';
+import {EquipmentEnum} from '../lib/equipment.enum';
+import {ExcludedEquipmentsEntity} from './excluded-equipments.entity';
+import {ExerciseExamplesEquipmentsEntity} from './exercise-examples-equipments.entity';
 
 @Entity({name: 'equipments'})
 export class EquipmentsEntity {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
-    @Column({default: null})
+    @Column()
     name: string;
-
-    @Column({default: null})
-    equipmentGroupId: string;
 
     @Column({type: 'enum', enum: EquipmentEnum, nullable: true})
     type: EquipmentEnum;
 
-    @CreateDateColumn({type: 'timestamp without time zone', name: 'created_at',})
+    @CreateDateColumn({
+        type: 'timestamp without time zone',
+        name: 'created_at',
+    })
     createdAt: Date;
 
-    @UpdateDateColumn({type: 'timestamp without time zone', name: 'updated_at',})
+    @UpdateDateColumn({
+        type: 'timestamp without time zone',
+        name: 'updated_at',
+    })
     updatedAt: Date;
 
-    @ManyToOne(() => EquipmentGroupsEntity, (equipmentGroup) => equipmentGroup.equipments, {
+    @ManyToOne(() => EquipmentGroupsEntity, (group) => group.equipments, {
         onDelete: 'CASCADE',
         orphanedRowAction: 'delete',
     })
-
     @JoinColumn({name: 'equipment_group_id'})
     equipmentGroup: EquipmentGroupsEntity;
 
-    @OneToMany(() => ExcludedEquipmentsEntity, (excludedEquipments) => excludedEquipments.equipment, {
-        cascade: ['remove']
-    })
+    @OneToMany(
+        () => ExcludedEquipmentsEntity,
+        (excluded) => excluded.equipment,
+        {cascade: ['remove']},
+    )
     excludedEquipments: ExcludedEquipmentsEntity[];
 
-    @OneToMany(() => ExerciseExamplesEquipmentsEntity, (exerciseExampleRefs) => exerciseExampleRefs.equipment, {
-        cascade: ['remove']
-    })
+    @OneToMany(
+        () => ExerciseExamplesEquipmentsEntity,
+        (ref) => ref.equipment,
+        {cascade: ['remove']},
+    )
     exerciseExampleRefs: ExerciseExamplesEquipmentsEntity[];
 }

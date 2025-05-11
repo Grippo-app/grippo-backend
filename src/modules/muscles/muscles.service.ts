@@ -80,7 +80,7 @@ export class MusclesService {
                         muscleResponse.id = muscle.id
                         muscleResponse.name = muscle.name
                         muscleResponse.type = muscle.type
-                        muscleResponse.muscleGroupId = muscle.muscleGroupId
+                        muscleResponse.muscleGroupId = muscle.muscleGroup.id
                         muscleResponse.createdAt = muscle.createdAt
                         muscleResponse.updatedAt = muscle.updatedAt
                         return muscleResponse

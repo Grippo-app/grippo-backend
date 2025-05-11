@@ -1,13 +1,13 @@
 import {Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn,} from 'typeorm';
-import {EquipmentGroupEnum} from "../lib/equipment-group.enum";
-import {EquipmentsEntity} from "./equipments.entity";
+import {EquipmentGroupEnum} from '../lib/equipment-group.enum';
+import {EquipmentsEntity} from './equipments.entity';
 
 @Entity({name: 'equipment_groups'})
 export class EquipmentGroupsEntity {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
-    @Column({default: null})
+    @Column()
     name: string;
 
     @Column({type: 'enum', enum: EquipmentGroupEnum, nullable: true})
@@ -20,7 +20,7 @@ export class EquipmentGroupsEntity {
     updatedAt: Date;
 
     @OneToMany(() => EquipmentsEntity, (equipment) => equipment.equipmentGroup, {
-        cascade: ['remove']
+        cascade: ['remove'],
     })
     equipments: EquipmentsEntity[];
 }

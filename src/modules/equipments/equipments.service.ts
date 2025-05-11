@@ -64,7 +64,7 @@ export class EquipmentsService {
                         response.id = equipment.id
                         response.name = equipment.name
                         response.type = equipment.type
-                        response.equipmentGroupId = equipment.equipmentGroupId
+                        response.equipmentGroupId = equipment.equipmentGroup.id
                         response.createdAt = equipment.createdAt
                         response.updatedAt = equipment.updatedAt
                         return response

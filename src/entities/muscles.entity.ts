@@ -1,4 +1,5 @@
 import {
+    Check,
     Column,
     CreateDateColumn,
     Entity,
@@ -8,55 +9,61 @@ import {
     PrimaryGeneratedColumn,
     UpdateDateColumn,
 } from 'typeorm';
+
 import {ExerciseExampleBundlesEntity} from './exercise-example-bundles.entity';
-import {MuscleGroupsEntity} from "./muscle-groups.entity";
-import {MuscleEnum} from "../lib/muscle.enum";
-import {ExcludedMusclesEntity} from "./excluded-muscles.entity";
+import {MuscleGroupsEntity} from './muscle-groups.entity';
+import {MuscleEnum} from '../lib/muscle.enum';
+import {ExcludedMusclesEntity} from './excluded-muscles.entity';
 
 @Entity({name: 'muscles'})
+@Check(`"recovery_time_hours" IS NULL OR "recovery_time_hours" >= 0`)
 export class MusclesEntity {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
-    @Column({default: null})
+    @Column()
     name: string;
-
-    @Column({default: null})
-    muscleGroupId: string;
-
-    @Column({default: null})
-    nameUa: string;
 
     @Column({type: 'enum', enum: MuscleEnum, nullable: true})
     type: MuscleEnum;
 
-    @Column({type: 'integer', nullable: true})
+    @Column({
+        type: 'integer',
+        nullable: true,
+        name: 'recovery_time_hours'
+    })
     recoveryTimeHours: number;
 
-    @Column({default: null})
-    nameRu: string;
-
-    @CreateDateColumn({type: 'timestamp without time zone', name: 'created_at',})
+    @CreateDateColumn({
+        type: 'timestamp without time zone',
+        name: 'created_at',
+    })
     createdAt: Date;
 
-    @UpdateDateColumn({type: 'timestamp without time zone', name: 'updated_at',})
+    @UpdateDateColumn({
+        type: 'timestamp without time zone',
+        name: 'updated_at',
+    })
     updatedAt: Date;
 
-    @OneToMany(() => ExerciseExampleBundlesEntity, (exerciseExampleBundle) => exerciseExampleBundle.muscle, {
-        cascade: ['remove'],
-    })
-    exerciseExampleBundles: ExerciseExampleBundlesEntity[];
-
-    @ManyToOne(() => MuscleGroupsEntity, (muscleGroup) => muscleGroup.muscles, {
+    @ManyToOne(() => MuscleGroupsEntity, (group) => group.muscles, {
         onDelete: 'CASCADE',
         orphanedRowAction: 'delete',
     })
-
     @JoinColumn({name: 'muscle_group_id'})
     muscleGroup: MuscleGroupsEntity;
 
-    @OneToMany(() => ExcludedMusclesEntity, (excludedMuscles) => excludedMuscles.muscle, {
-        cascade: ['remove']
-    })
+    @OneToMany(
+        () => ExerciseExampleBundlesEntity,
+        (bundle) => bundle.muscle,
+        {cascade: ['remove']},
+    )
+    exerciseExampleBundles: ExerciseExampleBundlesEntity[];
+
+    @OneToMany(
+        () => ExcludedMusclesEntity,
+        (excluded) => excluded.muscle,
+        {cascade: ['remove']},
+    )
     excludedMuscles: ExcludedMusclesEntity[];
 }

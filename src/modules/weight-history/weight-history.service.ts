@@ -20,7 +20,7 @@ export class WeightHistoryService {
 
     async setWeightHistory(user, weight: number) {
         const weightHistoryEntity = new WeightHistoryEntity()
-        weightHistoryEntity.userId = user.id
+        weightHistoryEntity.user.id = user.id
         weightHistoryEntity.weight = weight
 
         return await this.weightHistoryRepository.save(weightHistoryEntity)
