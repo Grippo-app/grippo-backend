@@ -11,8 +11,6 @@ import { MusclesModule } from './modules/muscles/muscles.module';
 import { WeightHistoryModule } from './modules/weight-history/weight-history.module';
 import { StatisticsModule } from './modules/statistics/statistics.module';
 import { FiltersModule } from './modules/filters/filters.module';
-import { ExcludedMusclesModule } from './modules/excluded-muscles/excluded-muscles.module';
-import { ExcludedEquipmentsModule } from './modules/excluded-equipments/excluded-equipments.module';
 import { EquipmentsModule } from './modules/equipments/equipments.module';
 
 @Module({
@@ -34,8 +32,6 @@ import { EquipmentsModule } from './modules/equipments/equipments.module';
         WeightHistoryModule,
         StatisticsModule,
         FiltersModule,
-        ExcludedMusclesModule,
-        ExcludedEquipmentsModule,
         EquipmentsModule,
     ],
 })
