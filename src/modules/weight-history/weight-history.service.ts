@@ -1,35 +1,35 @@
-import {Inject, Injectable} from '@nestjs/common';
-import {Repository} from 'typeorm';
-import {WeightHistoryEntity} from "../../entities/weight-history.entity";
+import { Inject, Injectable } from '@nestjs/common';
+import { Repository } from 'typeorm';
+import { WeightHistoryEntity } from '../../entities/weight-history.entity';
 
 @Injectable()
 export class WeightHistoryService {
     constructor(
         @Inject('WEIGHT_HISTORY_REPOSITORY')
-        private readonly weightHistoryRepository: Repository<WeightHistoryEntity>
-    ) {
-    }
+        private readonly weightHistoryRepository: Repository<WeightHistoryEntity>,
+    ) {}
 
     async getWeightHistory(user) {
         return this.weightHistoryRepository
-            .createQueryBuilder('weight_history')
-            .where('weight_history.userId = :userId', {userId: user.id})
-            .addOrderBy('weight_history.createdAt', 'DESC')
+            .createQueryBuilder('weight')
+            .where('weight.user_id = :userId', { userId: user.id }) // ✅ правильное поле
+            .orderBy('weight.createdAt', 'DESC')
             .getMany();
     }
 
     async setWeightHistory(user, weight: number) {
-        const weightHistoryEntity = new WeightHistoryEntity()
-        weightHistoryEntity.user.id = user.id
-        weightHistoryEntity.weight = weight
+        const entity = this.weightHistoryRepository.create({
+            user: { id: user.id }, // ✅ корректная инициализация связи
+            weight,
+        });
 
-        return await this.weightHistoryRepository.save(weightHistoryEntity)
+        return await this.weightHistoryRepository.save(entity);
     }
 
     async removeWeight(user, id: string) {
         const count = await this.weightHistoryRepository
-            .createQueryBuilder('weight_history')
-            .where('weight_history.userId = :userId', {userId: user.id})
+            .createQueryBuilder('weight')
+            .where('weight.user_id = :userId', { userId: user.id })
             .getCount();
 
         if (count <= 1) {
@@ -40,8 +40,8 @@ export class WeightHistoryService {
             .createQueryBuilder()
             .delete()
             .from(WeightHistoryEntity)
-            .where('id = :id', {id})
-            .andWhere('userId = :userId', {userId: user.id})
+            .where('id = :id', { id })
+            .andWhere('user_id = :userId', { userId: user.id })
             .execute();
     }
 }

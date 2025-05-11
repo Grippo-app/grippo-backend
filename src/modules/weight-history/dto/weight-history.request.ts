@@ -1,7 +1,10 @@
-import {ApiProperty} from "@nestjs/swagger";
+import {ApiProperty} from '@nestjs/swagger';
+import {IsNumber, Max, Min} from 'class-validator';
 
 export class WeightHistoryRequest {
-
-    @ApiProperty({type: 'int', example: '444', description: 'weight'})
+    @ApiProperty({example: 88})
+    @IsNumber()
+    @Min(30)
+    @Max(300)
     weight: number;
 }

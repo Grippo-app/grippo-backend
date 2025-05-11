@@ -45,4 +45,5 @@ export class UsersService {
             weight: weight?.weight ?? null,
         };
     }
+
 }
