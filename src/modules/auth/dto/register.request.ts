@@ -19,7 +19,7 @@ export class RegisterRequest {
     @Expose()
     name: string;
 
-    @ApiProperty({example: 850, type: 'number', description: '850 = 85kg'})
+    @ApiProperty({example: 85, type: 'number', description: '85 = 85kg'})
     @IsInt()
     @Expose()
     weight: number;
