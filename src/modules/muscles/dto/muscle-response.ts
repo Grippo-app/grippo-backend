@@ -16,12 +16,6 @@ export class MuscleResponse {
     @ApiProperty({type: 'enum', enum: MuscleEnum, example: MuscleEnum.BICEPS})
     type: MuscleEnum;
 
-    @ApiProperty({type: 'enum', enum: MuscleStatusEnum, example: MuscleStatusEnum.INCLUDED})
-    status: MuscleStatusEnum;
-
-    @ApiProperty({type: 'enum', enum: MuscleLoadEnum, example: MuscleLoadEnum.LOW})
-    load: MuscleLoadEnum;
-
     @ApiProperty({type: Date, example: Date.now()})
     updatedAt: Date;
 
