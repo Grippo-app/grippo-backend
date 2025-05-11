@@ -11,7 +11,7 @@ export class EquipmentsController {
 
     @Get("user-equipments")
     @UseGuards(JwtAuthGuard)
-    @ApiBearerAuth()
+    @ApiBearerAuth('access-token')
     @ApiResponse({status: HttpStatus.UNAUTHORIZED, description: 'Unauthorized'})
     @ApiResponse({status: HttpStatus.FORBIDDEN, description: 'Forbidden'})
     getUserEquipments(@Req() req, @Res() res) {

@@ -1,5 +1,9 @@
-import {INestApplication} from '@nestjs/common';
-import {DocumentBuilder, SwaggerDocumentOptions, SwaggerModule,} from '@nestjs/swagger';
+import { INestApplication } from '@nestjs/common';
+import {
+    DocumentBuilder,
+    SwaggerDocumentOptions,
+    SwaggerModule,
+} from '@nestjs/swagger';
 
 export function setupSwagger(app: INestApplication): void {
     const isProd = process.env.NODE_ENV === 'production';
@@ -18,7 +22,7 @@ export function setupSwagger(app: INestApplication): void {
                 name: 'Authorization',
                 description: 'Enter JWT token',
             },
-            'access-token'
+            'access-token' // 👈 schema name
         )
         .build();
 
@@ -28,28 +32,17 @@ export function setupSwagger(app: INestApplication): void {
 
     const doc = SwaggerModule.createDocument(app, config, options);
 
-    const customCss = isProd
-        ? `
-      .swagger-ui .topbar {
-        background-color: #ffffff;
-        border-bottom: 1px solid #ccc;
-      }
-      .topbar-wrapper img {
-        content: url('https://img.icons8.com/color/48/gym.png');
-        width: 40px;
-        height: 40px;
-      }
-    `
-        : `
-      .swagger-ui .topbar {
-        background-color: #1e293b;
-      }
-      .topbar-wrapper img {
-        content: url('https://img.icons8.com/color/48/gym.png');
-        width: 40px;
-        height: 40px;
-      }
-    `;
+    const customCss = `
+    .swagger-ui .topbar {
+      background-color: ${isProd ? '#ffffff' : '#1e293b'};
+      border-bottom: 1px solid #ccc;
+    }
+    .topbar-wrapper img {
+      content: url('https://img.icons8.com/color/48/gym.png');
+      width: 40px;
+      height: 40px;
+    }
+  `;
 
     SwaggerModule.setup('docs', app, doc, {
         swaggerOptions: {

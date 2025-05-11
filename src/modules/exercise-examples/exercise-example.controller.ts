@@ -8,7 +8,7 @@ import {FiltersRequest} from "./dto/filters.request";
 
 @Controller('exercise-examples')
 @ApiTags('exercise-examples')
-@ApiBearerAuth()
+@ApiBearerAuth('access-token')
 export class ExerciseExampleController {
     constructor(private readonly exerciseExamplesService: ExerciseExampleService) {
     }

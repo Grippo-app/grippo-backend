@@ -5,7 +5,7 @@ import {JwtAuthGuard} from '../auth/guards/jwt-auth.guard';
 
 @Controller('excluded-muscles')
 @ApiTags('excluded-muscles')
-@ApiBearerAuth()
+@ApiBearerAuth('access-token')
 export class ExcludedMusclesController {
     constructor(private readonly excludedMusclesService: ExcludedMusclesService) {
     }

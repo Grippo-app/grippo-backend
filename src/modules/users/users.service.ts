@@ -13,31 +13,36 @@ export class UsersService {
     ) {
     }
 
-    async getAllUsers() {
-        return this.usersRepository
-            .createQueryBuilder('users')
-            .select(['users.id', 'users.email', 'users.name', 'users.experience', 'users.weight', 'users.height', 'users.createdAt', 'users.updatedAt'])
-            .addOrderBy('users.createdAt', 'DESC')
-            .getMany();
-    }
-
     async getUser(id: string) {
         const user = await this.usersRepository
             .createQueryBuilder('users')
+            .select([
+                'users.id',
+                'users.email',
+                'users.name',
+                'users.experience',
+                'users.height',
+                'users.createdAt',
+                'users.updatedAt',
+            ])
             .where('users.id = :id', {id})
-            .select(['users.id', 'users.email', 'users.name', 'users.experience', 'users.height', 'users.createdAt', 'users.updatedAt'])
             .getOne();
 
-        const weightData = await this.weightHistoryRepository
-            .createQueryBuilder("weights")
-            .where('weights.userId = :userId', {userId: user.id})
+        if (!user) {
+            throw new Error(`User with id ${id} not found`);
+        }
+
+        const weight = await this.weightHistoryRepository
+            .createQueryBuilder('weights')
+            .select(['weights.weight'])
+            .where('weights.user_id = :userId', { userId: id })
             .orderBy('weights.createdAt', 'DESC')
-            .select(['weights.id', 'weights.weight'])
+            .limit(1)
             .getOne();
 
         return {
             ...user,
-            weight: weightData.weight
-        }
+            weight: weight?.weight ?? null,
+        };
     }
 }

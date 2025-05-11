@@ -5,7 +5,7 @@ import {JwtAuthGuard} from '../auth/guards/jwt-auth.guard';
 
 @Controller('excluded-equipments')
 @ApiTags('excluded-equipments')
-@ApiBearerAuth()
+@ApiBearerAuth('access-token')
 export class ExcludedEquipmentsController {
     constructor(private readonly excludedEquipmentsService: ExcludedEquipmentsService) {
     }

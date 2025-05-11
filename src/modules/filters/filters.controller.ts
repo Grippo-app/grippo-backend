@@ -5,7 +5,7 @@ import {JwtAuthGuard} from '../auth/guards/jwt-auth.guard';
 
 @Controller('filters')
 @ApiTags('filters')
-@ApiBearerAuth()
+@ApiBearerAuth('access-token')
 export class FiltersController {
     constructor(private readonly service: FiltersService) {
     }

@@ -6,7 +6,7 @@ import {WeightHistoryRequest} from "./dto/weight-history.request";
 
 @Controller('weight-history')
 @ApiTags('weight-history')
-@ApiBearerAuth()
+@ApiBearerAuth('access-token')
 export class WeightHistoryController {
     constructor(private readonly weightHistoryService: WeightHistoryService) {
     }

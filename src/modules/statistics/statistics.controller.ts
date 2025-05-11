@@ -5,7 +5,7 @@ import {JwtAuthGuard} from '../auth/guards/jwt-auth.guard';
 
 @Controller()
 @ApiTags('statistics')
-@ApiBearerAuth()
+@ApiBearerAuth('access-token')
 export class StatisticsController {
     constructor(private readonly statisticsService: StatisticsService) {
     }

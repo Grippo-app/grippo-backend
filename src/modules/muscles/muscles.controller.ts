@@ -11,7 +11,7 @@ export class MusclesController {
 
     @Get("user-muscles")
     @UseGuards(JwtAuthGuard)
-    @ApiBearerAuth()
+    @ApiBearerAuth('access-token')
     @ApiResponse({status: HttpStatus.UNAUTHORIZED, description: 'Unauthorized'})
     @ApiResponse({status: HttpStatus.FORBIDDEN, description: 'Forbidden'})
     getUserMuscles(@Req() req, @Res() res) {
@@ -23,7 +23,7 @@ export class MusclesController {
     }
 
     @Get('user-muscles/:id')
-    @ApiBearerAuth()
+    @ApiBearerAuth('access-token')
     @UseGuards(JwtAuthGuard)
     @ApiResponse({status: HttpStatus.UNAUTHORIZED, description: 'Unauthorized'})
     @ApiResponse({status: HttpStatus.FORBIDDEN, description: 'Forbidden'})

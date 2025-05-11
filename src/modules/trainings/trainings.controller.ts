@@ -7,7 +7,7 @@ import {TrainingsRequest} from './dto/trainings.request';
 // todo 'trainings'
 @Controller('trainings')
 @ApiTags('trainings')
-@ApiBearerAuth()
+@ApiBearerAuth('access-token')
 export class TrainingsController {
     constructor(private readonly usersService: TrainingsService) {
     }

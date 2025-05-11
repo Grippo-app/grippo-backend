@@ -68,25 +68,28 @@ export class AuthService {
             });
             await usersRepo.save(user);
 
+            // ✅ сохраняем вес с правильной связью
             await weightRepo.save({
-                userId: user.id,
+                user: {id: user.id},
                 weight: dto.weight,
             });
 
+            // ✅ сохраняем исключённые мышцы с правильной связью
             if (dto.excludeMuscleIds?.length) {
-                const muscles = dto.excludeMuscleIds.map(muscleId =>
+                const muscles = dto.excludeMuscleIds.map((muscleId) =>
                     excludedMusclesRepo.create({
-                        userId: user.id,
+                        user: {id: user.id},
                         muscleId,
                     }),
                 );
                 await excludedMusclesRepo.save(muscles);
             }
 
+            // ✅ сохраняем исключённое оборудование с правильной связью
             if (dto.excludeEquipmentIds?.length) {
-                const equipments = dto.excludeEquipmentIds.map(equipmentId =>
+                const equipments = dto.excludeEquipmentIds.map((equipmentId) =>
                     excludedEquipmentsRepo.create({
-                        userId: user.id,
+                        user: {id: user.id},
                         equipmentId,
                     }),
                 );
