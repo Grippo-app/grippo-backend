@@ -1,33 +1,60 @@
 import {ApiProperty} from '@nestjs/swagger';
-import {ExperienceEnum} from "../../../lib/experience.enum";
+import {IsEmail, IsEnum, IsInt, IsString, IsUUID, Length,} from 'class-validator';
+import {ExperienceEnum} from '../../../lib/experience.enum';
+import {Expose, Type} from 'class-transformer';
 
 export class RegisterRequest {
-
     @ApiProperty({example: 'user@mail.com', type: 'string'})
+    @IsEmail()
+    @Expose()
     email: string;
 
     @ApiProperty({example: 'password', type: 'string'})
+    @Length(6, 128)
+    @Expose()
     password: string;
 
     @ApiProperty({example: 'Max', type: 'string'})
+    @IsString()
+    @Expose()
     name: string;
 
-    @ApiProperty({example: 850, type: 'number', description: '850 = 85g'})
+    @ApiProperty({example: 850, type: 'number', description: '850 = 85kg'})
+    @IsInt()
+    @Expose()
     weight: number;
 
     @ApiProperty({example: 175, type: 'number', description: '175 = 175cm'})
+    @IsInt()
+    @Expose()
     height: number;
 
-    @ApiProperty({example: ExperienceEnum.PRO, type: 'enum', description: 'user experience'})
+    @ApiProperty({
+        example: ExperienceEnum.PRO,
+        type: 'enum',
+        description: 'user experience',
+    })
+    @IsEnum(ExperienceEnum)
+    @Expose()
     experience: ExperienceEnum;
 
-    @ApiProperty({example: ['2e0faf2b-31a5-4c63-ac15-454be132796f'], type: 'list', description: 'excluded muscle ids'})
+    @ApiProperty({
+        example: ['2e0faf2b-31a5-4c63-ac15-454be132796f'],
+        type: 'array',
+        description: 'excluded muscle ids',
+    })
+    @IsUUID('all', {each: true})
+    @Type(() => String)
+    @Expose()
     excludeMuscleIds: string[];
 
     @ApiProperty({
-        example: ['4e062209-1ddb-453a-a42b-4f9e0b0292f4'],
-        type: 'list',
-        description: 'equipment ids'
+        example: ['b17ae8af-2d78-4e77-b45b-39253c28247a'],
+        type: 'array',
+        description: 'excluded equipment ids',
     })
+    @IsUUID('all', {each: true})
+    @Type(() => String)
+    @Expose()
     excludeEquipmentIds: string[];
 }

@@ -1,11 +1,12 @@
-// src/auth/auth.service.ts
-import {BadRequestException, Inject, Injectable, Logger, UnauthorizedException} from '@nestjs/common';
-import {DataSource, Repository} from 'typeorm';
+import {BadRequestException, Inject, Injectable, Logger, UnauthorizedException,} from '@nestjs/common';
+import {Repository} from 'typeorm';
 import {JwtService} from '@nestjs/jwt';
+
 import {UsersEntity} from '../../entities/users.entity';
 import {WeightHistoryEntity} from '../../entities/weight-history.entity';
 import {ExcludedMusclesEntity} from '../../entities/excluded-muscles.entity';
 import {ExcludedEquipmentsEntity} from '../../entities/excluded-equipments.entity';
+
 import {LoginResponse} from './dto/login.response';
 import {LoginRequest} from './dto/login.request';
 import {RegisterRequest} from './dto/register.request';
@@ -25,7 +26,6 @@ export class AuthService {
         private readonly excludedMusclesRepository: Repository<ExcludedMusclesEntity>,
         @Inject('EXCLUDED_EQUIPMENTS_REPOSITORY')
         private readonly excludedEquipmentsRepository: Repository<ExcludedEquipmentsEntity>,
-        private readonly dataSource: DataSource,
     ) {
     }
 
@@ -46,48 +46,51 @@ export class AuthService {
     }
 
     async register(dto: RegisterRequest): Promise<LoginResponse> {
-        return this.dataSource.transaction(async manager => {
-            const exists = await manager.getRepository(UsersEntity).findOne({where: {email: dto.email}});
+        const manager = this.usersRepository.manager;
+
+        return manager.transaction(async transactionalEntityManager => {
+            const usersRepo = transactionalEntityManager.getRepository(UsersEntity);
+            const weightRepo = transactionalEntityManager.getRepository(WeightHistoryEntity);
+            const excludedMusclesRepo = transactionalEntityManager.getRepository(ExcludedMusclesEntity);
+            const excludedEquipmentsRepo = transactionalEntityManager.getRepository(ExcludedEquipmentsEntity);
+
+            const exists = await usersRepo.findOne({where: {email: dto.email}});
             if (exists) {
                 throw new BadRequestException('This email is already taken');
             }
 
-            // создаём пользователя
-            const user = manager.getRepository(UsersEntity).create({
+            const user = usersRepo.create({
                 email: dto.email,
                 name: dto.name,
                 height: dto.height,
                 experience: dto.experience,
                 password: Hash.make(dto.password),
             });
-            await manager.getRepository(UsersEntity).save(user);
+            await usersRepo.save(user);
 
-            // добавляем вес
-            await manager.getRepository(WeightHistoryEntity).save({
+            await weightRepo.save({
                 userId: user.id,
                 weight: dto.weight,
             });
 
-            // исключённые мышцы
             if (dto.excludeMuscleIds?.length) {
                 const muscles = dto.excludeMuscleIds.map(muscleId =>
-                    manager.getRepository(ExcludedMusclesEntity).create({
+                    excludedMusclesRepo.create({
                         userId: user.id,
                         muscleId,
                     }),
                 );
-                await manager.getRepository(ExcludedMusclesEntity).save(muscles);
+                await excludedMusclesRepo.save(muscles);
             }
 
-            // исключённое оборудование
             if (dto.excludeEquipmentIds?.length) {
                 const equipments = dto.excludeEquipmentIds.map(equipmentId =>
-                    manager.getRepository(ExcludedEquipmentsEntity).create({
+                    excludedEquipmentsRepo.create({
                         userId: user.id,
                         equipmentId,
                     }),
                 );
-                await manager.getRepository(ExcludedEquipmentsEntity).save(equipments);
+                await excludedEquipmentsRepo.save(equipments);
             }
 
             const accessToken = await this.jwtService.signAsync({id: user.id});
