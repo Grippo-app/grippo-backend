@@ -4,48 +4,51 @@ import {EquipmentGroupEnum} from "../../../lib/equipment-group.enum";
 import {EquipmentStatusEnum} from "../../../lib/equipment-status.enum";
 
 export class EquipmentResponse {
-    id?: string;
+    @ApiProperty({ type: 'string', example: '4289bf91-51d8-40b0-9aca-66780584a4eb' })
+    id: string;
 
-    @ApiProperty({type: 'string', example: 'biceps'})
+    @ApiProperty({ type: 'string', example: 'Treadmill' })
     name: string;
 
-    @ApiProperty({type: 'string', example: '4289bf91-51d8-40b0-9aca-66780584a4eb'})
+    @ApiProperty({ type: 'string', example: '4289bf91-51d8-40b0-9aca-66780584a4eb' })
     equipmentGroupId: string;
 
-    @ApiProperty({type: 'enum', enum: EquipmentEnum, example: EquipmentEnum.AB_MACHINES})
+    @ApiProperty({ enum: EquipmentEnum, example: EquipmentEnum.AB_MACHINES })
     type: EquipmentEnum;
 
-    @ApiProperty({type: 'enum', enum: EquipmentStatusEnum, example: EquipmentStatusEnum.INCLUDED})
-    status: EquipmentStatusEnum;
+    @ApiProperty({ enum: EquipmentStatusEnum, example: EquipmentStatusEnum.INCLUDED, required: false })
+    status?: EquipmentStatusEnum;
 
-    @ApiProperty({type: Date, example: Date.now()})
-    updatedAt: Date;
-
-    @ApiProperty({type: Date, example: Date.now()})
+    @ApiProperty({ type: Date, example: new Date().toISOString() })
     createdAt: Date;
+
+    @ApiProperty({ type: Date, example: new Date().toISOString() })
+    updatedAt: Date;
 
     @ApiProperty({
         type: 'string',
-        example: 'https://static.vecteezy.com/system/resources/thumbnails/022/653/711/small/treadmill-in-modern-gym-toned-image-3d-rendering-generative-ai-free-photo.jpg'
+        example: 'https://static.vecteezy.com/system/resources/thumbnails/022/653/711/small/treadmill.jpg',
+        required: false,
     })
-    imageUrl: string;
+    imageUrl?: string;
 }
 
 export class EquipmentGroupResponse {
-    id?: string;
+    @ApiProperty({ type: 'string', example: 'Machines' })
+    id: string;
 
-    @ApiProperty({type: 'string', example: 'Machines'})
+    @ApiProperty({ type: 'string', example: 'Cardio Machines' })
     name: string;
 
-    @ApiProperty({type: 'enum', enum: EquipmentGroupEnum, example: EquipmentGroupEnum.BENCHES_AND_RACKS})
+    @ApiProperty({ enum: EquipmentGroupEnum, example: EquipmentGroupEnum.BENCHES_AND_RACKS })
     type: EquipmentGroupEnum;
 
-    @ApiProperty({type: [EquipmentResponse]})
+    @ApiProperty({ type: [EquipmentResponse] })
     equipments: EquipmentResponse[];
 
-    @ApiProperty({type: Date, example: Date.now()})
-    updatedAt: Date;
-
-    @ApiProperty({type: Date, example: Date.now()})
+    @ApiProperty({ type: Date, example: new Date().toISOString() })
     createdAt: Date;
+
+    @ApiProperty({ type: Date, example: new Date().toISOString() })
+    updatedAt: Date;
 }

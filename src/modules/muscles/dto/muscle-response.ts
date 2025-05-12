@@ -5,39 +5,41 @@ import {MuscleGroupEnum} from "../../../lib/muscle-group.enum";
 import {MuscleLoadEnum} from "../../../lib/muscle-load.enum";
 
 export class MuscleResponse {
-    id?: string;
+    @ApiProperty({ type: 'string', example: '4289bf91-51d8-40b0-9aca-66780584a4eb' })
+    id: string;
 
-    @ApiProperty({type: 'string', example: 'biceps'})
+    @ApiProperty({ type: 'string', example: 'biceps' })
     name: string;
 
-    @ApiProperty({type: 'string', example: '4289bf91-51d8-40b0-9aca-66780584a4eb'})
+    @ApiProperty({ type: 'string', example: 'bf12ab34-cde5-40a7-b911-09d09cb32456' })
     muscleGroupId: string;
 
-    @ApiProperty({type: 'enum', enum: MuscleEnum, example: MuscleEnum.BICEPS})
+    @ApiProperty({ enum: MuscleEnum, example: MuscleEnum.BICEPS })
     type: MuscleEnum;
 
-    @ApiProperty({type: Date, example: Date.now()})
+    @ApiProperty({ type: Date, example: new Date().toISOString() })
     updatedAt: Date;
 
-    @ApiProperty({type: Date, example: Date.now()})
+    @ApiProperty({ type: Date, example: new Date().toISOString() })
     createdAt: Date;
 }
 
 export class MuscleGroupsResponse {
-    id?: string;
+    @ApiProperty({ type: 'string', example: '1a2b3c4d-5e6f-7890-abcd-1234567890ef' })
+    id: string;
 
-    @ApiProperty({type: 'string', example: 'Back Muscles'})
+    @ApiProperty({ type: 'string', example: 'Back Muscles' })
     name: string;
 
-    @ApiProperty({type: 'enum', enum: MuscleGroupEnum, example: MuscleGroupEnum.BACK_MUSCLES})
+    @ApiProperty({ enum: MuscleGroupEnum, example: MuscleGroupEnum.BACK_MUSCLES })
     type: MuscleGroupEnum;
 
-    @ApiProperty({type: [MuscleResponse]})
+    @ApiProperty({ type: [MuscleResponse] })
     muscles: MuscleResponse[];
 
-    @ApiProperty({type: Date, example: Date.now()})
+    @ApiProperty({ type: Date, example: new Date().toISOString() })
     updatedAt: Date;
 
-    @ApiProperty({type: Date, example: Date.now()})
+    @ApiProperty({ type: Date, example: new Date().toISOString() })
     createdAt: Date;
 }
