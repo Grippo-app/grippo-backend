@@ -1,5 +1,5 @@
 import {ApiProperty} from '@nestjs/swagger';
-import {IsEmail, IsEnum, IsInt, IsString, IsUUID, Length,} from 'class-validator';
+import {IsEmail, IsEnum, IsInt, IsNumber, IsString, IsUUID, Length,} from 'class-validator';
 import {ExperienceEnum} from '../../../lib/experience.enum';
 import {Expose, Type} from 'class-transformer';
 
@@ -19,8 +19,12 @@ export class RegisterRequest {
     @Expose()
     name: string;
 
-    @ApiProperty({example: 85, type: 'number', description: '85 = 85kg'})
-    @IsInt()
+    @ApiProperty({
+        example: 82.5,
+        type: 'number',
+        description: 'Weight in kilograms (e.g., 82.5)',
+    })
+    @IsNumber({maxDecimalPlaces: 1})
     @Expose()
     weight: number;
 

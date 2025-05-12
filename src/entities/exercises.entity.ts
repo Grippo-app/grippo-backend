@@ -1,12 +1,12 @@
 import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  OneToMany,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
+    Column,
+    CreateDateColumn,
+    Entity,
+    JoinColumn,
+    ManyToOne,
+    OneToMany,
+    PrimaryGeneratedColumn,
+    UpdateDateColumn,
 } from 'typeorm';
 import {TrainingsEntity} from './trainings.entity';
 import {IterationsEntity} from './iterations.entity';
@@ -17,28 +17,52 @@ export class ExercisesEntity {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
-    @Column({default: null})
-    name: string;
+    @Column({type: 'varchar', nullable: true})
+    name: string | null;
 
-    @Column({type: 'double precision', default: null})
-    volume: number;
+    @Column({
+        type: 'decimal',
+        precision: 10,
+        scale: 1,
+        nullable: true,
+        transformer: {
+            to: (value: number) => value,
+            from: (value: string) => parseFloat(value),
+        },
+    })
+    volume: number | null;
 
-    @Column({default: null})
-    repetitions: number;
+    @Column({type: 'int', nullable: true})
+    repetitions: number | null;
 
-    @Column({type: 'double precision', default: null})
-    intensity: number;
+    @Column({
+        type: 'decimal',
+        precision: 5,
+        scale: 2,
+        nullable: true,
+        transformer: {
+            to: (value: number) => value,
+            from: (value: string) => parseFloat(value),
+        },
+    })
+    intensity: number | null;
 
-    @Column({default: null})
-    trainingId: string;
+    @Column({name: 'training_id', type: 'uuid', nullable: true})
+    trainingId: string | null;
 
-    @Column({default: null})
-    exerciseExampleId: string;
+    @Column({name: 'exercise_example_id', type: 'uuid', nullable: true})
+    exerciseExampleId: string | null;
 
-    @CreateDateColumn({type: 'timestamp without time zone', name: 'created_at',})
+    @CreateDateColumn({
+        type: 'timestamp without time zone',
+        name: 'created_at',
+    })
     createdAt: Date;
 
-    @UpdateDateColumn({type: 'timestamp without time zone', name: 'updated_at',})
+    @UpdateDateColumn({
+        type: 'timestamp without time zone',
+        name: 'updated_at',
+    })
     updatedAt: Date;
 
     @ManyToOne(() => TrainingsEntity, (training) => training.exercises, {
@@ -56,7 +80,7 @@ export class ExercisesEntity {
     exerciseExample: ExerciseExamplesEntity;
 
     @OneToMany(() => IterationsEntity, (iterations) => iterations.exercise, {
-        cascade: ['remove']
+        cascade: ['remove'],
     })
     iterations: IterationsEntity[];
 }

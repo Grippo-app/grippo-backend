@@ -4,9 +4,7 @@ import {Repository} from 'typeorm';
 import {v4} from 'uuid';
 import {ExerciseExamplesEntity} from "../../entities/exercise-examples.entity";
 import {ExerciseExampleBundlesEntity} from "../../entities/exercise-example-bundles.entity";
-import {MusclesEntity} from "../../entities/muscles.entity";
 import {ExerciseExampleRequest} from "./dto/exercise-example.request";
-import {EquipmentsEntity} from "../../entities/equipments.entity";
 import {ExerciseExamplesEquipmentsEntity} from "../../entities/exercise-examples-equipments.entity";
 import {ExerciseExamplesTutorialsEntity} from "../../entities/exercise-examples-tutorials.entity";
 import {ExcludedEquipmentsEntity} from "../../entities/excluded-equipments.entity";
@@ -25,10 +23,6 @@ export class ExerciseExampleService {
         private readonly exerciseExamplesRepository: Repository<ExerciseExamplesEntity>,
         @Inject('EXERCISE_EXAMPLE_BUNDLES_REPOSITORY')
         private readonly exerciseExampleBundlesRepository: Repository<ExerciseExampleBundlesEntity>,
-        @Inject('MUSCLES_REPOSITORY')
-        private readonly musclesRepository: Repository<MusclesEntity>,
-        @Inject('EQUIPMENTS_REPOSITORY')
-        private readonly equipmentsRepository: Repository<EquipmentsEntity>,
         @Inject('EXERCISE_EXAMPLES_EQUIPMENTS_REPOSITORY')
         private readonly exerciseExamplesEquipmentsRepository: Repository<ExerciseExamplesEquipmentsEntity>,
         @Inject('EXERCISE_EXAMPLES_TUTORIALS_REPOSITORY')
