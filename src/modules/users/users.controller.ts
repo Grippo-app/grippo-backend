@@ -22,51 +22,51 @@ export class UsersController {
         return this.usersService.getUser(req.user.id);
     }
 
-    @Get('muscles')
+    @Get('excluded-muscles')
     @HttpCode(HttpStatus.OK)
-    @ApiOperation({summary: 'Get all included muscles for current user'})
-    @ApiResponse({status: 200, description: 'Included muscles fetched'})
-    async getMuscles(@Req() req): Promise<any> {
-        return this.usersService.getMuscles(req.user);
+    @ApiOperation({ summary: 'Get all excluded muscles for current user' })
+    @ApiResponse({ status: 200, description: 'Excluded muscles fetched' })
+    async getExcludedMuscles(@Req() req): Promise<any> {
+        return this.usersService.getExcludedMuscles(req.user);
     }
 
-    @Post('muscles/:id')
+    @Post('excluded-muscles/:id')
     @HttpCode(HttpStatus.CREATED)
-    @ApiOperation({summary: 'Include muscle for current user'})
-    @ApiResponse({status: 201, description: 'Muscle included'})
-    async setMuscle(@Req() req, @Param('id') id: string): Promise<any> {
-        return this.usersService.setMuscle(req.user, id);
+    @ApiOperation({ summary: 'Exclude muscle for current user' })
+    @ApiResponse({ status: 201, description: 'Muscle excluded' })
+    async excludeMuscle(@Req() req, @Param('id') id: string): Promise<any> {
+        return this.usersService.excludeMuscle(req.user, id);
     }
 
-    @Delete('muscles/:id')
+    @Delete('excluded-muscles/:id')
     @HttpCode(HttpStatus.OK)
-    @ApiOperation({summary: 'Exclude muscle for current user'})
-    @ApiResponse({status: 200, description: 'Muscle excluded'})
-    async deleteMuscle(@Req() req, @Param('id') id: string): Promise<any> {
-        return this.usersService.deleteMuscle(req.user, id);
+    @ApiOperation({ summary: 'Remove muscle from excluded list (i.e., include it)' })
+    @ApiResponse({ status: 200, description: 'Muscle included (unexcluded)' })
+    async unexcludeMuscle(@Req() req, @Param('id') id: string): Promise<any> {
+        return this.usersService.unexcludeMuscle(req.user, id);
     }
 
-    @Get('equipments')
+    @Get('excluded-equipments')
     @HttpCode(HttpStatus.OK)
-    @ApiOperation({summary: 'Get all included equipments for current user'})
-    @ApiResponse({status: 200, description: 'Included equipments fetched'})
-    async getEquipments(@Req() req): Promise<any> {
-        return this.usersService.getEquipments(req.user);
+    @ApiOperation({ summary: 'Get all excluded equipments for current user' })
+    @ApiResponse({ status: 200, description: 'Excluded equipments fetched' })
+    async getExcludedEquipments(@Req() req): Promise<any> {
+        return this.usersService.getExcludedEquipments(req.user);
     }
 
-    @Post('equipments/:id')
+    @Post('excluded-equipments/:id')
     @HttpCode(HttpStatus.CREATED)
-    @ApiOperation({summary: 'Include equipment for current user'})
-    @ApiResponse({status: 201, description: 'Equipment included'})
-    async setEquipment(@Req() req, @Param('id') id: string): Promise<any> {
-        return this.usersService.setEquipment(req.user, id);
+    @ApiOperation({ summary: 'Exclude equipment for current user' })
+    @ApiResponse({ status: 201, description: 'Equipment excluded' })
+    async excludeEquipment(@Req() req, @Param('id') id: string): Promise<any> {
+        return this.usersService.excludeEquipment(req.user, id);
     }
 
-    @Delete('equipments/:id')
+    @Delete('excluded-equipments/:id')
     @HttpCode(HttpStatus.OK)
-    @ApiOperation({summary: 'Exclude equipment from current user'})
-    @ApiResponse({status: 200, description: 'Equipment excluded'})
-    async deleteEquipment(@Req() req, @Param('id') id: string): Promise<any> {
-        return this.usersService.deleteEquipment(req.user, id);
+    @ApiOperation({ summary: 'Remove equipment from excluded list (i.e., include it)' })
+    @ApiResponse({ status: 200, description: 'Equipment included (unexcluded)' })
+    async unexcludeEquipment(@Req() req, @Param('id') id: string): Promise<any> {
+        return this.usersService.unexcludeEquipment(req.user, id);
     }
 }
