@@ -83,6 +83,7 @@ export class UsersService {
                 response.type = muscle.type;
                 response.createdAt = muscle.createdAt;
                 response.updatedAt = muscle.updatedAt;
+                response.recoveryTimeHours = muscle.recoveryTimeHours;
 
                 return response;
             });

@@ -48,6 +48,8 @@ export class MusclesService {
         response.muscleGroupId = muscle.muscleGroup.id;
         response.createdAt = muscle.createdAt;
         response.updatedAt = muscle.updatedAt;
+        response.recoveryTimeHours = muscle.recoveryTimeHours;
+
         return response;
     }
 }
