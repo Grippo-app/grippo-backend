@@ -1,21 +1,18 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { Repository } from 'typeorm';
-import { MusclesEntity } from '../../entities/muscles.entity';
-import { MuscleGroupsEntity } from '../../entities/muscle-groups.entity';
-import { MuscleGroupsResponse, MuscleResponse } from './dto/muscle-response';
-import { MuscleStatusEnum } from '../../lib/muscle-status.enum';
-import { ExcludedMusclesEntity } from '../../entities/excluded-muscles.entity';
-import { MuscleLoadEnum } from '../../lib/muscle-load.enum';
+import {Inject, Injectable} from '@nestjs/common';
+import {Repository} from 'typeorm';
+import {MusclesEntity} from '../../entities/muscles.entity';
+import {MuscleGroupsEntity} from '../../entities/muscle-groups.entity';
+import {MuscleGroupsResponse, MuscleResponse} from './dto/muscle-response';
 
 @Injectable()
 export class MusclesService {
     constructor(
         @Inject('MUSCLES_REPOSITORY')
         private readonly musclesRepository: Repository<MusclesEntity>,
-
         @Inject('MUSCLE_GROUPS_REPOSITORY')
         private readonly muscleGroupsRepository: Repository<MuscleGroupsEntity>
-    ) {}
+    ) {
+    }
 
     async getPublicMuscles(): Promise<MuscleGroupsResponse[]> {
         const muscleGroups = await this.muscleGroupsRepository

@@ -1,16 +1,14 @@
-import {
-    BadRequestException,
-    Inject,
-    Injectable,
-    NotFoundException,
-} from '@nestjs/common';
-import { Repository } from 'typeorm';
-import { UsersEntity } from '../../entities/users.entity';
-import { WeightHistoryEntity } from '../../entities/weight-history.entity';
-import { ExcludedMusclesEntity } from '../../entities/excluded-muscles.entity';
-import { MusclesEntity } from '../../entities/muscles.entity';
+import {BadRequestException, Inject, Injectable, NotFoundException,} from '@nestjs/common';
+import {Repository} from 'typeorm';
+import {UsersEntity} from '../../entities/users.entity';
+import {WeightHistoryEntity} from '../../entities/weight-history.entity';
+import {ExcludedMusclesEntity} from '../../entities/excluded-muscles.entity';
+import {MusclesEntity} from '../../entities/muscles.entity';
 import {EquipmentsEntity} from "../../entities/equipments.entity";
 import {ExcludedEquipmentsEntity} from "../../entities/excluded-equipments.entity";
+import {EquipmentResponse} from "../equipments/dto/equipment-response";
+import {EquipmentEnum} from "../../lib/equipment.enum";
+import {MuscleResponse} from "../muscles/dto/muscle-response";
 
 @Injectable()
 export class UsersService {
@@ -27,7 +25,8 @@ export class UsersService {
         private readonly equipmentsRepository: Repository<EquipmentsEntity>,
         @Inject('EXCLUDED_EQUIPMENTS_REPOSITORY')
         private readonly excludedEquipmentsRepository: Repository<ExcludedEquipmentsEntity>,
-    ) {}
+    ) {
+    }
 
     async getUser(id: string) {
         const user = await this.usersRepository
@@ -51,7 +50,7 @@ export class UsersService {
         const weight = await this.weightHistoryRepository
             .createQueryBuilder('weights')
             .select(['weights.weight'])
-            .where('weights.user_id = :userId', { userId: id })
+            .where('weights.user_id = :userId', {userId: id})
             .orderBy('weights.createdAt', 'DESC')
             .limit(1)
             .getOne();
@@ -62,16 +61,53 @@ export class UsersService {
         };
     }
 
-    async getExcludedMuscles(user: UsersEntity) {
-        return this.excludedMusclesRepository.find({
-            where: { user: { id: user.id } },
+    async getMuscles(user: UsersEntity): Promise<MuscleResponse[]> {
+        const allMuscles = await this.musclesRepository.find({
+            relations: ['muscleGroup'],
         });
+
+        const excluded = await this.excludedMusclesRepository.find({
+            where: {user: {id: user.id}},
+        });
+
+        const excludedIds = new Set(excluded.map(e => e.muscleId));
+
+        return allMuscles
+            .filter(muscle => !excludedIds.has(muscle.id))
+            .map(muscle => {
+                const response = new MuscleResponse();
+
+                response.id = muscle.id;
+                response.name = muscle.name;
+                response.muscleGroupId = muscle.muscleGroup.id;
+                response.type = muscle.type;
+                response.createdAt = muscle.createdAt;
+                response.updatedAt = muscle.updatedAt;
+
+                return response;
+            });
     }
 
-    async setExcludedMuscle(user: UsersEntity, muscleId: string) {
+    async setMuscle(user: UsersEntity, muscleId: string): Promise<string> {
+        const excluded = await this.excludedMusclesRepository.findOne({
+            where: {
+                user: {id: user.id},
+                muscleId,
+            },
+        });
+
+        if (!excluded) {
+            return 'Already included';
+        }
+
+        await this.excludedMusclesRepository.remove(excluded);
+        return 'Included successfully';
+    }
+
+    async deleteMuscle(user: UsersEntity, muscleId: string): Promise<ExcludedMusclesEntity> {
         const existing = await this.excludedMusclesRepository.findOne({
             where: {
-                user: { id: user.id },
+                user: {id: user.id},
                 muscleId,
             },
         });
@@ -80,45 +116,71 @@ export class UsersService {
             throw new BadRequestException('This muscle is already excluded');
         }
 
-        const muscleExists = await this.musclesRepository.findOne({ where: { id: muscleId } });
+        const muscle = await this.musclesRepository.findOne({
+            where: {id: muscleId},
+        });
 
-        if (!muscleExists) {
+        if (!muscle) {
             throw new NotFoundException('Unknown muscle');
         }
 
         const entity = this.excludedMusclesRepository.create({
-            user: { id: user.id },
+            user: {id: user.id},
             muscleId,
         });
 
         return this.excludedMusclesRepository.save(entity);
     }
 
-    async deleteExcludedMuscle(user: UsersEntity, muscleId: string) {
-        const excluded = await this.excludedMusclesRepository.findOne({
+    async getEquipments(user: UsersEntity): Promise<EquipmentResponse[]> {
+        const allEquipments = await this.equipmentsRepository.find({
+            relations: ['equipmentGroup'],
+        });
+
+        const excluded = await this.excludedEquipmentsRepository.find({
+            where: {user: {id: user.id}},
+        });
+
+        const excludedIds = new Set(excluded.map(e => e.equipmentId));
+
+        return allEquipments
+            .filter(eq => !excludedIds.has(eq.id))
+            .map(eq => {
+                const response = new EquipmentResponse();
+
+                response.id = eq.id;
+                response.name = eq.name;
+                response.equipmentGroupId = eq.equipmentGroup.id;
+                response.type = eq.type as EquipmentEnum;
+                response.createdAt = eq.createdAt;
+                response.updatedAt = eq.updatedAt;
+                response.imageUrl = eq.imageUrl ?? null;
+
+                return response;
+            });
+    }
+
+    async setEquipment(user: UsersEntity, equipmentId: string): Promise<string> {
+        const excluded = await this.excludedEquipmentsRepository.findOne({
             where: {
-                user: { id: user.id },
-                muscleId,
+                user: {id: user.id},
+                equipmentId,
             },
         });
 
         if (!excluded) {
-            throw new BadRequestException('This muscle is not excluded');
+            // Уже включено, ничего не делаем
+            return 'Already included';
         }
 
-        return this.excludedMusclesRepository.remove(excluded);
+        await this.excludedEquipmentsRepository.remove(excluded);
+        return 'Included successfully';
     }
 
-    async getExcludedEquipments(user: UsersEntity) {
-        return this.excludedEquipmentsRepository.find({
-            where: { user: { id: user.id } },
-        });
-    }
-
-    async setExcludedEquipment(user: UsersEntity, equipmentId: string) {
+    async deleteEquipment(user: UsersEntity, equipmentId: string): Promise<ExcludedEquipmentsEntity> {
         const exists = await this.excludedEquipmentsRepository.findOne({
             where: {
-                user: { id: user.id },
+                user: {id: user.id},
                 equipmentId,
             },
         });
@@ -128,7 +190,7 @@ export class UsersService {
         }
 
         const equipment = await this.equipmentsRepository.findOne({
-            where: { id: equipmentId },
+            where: {id: equipmentId},
         });
 
         if (!equipment) {
@@ -136,25 +198,10 @@ export class UsersService {
         }
 
         const entity = this.excludedEquipmentsRepository.create({
-            user: { id: user.id },
+            user: {id: user.id},
             equipmentId,
         });
 
         return this.excludedEquipmentsRepository.save(entity);
-    }
-
-    async deleteExcludedEquipment(user: UsersEntity, equipmentId: string) {
-        const excluded = await this.excludedEquipmentsRepository.findOne({
-            where: {
-                user: { id: user.id },
-                equipmentId,
-            },
-        });
-
-        if (!excluded) {
-            throw new BadRequestException('This equipment is not excluded');
-        }
-
-        return this.excludedEquipmentsRepository.remove(excluded);
     }
 }

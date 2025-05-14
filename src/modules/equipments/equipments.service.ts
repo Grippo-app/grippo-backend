@@ -1,11 +1,9 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { Repository } from 'typeorm';
-import { EquipmentGroupResponse, EquipmentResponse } from './dto/equipment-response';
-import { ExcludedEquipmentsEntity } from '../../entities/excluded-equipments.entity';
-import { EquipmentGroupsEntity } from '../../entities/equipment-groups.entity';
-import { EquipmentsEntity } from '../../entities/equipments.entity';
-import { EquipmentStatusEnum } from '../../lib/equipment-status.enum';
-import {UsersEntity} from "../../entities/users.entity";
+import {Inject, Injectable} from '@nestjs/common';
+import {Repository} from 'typeorm';
+import {EquipmentGroupResponse, EquipmentResponse} from './dto/equipment-response';
+import {ExcludedEquipmentsEntity} from '../../entities/excluded-equipments.entity';
+import {EquipmentGroupsEntity} from '../../entities/equipment-groups.entity';
+import {EquipmentsEntity} from '../../entities/equipments.entity';
 
 @Injectable()
 export class EquipmentsService {
@@ -16,7 +14,8 @@ export class EquipmentsService {
         private readonly equipmentGroupsRepository: Repository<EquipmentGroupsEntity>,
         @Inject('EXCLUDED_EQUIPMENTS_REPOSITORY')
         private readonly excludedEquipmentsRepository: Repository<ExcludedEquipmentsEntity>,
-    ) {}
+    ) {
+    }
 
     async getPublicEquipments(): Promise<EquipmentGroupResponse[]> {
         const groups = await this.equipmentGroupsRepository
