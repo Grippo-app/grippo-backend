@@ -11,6 +11,7 @@ import {LoginResponse} from './dto/login.response';
 import {LoginRequest} from './dto/login.request';
 import {RegisterRequest} from './dto/register.request';
 import {Hash} from '../../lib/hash';
+import {ConfigService} from "@nestjs/config";
 
 @Injectable()
 export class AuthService {
@@ -18,6 +19,7 @@ export class AuthService {
 
     constructor(
         private readonly jwtService: JwtService,
+        private readonly config: ConfigService,
         @Inject('USERS_REPOSITORY')
         private readonly usersRepository: Repository<UsersEntity>,
         @Inject('WEIGHT_HISTORY_REPOSITORY')
@@ -40,9 +42,20 @@ export class AuthService {
             throw new UnauthorizedException('Invalid credentials');
         }
 
-        const accessToken = await this.jwtService.signAsync({id: user.id});
+        const payload: { id: string } = {id: user.id};
+
+        const accessToken = await this.jwtService.signAsync(payload, {
+            secret: this.config.get<string>('JWT_SECRET_KEY'),
+            expiresIn: this.config.get<string>('JWT_EXPIRATION_TIME'),
+        });
+
+        const refreshToken = await this.jwtService.signAsync(payload, {
+            secret: this.config.get<string>('JWT_REFRESH_SECRET'),
+            expiresIn: this.config.get<string>('JWT_REFRESH_EXPIRATION_TIME'),
+        });
+
         this.logger.log(`User logged in: ${user.id}`);
-        return {id: user.id, accessToken};
+        return {id: user.id, accessToken, refreshToken};
     }
 
     async register(dto: RegisterRequest): Promise<LoginResponse> {
@@ -66,17 +79,16 @@ export class AuthService {
                 experience: dto.experience,
                 password: Hash.make(dto.password),
             });
+
             await usersRepo.save(user);
 
-            // ✅ сохраняем вес с правильной связью
             await weightRepo.save({
                 user: {id: user.id},
                 weight: dto.weight,
             });
 
-            // ✅ сохраняем исключённые мышцы с правильной связью
             if (dto.excludeMuscleIds?.length) {
-                const muscles = dto.excludeMuscleIds.map((muscleId) =>
+                const muscles = dto.excludeMuscleIds.map(muscleId =>
                     excludedMusclesRepo.create({
                         user: {id: user.id},
                         muscleId,
@@ -85,9 +97,8 @@ export class AuthService {
                 await excludedMusclesRepo.save(muscles);
             }
 
-            // ✅ сохраняем исключённое оборудование с правильной связью
             if (dto.excludeEquipmentIds?.length) {
-                const equipments = dto.excludeEquipmentIds.map((equipmentId) =>
+                const equipments = dto.excludeEquipmentIds.map(equipmentId =>
                     excludedEquipmentsRepo.create({
                         user: {id: user.id},
                         equipmentId,
@@ -96,9 +107,39 @@ export class AuthService {
                 await excludedEquipmentsRepo.save(equipments);
             }
 
-            const accessToken = await this.jwtService.signAsync({id: user.id});
+            const payload = {id: user.id};
+
+            const accessToken = await this.jwtService.signAsync(payload, {
+                secret: this.config.get<string>('JWT_SECRET_KEY'),
+                expiresIn: this.config.get<string>('JWT_EXPIRATION_TIME'),
+            });
+
+            const refreshToken = await this.jwtService.signAsync(payload, {
+                secret: this.config.get<string>('JWT_REFRESH_SECRET'),
+                expiresIn: this.config.get<string>('JWT_REFRESH_EXPIRATION_TIME'),
+            });
+
             this.logger.log(`New user registered: ${user.id}`);
-            return {id: user.id, accessToken};
+            return {id: user.id, accessToken, refreshToken};
         });
+    }
+
+    async refresh(refreshToken: string): Promise<{ accessToken: string }> {
+        try {
+            const payload = await this.jwtService.verifyAsync<{ id: string }>(refreshToken, {
+                secret: this.config.get<string>('JWT_REFRESH_SECRET'),
+            });
+
+            const accessToken = await this.jwtService.signAsync({id: payload.id}, {
+                secret: this.config.get<string>('JWT_SECRET_KEY'),
+                expiresIn: this.config.get<string>('JWT_EXPIRATION_TIME'),
+            });
+
+            return {accessToken};
+        } catch (e) {
+            // Можно добавить лог:
+            // this.logger.warn(`Refresh token failed: ${e.message}`);
+            throw new UnauthorizedException('Invalid or expired refresh token');
+        }
     }
 }
