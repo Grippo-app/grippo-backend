@@ -35,7 +35,7 @@ export class AuthController {
     @HttpCode(200)
     @ApiOperation({summary: 'Refresh access token'})
     @ApiBody({schema: {properties: {refreshToken: {type: 'string'}}}})
-    async refresh(@Body('refreshToken') token: string): Promise<{ accessToken: string }> {
+    async refresh(@Body('refreshToken') token: string): Promise<LoginResponse> {
         return this.authService.refresh(token);
     }
 }

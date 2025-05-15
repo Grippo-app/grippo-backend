@@ -124,20 +124,30 @@ export class AuthService {
         });
     }
 
-    async refresh(refreshToken: string): Promise<{ accessToken: string }> {
+    async refresh(refreshToken: string): Promise<LoginResponse> {
         try {
             const payload = await this.jwtService.verifyAsync<{ id: string }>(refreshToken, {
                 secret: this.config.get<string>('JWT_REFRESH_SECRET'),
             });
 
-            const accessToken = await this.jwtService.signAsync({id: payload.id}, {
+            const newPayload = { id: payload.id };
+
+            const accessToken = await this.jwtService.signAsync(newPayload, {
                 secret: this.config.get<string>('JWT_SECRET_KEY'),
                 expiresIn: this.config.get<string>('JWT_EXPIRATION_TIME'),
             });
 
-            return {accessToken};
+            const newRefreshToken = await this.jwtService.signAsync(newPayload, {
+                secret: this.config.get<string>('JWT_REFRESH_SECRET'),
+                expiresIn: this.config.get<string>('JWT_REFRESH_EXPIRATION_TIME'),
+            });
+
+            return {
+                id: payload.id,
+                accessToken,
+                refreshToken: newRefreshToken,
+            };
         } catch (e) {
-            // Можно добавить лог:
             // this.logger.warn(`Refresh token failed: ${e.message}`);
             throw new UnauthorizedException('Invalid or expired refresh token');
         }
