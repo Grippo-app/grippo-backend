@@ -7,7 +7,6 @@ import {MusclesEntity} from '../../entities/muscles.entity';
 import {EquipmentsEntity} from "../../entities/equipments.entity";
 import {ExcludedEquipmentsEntity} from "../../entities/excluded-equipments.entity";
 import {EquipmentResponse} from "../equipments/dto/equipment-response";
-import {EquipmentEnum} from "../../lib/equipment.enum";
 import {MuscleResponse} from "../muscles/dto/muscle-response";
 
 @Injectable()
