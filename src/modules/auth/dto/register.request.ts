@@ -4,12 +4,12 @@ import {ExperienceEnum} from '../../../lib/experience.enum';
 import {Expose, Type} from 'class-transformer';
 
 export class RegisterRequest {
-    @ApiProperty({example: 'user@mail.com', type: 'string'})
+    @ApiProperty({example: 'grippo@mail.com', type: 'string'})
     @IsEmail()
     @Expose()
     email: string;
 
-    @ApiProperty({example: 'password', type: 'string'})
+    @ApiProperty({example: 'qwerty123', type: 'string'})
     @Length(6, 128)
     @Expose()
     password: string;
