@@ -26,8 +26,8 @@ export class ExerciseExampleService {
     ) {
     }
 
-    async getExerciseExamples(): Promise<{ items: ExerciseExamplesEntity[]; total: number }> {
-        const items = await this.exerciseExamplesRepository
+    async getExerciseExamples(): Promise<ExerciseExamplesEntity[]> {
+        return this.exerciseExamplesRepository
             .createQueryBuilder('exercise_examples')
             .leftJoinAndSelect('exercise_examples.exerciseExampleBundles', 'exerciseExampleBundles')
             .leftJoinAndSelect('exerciseExampleBundles.muscle', 'muscle')
@@ -36,8 +36,6 @@ export class ExerciseExampleService {
             .leftJoinAndSelect('exercise_examples.tutorials', 'tutorials')
             .orderBy('exercise_examples.createdAt', 'DESC')
             .getMany();
-
-        return {items, total: items.length};
     }
 
     async getExerciseExampleById(id: string): Promise<ExerciseExamplesEntity | null> {

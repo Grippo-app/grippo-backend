@@ -18,7 +18,7 @@ export class ExerciseExampleController {
     @HttpCode(HttpStatus.OK)
     @ApiOperation({summary: 'Get all exercise examples'})
     @ApiResponse({status: 200, description: 'Returned all exercise examples'})
-    async getExerciseExamples(): Promise<{ items: ExerciseExamplesEntity[]; total: number }> {
+    async getExerciseExamples(): Promise<ExerciseExamplesEntity[]> {
         return this.exerciseExamplesService.getExerciseExamples();
     }
 
