@@ -10,7 +10,6 @@ import {ExerciseExamplesTutorialsEntity} from "../../entities/exercise-examples-
 import {ExcludedEquipmentsEntity} from "../../entities/excluded-equipments.entity";
 import {ExcludedMusclesEntity} from "../../entities/excluded-muscles.entity";
 import {RecommendedRequest} from "./dto/recommended.request";
-import {FiltersRequest} from "./dto/filters.request";
 import {RecommendedUtils} from "../../lib/recommended-utils";
 import {ExerciseCategoryEnum} from "../../lib/exercise-category.enum";
 
@@ -24,57 +23,90 @@ export class ExerciseExampleService {
         @Inject('EXERCISE_EXAMPLES_TUTORIALS_REPOSITORY') private readonly exerciseExamplesTutorialsEntityRepository: Repository<ExerciseExamplesTutorialsEntity>,
         @Inject('EXCLUDED_EQUIPMENTS_REPOSITORY') private readonly excludedEquipmentsRepository: Repository<ExcludedEquipmentsEntity>,
         @Inject('EXCLUDED_MUSCLES_REPOSITORY') private excludedMusclesEntity: Repository<ExcludedMusclesEntity>
-    ) {}
+    ) {
+    }
 
-    async getExerciseExamples(page: number, size: number, body: FiltersRequest) {
-        const { query, weightType, experience, forceType, category, muscleIds, equipmentIds } = body;
-
-        const safePage = Math.max(1, page);
-        const safeSize = Math.min(Math.max(size, 1), 100);
-
-        const queryBuilder = this.exerciseExamplesRepository
+    async getExerciseExamples(): Promise<{ items: ExerciseExamplesEntity[]; total: number }> {
+        const items = await this.exerciseExamplesRepository
             .createQueryBuilder('exercise_examples')
             .leftJoinAndSelect('exercise_examples.exerciseExampleBundles', 'exerciseExampleBundles')
             .leftJoinAndSelect('exerciseExampleBundles.muscle', 'muscle')
             .leftJoinAndSelect('exercise_examples.equipmentRefs', 'equipment_refs')
             .leftJoinAndSelect('equipment_refs.equipment', 'equipments')
-            .leftJoinAndSelect('exercise_examples.tutorials', 'tutorials');
+            .leftJoinAndSelect('exercise_examples.tutorials', 'tutorials')
+            .orderBy('exercise_examples.createdAt', 'DESC')
+            .getMany();
 
-        if (query) {
-            queryBuilder.andWhere('exercise_examples.name ILIKE :query', { query: `%${query}%` });
-        }
+        return {items, total: items.length};
+    }
 
-        const filters = { weightType, experience, forceType, category };
-        for (const [key, value] of Object.entries(filters)) {
-            if (value) {
-                queryBuilder.andWhere(`exercise_examples.${key} = :${key}`, { [key]: value });
-            }
-        }
+    async getExerciseExampleById(id: string): Promise<ExerciseExamplesEntity | null> {
+        return await this.exerciseExamplesRepository
+            .createQueryBuilder('exercise_examples')
+            .where('exercise_examples.id = :id', {id})
+            .leftJoinAndSelect('exercise_examples.exerciseExampleBundles', 'exercise_example_bundles')
+            .leftJoinAndSelect('exercise_example_bundles.muscle', 'muscle')
+            .leftJoinAndSelect('exercise_examples.equipmentRefs', 'equipment_refs')
+            .leftJoinAndSelect('equipment_refs.equipment', 'equipments')
+            .leftJoinAndSelect('exercise_examples.tutorials', 'tutorials')
+            .getOne();
+    }
 
-        if (muscleIds?.length) {
-            queryBuilder.andWhere('muscle.id IN (:...muscleIds)', { muscleIds });
-        }
+    async setOrUpdateExerciseExample(body: ExerciseExampleRequest): Promise<ExerciseExamplesEntity | null> {
+        const {exerciseExampleBundles, equipmentRefs, tutorials, ...rest} = body;
+        const id = body.id ?? v4();
 
-        if (equipmentIds?.length) {
-            queryBuilder.andWhere('equipments.id IN (:...equipmentIds)', { equipmentIds });
-        }
+        const exerciseExample = new ExerciseExamplesEntity();
+        Object.assign(exerciseExample, rest);
+        exerciseExample.id = id;
 
-        const [items, total] = await queryBuilder
-            .addOrderBy('exercise_examples.createdAt', 'DESC')
-            .skip((safePage - 1) * safeSize)
-            .take(safeSize)
-            .getManyAndCount();
+        const bundles = exerciseExampleBundles.map((el) => {
+            const entity = new ExerciseExampleBundlesEntity();
+            Object.assign(entity, el);
+            entity.id = el.id ?? v4();
+            entity.exerciseExampleId = id;
+            return entity;
+        });
 
-        return { items, total, page: safePage, size: safeSize };
+        const equipmentRefsEntities = equipmentRefs.map((el) => {
+            const entity = new ExerciseExamplesEquipmentsEntity();
+            entity.equipmentId = el.equipmentId;
+            entity.exerciseExampleId = id;
+            return entity;
+        });
+
+        const tutorialEntities = tutorials.map((el) => {
+            const entity = new ExerciseExamplesTutorialsEntity();
+            entity.value = el.value;
+            entity.title = el.title;
+            entity.language = el.language;
+            entity.author = el.author;
+            entity.resourceType = el.resourceType;
+            entity.exerciseExampleId = id;
+            return entity;
+        });
+
+        await this.exerciseExamplesRepository.manager.transaction(async (manager) => {
+            await manager.delete(ExerciseExampleBundlesEntity, {exerciseExampleId: id});
+            await manager.delete(ExerciseExamplesEquipmentsEntity, {exerciseExampleId: id});
+            await manager.delete(ExerciseExamplesTutorialsEntity, {exerciseExampleId: id});
+
+            await manager.save(ExerciseExamplesEntity, exerciseExample);
+            await manager.save(ExerciseExampleBundlesEntity, bundles);
+            await manager.save(ExerciseExamplesEquipmentsEntity, equipmentRefsEntities);
+            await manager.save(ExerciseExamplesTutorialsEntity, tutorialEntities);
+        });
+
+        return this.getExerciseExampleById(id);
     }
 
     async getRecommendedExerciseExamples(user, page: number, size: number, body: RecommendedRequest) {
         let recommendations: string[] = [];
-        const { targetMuscleId, exerciseExampleIds, exerciseCount } = body;
+        const {targetMuscleId, exerciseExampleIds, exerciseCount} = body;
 
         const userExperience = await this.usersRepository
             .createQueryBuilder('users')
-            .where('users.id = :userId', { userId: user.id })
+            .where('users.id = :userId', {userId: user.id})
             .select(['users.experience'])
             .getOne();
 
@@ -89,7 +121,7 @@ export class ExerciseExampleService {
         const trainingExerciseExamples = exerciseExampleIds?.length
             ? await this.exerciseExamplesRepository
                 .createQueryBuilder('exercise_examples')
-                .andWhere('exercise_examples.id IN (:...exerciseExampleIds)', { exerciseExampleIds })
+                .andWhere('exercise_examples.id IN (:...exerciseExampleIds)', {exerciseExampleIds})
                 .leftJoinAndSelect('exercise_examples.exerciseExampleBundles', 'exercise_example_bundles')
                 .leftJoinAndSelect('exercise_example_bundles.muscle', 'muscle')
                 .getMany()
@@ -97,33 +129,33 @@ export class ExerciseExampleService {
 
         const availableExpFilter = RecommendedUtils.getFilterExp(userExperience.experience);
         if (availableExpFilter.length > 0) {
-            exercisesBuilder.andWhere('exercise_examples.experience IN (:...availableExpFilter)', { availableExpFilter });
+            exercisesBuilder.andWhere('exercise_examples.experience IN (:...availableExpFilter)', {availableExpFilter});
         }
 
         const excludedUserMuscles = await this.excludedMusclesEntity
             .createQueryBuilder('excluded_muscles')
-            .where('excluded_muscles.userId = :userId', { userId: user.id })
+            .where('excluded_muscles.userId = :userId', {userId: user.id})
             .getMany();
 
         const excludedUserEquipment = await this.excludedEquipmentsRepository
             .createQueryBuilder('excluded_equipment')
-            .where('excluded_equipment.userId = :userId', { userId: user.id })
+            .where('excluded_equipment.userId = :userId', {userId: user.id})
             .getMany();
 
         if (excludedUserMuscles.length > 0) {
             const excludedMuscleIds = excludedUserMuscles.map((m) => m.id);
-            exercisesBuilder.andWhere('muscle.id NOT IN (:...excludedMuscleIds)', { excludedMuscleIds });
+            exercisesBuilder.andWhere('muscle.id NOT IN (:...excludedMuscleIds)', {excludedMuscleIds});
         }
 
         if (excludedUserEquipment.length > 0) {
             const excludedEquipmentIds = excludedUserEquipment.map((e) => e.id);
-            exercisesBuilder.andWhere('equipments.id NOT IN (:...excludedEquipmentIds)', { excludedEquipmentIds });
+            exercisesBuilder.andWhere('equipments.id NOT IN (:...excludedEquipmentIds)', {excludedEquipmentIds});
         }
 
         if (targetMuscleId) {
             exercisesBuilder
-                .andWhere('muscle.id = :targetMuscleId', { targetMuscleId })
-                .andWhere('exercise_example_bundles.percentage > :percentage', { percentage: 50 });
+                .andWhere('muscle.id = :targetMuscleId', {targetMuscleId})
+                .andWhere('exercise_example_bundles.percentage > :percentage', {percentage: 50});
         }
 
         const minMaxByTraining = RecommendedUtils.minMaxTrainingExercisesByExp(userExperience.experience);
@@ -165,64 +197,5 @@ export class ExerciseExampleService {
             recommendations,
             exercises,
         };
-    }
-
-    async getExerciseExampleById(id: string): Promise<ExerciseExamplesEntity | null> {
-        return await this.exerciseExamplesRepository
-            .createQueryBuilder('exercise_examples')
-            .where('exercise_examples.id = :id', { id })
-            .leftJoinAndSelect('exercise_examples.exerciseExampleBundles', 'exercise_example_bundles')
-            .leftJoinAndSelect('exercise_example_bundles.muscle', 'muscle')
-            .leftJoinAndSelect('exercise_examples.equipmentRefs', 'equipment_refs')
-            .leftJoinAndSelect('exercise_examples.tutorials', 'tutorials')
-            .leftJoinAndSelect('equipment_refs.equipment', 'equipments')
-            .getOne();
-    }
-
-    async setOrUpdateExerciseExample(body: ExerciseExampleRequest) {
-        const { exerciseExampleBundles, equipmentRefs, tutorials, ...rest } = body;
-        const id = body.id ?? v4();
-
-        const exerciseExample = new ExerciseExamplesEntity();
-        Object.assign(exerciseExample, rest);
-        exerciseExample.id = id;
-
-        const exerciseEquipment = equipmentRefs.map((el) => {
-            const equipment = new ExerciseExamplesEquipmentsEntity();
-            equipment.equipmentId = el.equipmentId;
-            equipment.exerciseExampleId = id;
-            return equipment;
-        });
-
-        const exerciseExampleBundlesEntities = exerciseExampleBundles.map((el) => {
-            const bundle = new ExerciseExampleBundlesEntity();
-            Object.assign(bundle, el);
-            bundle.id = el.id ?? v4();
-            bundle.muscleId = el.muscleId;
-            bundle.exerciseExampleId = id;
-            return bundle;
-        });
-
-        const tutorialEntities = tutorials.map((el) => {
-            const tutorial = new ExerciseExamplesTutorialsEntity();
-            tutorial.value = el.value;
-            tutorial.title = el.title;
-            tutorial.language = el.language;
-            tutorial.author = el.author;
-            tutorial.resourceType = el.resourceType;
-            tutorial.exerciseExampleId = id;
-            return tutorial;
-        });
-
-        await this.exerciseExampleBundlesRepository.delete({ exerciseExampleId: id });
-        await this.exerciseExamplesEquipmentsRepository.delete({ exerciseExampleId: id });
-        await this.exerciseExamplesTutorialsEntityRepository.delete({ exerciseExampleId: id });
-
-        await this.exerciseExamplesRepository.save(exerciseExample);
-        await this.exerciseExampleBundlesRepository.save(exerciseExampleBundlesEntities);
-        await this.exerciseExamplesEquipmentsRepository.save(exerciseEquipment);
-        await this.exerciseExamplesTutorialsEntityRepository.save(tutorialEntities);
-
-        return this.getExerciseExampleById(id);
     }
 }
