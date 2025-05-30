@@ -1,4 +1,4 @@
-import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { PassportStrategy } from '@nestjs/passport';
 import { Repository } from 'typeorm';
@@ -8,9 +8,9 @@ import { ConfigService } from '@nestjs/config';
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(
-    @Inject('USERS_REPOSITORY')
-    private usersRepository: Repository<UsersEntity>,
-    private readonly configService: ConfigService,
+      @Inject('USERS_REPOSITORY')
+      private usersRepository: Repository<UsersEntity>,
+      private readonly configService: ConfigService,
   ) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -18,18 +18,25 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate(payload: any) {
-    const timeDiff = payload.exp - payload.iat;
-    if (timeDiff <= 0) {
-      throw new UnauthorizedException();
+  async validate(payload: { id: string; exp: number }) {
+    // ⛔ выбрасываем обычный Error, не NestJS-исключение
+    if (payload.exp * 1000 < Date.now()) {
+      const err = new Error('TokenExpiredError');
+      err.name = 'TokenExpiredError';
+      throw err;
     }
+
     const user = await this.usersRepository.findOne({
       where: { id: payload.id },
-      select: ['id', 'email', 'password'],
+      select: ['id', 'email'],
     });
+
     if (!user) {
-      throw new UnauthorizedException();
+      const err = new Error('JsonWebTokenError');
+      err.name = 'JsonWebTokenError';
+      throw err;
     }
+
     return user;
   }
 }
