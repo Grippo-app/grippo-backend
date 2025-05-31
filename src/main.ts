@@ -5,7 +5,7 @@ import { ExpressAdapter, NestExpressApplication } from '@nestjs/platform-express
 
 import { AppModule } from './app.module';
 import { setupSwagger } from './swagger';
-import { LoggingInterceptor } from './common.interseptors/logging.interceptor';
+import { LoggingInterceptor } from './common/logging.interceptor';
 
 async function bootstrap() {
     const app = await NestFactory.create<NestExpressApplication>(
@@ -36,13 +36,21 @@ async function bootstrap() {
     // app.setGlobalPrefix('api');
 
     // ✅ Start the app
-    const port = configService.get<number>('PORT') ?? 3000;
-    const host = configService.get<string>('HOST') ?? '0.0.0.0';
+    const port = configService.get<number>('PORT');
+
+    if (!port) {
+        throw new Error('❌ Environment variable PORT is required');
+    }
+
+    const host = configService.get<string>('HOST');
+
+    if (!host) {
+        throw new Error('❌ Environment variable HOST is required');
+    }
 
     try {
         await app.listen(port, host);
         const url = await app.getUrl();
-        logger.log(`✅ Server started at ${url}`);
         logger.log(`📚 Swagger docs available at ${url}/docs`);
     } catch (err) {
         logger.error('❌ Failed to start server', err);

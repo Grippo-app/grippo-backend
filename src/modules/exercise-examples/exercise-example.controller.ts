@@ -1,10 +1,10 @@
 import {Body, Controller, Get, HttpCode, HttpStatus, Param, ParseUUIDPipe, Post, UseGuards,} from '@nestjs/common';
 import {ApiBearerAuth, ApiOperation, ApiParam, ApiResponse, ApiTags,} from '@nestjs/swagger';
 import {ExerciseExampleService} from './exercise-example.service';
-import {JwtAuthGuard} from '../auth/guards/jwt-auth.guard';
+import {JwtAuthGuard} from '../../common/jwt-auth.guard';
 import {ExerciseExampleRequest} from "./dto/exercise-example.request";
 import {ExerciseExamplesEntity} from "../../entities/exercise-examples.entity";
-import {AdminOnlyGuard} from "../auth/guards/admin.guard";
+import {AdminOnlyGuard} from "../../common/admin.guard";
 
 @Controller('exercise-examples')
 @ApiTags('exercise-examples')

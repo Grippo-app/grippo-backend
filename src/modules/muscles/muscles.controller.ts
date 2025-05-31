@@ -1,7 +1,7 @@
 import {Controller, Get, HttpCode, HttpStatus, Param, Req, Res, UseGuards,} from '@nestjs/common';
 import {ApiBearerAuth, ApiOperation, ApiResponse, ApiTags,} from '@nestjs/swagger';
 import {MusclesService} from './muscles.service';
-import {JwtAuthGuard} from "../auth/guards/jwt-auth.guard";
+import {JwtAuthGuard} from "../../common/jwt-auth.guard";
 import {MuscleGroupsResponse} from "./dto/muscle-response";
 
 @Controller('muscles')

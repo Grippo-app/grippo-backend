@@ -1,7 +1,7 @@
 import {Controller, Get, HttpStatus, Req, Res, UseGuards,} from '@nestjs/common';
 import {ApiBearerAuth, ApiOperation, ApiResponse, ApiTags,} from '@nestjs/swagger';
 import {FiltersService} from './filters.service';
-import {JwtAuthGuard} from '../auth/guards/jwt-auth.guard';
+import {JwtAuthGuard} from '../../common/jwt-auth.guard';
 
 @Controller('filters')
 @ApiTags('filters')

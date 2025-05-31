@@ -1,7 +1,7 @@
 import {Injectable} from '@nestjs/common';
 import {ConfigService} from '@nestjs/config';
 import {DataSourceOptions} from 'typeorm';
-import {SnakeNamingStrategy} from './snake-naming.strategy';
+import {SnakeNamingStrategy} from '../common/snake-naming.strategy';
 import {join} from 'path';
 
 @Injectable()

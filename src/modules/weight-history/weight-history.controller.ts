@@ -16,7 +16,7 @@ import {
     ApiOperation,
     ApiResponse,
 } from '@nestjs/swagger';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { JwtAuthGuard } from '../../common/jwt-auth.guard';
 import { WeightHistoryService } from './weight-history.service';
 import { WeightHistoryRequest } from './dto/weight-history.request';
 
