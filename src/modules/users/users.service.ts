@@ -1,5 +1,5 @@
-import {BadRequestException, Inject, Injectable, NotFoundException,} from '@nestjs/common';
-import {Repository} from 'typeorm';
+import {Inject, Injectable, NotFoundException,} from '@nestjs/common';
+import {In, Repository} from 'typeorm';
 import {UsersEntity} from '../../entities/users.entity';
 import {WeightHistoryEntity} from '../../entities/weight-history.entity';
 import {ExcludedMusclesEntity} from '../../entities/excluded-muscles.entity';
@@ -62,7 +62,7 @@ export class UsersService {
 
     async getExcludedMuscles(user: UsersEntity): Promise<MuscleResponse[]> {
         const excluded = await this.excludedMusclesRepository.find({
-            where: { user: { id: user.id } },
+            where: {user: {id: user.id}},
             relations: ['muscle', 'muscle.muscleGroup'],
         });
 
@@ -82,45 +82,47 @@ export class UsersService {
         });
     }
 
-    async excludeMuscle(user: UsersEntity, muscleId: string): Promise<ExcludedMusclesEntity> {
-        const exists = await this.excludedMusclesRepository.findOne({
-            where: { user: { id: user.id }, muscleId },
-        });
-
-        if (exists) {
-            throw new BadRequestException('This muscle is already excluded');
+    async updateExcludedMuscles(user: UsersEntity, muscleIds: string[]): Promise<{ ids: string[] }> {
+        const existingMuscles = await this.musclesRepository.findBy({id: In(muscleIds)});
+        if (existingMuscles.length !== muscleIds.length) {
+            throw new NotFoundException('One or more muscle IDs are invalid');
         }
 
-        const muscle = await this.musclesRepository.findOne({ where: { id: muscleId } });
+        await this.excludedMusclesRepository.delete({user: {id: user.id}});
 
-        if (!muscle) {
-            throw new NotFoundException('Unknown muscle');
-        }
+        const entities = muscleIds.map((id) =>
+            this.excludedMusclesRepository.create({
+                user: {id: user.id},
+                muscleId: id,
+            }),
+        );
 
-        const entity = this.excludedMusclesRepository.create({
-            user: { id: user.id },
-            muscleId,
-        });
-
-        return this.excludedMusclesRepository.save(entity);
+        await this.excludedMusclesRepository.save(entities);
+        return {ids: muscleIds};
     }
 
-    async unexcludeMuscle(user: UsersEntity, muscleId: string): Promise<{ id: string }> {
-        const excluded = await this.excludedMusclesRepository.findOne({
-            where: { user: { id: user.id }, muscleId },
-        });
-
-        if (!excluded) {
-            throw new BadRequestException('This muscle is not excluded');
+    async updateExcludedEquipments(user: UsersEntity, equipmentIds: string[]): Promise<{ ids: string[] }> {
+        const existingEquipments = await this.equipmentsRepository.findBy({id: In(equipmentIds)});
+        if (existingEquipments.length !== equipmentIds.length) {
+            throw new NotFoundException('One or more equipment IDs are invalid');
         }
 
-        await this.excludedMusclesRepository.remove(excluded);
-        return { id: muscleId };
+        await this.excludedEquipmentsRepository.delete({user: {id: user.id}});
+
+        const entities = equipmentIds.map((id) =>
+            this.excludedEquipmentsRepository.create({
+                user: {id: user.id},
+                equipmentId: id,
+            }),
+        );
+
+        await this.excludedEquipmentsRepository.save(entities);
+        return {ids: equipmentIds};
     }
 
     async getExcludedEquipments(user: UsersEntity): Promise<EquipmentResponse[]> {
         const excluded = await this.excludedEquipmentsRepository.find({
-            where: { user: { id: user.id } },
+            where: {user: {id: user.id}},
             relations: ['equipment', 'equipment.equipmentGroup'],
         });
 
@@ -138,41 +140,5 @@ export class UsersService {
 
             return dto;
         });
-    }
-
-    async excludeEquipment(user: UsersEntity, equipmentId: string): Promise<ExcludedEquipmentsEntity> {
-        const exists = await this.excludedEquipmentsRepository.findOne({
-            where: { user: { id: user.id }, equipmentId },
-        });
-
-        if (exists) {
-            throw new BadRequestException('This equipment is already excluded');
-        }
-
-        const equipment = await this.equipmentsRepository.findOne({ where: { id: equipmentId } });
-
-        if (!equipment) {
-            throw new NotFoundException('Unknown equipment');
-        }
-
-        const entity = this.excludedEquipmentsRepository.create({
-            user: { id: user.id },
-            equipmentId,
-        });
-
-        return this.excludedEquipmentsRepository.save(entity);
-    }
-
-    async unexcludeEquipment(user: UsersEntity, equipmentId: string): Promise<{ id: string }> {
-        const excluded = await this.excludedEquipmentsRepository.findOne({
-            where: { user: { id: user.id }, equipmentId },
-        });
-
-        if (!excluded) {
-            throw new BadRequestException('This equipment is not excluded');
-        }
-
-        await this.excludedEquipmentsRepository.remove(excluded);
-        return { id: equipmentId };
     }
 }

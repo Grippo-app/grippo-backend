@@ -1,7 +1,8 @@
-import {Controller, Delete, Get, HttpCode, HttpStatus, Param, Post, Req, UseGuards,} from '@nestjs/common';
+import {Body, Controller, Get, HttpCode, HttpStatus, Post, Req, UseGuards,} from '@nestjs/common';
 import {ApiBearerAuth, ApiOperation, ApiResponse, ApiTags,} from '@nestjs/swagger';
 import {UsersService} from './users.service';
 import {JwtAuthGuard} from '../../common/jwt-auth.guard';
+import {UpdateExcludedIdsDto} from "./dto/update-excluded-ids.dto";
 
 @ApiTags('users')
 @ApiBearerAuth('access-token')
@@ -24,49 +25,39 @@ export class UsersController {
 
     @Get('excluded-muscles')
     @HttpCode(HttpStatus.OK)
-    @ApiOperation({ summary: 'Get all excluded muscles for current user' })
-    @ApiResponse({ status: 200, description: 'Excluded muscles fetched' })
+    @ApiOperation({summary: 'Get all excluded muscles for current user'})
+    @ApiResponse({status: 200, description: 'Excluded muscles fetched'})
     async getExcludedMuscles(@Req() req): Promise<any> {
         return this.usersService.getExcludedMuscles(req.user);
     }
 
-    @Post('excluded-muscles/:id')
-    @HttpCode(HttpStatus.CREATED)
-    @ApiOperation({ summary: 'Exclude muscle for current user' })
-    @ApiResponse({ status: 201, description: 'Muscle excluded' })
-    async excludeMuscle(@Req() req, @Param('id') id: string): Promise<any> {
-        return this.usersService.excludeMuscle(req.user, id);
-    }
-
-    @Delete('excluded-muscles/:id')
-    @HttpCode(HttpStatus.OK)
-    @ApiOperation({ summary: 'Remove muscle from excluded list (i.e., include it)' })
-    @ApiResponse({ status: 200, description: 'Muscle included (unexcluded)' })
-    async unexcludeMuscle(@Req() req, @Param('id') id: string): Promise<any> {
-        return this.usersService.unexcludeMuscle(req.user, id);
-    }
-
     @Get('excluded-equipments')
     @HttpCode(HttpStatus.OK)
-    @ApiOperation({ summary: 'Get all excluded equipments for current user' })
-    @ApiResponse({ status: 200, description: 'Excluded equipments fetched' })
+    @ApiOperation({summary: 'Get all excluded equipments for current user'})
+    @ApiResponse({status: 200, description: 'Excluded equipments fetched'})
     async getExcludedEquipments(@Req() req): Promise<any> {
         return this.usersService.getExcludedEquipments(req.user);
     }
 
-    @Post('excluded-equipments/:id')
-    @HttpCode(HttpStatus.CREATED)
-    @ApiOperation({ summary: 'Exclude equipment for current user' })
-    @ApiResponse({ status: 201, description: 'Equipment excluded' })
-    async excludeEquipment(@Req() req, @Param('id') id: string): Promise<any> {
-        return this.usersService.excludeEquipment(req.user, id);
+    @Post('excluded-muscles')
+    @HttpCode(HttpStatus.OK)
+    @ApiOperation({summary: 'Replace excluded muscles with provided list'})
+    @ApiResponse({status: 200, description: 'Excluded muscles updated'})
+    async updateExcludedMuscles(
+        @Req() req,
+        @Body() body: UpdateExcludedIdsDto
+    ): Promise<{ ids: string[] }> {
+        return this.usersService.updateExcludedMuscles(req.user, body.ids);
     }
 
-    @Delete('excluded-equipments/:id')
+    @Post('excluded-equipments')
     @HttpCode(HttpStatus.OK)
-    @ApiOperation({ summary: 'Remove equipment from excluded list (i.e., include it)' })
-    @ApiResponse({ status: 200, description: 'Equipment included (unexcluded)' })
-    async unexcludeEquipment(@Req() req, @Param('id') id: string): Promise<any> {
-        return this.usersService.unexcludeEquipment(req.user, id);
+    @ApiOperation({summary: 'Replace excluded equipments with provided list'})
+    @ApiResponse({status: 200, description: 'Excluded equipments updated'})
+    async updateExcludedEquipments(
+        @Req() req,
+        @Body() body: UpdateExcludedIdsDto
+    ): Promise<{ ids: string[] }> {
+        return this.usersService.updateExcludedEquipments(req.user, body.ids);
     }
 }
