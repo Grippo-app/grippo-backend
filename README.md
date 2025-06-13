@@ -27,7 +27,7 @@ Defines and runs multi-container Docker applications:
 
 - Built from the local `Dockerfile`
 - Waits for the `db` service to become healthy
-- Maps internal port `3000` to `${APP_PORT}` (e.g. `3010`)
+- Maps internal port `3000` to `${PORT}` (e.g. `3010`)
 - Automatically restarts on failure (`restart: unless-stopped`)
 
 ---
@@ -42,5 +42,5 @@ Automates first-time setup and local initialization:
 - If `dump.sql` exists:
     - Drops and recreates the `public` schema
     - Imports the SQL dump into the database
-- Waits for the backend to become reachable on `${APP_PORT}`
+- Waits for the backend to become reachable on `${PORT}`
 - Confirms successful startup via terminal output

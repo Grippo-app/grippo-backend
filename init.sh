@@ -5,18 +5,36 @@ ENV_FILE=".env"
 DUMP_FILE="./dump.sql"
 LOG_TAG="[INIT]"
 
+# Проверяем аргумент (local или prod)
+MODE="$1"
+
+if [ -z "$MODE" ]; then
+  echo "Usage: $0 [local|prod]"
+  exit 1
+fi
+
 # Load .env
 echo "$LOG_TAG Loading environment from $ENV_FILE"
 set -a
-# shellcheck source=.env
+# shellcheck disable=SC1090
 source "$ENV_FILE"
 set +a
 
-# Start docker containers
-echo "$LOG_TAG Starting containers..."
-docker compose --env-file "$ENV_FILE" up -d --build
+# Выбираем docker-compose файлы
+if [ "$MODE" = "local" ]; then
+  COMPOSE_FILES="-f docker-compose.yml -f docker-compose.local.yml"
+elif [ "$MODE" = "prod" ]; then
+  COMPOSE_FILES="-f docker-compose.yml -f docker-compose.prod.yml"
+else
+  echo "Unknown mode: $MODE. Use 'local' or 'prod'."
+  exit 1
+fi
 
-# Wait for PostgreSQL to be ready
+echo "$LOG_TAG Starting containers for mode: $MODE..."
+docker compose --env-file "$ENV_FILE" $COMPOSE_FILES up -d --build
+
+# Далее ждём postgres, импортируем дамп, ждём backend и проверяем сайт (без изменений)
+
 echo "$LOG_TAG Waiting for PostgreSQL to become ready..."
 ATTEMPTS=0
 MAX_ATTEMPTS=30
@@ -32,7 +50,6 @@ done
 
 echo "$LOG_TAG ✅ PostgreSQL is ready"
 
-# Optional DB reset and import
 if [ -f "$DUMP_FILE" ]; then
   echo "$LOG_TAG Resetting schema and importing dump.sql..."
   docker exec -e PGPASSWORD="$POSTGRES_PASSWORD" "$POSTGRES_CONTAINER_NAME" \
@@ -47,10 +64,7 @@ else
   echo "$LOG_TAG ⚠️ dump.sql not found, skipping import"
 fi
 
-# Wait for backend to respond (port or logs)
 echo "$LOG_TAG Waiting for backend container '$BACKEND_CONTAINER' to be ready..."
-
-# Try for up to 30 seconds
 ATTEMPTS=0
 MAX_ATTEMPTS=30
 
@@ -67,7 +81,6 @@ done
 
 echo "$LOG_TAG ✅ Backend container is ready"
 
-# Final check: localhost via nginx (port 80)
 echo "$LOG_TAG Checking site on http://localhost ..."
 if curl -sSf http://localhost > /dev/null; then
   echo "$LOG_TAG ✅ Site is reachable at http://localhost"
