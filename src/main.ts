@@ -42,14 +42,9 @@ async function bootstrap() {
         throw new Error('❌ Environment variable PORT is required');
     }
 
-    const host = configService.get<string>('HOST');
-
-    if (!host) {
-        throw new Error('❌ Environment variable HOST is required');
-    }
-
     try {
-        await app.listen(port, host);
+        // ❗ Always bind to 0.0.0.0 in Docker
+        await app.listen(port, '0.0.0.0');
         const url = await app.getUrl();
         logger.log(`📚 Swagger docs available at ${url}/docs`);
     } catch (err) {
