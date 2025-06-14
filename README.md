@@ -32,7 +32,7 @@ Defines and runs multi-container Docker applications:
 
 ---
 
-### 3. `init.sh` — cold start script 🚀
+### 3. `deploy.sh` — cold start script 🚀
 
 Automates first-time setup and local initialization:
 
