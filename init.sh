@@ -5,37 +5,25 @@ ENV_FILE=".env"
 DUMP_FILE="./dump.sql"
 LOG_TAG="[INIT]"
 
-# Проверяем аргумент (local или prod)
-MODE="$1"
-
-if [ -z "$MODE" ]; then
-  echo "Usage: $0 [local|prod]"
-  exit 1
-fi
-
-# Load .env
-echo "$LOG_TAG Loading environment from $ENV_FILE"
+# ─────────────────────────────────────────────
+# 📦 Load .env
+# ─────────────────────────────────────────────
+echo "$LOG_TAG 📄 Loading environment from $ENV_FILE"
 set -a
 # shellcheck disable=SC1090
 source "$ENV_FILE"
 set +a
 
-# Выбираем docker-compose файлы
-if [ "$MODE" = "local" ]; then
-  COMPOSE_FILES="-f docker-compose.yml -f docker-compose.local.yml"
-elif [ "$MODE" = "prod" ]; then
-  COMPOSE_FILES="-f docker-compose.yml -f docker-compose.prod.yml"
-else
-  echo "Unknown mode: $MODE. Use 'local' or 'prod'."
-  exit 1
-fi
+# ─────────────────────────────────────────────
+# 🐳 Docker Compose
+# ─────────────────────────────────────────────
 
-echo "$LOG_TAG Starting containers for mode: $MODE..."
-docker compose --env-file "$ENV_FILE" $COMPOSE_FILES up -d --build
+docker compose --env-file "$ENV_FILE" up -d --build > /dev/null
 
-# Далее ждём postgres, импортируем дамп, ждём backend и проверяем сайт (без изменений)
-
-echo "$LOG_TAG Waiting for PostgreSQL to become ready..."
+# ─────────────────────────────────────────────
+# 🐘 PostgreSQL wait
+# ─────────────────────────────────────────────
+echo "$LOG_TAG ⏳ Waiting for PostgreSQL to become ready..."
 ATTEMPTS=0
 MAX_ATTEMPTS=30
 
@@ -50,21 +38,28 @@ done
 
 echo "$LOG_TAG ✅ PostgreSQL is ready"
 
+# ─────────────────────────────────────────────
+# 🐘 Load "Dump.sql"
+# ─────────────────────────────────────────────
+
 if [ -f "$DUMP_FILE" ]; then
-  echo "$LOG_TAG Resetting schema and importing dump.sql..."
+  echo "$LOG_TAG 🔄 Resetting schema and importing $DUMP_FILE..."
   docker exec -e PGPASSWORD="$POSTGRES_PASSWORD" "$POSTGRES_CONTAINER_NAME" \
     psql -U "$POSTGRES_USERNAME" -d "$POSTGRES_DATABASE" \
-    -c "DROP SCHEMA public CASCADE; CREATE SCHEMA public;"
+    -c "DROP SCHEMA public CASCADE; CREATE SCHEMA public;" 2>/dev/null
 
   docker exec -i "$POSTGRES_CONTAINER_NAME" \
     psql -U "$POSTGRES_USERNAME" -d "$POSTGRES_DATABASE" -q -1 < "$DUMP_FILE"
 
   echo "$LOG_TAG ✅ Dump imported"
 else
-  echo "$LOG_TAG ⚠️ dump.sql not found, skipping import"
+  echo "$LOG_TAG ⚠️ $DUMP_FILE not found, skipping import"
 fi
 
-echo "$LOG_TAG Waiting for backend container '$BACKEND_CONTAINER' to be ready..."
+# ─────────────────────────────────────────────
+# 🛡 Backend wait
+# ─────────────────────────────────────────────
+echo "$LOG_TAG ⏳ Waiting for backend container '$BACKEND_CONTAINER' to be ready..."
 ATTEMPTS=0
 MAX_ATTEMPTS=30
 
@@ -81,7 +76,10 @@ done
 
 echo "$LOG_TAG ✅ Backend container is ready"
 
-echo "$LOG_TAG Checking site on http://localhost ..."
+# ─────────────────────────────────────────────
+# 🌐 Site check
+# ─────────────────────────────────────────────
+echo "$LOG_TAG 🌍 Checking site on http://localhost ..."
 if curl -sSf http://localhost > /dev/null; then
   echo "$LOG_TAG ✅ Site is reachable at http://localhost"
 else

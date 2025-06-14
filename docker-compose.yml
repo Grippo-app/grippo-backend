@@ -1,4 +1,7 @@
 services:
+  # ─────────────────────────────
+  # 🐘 PostgreSQL
+  # ─────────────────────────────
   db:
     image: postgres:15.5
     container_name: ${POSTGRES_CONTAINER_NAME}
@@ -17,6 +20,9 @@ services:
       timeout: 5s
       retries: 5
 
+  # ─────────────────────────────
+  # ⚙️ Backend (Node.js / NestJS)
+  # ─────────────────────────────
   backend:
     build:
       context: .
@@ -34,11 +40,54 @@ services:
       JWT_EXPIRATION_TIME: ${JWT_EXPIRATION_TIME}
       JWT_REFRESH_EXPIRATION_TIME: ${JWT_REFRESH_EXPIRATION_TIME}
     expose:
-      - "3000"
+      - "${PORT}"
     depends_on:
       db:
         condition: service_healthy
     restart: unless-stopped
+
+  # ─────────────────────────────
+  # 🌐 NGINX (local or prod)
+  # ─────────────────────────────
+  nginx:
+    image: nginx:alpine
+    container_name: grippo_nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/${NGINX_TEMPLATE_FILE}:/etc/nginx/templates/nginx.template.conf:ro
+      - ./certbot/www:/var/www/certbot:ro
+      - ./certbot/conf:/etc/letsencrypt
+    environment:
+      - PORT=${PORT}
+      - NGINX_SERVER_NAME=${NGINX_SERVER_NAME}
+    command: >
+      /bin/sh -c "
+      envsubst '${PORT} ${NGINX_SERVER_NAME}' < /etc/nginx/templates/nginx.template.conf > /etc/nginx/conf.d/default.conf &&
+      nginx -g 'daemon off;'"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+  # ─────────────────────────────
+  # 🔒 Certbot (optional)
+  # ─────────────────────────────
+  certbot:
+    image: certbot/certbot
+    container_name: grippo_certbot
+    volumes:
+      - ./certbot/www:/var/www/certbot
+      - ./certbot/conf:/etc/letsencrypt
+    entrypoint: /bin/sh -c
+    command: >
+      "trap exit TERM;
+      while :; do
+        certbot renew --webroot -w /var/www/certbot;
+        sleep 12h & wait $${!};
+      done"
+    profiles:
+      - certbot
 
 volumes:
   pgdata:
