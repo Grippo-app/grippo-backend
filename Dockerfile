@@ -1,35 +1,39 @@
-# Stage 1: Build dependencies and compile the project
+# ─────────────────────────────
+# 🏗 Stage 1: Build
+# ─────────────────────────────
 FROM node:20 AS builder
 
 WORKDIR /app
 
-# Install dependencies
 COPY package*.json ./
 RUN npm ci
 
-# Copy source code and build the application
 COPY . .
 RUN npm run build
 
-# Stage 2: Production image
+# ─────────────────────────────
+# 🚀 Stage 2: Production
+# ─────────────────────────────
 FROM node:20-slim
+
+ARG PORT=3010
+ENV NODE_ENV=production
+ENV PORT=${PORT}
 
 WORKDIR /app
 
-# Install required system certificates
-RUN apt-get update && apt-get install -y \
-    ca-certificates \
- && rm -rf /var/lib/apt/lists/*
+RUN adduser --system --group appuser
 
-# Copy only necessary files from the builder stage
-COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/package.json ./
+COPY --from=builder --chown=appuser:appuser /app/dist ./dist
+COPY --from=builder --chown=appuser:appuser /app/node_modules ./node_modules
+COPY --from=builder --chown=appuser:appuser /app/package.json ./
 
-ENV NODE_ENV=production
+USER appuser
 
-# Expose the application port
-EXPOSE 3000
+EXPOSE ${PORT}
 
-# Run the application
+# HEALTHCHECK (optional)
+# HEALTHCHECK --interval=30s --timeout=10s --start-period=10s --retries=3 \
+#   CMD curl --fail http://localhost:${PORT}/health || exit 1
+
 CMD ["node", "dist/main"]

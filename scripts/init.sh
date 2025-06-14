@@ -1,24 +1,46 @@
 #!/bin/bash
 set -e
 
-ENV_FILE=".env"
-DUMP_FILE="./dump.sql"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ROOT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
+
+ENV_FILE="$ROOT_DIR/.env"
+COMPOSE_FILE="$ROOT_DIR/${DOCKER_COMPOSE_FILE:-docker-compose.yml}"
+DUMP_FILE="$ROOT_DIR/${DB_DUMP_FILE:-scripts/dump.sql}"
 LOG_TAG="[INIT]"
+
+echo "$LOG_TAG 🚀 Initializing ${APP_NAME:-App} v${APP_VERSION:-latest}"
+echo "$LOG_TAG 📦 Using environment: $(basename "$ENV_FILE")"
 
 # ─────────────────────────────────────────────
 # 📦 Load .env
 # ─────────────────────────────────────────────
-echo "$LOG_TAG 📄 Loading environment from $ENV_FILE"
+if [ ! -f "$ENV_FILE" ]; then
+  echo "$LOG_TAG ❌ .env file not found at $ENV_FILE"
+  exit 1
+fi
+
 set -a
 # shellcheck disable=SC1090
 source "$ENV_FILE"
 set +a
 
 # ─────────────────────────────────────────────
-# 🐳 Docker Compose
+# ⚙️ Render nginx/default.conf from template
 # ─────────────────────────────────────────────
+echo "$LOG_TAG 🛠 Rendering nginx config from template..."
+bash "$ROOT_DIR/scripts/render-nginx.sh"
 
-docker compose --env-file "$ENV_FILE" up -d --build > /dev/null
+# ─────────────────────────────────────────────
+# 🐳 Docker Compose up
+# ─────────────────────────────────────────────
+if [ ! -f "$COMPOSE_FILE" ]; then
+  echo "$LOG_TAG ❌ Docker compose file not found at $COMPOSE_FILE"
+  exit 1
+fi
+
+echo "$LOG_TAG 🐳 Running docker-compose..."
+docker compose --env-file "$ENV_FILE" -f "$COMPOSE_FILE" up -d --build > /dev/null
 
 # ─────────────────────────────────────────────
 # 🐘 PostgreSQL wait
@@ -39,21 +61,24 @@ done
 echo "$LOG_TAG ✅ PostgreSQL is ready"
 
 # ─────────────────────────────────────────────
-# 🐘 Load "Dump.sql"
+# 🐘 Load dump.sql (optional)
 # ─────────────────────────────────────────────
-
 if [ -f "$DUMP_FILE" ]; then
-  echo "$LOG_TAG 🔄 Resetting schema and importing $DUMP_FILE..."
-  docker exec -e PGPASSWORD="$POSTGRES_PASSWORD" "$POSTGRES_CONTAINER_NAME" \
-    psql -U "$POSTGRES_USERNAME" -d "$POSTGRES_DATABASE" \
-    -c "DROP SCHEMA public CASCADE; CREATE SCHEMA public;" 2>/dev/null
+  echo "$LOG_TAG 🔄 Importing dump: $DUMP_FILE"
+
+  if [ "${DROP_SCHEMA_BEFORE_IMPORT}" = "true" ]; then
+    echo "$LOG_TAG ⚠️ Dropping schema before import"
+    docker exec -e PGPASSWORD="$POSTGRES_PASSWORD" "$POSTGRES_CONTAINER_NAME" \
+      psql -U "$POSTGRES_USERNAME" -d "$POSTGRES_DATABASE" \
+      -c "DROP SCHEMA public CASCADE; CREATE SCHEMA public;" 2>/dev/null
+  fi
 
   docker exec -i "$POSTGRES_CONTAINER_NAME" \
     psql -U "$POSTGRES_USERNAME" -d "$POSTGRES_DATABASE" -q -1 < "$DUMP_FILE"
 
   echo "$LOG_TAG ✅ Dump imported"
 else
-  echo "$LOG_TAG ⚠️ $DUMP_FILE not found, skipping import"
+  echo "$LOG_TAG ⚠️ Dump file not found: $DUMP_FILE — skipping import"
 fi
 
 # ─────────────────────────────────────────────
@@ -79,9 +104,22 @@ echo "$LOG_TAG ✅ Backend container is ready"
 # ─────────────────────────────────────────────
 # 🌐 Site check
 # ─────────────────────────────────────────────
-echo "$LOG_TAG 🌍 Checking site on http://localhost ..."
-if curl -sSf http://localhost > /dev/null; then
-  echo "$LOG_TAG ✅ Site is reachable at http://localhost"
+
+if [ "$USE_HTTPS" = "true" ]; then
+  URL="https://${NGINX_SERVER_NAME}"
 else
-  echo "$LOG_TAG ⚠️ Site is not reachable at http://localhost (check nginx config)"
+  # Если порт 80, убираем из URL, иначе добавляем
+  if [ "$PORT" = "80" ]; then
+    URL="http://${NGINX_SERVER_NAME}"
+  else
+    URL="http://${NGINX_SERVER_NAME}:$PORT"
+  fi
+fi
+
+echo "$LOG_TAG 🌍 Checking site on $URL ..."
+
+if curl -sSf "$URL" > /dev/null; then
+  echo "$LOG_TAG ✅ Site is reachable at $URL"
+else
+  echo "$LOG_TAG ⚠️ Site is not reachable at $URL (check nginx config)"
 fi

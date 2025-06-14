@@ -5,6 +5,7 @@ services:
   db:
     image: postgres:15.5
     container_name: ${POSTGRES_CONTAINER_NAME}
+    env_file: .env
     environment:
       POSTGRES_USER: ${POSTGRES_USERNAME}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -19,17 +20,25 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "${LOG_MAX_SIZE}"
+        max-file: "${LOG_MAX_FILE}"
 
   # ─────────────────────────────
   # ⚙️ Backend (Node.js / NestJS)
   # ─────────────────────────────
   backend:
     build:
-      context: .
-      dockerfile: Dockerfile
+      context: ${BACKEND_BUILD_CONTEXT}
+      dockerfile: ${BACKEND_DOCKERFILE}
+      args:
+        PORT: ${PORT}
     container_name: ${BACKEND_CONTAINER}
+    env_file: .env
     environment:
-      NODE_ENV: production
+      NODE_ENV: ${APP_ENV}
       PORT: ${PORT}
       POSTGRES_HOST: ${POSTGRES_HOST}
       POSTGRES_PORT: ${POSTGRES_PORT}
@@ -45,27 +54,25 @@ services:
       db:
         condition: service_healthy
     restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "${LOG_MAX_SIZE}"
+        max-file: "${LOG_MAX_FILE}"
 
-  # ─────────────────────────────
+    # ─────────────────────────────
   # 🌐 NGINX (local or prod)
   # ─────────────────────────────
   nginx:
     image: nginx:alpine
-    container_name: grippo_nginx
+    container_name: ${NGINX_CONTAINER_NAME}
     ports:
       - "80:80"
       - "443:443"
     volumes:
-      - ./nginx/${NGINX_TEMPLATE_FILE}:/etc/nginx/templates/nginx.template.conf:ro
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
       - ./certbot/www:/var/www/certbot:ro
       - ./certbot/conf:/etc/letsencrypt
-    environment:
-      - PORT=${PORT}
-      - NGINX_SERVER_NAME=${NGINX_SERVER_NAME}
-    command: >
-      /bin/sh -c "
-      envsubst '${PORT} ${NGINX_SERVER_NAME}' < /etc/nginx/templates/nginx.template.conf > /etc/nginx/conf.d/default.conf &&
-      nginx -g 'daemon off;'"
     depends_on:
       - backend
     restart: unless-stopped
@@ -75,7 +82,7 @@ services:
   # ─────────────────────────────
   certbot:
     image: certbot/certbot
-    container_name: grippo_certbot
+    container_name: ${CERTBOT_CONTAINER_NAME}
     volumes:
       - ./certbot/www:/var/www/certbot
       - ./certbot/conf:/etc/letsencrypt
@@ -84,7 +91,7 @@ services:
       "trap exit TERM;
       while :; do
         certbot renew --webroot -w /var/www/certbot;
-        sleep 12h & wait $${!};
+        sleep ${CERTBOT_RENEW_INTERVAL} & wait $${!};
       done"
     profiles:
       - certbot
