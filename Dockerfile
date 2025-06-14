@@ -32,8 +32,7 @@ USER appuser
 
 EXPOSE ${PORT}
 
-# HEALTHCHECK (optional)
-# HEALTHCHECK --interval=30s --timeout=10s --start-period=10s --retries=3 \
-#   CMD curl --fail http://localhost:${PORT}/health || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+CMD curl --fail http://localhost:${PORT}/health || exit 1
 
 CMD ["node", "dist/main"]

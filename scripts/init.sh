@@ -32,7 +32,7 @@ echo "$LOG_TAG 🛠 Rendering nginx config from template..."
 bash "$ROOT_DIR/scripts/render-nginx.sh"
 
 # ─────────────────────────────────────────────
-# 🐳 Docker Compose up
+# 🐳 Docker Compose up (с профилем https при необходимости)
 # ─────────────────────────────────────────────
 if [ ! -f "$COMPOSE_FILE" ]; then
   echo "$LOG_TAG ❌ Docker compose file not found at $COMPOSE_FILE"
@@ -40,8 +40,13 @@ if [ ! -f "$COMPOSE_FILE" ]; then
 fi
 
 echo "$LOG_TAG 🐳 Running docker-compose..."
-docker compose --env-file "$ENV_FILE" -f "$COMPOSE_FILE" up -d --build > /dev/null
 
+if [ "$USE_HTTPS" = "true" ]; then
+  echo "$LOG_TAG 🔐 USE_HTTPS=true — using profile 'https'"
+  docker compose --env-file "$ENV_FILE" -f "$COMPOSE_FILE" --profile https up -d --build > /dev/null
+else
+  docker compose --env-file "$ENV_FILE" -f "$COMPOSE_FILE" up -d --build > /dev/null
+fi
 # ─────────────────────────────────────────────
 # 🐘 PostgreSQL wait
 # ─────────────────────────────────────────────
@@ -82,51 +87,28 @@ else
 fi
 
 # ─────────────────────────────────────────────
-# 🛡 Backend wait
+# 🛡 Backend wait (via /health)
 # ─────────────────────────────────────────────
-echo "$LOG_TAG ⏳ Waiting for backend container '$BACKEND_CONTAINER' to be ready..."
+echo "$LOG_TAG ⏳ Waiting for backend healthcheck..."
+
 ATTEMPTS=0
 MAX_ATTEMPTS=30
-
-until docker logs "$BACKEND_CONTAINER" 2>&1 | grep -q "Nest application successfully started"; do
-  sleep 1
-  ((ATTEMPTS++))
-  if [ "$ATTEMPTS" -ge "$MAX_ATTEMPTS" ]; then
-    echo "$LOG_TAG ❌ Backend failed to start within 30 seconds"
-    echo "$LOG_TAG 🔍 Last 20 lines of logs:"
-    docker logs "$BACKEND_CONTAINER" --tail 20
-    exit 1
-  fi
-done
-
-echo "$LOG_TAG ✅ Backend container is ready"
-
-# ─────────────────────────────────────────────
-# 🌐 Site check Swagger UI на /docs
-# ─────────────────────────────────────────────
-
 if [ "$USE_HTTPS" = "true" ]; then
   SCHEME="https"
 else
   SCHEME="http"
 fi
 
-# Если локальный сервер — убираем порт из URL
-if [[ "$NGINX_SERVER_NAME" == "localhost" || "$NGINX_SERVER_NAME" == "127.0.0.1" ]]; then
-  URL="$SCHEME://$NGINX_SERVER_NAME/docs"
-else
-  # Если стандартный порт, не добавляем
-  if { [ "$SCHEME" = "http" ] && [ "$PORT" = "80" ]; } || { [ "$SCHEME" = "https" ] && [ "$PORT" = "443" ]; }; then
-    URL="$SCHEME://$NGINX_SERVER_NAME/docs"
-  else
-    URL="$SCHEME://$NGINX_SERVER_NAME:$PORT/docs"
+# Пингуем backend через NGINX, как будто мы клиент
+BACKEND_URL="$SCHEME://$NGINX_SERVER_NAME/docs"
+
+until curl -sSf "$BACKEND_URL" > /dev/null; do
+  sleep 1
+  ((ATTEMPTS++))
+  if [ "$ATTEMPTS" -ge "$MAX_ATTEMPTS" ]; then
+    echo "$LOG_TAG ❌ Backend failed healthcheck at $BACKEND_URL"
+    exit 1
   fi
-fi
+done
 
-echo "$LOG_TAG 🌍 Checking Swagger UI on $URL ..."
-
-if curl -sSf "$URL" > /dev/null; then
-  echo "$LOG_TAG ✅ Swagger UI is reachable at $URL"
-else
-  echo "$LOG_TAG ⚠️ Swagger UI is NOT reachable at $URL (check nginx config and backend)"
-fi
+echo "$LOG_TAG ✅ Backend is healthy at $BACKEND_URL"

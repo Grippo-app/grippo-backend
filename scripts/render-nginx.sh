@@ -42,6 +42,18 @@ echo "$LOG_TAG 🧩 Using template: $TEMPLATE_FILE"
 # 🔁 Render template → nginx/default.conf
 # ─────────────────────────────────────────────
 echo "$LOG_TAG ✍️ Rendering nginx config..."
+
+# Check required envs
+if [ -z "$BACKEND_HOST" ] || [ -z "$BACKEND_PORT" ]; then
+  echo "$LOG_TAG ❌ BACKEND_HOST or BACKEND_PORT is not set"
+  exit 1
+fi
+
 envsubst '${NGINX_SERVER_NAME} ${BACKEND_HOST} ${BACKEND_PORT}' < "$TEMPLATE_FILE" > "$NGINX_DIR/default.conf"
+
+if [ ! -s "$NGINX_DIR/default.conf" ]; then
+  echo "$LOG_TAG ❌ Rendered nginx config is empty! Check environment variables."
+  exit 1
+fi
 
 echo "$LOG_TAG ✅ Rendered to: $NGINX_DIR/default.conf"

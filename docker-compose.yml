@@ -94,7 +94,7 @@ services:
         sleep ${CERTBOT_RENEW_INTERVAL} & wait $${!};
       done"
     profiles:
-      - certbot
+      - https
 
 volumes:
   pgdata:
