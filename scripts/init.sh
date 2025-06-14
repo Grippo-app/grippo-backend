@@ -102,24 +102,31 @@ done
 echo "$LOG_TAG ✅ Backend container is ready"
 
 # ─────────────────────────────────────────────
-# 🌐 Site check
+# 🌐 Site check Swagger UI на /docs
 # ─────────────────────────────────────────────
 
 if [ "$USE_HTTPS" = "true" ]; then
-  URL="https://${NGINX_SERVER_NAME}"
+  SCHEME="https"
 else
-  # Если порт 80, убираем из URL, иначе добавляем
-  if [ "$PORT" = "80" ]; then
-    URL="http://${NGINX_SERVER_NAME}"
+  SCHEME="http"
+fi
+
+# Если локальный сервер — убираем порт из URL
+if [[ "$NGINX_SERVER_NAME" == "localhost" || "$NGINX_SERVER_NAME" == "127.0.0.1" ]]; then
+  URL="$SCHEME://$NGINX_SERVER_NAME/docs"
+else
+  # Если стандартный порт, не добавляем
+  if { [ "$SCHEME" = "http" ] && [ "$PORT" = "80" ]; } || { [ "$SCHEME" = "https" ] && [ "$PORT" = "443" ]; }; then
+    URL="$SCHEME://$NGINX_SERVER_NAME/docs"
   else
-    URL="http://${NGINX_SERVER_NAME}:$PORT"
+    URL="$SCHEME://$NGINX_SERVER_NAME:$PORT/docs"
   fi
 fi
 
-echo "$LOG_TAG 🌍 Checking site on $URL ..."
+echo "$LOG_TAG 🌍 Checking Swagger UI on $URL ..."
 
 if curl -sSf "$URL" > /dev/null; then
-  echo "$LOG_TAG ✅ Site is reachable at $URL"
+  echo "$LOG_TAG ✅ Swagger UI is reachable at $URL"
 else
-  echo "$LOG_TAG ⚠️ Site is not reachable at $URL (check nginx config)"
+  echo "$LOG_TAG ⚠️ Swagger UI is NOT reachable at $URL (check nginx config and backend)"
 fi
