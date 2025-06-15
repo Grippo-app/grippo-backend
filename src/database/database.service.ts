@@ -1,32 +1,38 @@
-import { SnakeNamingStrategy } from './snake-naming.strategy';
-import { DataSourceOptions } from 'typeorm';
-import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+import {Injectable} from '@nestjs/common';
+import {ConfigService} from '@nestjs/config';
+import {DataSourceOptions} from 'typeorm';
+import {SnakeNamingStrategy} from '../common/snake-naming.strategy';
+import {join} from 'path';
 
 @Injectable()
 export class DatabaseService {
-  constructor(private configService: ConfigService) {}
+    constructor(private configService: ConfigService) {
+    }
 
-  typeOrmConfig(): DataSourceOptions {
-    const entities = [`${__dirname}/../entities/*.entity{.ts,.js}`];
+    typeOrmConfig(): DataSourceOptions {
+        const get = <T = string>(key: string): T => this.configService.get<T>(key);
 
-    return {
-      entities,
-      migrations: [],
-      name: 'default',
-      type: 'postgres',
-      synchronize: this.configService.get('POSTGRES_SYNC') === 'true',
-      logging: this.configService.get('POSTGRES_LOGS') === 'true',
-      namingStrategy: new SnakeNamingStrategy(),
-      migrationsRun: this.configService.get('POSTGRES_MIGRATIONS') === 'true',
-      host: this.configService.get('POSTGRES_HOST'),
-      port: Number(this.configService.get('POSTGRES_PORT')),
-      username: this.configService.get('POSTGRES_USERNAME'),
-      database: this.configService.get('POSTGRES_DATABASE'),
-      password: this.configService.get('POSTGRES_PASSWORD'),
-      extra: {
-        charset: 'utf8mb4_unicode_ci',
-      },
-    };
-  }
+        return {
+            type: 'postgres',
+            name: 'default',
+            host: get('POSTGRES_HOST'),
+            port: get<number>('POSTGRES_PORT'),
+            username: get('POSTGRES_USERNAME'),
+            password: get('POSTGRES_PASSWORD'),
+            database: get('POSTGRES_DATABASE'),
+
+            entities: [join(__dirname, '..', 'entities', '*.entity.{ts,js}')],
+            migrations: [],
+
+            synchronize: get<boolean>('POSTGRES_SYNC'),
+            logging: get<boolean>('POSTGRES_LOGS'),
+            migrationsRun: get<boolean>('POSTGRES_MIGRATIONS'),
+
+            namingStrategy: new SnakeNamingStrategy(),
+
+            extra: {
+                charset: 'utf8mb4_unicode_ci',
+            },
+        };
+    }
 }

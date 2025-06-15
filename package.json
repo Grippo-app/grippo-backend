@@ -1,5 +1,5 @@
 {
-  "name": "usefultraining",
+  "name": "grippo",
   "version": "0.0.1",
   "description": "",
   "author": "",
@@ -37,14 +37,17 @@
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.1",
     "ts-node-dev": "^2.0.0",
-    "typeorm": "^0.3.17"
+    "typeorm": "^0.3.17",
+    "uuid": "^10.0.0"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.0.0",
     "@nestjs/schematics": "^10.0.0",
     "@nestjs/testing": "^10.0.0",
+    "@types/bcryptjs": "^2.4.6",
     "@types/express": "^4.17.17",
     "@types/jest": "^29.5.2",
+    "@types/morgan": "^1.9.9",
     "@types/node": "^20.3.1",
     "@types/supertest": "^2.0.12",
     "@typescript-eslint/eslint-plugin": "^6.0.0",

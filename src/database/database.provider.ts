@@ -1,14 +1,22 @@
-import { DataSource } from 'typeorm';
-import { DatabaseService } from './database.service';
+import {DataSource} from 'typeorm';
+import {DatabaseService} from './database.service';
 
-export const databaseProviders = [
-  {
-    provide: 'DATA_SOURCE',
-    useFactory: async (databaseService: DatabaseService) => {
-      const dataSource = new DataSource(databaseService.typeOrmConfig());
+/**
+ * 🔌 Provides a singleton DataSource instance for TypeORM
+ */
+export const dataSourceProviders = [
+    {
+        provide: 'DATA_SOURCE',
+        useFactory: async (databaseService: DatabaseService) => {
+            const dataSource = new DataSource(databaseService.typeOrmConfig());
 
-      return dataSource.initialize();
+            // Prevent re-initializing if already connected
+            if (!dataSource.isInitialized) {
+                await dataSource.initialize();
+            }
+
+            return dataSource;
+        },
+        inject: [DatabaseService],
     },
-    inject: [DatabaseService],
-  },
 ];

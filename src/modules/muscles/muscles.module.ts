@@ -7,7 +7,7 @@ import {DatabaseModule} from '../../database/database.module';
 @Module({
     imports: [DatabaseModule],
     providers: [MusclesService, ...repositoryProviders],
-    controllers: [MusclesController],
+    controllers: [MusclesController]
 })
 export class MusclesModule {
 }

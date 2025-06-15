@@ -1,67 +1,49 @@
-import {DataSource} from 'typeorm';
-import {UsersEntity} from '../entities/users.entity';
-import {ExercisesEntity} from '../entities/exercises.entity';
-import {IterationsEntity} from '../entities/iterations.entity';
-import {TrainingsEntity} from '../entities/trainings.entity';
-import {MuscleExerciseBundlesEntity} from '../entities/muscle-exercise-bundles.entity';
-import {MusclesEntity} from '../entities/muscles.entity';
-import {ExerciseExamplesEntity} from '../entities/exercise-examples.entity';
-import {MuscleTypesEntity} from "../entities/muscle-types.entity";
-import {UserWeightsEntity} from "../entities/user-weights.entity";
+import { DataSource, EntityTarget } from 'typeorm';
 
+import { UsersEntity } from '../entities/users.entity';
+import { ExercisesEntity } from '../entities/exercises.entity';
+import { IterationsEntity } from '../entities/iterations.entity';
+import { TrainingsEntity } from '../entities/trainings.entity';
+import { ExerciseExampleBundlesEntity } from '../entities/exercise-example-bundles.entity';
+import { MusclesEntity } from '../entities/muscles.entity';
+import { ExerciseExamplesEntity } from '../entities/exercise-examples.entity';
+import { MuscleGroupsEntity } from '../entities/muscle-groups.entity';
+import { WeightHistoryEntity } from '../entities/weight-history.entity';
+import { ExcludedMusclesEntity } from '../entities/excluded-muscles.entity';
+import { EquipmentsEntity } from '../entities/equipments.entity';
+import { ExcludedEquipmentsEntity } from '../entities/excluded-equipments.entity';
+import { EquipmentGroupsEntity } from '../entities/equipment-groups.entity';
+import { ExerciseExamplesEquipmentsEntity } from '../entities/exercise-examples-equipments.entity';
+import { ExerciseExamplesTutorialsEntity } from '../entities/exercise-examples-tutorials.entity';
+
+/**
+ * 📦 Creates a repository provider for a given entity and token
+ */
+function createRepositoryProvider(token: string, entity: EntityTarget<any>) {
+    return {
+        provide: token,
+        useFactory: (dataSource: DataSource) => dataSource.getRepository(entity),
+        inject: ['DATA_SOURCE'],
+    };
+}
+
+/**
+ * 🗂 List of repository providers for DI registration
+ */
 export const repositoryProviders = [
-    {
-        provide: 'USERS_REPOSITORY',
-        useFactory: (dataSource: DataSource) =>
-            dataSource.getRepository(UsersEntity),
-        inject: ['DATA_SOURCE'],
-    },
-    {
-        provide: 'USER_WEIGHTS_REPOSITORY',
-        useFactory: (dataSource: DataSource) =>
-            dataSource.getRepository(UserWeightsEntity),
-        inject: ['DATA_SOURCE'],
-    },
-    {
-        provide: 'EXERCISES_REPOSITORY',
-        useFactory: (dataSource: DataSource) =>
-            dataSource.getRepository(ExercisesEntity),
-        inject: ['DATA_SOURCE'],
-    },
-    {
-        provide: 'ITERATIONS_REPOSITORY',
-        useFactory: (dataSource: DataSource) =>
-            dataSource.getRepository(IterationsEntity),
-        inject: ['DATA_SOURCE'],
-    },
-    {
-        provide: 'TRAININGS_REPOSITORY',
-        useFactory: (dataSource: DataSource) =>
-            dataSource.getRepository(TrainingsEntity),
-        inject: ['DATA_SOURCE'],
-    },
-    {
-        provide: 'MUSCLES_REPOSITORY',
-        useFactory: (dataSource: DataSource) =>
-            dataSource.getRepository(MusclesEntity),
-        inject: ['DATA_SOURCE'],
-    },
-    {
-        provide: 'MUSCLE_TYPES_REPOSITORY',
-        useFactory: (dataSource: DataSource) =>
-            dataSource.getRepository(MuscleTypesEntity),
-        inject: ['DATA_SOURCE'],
-    },
-    {
-        provide: 'MUSCLE_EXERCISE_BUNDLES_REPOSITORY',
-        useFactory: (dataSource: DataSource) =>
-            dataSource.getRepository(MuscleExerciseBundlesEntity),
-        inject: ['DATA_SOURCE'],
-    },
-    {
-        provide: 'EXERCISE_EXAMPLES_REPOSITORY',
-        useFactory: (dataSource: DataSource) =>
-            dataSource.getRepository(ExerciseExamplesEntity),
-        inject: ['DATA_SOURCE'],
-    }
+    createRepositoryProvider('USERS_REPOSITORY', UsersEntity),
+    createRepositoryProvider('WEIGHT_HISTORY_REPOSITORY', WeightHistoryEntity),
+    createRepositoryProvider('EXERCISES_REPOSITORY', ExercisesEntity),
+    createRepositoryProvider('ITERATIONS_REPOSITORY', IterationsEntity),
+    createRepositoryProvider('TRAININGS_REPOSITORY', TrainingsEntity),
+    createRepositoryProvider('MUSCLES_REPOSITORY', MusclesEntity),
+    createRepositoryProvider('MUSCLE_GROUPS_REPOSITORY', MuscleGroupsEntity),
+    createRepositoryProvider('EXCLUDED_MUSCLES_REPOSITORY', ExcludedMusclesEntity),
+    createRepositoryProvider('EXCLUDED_EQUIPMENTS_REPOSITORY', ExcludedEquipmentsEntity),
+    createRepositoryProvider('EQUIPMENTS_REPOSITORY', EquipmentsEntity),
+    createRepositoryProvider('EQUIPMENT_GROUPS_REPOSITORY', EquipmentGroupsEntity),
+    createRepositoryProvider('EXERCISE_EXAMPLES_REPOSITORY', ExerciseExamplesEntity),
+    createRepositoryProvider('EXERCISE_EXAMPLE_BUNDLES_REPOSITORY', ExerciseExampleBundlesEntity),
+    createRepositoryProvider('EXERCISE_EXAMPLES_EQUIPMENTS_REPOSITORY', ExerciseExamplesEquipmentsEntity),
+    createRepositoryProvider('EXERCISE_EXAMPLES_TUTORIALS_REPOSITORY', ExerciseExamplesTutorialsEntity),
 ];

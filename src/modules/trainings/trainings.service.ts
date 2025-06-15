@@ -12,35 +12,30 @@ import {ExerciseExamplesEntity} from "../../entities/exercise-examples.entity";
 @Injectable()
 export class TrainingsService {
     constructor(
-        @Inject('USERS_REPOSITORY')
-        private readonly usersRepository: Repository<UsersEntity>,
-        @Inject('TRAININGS_REPOSITORY')
-        private readonly trainingsRepository: Repository<TrainingsEntity>,
-        @Inject('EXERCISES_REPOSITORY')
-        private readonly exercisesRepository: Repository<ExercisesEntity>,
-        @Inject('ITERATIONS_REPOSITORY')
-        private readonly iterationsRepository: Repository<IterationsEntity>,
-        @Inject('EXERCISE_EXAMPLES_REPOSITORY')
-        private readonly exerciseExamplesRepository: Repository<ExerciseExamplesEntity>,
+        @Inject('USERS_REPOSITORY') private readonly usersRepository: Repository<UsersEntity>,
+        @Inject('TRAININGS_REPOSITORY') private readonly trainingsRepository: Repository<TrainingsEntity>,
+        @Inject('EXERCISES_REPOSITORY') private readonly exercisesRepository: Repository<ExercisesEntity>,
+        @Inject('ITERATIONS_REPOSITORY') private readonly iterationsRepository: Repository<IterationsEntity>,
+        @Inject('EXERCISE_EXAMPLES_REPOSITORY') private readonly exerciseExamplesRepository: Repository<ExerciseExamplesEntity>,
     ) {
     }
 
     async getAllTrainings(user, start, end) {
         if (!moment(start).isValid() || !moment(end).isValid()) {
-            throw new BadRequestException('Wrong date format')
+            throw new BadRequestException('Wrong date format');
         }
 
         return this.trainingsRepository
             .createQueryBuilder('trainings')
-            .where('trainings.userId = :userId', {userId: user.id})
-            .andWhere('date(:start) <= date(trainings.createdAt) and date(:end) >= date(trainings.createdAt)', {
+            .where('trainings.user_id = :userId', {userId: user.id})
+            .andWhere('date(:start) <= date(trainings.created_at) and date(:end) >= date(trainings.created_at)', {
                 start,
-                end
+                end,
             })
             .leftJoinAndSelect('trainings.exercises', 'exercises')
             .leftJoinAndSelect('exercises.exerciseExample', 'exerciseExample')
             .leftJoinAndSelect('exercises.iterations', 'iterations')
-            .addOrderBy('trainings.createdAt', 'DESC')
+            .addOrderBy('trainings.created_at', 'DESC')
             .getMany();
     }
 
@@ -48,72 +43,63 @@ export class TrainingsService {
         return this.trainingsRepository
             .createQueryBuilder('trainings')
             .where('trainings.id = :id', {id})
-            .andWhere('trainings.userId = :userId', {userId: user.id})
+            .andWhere('trainings.user_id = :userId', {userId: user.id})
             .leftJoinAndSelect('trainings.exercises', 'exercises')
             .leftJoinAndSelect('exercises.exerciseExample', 'exerciseExample')
-            .leftJoinAndSelect('exerciseExample.muscleExerciseBundles', 'muscleExerciseBundles')
-            .leftJoinAndSelect('muscleExerciseBundles.muscle', 'muscle')
+            .leftJoinAndSelect('exerciseExample.exerciseExampleBundles', 'exerciseExampleBundles')
+            .leftJoinAndSelect('exerciseExampleBundles.muscle', 'muscle')
             .leftJoinAndSelect('exercises.iterations', 'iterations')
-            .addOrderBy('trainings.createdAt', 'DESC')
+            .addOrderBy('trainings.created_at', 'DESC')
             .getOne();
     }
 
     async setOrUpdateTraining(body: TrainingsRequest, user) {
-        const {exercises, ...rest} = body;
+        return await this.trainingsRepository.manager.transaction(async (manager) => {
+            const {exercises, ...rest} = body;
 
-        const training = new TrainingsEntity();
-        Object.assign(training, rest);
-        training.id = !training.id ? v4() : training.id;
-        training.userId = user.id;
-
-        const exercisesEntities = [];
-        const iterationEntities = [];
-
-        exercises.forEach((el) => {
-            const {iterations, ...reqExercise} = el;
-            const exerciseEntity = new ExercisesEntity();
-            Object.assign(exerciseEntity, reqExercise);
-            exerciseEntity.id = !exerciseEntity.id ? v4() : exerciseEntity.id;
-            exerciseEntity.trainingId = training.id;
-
-            exercisesEntities.push(exerciseEntity);
-
-            iterations.forEach((iter) => {
-                const iterationEntity = new IterationsEntity();
-                Object.assign(iterationEntity, iter);
-                iterationEntity.id = !iterationEntity.id ? v4() : iterationEntity.id;
-                iterationEntity.exerciseId = exerciseEntity.id;
-                iterationEntities.push(iterationEntity);
+            const training = manager.create(TrainingsEntity, {
+                ...rest,
+                id: rest.id ?? v4(),
+                userId: user.id,
             });
+
+            const exerciseEntities: ExercisesEntity[] = [];
+            const iterationEntities: IterationsEntity[] = [];
+
+            for (const el of exercises) {
+                const {iterations, exerciseExampleId, ...exerciseData} = el;
+
+                if (exerciseExampleId) {
+                    const exists = await this.exerciseExamplesRepository.findOneBy({id: exerciseExampleId});
+                    if (!exists) {
+                        throw new BadRequestException(`Invalid exerciseExampleId: ${exerciseExampleId}`);
+                    }
+                }
+
+                const exercise = manager.create(ExercisesEntity, {
+                    ...exerciseData,
+                    id: exerciseData.id ?? v4(),
+                    trainingId: training.id,
+                    exerciseExampleId: exerciseExampleId || null,
+                });
+
+                exerciseEntities.push(exercise);
+
+                for (const iter of iterations) {
+                    const iteration = manager.create(IterationsEntity, {
+                        ...iter,
+                        id: iter.id ?? v4(),
+                        exerciseId: exercise.id,
+                    });
+                    iterationEntities.push(iteration);
+                }
+            }
+
+            await manager.save(training);
+            await manager.save(exerciseEntities);
+            await manager.save(iterationEntities);
+
+            return this.getTrainingById(training.id, user);
         });
-
-        await this.trainingsRepository.save(training);
-        await this.exercisesRepository.save(exercisesEntities);
-        await this.iterationsRepository.save(iterationEntities);
-
-        return this.getTrainingById(training.id, user);
     }
-
-    // todo move it
-    async getExerciseWeight(id: string, user) {
-        return this.exerciseExamplesRepository
-            .createQueryBuilder("exercise_examples")
-            .where('exercise_examples.userId = :userId', {userId: user.id})
-            .andWhere('exercise_examples.id = :id ', {id})
-            .leftJoin('exercise_examples.exercises', "exercises")
-            .leftJoin('exercises.iterations', "iterations")
-            .addSelect([
-                    'exercise_examples.id',
-                    'exercises.id',
-                    'iterations.id',
-                    'MAX(iterations.weight) as max_weight'
-                ]
-            )
-            .groupBy('exercise_examples.id')
-            .addGroupBy('exercises.id')
-            .addGroupBy('iterations.id')
-            .addGroupBy('iterations.weight')
-            .getOne()
-    }
-
 }

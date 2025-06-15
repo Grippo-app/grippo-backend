@@ -1,67 +1,55 @@
 import {Inject, Injectable} from '@nestjs/common';
 import {Repository} from 'typeorm';
-import {MusclesEntity} from "../../entities/muscles.entity";
-import {MuscleTypesEntity} from "../../entities/muscle-types.entity";
-import {MuscleResponse, MuscleTypeResponse} from "./dto/muscle-response";
-import {MuscleStatusEnum} from "../../lib/muscle-status.enum";
+import {MusclesEntity} from '../../entities/muscles.entity';
+import {MuscleGroupsEntity} from '../../entities/muscle-groups.entity';
+import {MuscleGroupsResponse, MuscleResponse} from './dto/muscle-response';
 
 @Injectable()
 export class MusclesService {
     constructor(
         @Inject('MUSCLES_REPOSITORY')
         private readonly musclesRepository: Repository<MusclesEntity>,
-        @Inject('MUSCLE_TYPES_REPOSITORY')
-        private readonly muscleTypeRepository: Repository<MuscleTypesEntity>,
+        @Inject('MUSCLE_GROUPS_REPOSITORY')
+        private readonly muscleGroupsRepository: Repository<MuscleGroupsEntity>
     ) {
     }
 
-    async getMuscles() {
-        const muscleTypes = await this.muscleTypeRepository
-            .createQueryBuilder('muscle_types')
-            .leftJoinAndSelect('muscle_types.muscles', 'muscles')
+    async getPublicMuscles(): Promise<MuscleGroupsResponse[]> {
+        const muscleGroups = await this.muscleGroupsRepository
+            .createQueryBuilder('muscle_groups')
+            .leftJoinAndSelect('muscle_groups.muscles', 'muscles')
+            .leftJoinAndSelect('muscles.muscleGroup', 'muscleGroup')
             .getMany();
 
-        return muscleTypes.map((muscleTypeBundle) => {
-
-                const muscleType = new MuscleTypeResponse()
-                muscleType.id = muscleTypeBundle.id
-                muscleType.name = muscleTypeBundle.name
-                muscleType.type = muscleTypeBundle.type
-                muscleType.createdAt = muscleTypeBundle.createdAt
-                muscleType.updatedAt = muscleTypeBundle.updatedAt
-
-                muscleType.muscles = muscleTypeBundle.muscles.map((muscleBundle) => {
-                    const muscleResponse = new MuscleResponse()
-                    muscleResponse.id = muscleBundle.id
-                    muscleResponse.name = muscleBundle.name
-                    muscleResponse.type = muscleBundle.type
-                    muscleResponse.muscleTypeId = muscleBundle.muscleTypeId
-                    muscleResponse.status = MuscleStatusEnum.MEDIUM
-                    muscleResponse.createdAt = muscleBundle.createdAt
-                    muscleResponse.updatedAt = muscleBundle.updatedAt
-                    return muscleResponse
-                })
-
-                return muscleType
-            }
-        )
+        return muscleGroups.map(group => this.buildMuscleGroupResponse(group));
     }
 
-    async getMuscleById(id: string) {
-        const muscle: MusclesEntity = await this.musclesRepository
-            .createQueryBuilder('muscles')
-            .where('muscles.id = :id', {id})
-            .getOne();
+    private buildMuscleGroupResponse(group: MuscleGroupsEntity): MuscleGroupsResponse {
+        const response = new MuscleGroupsResponse();
+        response.id = group.id;
+        response.name = group.name;
+        response.type = group.type;
+        response.createdAt = group.createdAt;
+        response.updatedAt = group.updatedAt;
 
-        const muscleResponse = new MuscleResponse()
-        muscleResponse.id = muscle.id
-        muscleResponse.name = muscle.name
-        muscleResponse.type = muscle.type
-        muscleResponse.muscleTypeId = muscle.muscleTypeId
-        muscleResponse.status = MuscleStatusEnum.MEDIUM
-        muscleResponse.createdAt = muscle.createdAt
-        muscleResponse.updatedAt = muscle.updatedAt
+        response.muscles = (group.muscles || []).map(muscle => this.buildMuscleResponse(muscle));
+        return response;
+    }
 
-        return muscleResponse
+    private buildMuscleResponse(muscle: MusclesEntity): MuscleResponse {
+        if (!muscle || !muscle.muscleGroup) {
+            throw new Error(`❗ Muscle or muscleGroup is missing. Muscle = ${JSON.stringify(muscle)}`);
+        }
+
+        const response = new MuscleResponse();
+        response.id = muscle.id;
+        response.name = muscle.name;
+        response.type = muscle.type;
+        response.muscleGroupId = muscle.muscleGroup.id;
+        response.createdAt = muscle.createdAt;
+        response.updatedAt = muscle.updatedAt;
+        response.recoveryTimeHours = muscle.recoveryTimeHours;
+
+        return response;
     }
 }

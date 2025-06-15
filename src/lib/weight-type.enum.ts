@@ -1,4 +1,5 @@
 export enum WeightTypeEnum {
     Free = "free",
-    Fixed = "fixed"
+    Fixed = "fixed",
+    BodyWeight = "body_weight"
 }

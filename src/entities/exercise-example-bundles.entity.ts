@@ -10,8 +10,8 @@ import {
 import {ExerciseExamplesEntity} from './exercise-examples.entity';
 import {MusclesEntity} from './muscles.entity';
 
-@Entity({name: 'muscle_exercise_bundles'})
-export class MuscleExerciseBundlesEntity {
+@Entity({name: 'exercise_example_bundles'})
+export class ExerciseExampleBundlesEntity {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
@@ -24,19 +24,13 @@ export class MuscleExerciseBundlesEntity {
     @Column({default: null})
     muscleId: string;
 
-    @CreateDateColumn({
-        type: 'timestamp without time zone',
-        name: 'created_at',
-    })
+    @CreateDateColumn({type: 'timestamp without time zone', name: 'created_at',})
     createdAt: Date;
 
-    @UpdateDateColumn({
-        type: 'timestamp without time zone',
-        name: 'updated_at',
-    })
+    @UpdateDateColumn({type: 'timestamp without time zone', name: 'updated_at',})
     updatedAt: Date;
 
-    @ManyToOne(() => ExerciseExamplesEntity, (exerciseExample) => exerciseExample.muscleExerciseBundles, {
+    @ManyToOne(() => ExerciseExamplesEntity, (exerciseExample) => exerciseExample.exerciseExampleBundles, {
             onDelete: 'CASCADE',
             orphanedRowAction: 'delete',
         },
@@ -44,7 +38,7 @@ export class MuscleExerciseBundlesEntity {
     @JoinColumn({name: 'exercise_example_id'})
     exerciseExample: ExerciseExamplesEntity;
 
-    @ManyToOne(() => MusclesEntity, (muscle) => muscle.muscleExerciseBundles, {
+    @ManyToOne(() => MusclesEntity, (muscle) => muscle.exerciseExampleBundles, {
         onDelete: 'CASCADE',
         orphanedRowAction: 'delete',
     })

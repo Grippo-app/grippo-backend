@@ -7,38 +7,47 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { ExercisesEntity } from './exercises.entity';
+import {ExercisesEntity} from './exercises.entity';
 
-@Entity({ name: 'iterations' })
+@Entity({name: 'iterations'})
 export class IterationsEntity {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
+    @PrimaryGeneratedColumn('uuid')
+    id: string;
 
-  @Column({ type: 'double precision', default: null })
-  weight: number;
+    @Column({
+        type: 'decimal',
+        precision: 5,
+        scale: 1,
+        nullable: true,
+        transformer: {
+            to: (value: number) => value,
+            from: (value: string) => parseFloat(value),
+        },
+    })
+    weight: number | null;
 
-  @Column({ default: null })
-  repetitions: number;
+    @Column({type: 'int', nullable: true})
+    repetitions: number | null;
 
-  @Column({ default: null })
-  exerciseId: string;
+    @Column({name: 'exercise_id', nullable: true})
+    exerciseId: string | null;
 
-  @CreateDateColumn({
-    type: 'timestamp without time zone',
-    name: 'created_at',
-  })
-  createdAt: Date;
+    @CreateDateColumn({
+        type: 'timestamp without time zone',
+        name: 'created_at',
+    })
+    createdAt: Date;
 
-  @UpdateDateColumn({
-    type: 'timestamp without time zone',
-    name: 'updated_at',
-  })
-  updatedAt: Date;
+    @UpdateDateColumn({
+        type: 'timestamp without time zone',
+        name: 'updated_at',
+    })
+    updatedAt: Date;
 
-  @ManyToOne(() => ExercisesEntity, (exercise) => exercise.iterations, {
-    onDelete: 'CASCADE',
-    orphanedRowAction: 'delete',
-  })
-  @JoinColumn({ name: 'exercise_id' })
-  exercise: ExercisesEntity;
+    @ManyToOne(() => ExercisesEntity, (exercise) => exercise.iterations, {
+        onDelete: 'CASCADE',
+        orphanedRowAction: 'delete',
+    })
+    @JoinColumn({name: 'exercise_id'})
+    exercise: ExercisesEntity;
 }

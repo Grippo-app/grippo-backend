@@ -1,12 +1,12 @@
 import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  OneToMany,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
+    Column,
+    CreateDateColumn,
+    Entity,
+    JoinColumn,
+    ManyToOne,
+    OneToMany,
+    PrimaryGeneratedColumn,
+    UpdateDateColumn,
 } from 'typeorm';
 import {TrainingsEntity} from './trainings.entity';
 import {IterationsEntity} from './iterations.entity';
@@ -17,23 +17,41 @@ export class ExercisesEntity {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
-    @Column({default: null})
-    name: string;
+    @Column({type: 'varchar', nullable: true})
+    name: string | null;
 
-    @Column({type: 'double precision', default: null})
-    volume: number;
+    @Column({
+        type: 'decimal',
+        precision: 10,
+        scale: 1,
+        nullable: true,
+        transformer: {
+            to: (value: number) => value,
+            from: (value: string) => parseFloat(value),
+        },
+    })
+    volume: number | null;
 
-    @Column({default: null})
-    repetitions: number;
+    @Column({type: 'int', nullable: true})
+    repetitions: number | null;
 
-    @Column({type: 'double precision', default: null})
-    intensity: number;
+    @Column({
+        type: 'decimal',
+        precision: 5,
+        scale: 2,
+        nullable: true,
+        transformer: {
+            to: (value: number) => value,
+            from: (value: string) => parseFloat(value),
+        },
+    })
+    intensity: number | null;
 
-    @Column({default: null})
-    trainingId: string;
+    @Column({name: 'training_id', type: 'uuid', nullable: true})
+    trainingId: string | null;
 
-    @Column({default: null})
-    exerciseExampleId: string;
+    @Column({name: 'exercise_example_id', type: 'uuid', nullable: true})
+    exerciseExampleId: string | null;
 
     @CreateDateColumn({
         type: 'timestamp without time zone',
@@ -55,13 +73,14 @@ export class ExercisesEntity {
     training: TrainingsEntity;
 
     @ManyToOne(() => ExerciseExamplesEntity, (exerciseExample) => exerciseExample.exercises, {
-        orphanedRowAction: 'delete'
+        onDelete: 'SET NULL',
+        orphanedRowAction: 'nullify',
     })
     @JoinColumn({name: 'exercise_example_id'})
     exerciseExample: ExerciseExamplesEntity;
 
     @OneToMany(() => IterationsEntity, (iterations) => iterations.exercise, {
-        cascade: ['remove']
+        cascade: ['remove'],
     })
     iterations: IterationsEntity[];
 }

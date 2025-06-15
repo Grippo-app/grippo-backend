@@ -8,11 +8,15 @@ import {
     PrimaryGeneratedColumn,
     UpdateDateColumn,
 } from 'typeorm';
-import {MuscleExerciseBundlesEntity} from './muscle-exercise-bundles.entity';
+import {ExerciseExampleBundlesEntity} from './exercise-example-bundles.entity';
 import {UsersEntity} from "./users.entity";
 import {ExercisesEntity} from "./exercises.entity";
 import {ExerciseCategoryEnum} from "../lib/exercise-category.enum";
 import {WeightTypeEnum} from "../lib/weight-type.enum";
+import {ExerciseExamplesEquipmentsEntity} from "./exercise-examples-equipments.entity";
+import {ForceTypeEnum} from "../lib/force-type.enum";
+import {ExperienceEnum} from "../lib/experience.enum";
+import {ExerciseExamplesTutorialsEntity} from "./exercise-examples-tutorials.entity";
 
 @Entity({name: 'exercise_examples'})
 export class ExerciseExamplesEntity {
@@ -28,41 +32,41 @@ export class ExerciseExamplesEntity {
     @Column({default: null})
     imageUrl: string;
 
-    @Column({default: null})
-    userId: string;
-
     @Column({type: 'enum', enum: ExerciseCategoryEnum, nullable: true})
     category: ExerciseCategoryEnum;
 
     @Column({type: 'enum', enum: WeightTypeEnum, nullable: true})
     weightType: WeightTypeEnum;
 
-    @CreateDateColumn({
-        type: 'timestamp without time zone',
-        name: 'created_at',
-    })
+    @Column({type: 'enum', enum: ForceTypeEnum, nullable: true})
+    forceType: ForceTypeEnum;
+
+    @Column({type: 'enum', enum: ExperienceEnum, nullable: true})
+    experience: ExperienceEnum;
+
+    @CreateDateColumn({type: 'timestamp without time zone', name: 'created_at',})
     createdAt: Date;
 
-    @UpdateDateColumn({
-        type: 'timestamp without time zone',
-        name: 'updated_at',
-    })
+    @UpdateDateColumn({type: 'timestamp without time zone', name: 'updated_at',})
     updatedAt: Date;
 
-    @OneToMany(() => MuscleExerciseBundlesEntity, (muscleExerciseBundle) => muscleExerciseBundle.exerciseExample, {
-        cascade: ['remove'],
+    @OneToMany(() => ExerciseExampleBundlesEntity, (exerciseExampleBundle) => exerciseExampleBundle.exerciseExample, {
+        cascade: ['remove']
     })
-    muscleExerciseBundles: MuscleExerciseBundlesEntity[];
+    exerciseExampleBundles: ExerciseExampleBundlesEntity[];
 
-    @ManyToOne(() => UsersEntity, (user) => user.exerciseExamples, {
-        onDelete: 'CASCADE',
-        orphanedRowAction: 'delete'
+    @OneToMany(() => ExerciseExamplesTutorialsEntity, (tutorial) => tutorial.exerciseExample, {
+        cascade: ['remove']
     })
-    @JoinColumn({name: 'user_id'})
-    user: UsersEntity;
+    tutorials: ExerciseExamplesTutorialsEntity[];
 
     @OneToMany(() => ExercisesEntity, (exercises) => exercises.exerciseExample, {
         cascade: ['remove']
     })
     exercises: ExercisesEntity[];
+
+    @OneToMany(() => ExerciseExamplesEquipmentsEntity, (exerciseExampleRefs) => exerciseExampleRefs.exerciseExample, {
+        cascade: ['remove']
+    })
+    equipmentRefs: ExerciseExamplesEquipmentsEntity[];
 }

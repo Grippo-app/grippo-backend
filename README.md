@@ -1,73 +1,46 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+## 🗂 Project Structure
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+### 1. `Dockerfile` — production image builder 📦
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+Builds a clean, production-ready Docker image for the NestJS backend:
 
-## Description
+- Installs dependencies via `npm ci`
+- Builds the app using `npm run build`
+- Copies `dist/` and `node_modules` into a minimal runtime image
+- Exposes port `3000`
+- Launches the app using `node dist/main`
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+---
 
-## Installation
+### 2. `docker-compose.yml` — service orchestration 🧩
 
-```bash
-$ npm install
-```
+Defines and runs multi-container Docker applications:
 
-## Running the app
+#### 🛢 `db` (PostgreSQL)
 
-```bash
-# development
-$ npm run start
+- Uses the official `postgres:15.5` image
+- Reads credentials and config from `.env`
+- Persists data in a `pgdata` Docker volume
+- Waits for readiness via `pg_isready` healthcheck
 
-# watch mode
-$ npm run start:dev
+#### 🧠 `backend` (NestJS)
 
-# production mode
-$ npm run start:prod
-```
+- Built from the local `Dockerfile`
+- Waits for the `db` service to become healthy
+- Maps internal port `3000` to `${PORT}` (e.g. `3010`)
+- Automatically restarts on failure (`restart: unless-stopped`)
 
-## Test
+---
 
-```bash
-# unit tests
-$ npm run test
+### 3. `deploy.sh` — cold start script 🚀
 
-# e2e tests
-$ npm run test:e2e
+Automates first-time setup and local initialization:
 
-# test coverage
-$ npm run test:cov
-```
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](LICENSE).
+- Loads environment variables from `.env`
+- Starts services via `docker compose up --build`
+- Waits 10 seconds for PostgreSQL to initialize
+- If `dump.sql` exists:
+    - Drops and recreates the `public` schema
+    - Imports the SQL dump into the database
+- Waits for the backend to become reachable on `${PORT}`
+- Confirms successful startup via terminal output
