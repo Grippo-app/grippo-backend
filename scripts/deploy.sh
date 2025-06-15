@@ -46,7 +46,7 @@ set -a
 source "$ENV_FILE" || { log_error ".env syntax error"; exit 1; }
 set +a
 
-REQUIRED_VARS=(USE_HTTPS NGINX_SERVER_NAME BACKEND_HOST BACKEND_PORT POSTGRES_CONTAINER_NAME POSTGRES_DATABASE POSTGRES_USERNAME POSTGRES_PASSWORD)
+REQUIRED_VARS=(USE_HTTPS NGINX_SERVER_NAME BACKEND_HOST BACKEND_PORT POSTGRES_CONTAINER_NAME POSTGRES_DATABASE POSTGRES_USERNAME POSTGRES_PASSWORD POSTGRES_PORT)
 for var in "${REQUIRED_VARS[@]}"; do
   if [ -z "${!var}" ]; then
     log_error "Missing required environment variable: $var"
@@ -55,6 +55,17 @@ for var in "${REQUIRED_VARS[@]}"; do
 done
 
 log_success "Environment variables loaded"
+log_step_end
+
+log_step_start "🔎 Environment overview"
+log_info "USE_HTTPS = $USE_HTTPS"
+log_info "NGINX_SERVER_NAME = $NGINX_SERVER_NAME"
+log_info "BACKEND_HOST = $BACKEND_HOST"
+log_info "BACKEND_PORT = $BACKEND_PORT"
+log_info "POSTGRES_CONTAINER_NAME = $POSTGRES_CONTAINER_NAME"
+log_info "POSTGRES_DATABASE = $POSTGRES_DATABASE"
+log_info "POSTGRES_USERNAME = $POSTGRES_USERNAME"
+log_info "POSTGRES_PORT = $POSTGRES_PORT"
 log_step_end
 
 # ─────────────────────────────────────────────
