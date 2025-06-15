@@ -36,10 +36,10 @@ async function bootstrap() {
     // app.setGlobalPrefix('api');
 
     // ✅ Start the app
-    const port = configService.get<number>('PORT');
+    const port = configService.get<number>('BACKEND_PORT');
 
     if (!port) {
-        throw new Error('❌ Environment variable PORT is required');
+        throw new Error('❌ Environment variable BACKEND_PORT is required');
     }
 
     try {
