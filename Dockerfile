@@ -16,9 +16,9 @@ RUN npm run build
 # ─────────────────────────────
 FROM node:20-slim
 
-ARG PORT=3010
+ARG APP_PORT=3010
 ENV NODE_ENV=production
-ENV PORT=${PORT}
+ENV PORT=$APP_PORT
 
 WORKDIR /app
 
@@ -30,9 +30,9 @@ COPY --from=builder --chown=appuser:appuser /app/package.json ./
 
 USER appuser
 
-EXPOSE ${PORT}
+EXPOSE $PORT
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-CMD curl --fail http://localhost:${PORT}/health || exit 1
+  CMD curl --fail http://localhost:$PORT/health || exit 1
 
 CMD ["node", "dist/main"]

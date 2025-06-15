@@ -1,5 +1,6 @@
 #!/bin/bash
 set -e
+trap 'last_code=$?; log_error "Script failed (exit code: $last_code) at line $LINENO"; exit $last_code' ERR
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
@@ -17,6 +18,7 @@ if [ ! -f "$ENV_FILE" ]; then
 fi
 
 set -a
+# shellcheck disable=SC1090
 source "$ENV_FILE"
 set +a
 
@@ -33,19 +35,35 @@ if [ ! -f "$TEMPLATE_FILE" ]; then
   exit 1
 fi
 
+if [ -z "$NGINX_SERVER_NAME" ]; then
+  log_error "NGINX_SERVER_NAME is not set"
+  exit 1
+fi
+
+if [ -z "$BACKEND_HOST" ]; then
+  log_error "BACKEND_HOST is not set"
+  exit 1
+fi
+
+if [ -z "$BACKEND_PORT" ]; then
+  log_error "BACKEND_PORT is not set"
+  exit 1
+fi
+
+if [[ "$BACKEND_HOST" =~ [^a-zA-Z0-9_.-] ]]; then
+  log_error "BACKEND_HOST contains unsupported characters: $BACKEND_HOST"
+  exit 1
+fi
+
+if [[ "$NGINX_SERVER_NAME" =~ [^a-zA-Z0-9_.-] ]]; then
+  log_error "NGINX_SERVER_NAME contains unsupported characters: $NGINX_SERVER_NAME"
+  exit 1
+fi
+
 log_info "🧩 Using template: $TEMPLATE_FILE"
 log_info "✍️ Rendering nginx config..."
 
-if [ -z "$BACKEND_HOST" ] || [ -z "$BACKEND_PORT" ]; then
-  log_error "BACKEND_HOST or BACKEND_PORT is not set"
-  exit 1
-fi
-
-envsubst '${NGINX_SERVER_NAME} ${BACKEND_HOST} ${BACKEND_PORT}' < "$TEMPLATE_FILE" > "$NGINX_DIR/default.conf"
-
-if [ ! -s "$NGINX_DIR/default.conf" ]; then
-  log_error "Rendered nginx config is empty! Check environment variables."
-  exit 1
-fi
+envsubst '${NGINX_SERVER_NAME} ${BACKEND_HOST} ${BACKEND_PORT}' \
+  < "$TEMPLATE_FILE" > "$NGINX_DIR/default.conf"
 
 log_success "Rendered to: $NGINX_DIR/default.conf"

@@ -127,11 +127,6 @@ until docker exec "$POSTGRES_CONTAINER_NAME" pg_isready -U "$POSTGRES_USERNAME" 
     docker compose logs "$POSTGRES_CONTAINER_NAME"
     exit 1
   fi
-
-  docker ps | grep "$POSTGRES_CONTAINER_NAME" > /dev/null || {
-    log_error "PostgreSQL container is not running"
-    exit 1
-  }
 done
 
 log_success "PostgreSQL is ready"
