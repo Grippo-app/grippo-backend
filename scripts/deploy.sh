@@ -18,19 +18,6 @@ ENV_FILE="$ROOT_DIR/.env"
 COMPOSE_FILE="$ROOT_DIR/${DOCKER_COMPOSE_FILE:-docker-compose.yml}"
 DUMP_FILE="$ROOT_DIR/${DB_DUMP_FILE:-scripts/dump.sql}"
 
-APP_NAME="${APP_NAME:-App}"
-APP_VERSION="${APP_VERSION:-latest}"
-
-# ─────────────────────────────────────────────
-# 🚀 Initialization Start
-# ─────────────────────────────────────────────
-
-log_step_start "🚀 Initialization"
-log_info "App: $APP_NAME"
-log_info "Version: $APP_VERSION"
-log_info "ENV File: $(basename \"$ENV_FILE\")"
-log_step_end
-
 # ─────────────────────────────────────────────
 # 📦 Load .env
 # ─────────────────────────────────────────────
@@ -46,7 +33,7 @@ set -a
 source "$ENV_FILE" || { log_error ".env syntax error"; exit 1; }
 set +a
 
-REQUIRED_VARS=(USE_HTTPS NGINX_SERVER_NAME BACKEND_HOST BACKEND_PORT POSTGRES_CONTAINER_NAME POSTGRES_DATABASE POSTGRES_USERNAME POSTGRES_PASSWORD POSTGRES_PORT)
+REQUIRED_VARS=(BACKEND_HOST BACKEND_PORT POSTGRES_CONTAINER_NAME POSTGRES_DATABASE POSTGRES_USERNAME POSTGRES_PASSWORD POSTGRES_PORT)
 for var in "${REQUIRED_VARS[@]}"; do
   if [ -z "${!var}" ]; then
     log_error "Missing required environment variable: $var"
@@ -55,41 +42,6 @@ for var in "${REQUIRED_VARS[@]}"; do
 done
 
 log_success "Environment variables loaded"
-log_step_end
-
-log_step_start "🔎 Environment overview"
-log_info "USE_HTTPS = $USE_HTTPS"
-log_info "NGINX_SERVER_NAME = $NGINX_SERVER_NAME"
-log_info "BACKEND_HOST = $BACKEND_HOST"
-log_info "BACKEND_PORT = $BACKEND_PORT"
-log_info "POSTGRES_CONTAINER_NAME = $POSTGRES_CONTAINER_NAME"
-log_info "POSTGRES_DATABASE = $POSTGRES_DATABASE"
-log_info "POSTGRES_USERNAME = $POSTGRES_USERNAME"
-log_info "POSTGRES_PORT = $POSTGRES_PORT"
-log_step_end
-
-# ─────────────────────────────────────────────
-# 🛠 Render nginx config
-# ─────────────────────────────────────────────
-
-log_step_start "🛠 Rendering nginx config"
-
-if [ ! -f "$ROOT_DIR/scripts/render-nginx.sh" ]; then
-  log_error "render-nginx.sh script not found"
-  exit 1
-fi
-
-bash "$ROOT_DIR/scripts/render-nginx.sh" || {
-  log_error "render-nginx.sh execution failed"
-  exit 1
-}
-
-if [ ! -s "$ROOT_DIR/nginx/default.conf" ]; then
-  log_error "nginx/default.conf is empty after rendering. Check required variables."
-  exit 1
-fi
-
-log_success "nginx/default.conf rendered successfully"
 log_step_end
 
 # ─────────────────────────────────────────────
@@ -108,10 +60,7 @@ if [ ! -f "$COMPOSE_FILE" ]; then
   exit 1
 fi
 
-PROFILE_ARG=""
-[ "$USE_HTTPS" = "true" ] && PROFILE_ARG="--profile https"
-
-docker compose --env-file "$ENV_FILE" -f "$COMPOSE_FILE" $PROFILE_ARG up -d --build > /dev/null || {
+docker compose --env-file "$ENV_FILE" -f "$COMPOSE_FILE" up -d --build > /dev/null || {
   log_error "Failed to start Docker containers"
   exit 1
 }
@@ -173,44 +122,8 @@ fi
 log_step_end
 
 # ─────────────────────────────────────────────
-# 🛡 Backend healthcheck (/docs)
-# ─────────────────────────────────────────────
-
-log_step_start "🛡 Checking backend (Swagger UI)"
-
-SCHEME="http"
-[ "$USE_HTTPS" = "true" ] && SCHEME="https"
-BACKEND_URL="$SCHEME://$NGINX_SERVER_NAME/docs"
-
-ATTEMPTS=0
-MAX_ATTEMPTS=30
-
-while true; do
-  status_code=$(curl -s -o /dev/null -w "%{http_code}" "$BACKEND_URL")
-
-  if [ "$status_code" -eq 200 ]; then
-    break
-  fi
-
-  ((ATTEMPTS++))
-  log_info "Waiting for backend... status: $status_code (attempt $ATTEMPTS of $MAX_ATTEMPTS)"
-
-  if [ "$ATTEMPTS" -ge "$MAX_ATTEMPTS" ]; then
-    log_error "Backend is unreachable at $BACKEND_URL or returned error (last status: $status_code)"
-    docker compose logs
-    exit 1
-  fi
-
-  sleep 1
-done
-
-log_success "Swagger UI is reachable"
-log_step_end
-
-# ─────────────────────────────────────────────
 # ✅ Done
 # ─────────────────────────────────────────────
 
 echo ""
 echo "✅ Initialization complete!"
-echo "📌 Access your app at: $BACKEND_URL"
