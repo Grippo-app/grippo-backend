@@ -45,10 +45,10 @@ log_success "Environment variables loaded"
 log_step_end
 
 # ─────────────────────────────────────────────
-# 🐳 Docker Compose Up
+# 🐳 Docker Compose Reset & Up
 # ─────────────────────────────────────────────
 
-log_step_start "🐳 Starting containers"
+log_step_start "🐳 Resetting Docker containers"
 
 if ! command -v docker &>/dev/null; then
   log_error "Docker is not installed"
@@ -60,12 +60,19 @@ if [ ! -f "$COMPOSE_FILE" ]; then
   exit 1
 fi
 
+log_info "Stopping and removing old containers, volumes, networks..."
+docker compose --env-file "$ENV_FILE" -f "$COMPOSE_FILE" down -v > /dev/null || {
+  log_error "Failed to stop and remove containers"
+  exit 1
+}
+
+log_info "Building and starting containers..."
 docker compose --env-file "$ENV_FILE" -f "$COMPOSE_FILE" up -d --build > /dev/null || {
   log_error "Failed to start Docker containers"
   exit 1
 }
 
-log_success "Containers started successfully"
+log_success "Containers reset and started successfully"
 log_step_end
 
 # ─────────────────────────────────────────────
