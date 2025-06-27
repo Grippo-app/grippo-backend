@@ -292,6 +292,7 @@ CREATE TABLE public.exercise_examples
     name        character varying,
     created_at  timestamp without time zone DEFAULT now()                     NOT NULL,
     updated_at  timestamp without time zone DEFAULT now()                     NOT NULL,
+    image_url   character varying,
     description character varying,
     category    public.exercise_examples_category_enum,
     weight_type public.exercise_examples_weight_type_enum,
