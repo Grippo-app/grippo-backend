@@ -20,13 +20,6 @@ export class EquipmentResponse {
 
     @ApiProperty({type: Date, example: new Date().toISOString()})
     updatedAt: Date;
-
-    @ApiProperty({
-        type: 'string',
-        example: 'https://static.vecteezy.com/system/resources/thumbnails/022/653/711/small/treadmill.jpg',
-        required: false,
-    })
-    imageUrl?: string;
 }
 
 export class EquipmentGroupResponse {

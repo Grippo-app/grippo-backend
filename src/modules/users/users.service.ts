@@ -134,7 +134,6 @@ export class UsersService {
             dto.name = eq.name;
             dto.equipmentGroupId = eq.equipmentGroup.id;
             dto.type = eq.type;
-            dto.imageUrl = eq.imageUrl ?? null;
             dto.createdAt = eq.createdAt;
             dto.updatedAt = eq.updatedAt;
 

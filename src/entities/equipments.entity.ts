@@ -25,8 +25,6 @@ export class EquipmentsEntity {
     @Column({type: 'enum', enum: EquipmentEnum, nullable: true})
     type: EquipmentEnum;
 
-    @Column({ nullable: true })
-    imageUrl: string;
 
     @CreateDateColumn({
         type: 'timestamp without time zone',

@@ -44,7 +44,6 @@ export class EquipmentsService {
                 response.equipmentGroupId = equipment.equipmentGroup.id;
                 response.createdAt = equipment.createdAt;
                 response.updatedAt = equipment.updatedAt;
-                response.imageUrl = equipment.imageUrl;
                 return response;
             });
 
