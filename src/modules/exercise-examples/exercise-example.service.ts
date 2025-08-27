@@ -1,10 +1,11 @@
-import {Inject, Injectable} from '@nestjs/common';
+import {Inject, Injectable, NotFoundException} from '@nestjs/common';
 import {UsersEntity} from '../../entities/users.entity';
 import {Repository} from 'typeorm';
 import {v4} from 'uuid';
 import {ExerciseExamplesEntity} from "../../entities/exercise-examples.entity";
 import {ExerciseExampleBundlesEntity} from "../../entities/exercise-example-bundles.entity";
 import {ExerciseExampleRequest} from "./dto/exercise-example.request";
+import {ExerciseExampleCreateResponse} from "./dto/exercise-example.response";
 import {ExerciseExamplesEquipmentsEntity} from "../../entities/exercise-examples-equipments.entity";
 import {ExerciseExamplesTutorialsEntity} from "../../entities/exercise-examples-tutorials.entity";
 import {ExcludedEquipmentsEntity} from "../../entities/excluded-equipments.entity";
@@ -195,5 +196,113 @@ export class ExerciseExampleService {
             recommendations,
             exercises,
         };
+    }
+
+    /**
+     * Create a new exercise example
+     * @param body Exercise example data
+     * @returns Object with exercise example ID
+     */
+    async createExerciseExample(body: ExerciseExampleRequest): Promise<ExerciseExampleCreateResponse> {
+        const {exerciseExampleBundles, equipmentRefs, tutorials, ...rest} = body;
+        const id = v4();
+
+        const exerciseExample = new ExerciseExamplesEntity();
+        Object.assign(exerciseExample, rest);
+        exerciseExample.id = id;
+
+        const bundles = exerciseExampleBundles.map((el) => {
+            const entity = new ExerciseExampleBundlesEntity();
+            Object.assign(entity, el);
+            entity.id = el.id ?? v4();
+            entity.exerciseExampleId = id;
+            return entity;
+        });
+
+        const equipmentRefsEntities = equipmentRefs.map((el) => {
+            const entity = new ExerciseExamplesEquipmentsEntity();
+            entity.equipmentId = el.equipmentId;
+            entity.exerciseExampleId = id;
+            return entity;
+        });
+
+        const tutorialEntities = tutorials.map((el) => {
+            const entity = new ExerciseExamplesTutorialsEntity();
+            entity.value = el.value;
+            entity.title = el.title;
+            entity.language = el.language;
+            entity.author = el.author;
+            entity.resourceType = el.resourceType;
+            entity.exerciseExampleId = id;
+            return entity;
+        });
+
+        await this.exerciseExamplesRepository.manager.transaction(async (manager) => {
+            await manager.save(ExerciseExamplesEntity, exerciseExample);
+            await manager.save(ExerciseExampleBundlesEntity, bundles);
+            await manager.save(ExerciseExamplesEquipmentsEntity, equipmentRefsEntities);
+            await manager.save(ExerciseExamplesTutorialsEntity, tutorialEntities);
+        });
+
+        return {id: id};
+    }
+
+    /**
+     * Update an existing exercise example
+     * @param id Exercise example ID to update
+     * @param body Updated exercise example data
+     */
+    async updateExerciseExample(id: string, body: ExerciseExampleRequest): Promise<void> {
+        // Check if exercise example exists
+        const existingExerciseExample = await this.exerciseExamplesRepository.findOne({
+            where: {id}
+        });
+
+        if (!existingExerciseExample) {
+            throw new NotFoundException(`Exercise example with id ${id} not found`);
+        }
+
+        const {exerciseExampleBundles, equipmentRefs, tutorials, ...rest} = body;
+
+        const exerciseExample = new ExerciseExamplesEntity();
+        Object.assign(exerciseExample, rest);
+        exerciseExample.id = id;
+
+        const bundles = exerciseExampleBundles.map((el) => {
+            const entity = new ExerciseExampleBundlesEntity();
+            Object.assign(entity, el);
+            entity.id = el.id ?? v4();
+            entity.exerciseExampleId = id;
+            return entity;
+        });
+
+        const equipmentRefsEntities = equipmentRefs.map((el) => {
+            const entity = new ExerciseExamplesEquipmentsEntity();
+            entity.equipmentId = el.equipmentId;
+            entity.exerciseExampleId = id;
+            return entity;
+        });
+
+        const tutorialEntities = tutorials.map((el) => {
+            const entity = new ExerciseExamplesTutorialsEntity();
+            entity.value = el.value;
+            entity.title = el.title;
+            entity.language = el.language;
+            entity.author = el.author;
+            entity.resourceType = el.resourceType;
+            entity.exerciseExampleId = id;
+            return entity;
+        });
+
+        await this.exerciseExamplesRepository.manager.transaction(async (manager) => {
+            await manager.delete(ExerciseExampleBundlesEntity, {exerciseExampleId: id});
+            await manager.delete(ExerciseExamplesEquipmentsEntity, {exerciseExampleId: id});
+            await manager.delete(ExerciseExamplesTutorialsEntity, {exerciseExampleId: id});
+
+            await manager.save(ExerciseExamplesEntity, exerciseExample);
+            await manager.save(ExerciseExampleBundlesEntity, bundles);
+            await manager.save(ExerciseExamplesEquipmentsEntity, equipmentRefsEntities);
+            await manager.save(ExerciseExamplesTutorialsEntity, tutorialEntities);
+        });
     }
 }
