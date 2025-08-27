@@ -51,54 +51,6 @@ export class ExerciseExampleService {
             .getOne();
     }
 
-    async setOrUpdateExerciseExample(body: ExerciseExampleRequest): Promise<ExerciseExamplesEntity | null> {
-        const {exerciseExampleBundles, equipmentRefs, tutorials, ...rest} = body;
-        const id = body.id ?? v4();
-
-        const exerciseExample = new ExerciseExamplesEntity();
-        Object.assign(exerciseExample, rest);
-        exerciseExample.id = id;
-
-        const bundles = exerciseExampleBundles.map((el) => {
-            const entity = new ExerciseExampleBundlesEntity();
-            Object.assign(entity, el);
-            entity.id = el.id ?? v4();
-            entity.exerciseExampleId = id;
-            return entity;
-        });
-
-        const equipmentRefsEntities = equipmentRefs.map((el) => {
-            const entity = new ExerciseExamplesEquipmentsEntity();
-            entity.equipmentId = el.equipmentId;
-            entity.exerciseExampleId = id;
-            return entity;
-        });
-
-        const tutorialEntities = tutorials.map((el) => {
-            const entity = new ExerciseExamplesTutorialsEntity();
-            entity.value = el.value;
-            entity.title = el.title;
-            entity.language = el.language;
-            entity.author = el.author;
-            entity.resourceType = el.resourceType;
-            entity.exerciseExampleId = id;
-            return entity;
-        });
-
-        await this.exerciseExamplesRepository.manager.transaction(async (manager) => {
-            await manager.delete(ExerciseExampleBundlesEntity, {exerciseExampleId: id});
-            await manager.delete(ExerciseExamplesEquipmentsEntity, {exerciseExampleId: id});
-            await manager.delete(ExerciseExamplesTutorialsEntity, {exerciseExampleId: id});
-
-            await manager.save(ExerciseExamplesEntity, exerciseExample);
-            await manager.save(ExerciseExampleBundlesEntity, bundles);
-            await manager.save(ExerciseExamplesEquipmentsEntity, equipmentRefsEntities);
-            await manager.save(ExerciseExamplesTutorialsEntity, tutorialEntities);
-        });
-
-        return this.getExerciseExampleById(id);
-    }
-
     async getRecommendedExerciseExamples(user, page: number, size: number, body: RecommendedRequest) {
         let recommendations: string[] = [];
         const {targetMuscleId, exerciseExampleIds, exerciseCount} = body;

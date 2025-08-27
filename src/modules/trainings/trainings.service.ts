@@ -54,56 +54,6 @@ export class TrainingsService {
             .getOne();
     }
 
-    async setOrUpdateTraining(body: TrainingsRequest, user) {
-        return await this.trainingsRepository.manager.transaction(async (manager) => {
-            const {exercises, ...rest} = body;
-
-            const training = manager.create(TrainingsEntity, {
-                ...rest,
-                id: rest.id ?? v4(),
-                userId: user.id,
-            });
-
-            const exerciseEntities: ExercisesEntity[] = [];
-            const iterationEntities: IterationsEntity[] = [];
-
-            for (const el of exercises) {
-                const {iterations, exerciseExampleId, ...exerciseData} = el;
-
-                if (exerciseExampleId) {
-                    const exists = await this.exerciseExamplesRepository.findOneBy({id: exerciseExampleId});
-                    if (!exists) {
-                        throw new BadRequestException(`Invalid exerciseExampleId: ${exerciseExampleId}`);
-                    }
-                }
-
-                const exercise = manager.create(ExercisesEntity, {
-                    ...exerciseData,
-                    id: exerciseData.id ?? v4(),
-                    trainingId: training.id,
-                    exerciseExampleId: exerciseExampleId || null,
-                });
-
-                exerciseEntities.push(exercise);
-
-                for (const iter of iterations) {
-                    const iteration = manager.create(IterationsEntity, {
-                        ...iter,
-                        id: iter.id ?? v4(),
-                        exerciseId: exercise.id,
-                    });
-                    iterationEntities.push(iteration);
-                }
-            }
-
-            await manager.save(training);
-            await manager.save(exerciseEntities);
-            await manager.save(iterationEntities);
-
-            return this.getTrainingById(training.id, user);
-        });
-    }
-
     /**
      * Create a new training for the user
      * @param body Training data

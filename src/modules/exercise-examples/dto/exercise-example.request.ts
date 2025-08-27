@@ -8,8 +8,6 @@ import {IsEnum, IsInt, IsString, IsUUID, ValidateNested} from "class-validator";
 import {Type} from "class-transformer";
 
 export class ExerciseExampleBundleRequest {
-    id?: string;
-
     @ApiProperty({ type: 'string', example: '3a975ded-af6b-4dd2-9a0e-6e3554e8e6dd' })
     @IsUUID()
     muscleId: string;

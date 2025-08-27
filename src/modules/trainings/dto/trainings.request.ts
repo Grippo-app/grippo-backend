@@ -50,8 +50,6 @@ export class TrainingExerciseRequest {
 }
 
 export class TrainingsRequest {
-    id?: string;
-
     @ApiProperty({type: 'number', example: 25, description: 'Duration in minutes'})
     @IsInt()
     duration: number;
