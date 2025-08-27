@@ -175,4 +175,23 @@ export class TrainingsService {
             await manager.save(iterationEntities);
         });
     }
+
+    /**
+     * Delete a training by ID
+     * @param id Training ID to delete
+     * @param user Current user
+     */
+    async deleteTraining(id: string, user): Promise<void> {
+        // Check if training exists and belongs to the user
+        const existingTraining = await this.trainingsRepository.findOne({
+            where: {id, userId: user.id}
+        });
+
+        if (!existingTraining) {
+            throw new NotFoundException(`Training with id ${id} not found or access denied`);
+        }
+
+        // Delete the training (cascade will handle exercises and iterations)
+        await this.trainingsRepository.delete({id, userId: user.id});
+    }
 }

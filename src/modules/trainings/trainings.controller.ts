@@ -1,4 +1,4 @@
-import {Body, Controller, Get, HttpCode, HttpStatus, Param, Post, Put, Query, Req, UseGuards,} from '@nestjs/common';
+import {Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Post, Put, Query, Req, UseGuards,} from '@nestjs/common';
 import {ApiBearerAuth, ApiOperation, ApiQuery, ApiResponse, ApiTags,} from '@nestjs/swagger';
 import {TrainingsService} from './trainings.service';
 import {JwtAuthGuard} from '../../common/jwt-auth.guard';
@@ -67,5 +67,18 @@ export class TrainingsController {
         @Body() body: TrainingsRequest,
     ): Promise<void> {
         return this.trainingsService.updateTraining(id, body, req.user);
+    }
+
+    @Delete(':id')
+    @HttpCode(HttpStatus.NO_CONTENT)
+    @ApiOperation({summary: 'Delete a training by ID for current user'})
+    @ApiResponse({status: 204, description: 'Training deleted successfully'})
+    @ApiResponse({status: HttpStatus.UNAUTHORIZED, description: 'Unauthorized'})
+    @ApiResponse({status: HttpStatus.NOT_FOUND, description: 'Training not found or access denied'})
+    async deleteTraining(
+        @Req() req,
+        @Param('id') id: string,
+    ): Promise<void> {
+        return this.trainingsService.deleteTraining(id, req.user);
     }
 }
