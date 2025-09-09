@@ -14,7 +14,7 @@ export class MusclesService {
     ) {
     }
 
-    async getPublicMuscles(): Promise<MuscleGroupsResponse[]> {
+    async getMuscles(): Promise<MuscleGroupsResponse[]> {
         const muscleGroups = await this.muscleGroupsRepository
             .createQueryBuilder('muscle_groups')
             .leftJoinAndSelect('muscle_groups.muscles', 'muscles')

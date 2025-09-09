@@ -14,6 +14,6 @@ export class MusclesController {
     @ApiOperation({ summary: 'Get public muscle list (unauthorized access allowed)' })
     @ApiResponse({ status: 200, description: 'Returned public muscle list' })
     async getMuscles(): Promise<MuscleGroupsResponse[]> {
-        return this.musclesService.getPublicMuscles();
+        return this.musclesService.getMuscles();
     }
 }

@@ -10,7 +10,6 @@ import { ExerciseExampleModule } from './modules/exercise-examples/exercise-exam
 import { MusclesModule } from './modules/muscles/muscles.module';
 import { WeightHistoryModule } from './modules/weight-history/weight-history.module';
 import { StatisticsModule } from './modules/statistics/statistics.module';
-import { FiltersModule } from './modules/filters/filters.module';
 import { EquipmentsModule } from './modules/equipments/equipments.module';
 
 @Module({
@@ -31,7 +30,6 @@ import { EquipmentsModule } from './modules/equipments/equipments.module';
         MusclesModule,
         WeightHistoryModule,
         StatisticsModule,
-        FiltersModule,
         EquipmentsModule,
     ],
 })

@@ -17,7 +17,7 @@ export class EquipmentsService {
     ) {
     }
 
-    async getPublicEquipments(): Promise<EquipmentGroupResponse[]> {
+    async getEquipments(): Promise<EquipmentGroupResponse[]> {
         const groups = await this.equipmentGroupsRepository
             .createQueryBuilder('equipment_groups')
             .leftJoinAndSelect('equipment_groups.equipments', 'equipments')

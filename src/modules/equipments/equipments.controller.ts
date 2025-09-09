@@ -13,6 +13,6 @@ export class EquipmentsController {
     @ApiOperation({summary: 'Get public equipment list (unauthorized access allowed)'})
     @ApiResponse({status: 200, description: 'Returned public equipment list'})
     async getEquipments(): Promise<any> {
-        return this.equipmentsService.getPublicEquipments();
+        return this.equipmentsService.getEquipments();
     }
 }
