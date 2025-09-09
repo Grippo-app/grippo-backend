@@ -1,18 +1,16 @@
-import {Inject, Injectable, NotFoundException} from '@nestjs/common';
+import {BadRequestException, Inject, Injectable, NotFoundException} from '@nestjs/common';
 import {UsersEntity} from '../../entities/users.entity';
 import {Repository} from 'typeorm';
 import {v4} from 'uuid';
 import {ExerciseExamplesEntity} from "../../entities/exercise-examples.entity";
 import {ExerciseExampleBundlesEntity} from "../../entities/exercise-example-bundles.entity";
 import {ExerciseExampleRequest} from "./dto/exercise-example.request";
-import {ExerciseExampleCreateResponse} from "./dto/exercise-example.response";
+import {ExerciseExampleCreateResponse, ExerciseExampleWithStatsResponse} from "./dto/exercise-example.response";
 import {ExerciseExamplesEquipmentsEntity} from "../../entities/exercise-examples-equipments.entity";
 import {ExerciseExamplesTutorialsEntity} from "../../entities/exercise-examples-tutorials.entity";
 import {ExcludedEquipmentsEntity} from "../../entities/excluded-equipments.entity";
 import {ExcludedMusclesEntity} from "../../entities/excluded-muscles.entity";
-import {RecommendedRequest} from "./dto/recommended.request";
-import {RecommendedUtils} from "../../lib/recommended-utils";
-import {ExerciseCategoryEnum} from "../../lib/exercise-category.enum";
+import {ExercisesEntity} from "../../entities/exercises.entity";
 
 @Injectable()
 export class ExerciseExampleService {
@@ -23,12 +21,16 @@ export class ExerciseExampleService {
         @Inject('EXERCISE_EXAMPLES_EQUIPMENTS_REPOSITORY') private readonly exerciseExamplesEquipmentsRepository: Repository<ExerciseExamplesEquipmentsEntity>,
         @Inject('EXERCISE_EXAMPLES_TUTORIALS_REPOSITORY') private readonly exerciseExamplesTutorialsEntityRepository: Repository<ExerciseExamplesTutorialsEntity>,
         @Inject('EXCLUDED_EQUIPMENTS_REPOSITORY') private readonly excludedEquipmentsRepository: Repository<ExcludedEquipmentsEntity>,
-        @Inject('EXCLUDED_MUSCLES_REPOSITORY') private excludedMusclesEntity: Repository<ExcludedMusclesEntity>
+        @Inject('EXCLUDED_MUSCLES_REPOSITORY') private readonly excludedMusclesEntity: Repository<ExcludedMusclesEntity>,
+        @Inject('EXERCISES_REPOSITORY') private readonly exercisesRepository: Repository<ExercisesEntity>,
     ) {
     }
 
-    async getExerciseExamples(): Promise<ExerciseExamplesEntity[]> {
-        return this.exerciseExamplesRepository
+    async getExerciseExamples(user: any): Promise<ExerciseExampleWithStatsResponse[]> {
+        const userId = typeof user?.id === 'string' && user.id.length > 0 ? user.id : null;
+        if (!userId) throw new BadRequestException('User not authenticated');
+
+        const entities = await this.exerciseExamplesRepository
             .createQueryBuilder('exercise_examples')
             .leftJoinAndSelect('exercise_examples.exerciseExampleBundles', 'exerciseExampleBundles')
             .leftJoinAndSelect('exerciseExampleBundles.muscle', 'muscle')
@@ -37,10 +39,43 @@ export class ExerciseExampleService {
             .leftJoinAndSelect('exercise_examples.tutorials', 'tutorials')
             .orderBy('exercise_examples.createdAt', 'DESC')
             .getMany();
+
+        if (entities.length === 0) return [];
+
+        const ids = entities.map(e => e.id);
+
+        // Aggregate stats for visible example IDs
+        const statsRows = await this.exercisesRepository
+            .createQueryBuilder('ex')
+            .leftJoin('ex.training', 't')
+            .select('ex.exerciseExampleId', 'example_id')
+            .addSelect('COUNT(ex.id)', 'usageCount')
+            .addSelect('MAX(ex.createdAt)', 'lastUsed')
+            .where('ex.exerciseExampleId IN (:...ids)', {ids})
+            .andWhere('t.userId = :userId', {userId})
+            .groupBy('ex.exerciseExampleId')
+            .getRawMany<{ example_id: string; usageCount: string; lastUsed: Date | null }>();
+
+        const statsMap = new Map<string, { usageCount: number; lastUsed: Date | null }>();
+        for (const r of statsRows) {
+            statsMap.set(String(r.example_id), {
+                usageCount: Number(r.usageCount) || 0,
+                lastUsed: r.lastUsed ?? null,
+            });
+        }
+
+        return entities.map((entity) => ({
+            entity,
+            usageCount: statsMap.get(entity.id)?.usageCount ?? 0,
+            lastUsed: statsMap.get(entity.id)?.lastUsed ?? null,
+        }));
     }
 
-    async getExerciseExampleById(id: string): Promise<ExerciseExamplesEntity | null> {
-        return await this.exerciseExamplesRepository
+    async getExerciseExampleById(id: string, user: any): Promise<ExerciseExampleWithStatsResponse | null> {
+        const userId = typeof user?.id === 'string' && user.id.length > 0 ? user.id : null;
+        if (!userId) throw new BadRequestException('User not authenticated');
+
+        const entity = await this.exerciseExamplesRepository
             .createQueryBuilder('exercise_examples')
             .where('exercise_examples.id = :id', {id})
             .leftJoinAndSelect('exercise_examples.exerciseExampleBundles', 'exercise_example_bundles')
@@ -49,104 +84,22 @@ export class ExerciseExampleService {
             .leftJoinAndSelect('equipment_refs.equipment', 'equipments')
             .leftJoinAndSelect('exercise_examples.tutorials', 'tutorials')
             .getOne();
-    }
 
-    async getRecommendedExerciseExamples(user, page: number, size: number, body: RecommendedRequest) {
-        let recommendations: string[] = [];
-        const {targetMuscleId, exerciseExampleIds, exerciseCount} = body;
+        if (!entity) return null;
 
-        const userExperience = await this.usersRepository
-            .createQueryBuilder('users')
-            .where('users.id = :userId', {userId: user.id})
-            .select(['users.experience'])
-            .getOne();
-
-        const exercisesBuilder = this.exerciseExamplesRepository
-            .createQueryBuilder('exercise_examples')
-            .leftJoinAndSelect('exercise_examples.exerciseExampleBundles', 'exercise_example_bundles')
-            .leftJoinAndSelect('exercise_example_bundles.muscle', 'muscle')
-            .leftJoinAndSelect('exercise_examples.equipmentRefs', 'equipment_refs')
-            .leftJoinAndSelect('exercise_examples.tutorials', 'tutorials')
-            .leftJoinAndSelect('equipment_refs.equipment', 'equipments');
-
-        const trainingExerciseExamples = exerciseExampleIds?.length
-            ? await this.exerciseExamplesRepository
-                .createQueryBuilder('exercise_examples')
-                .andWhere('exercise_examples.id IN (:...exerciseExampleIds)', {exerciseExampleIds})
-                .leftJoinAndSelect('exercise_examples.exerciseExampleBundles', 'exercise_example_bundles')
-                .leftJoinAndSelect('exercise_example_bundles.muscle', 'muscle')
-                .getMany()
-            : [];
-
-        const availableExpFilter = RecommendedUtils.getFilterExp(userExperience.experience);
-        if (availableExpFilter.length > 0) {
-            exercisesBuilder.andWhere('exercise_examples.experience IN (:...availableExpFilter)', {availableExpFilter});
-        }
-
-        const excludedUserMuscles = await this.excludedMusclesEntity
-            .createQueryBuilder('excluded_muscles')
-            .where('excluded_muscles.userId = :userId', {userId: user.id})
-            .getMany();
-
-        const excludedUserEquipment = await this.excludedEquipmentsRepository
-            .createQueryBuilder('excluded_equipment')
-            .where('excluded_equipment.userId = :userId', {userId: user.id})
-            .getMany();
-
-        if (excludedUserMuscles.length > 0) {
-            const excludedMuscleIds = excludedUserMuscles.map((m) => m.id);
-            exercisesBuilder.andWhere('muscle.id NOT IN (:...excludedMuscleIds)', {excludedMuscleIds});
-        }
-
-        if (excludedUserEquipment.length > 0) {
-            const excludedEquipmentIds = excludedUserEquipment.map((e) => e.id);
-            exercisesBuilder.andWhere('equipments.id NOT IN (:...excludedEquipmentIds)', {excludedEquipmentIds});
-        }
-
-        if (targetMuscleId) {
-            exercisesBuilder
-                .andWhere('muscle.id = :targetMuscleId', {targetMuscleId})
-                .andWhere('exercise_example_bundles.percentage > :percentage', {percentage: 50});
-        }
-
-        const minMaxByTraining = RecommendedUtils.minMaxTrainingExercisesByExp(userExperience.experience);
-        if (exerciseCount >= minMaxByTraining[0] && exerciseCount <= minMaxByTraining[1]) {
-            recommendations.push(`Optimal count of exercises per training ${minMaxByTraining[0]} - ${minMaxByTraining[1]}, now - ${exerciseCount}`);
-        } else if (exerciseCount > minMaxByTraining[1]) {
-            recommendations.push(`Optimal count of exercises per training ${minMaxByTraining[0]} - ${minMaxByTraining[1]}, now - ${exerciseCount}`);
-        }
-
-        const count = RecommendedUtils.countOfLastMuscleTargetExercises(trainingExerciseExamples);
-        const minMaxByMuscle = RecommendedUtils.minMaxMuscleExercisesByExp(userExperience.experience);
-        if (count >= minMaxByMuscle[0] && count <= minMaxByMuscle[1]) {
-            recommendations.push(`Optimal count of exercises per muscle ${minMaxByMuscle[0]} - ${minMaxByMuscle[1]}, now - ${count}`);
-        } else if (count > minMaxByMuscle[1]) {
-            recommendations.push(`Optimal count of exercises per muscle ${minMaxByMuscle[0]} - ${minMaxByMuscle[1]}, now - ${count}`);
-        }
-
-        const lastTargetCategories = RecommendedUtils.categoryByLastMuscleTarget(trainingExerciseExamples);
-        const compoundAndIsolationMap = RecommendedUtils.categoryMapByExp(userExperience.experience);
-        const compound = lastTargetCategories.filter((c) => c === ExerciseCategoryEnum.Compound).length;
-        const isolation = lastTargetCategories.filter((c) => c === ExerciseCategoryEnum.Isolation).length;
-
-        if (compound < compoundAndIsolationMap[0]) {
-            exercisesBuilder.addOrderBy('exercise_examples.category', 'ASC');
-            recommendations.push('Recommendation: Compound Exercise');
-        }
-
-        if (compound >= compoundAndIsolationMap[0] && isolation > compoundAndIsolationMap[1]) {
-            exercisesBuilder.addOrderBy('exercise_examples.category', 'DESC');
-            recommendations.push('Recommendation: Isolated Exercise');
-        }
-
-        const exercises = await exercisesBuilder
-            .skip((page - 1) * size)
-            .take(size)
-            .getMany();
+        const stat = await this.exercisesRepository
+            .createQueryBuilder('ex')
+            .leftJoin('ex.training', 't')
+            .select('COUNT(ex.id)', 'usageCount')
+            .addSelect('MAX(ex.createdAt)', 'lastUsed')
+            .where('ex.exerciseExampleId = :id', {id})
+            .andWhere('t.userId = :userId', {userId})
+            .getRawOne<{ usageCount: string; lastUsed: Date | null }>();
 
         return {
-            recommendations,
-            exercises,
+            entity,
+            usageCount: Number(stat?.usageCount ?? 0),
+            lastUsed: stat?.lastUsed ?? null,
         };
     }
 

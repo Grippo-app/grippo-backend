@@ -1,5 +1,6 @@
 import {ApiProperty} from '@nestjs/swagger';
 import {IsUUID} from 'class-validator';
+import {ExerciseExamplesEntity} from "../../../entities/exercise-examples.entity";
 
 export class ExerciseExampleCreateResponse {
     @ApiProperty({
@@ -9,4 +10,15 @@ export class ExerciseExampleCreateResponse {
     })
     @IsUUID()
     id: string;
+}
+
+export class ExerciseExampleWithStatsResponse {
+    @ApiProperty({type: () => ExerciseExamplesEntity})
+    entity!: ExerciseExamplesEntity; // original entity
+
+    @ApiProperty({type: 'number', example: 12})
+    usageCount!: number; // how many times this example was used
+
+    @ApiProperty({type: Date, nullable: true, example: new Date().toISOString()})
+    lastUsed!: Date | null; // last usage timestamp or null
 }
