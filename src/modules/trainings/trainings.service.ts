@@ -21,7 +21,7 @@ export class TrainingsService {
     ) {
     }
 
-    async getAllTrainings(user, start, end) {
+    async getTrainings(user, start, end) {
         if (!moment(start).isValid() || !moment(end).isValid()) {
             throw new BadRequestException('Wrong date format');
         }

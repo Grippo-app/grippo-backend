@@ -20,12 +20,12 @@ export class TrainingsController {
     @ApiQuery({name: 'end', required: true, example: new Date().toISOString(), description: 'End date (ISO)'})
     @ApiResponse({status: 200, description: 'List of trainings returned successfully'})
     @ApiResponse({status: HttpStatus.UNAUTHORIZED, description: 'Unauthorized'})
-    async getUserTrainings(
+    async getTrainings(
         @Req() req,
         @Query('start') start: string,
         @Query('end') end: string,
     ): Promise<any> {
-        return this.trainingsService.getAllTrainings(req.user, start, end);
+        return this.trainingsService.getTrainings(req.user, start, end);
     }
 
     @Get(':id')
