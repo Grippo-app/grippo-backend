@@ -161,8 +161,7 @@ export class ExerciseExampleService {
         const bundles = exerciseExampleBundles.map((el) => {
             const entity = new ExerciseExampleBundlesEntity();
             Object.assign(entity, el);
-            entity.id = id;
-            entity.exerciseExampleId = id;
+            entity.exerciseExampleId = id; // связь
             return entity;
         });
 
