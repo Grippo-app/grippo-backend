@@ -9,14 +9,12 @@ import {
     UpdateDateColumn,
 } from 'typeorm';
 import {ExerciseExampleBundlesEntity} from './exercise-example-bundles.entity';
-import {UsersEntity} from "./users.entity";
 import {ExercisesEntity} from "./exercises.entity";
 import {ExerciseCategoryEnum} from "../lib/exercise-category.enum";
 import {WeightTypeEnum} from "../lib/weight-type.enum";
 import {ExerciseExamplesEquipmentsEntity} from "./exercise-examples-equipments.entity";
 import {ForceTypeEnum} from "../lib/force-type.enum";
 import {ExperienceEnum} from "../lib/experience.enum";
-import {ExerciseExamplesTutorialsEntity} from "./exercise-examples-tutorials.entity";
 
 @Entity({name: 'exercise_examples'})
 export class ExerciseExamplesEntity {
@@ -54,11 +52,6 @@ export class ExerciseExamplesEntity {
         cascade: ['remove']
     })
     exerciseExampleBundles: ExerciseExampleBundlesEntity[];
-
-    @OneToMany(() => ExerciseExamplesTutorialsEntity, (tutorial) => tutorial.exerciseExample, {
-        cascade: ['remove']
-    })
-    tutorials: ExerciseExamplesTutorialsEntity[];
 
     @OneToMany(() => ExercisesEntity, (exercises) => exercises.exerciseExample, {
         cascade: ['remove']

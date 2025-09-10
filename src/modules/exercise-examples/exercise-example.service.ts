@@ -7,7 +7,6 @@ import {ExerciseExampleBundlesEntity} from "../../entities/exercise-example-bund
 import {ExerciseExampleRequest} from "./dto/exercise-example.request";
 import {ExerciseExampleCreateResponse, ExerciseExampleWithStatsResponse} from "./dto/exercise-example.response";
 import {ExerciseExamplesEquipmentsEntity} from "../../entities/exercise-examples-equipments.entity";
-import {ExerciseExamplesTutorialsEntity} from "../../entities/exercise-examples-tutorials.entity";
 import {ExcludedEquipmentsEntity} from "../../entities/excluded-equipments.entity";
 import {ExcludedMusclesEntity} from "../../entities/excluded-muscles.entity";
 import {ExercisesEntity} from "../../entities/exercises.entity";
@@ -19,7 +18,6 @@ export class ExerciseExampleService {
         @Inject('EXERCISE_EXAMPLES_REPOSITORY') private readonly exerciseExamplesRepository: Repository<ExerciseExamplesEntity>,
         @Inject('EXERCISE_EXAMPLE_BUNDLES_REPOSITORY') private readonly exerciseExampleBundlesRepository: Repository<ExerciseExampleBundlesEntity>,
         @Inject('EXERCISE_EXAMPLES_EQUIPMENTS_REPOSITORY') private readonly exerciseExamplesEquipmentsRepository: Repository<ExerciseExamplesEquipmentsEntity>,
-        @Inject('EXERCISE_EXAMPLES_TUTORIALS_REPOSITORY') private readonly exerciseExamplesTutorialsEntityRepository: Repository<ExerciseExamplesTutorialsEntity>,
         @Inject('EXCLUDED_EQUIPMENTS_REPOSITORY') private readonly excludedEquipmentsRepository: Repository<ExcludedEquipmentsEntity>,
         @Inject('EXCLUDED_MUSCLES_REPOSITORY') private readonly excludedMusclesEntity: Repository<ExcludedMusclesEntity>,
         @Inject('EXERCISES_REPOSITORY') private readonly exercisesRepository: Repository<ExercisesEntity>,
@@ -36,7 +34,6 @@ export class ExerciseExampleService {
             .leftJoinAndSelect('exerciseExampleBundles.muscle', 'muscle')
             .leftJoinAndSelect('exercise_examples.equipmentRefs', 'equipment_refs')
             .leftJoinAndSelect('equipment_refs.equipment', 'equipments')
-            .leftJoinAndSelect('exercise_examples.tutorials', 'tutorials')
             .orderBy('exercise_examples.createdAt', 'DESC')
             .getMany();
 
@@ -82,7 +79,6 @@ export class ExerciseExampleService {
             .leftJoinAndSelect('exercise_example_bundles.muscle', 'muscle')
             .leftJoinAndSelect('exercise_examples.equipmentRefs', 'equipment_refs')
             .leftJoinAndSelect('equipment_refs.equipment', 'equipments')
-            .leftJoinAndSelect('exercise_examples.tutorials', 'tutorials')
             .getOne();
 
         if (!entity) return null;
@@ -109,7 +105,7 @@ export class ExerciseExampleService {
      * @returns Object with exercise example ID
      */
     async createExerciseExample(body: ExerciseExampleRequest): Promise<ExerciseExampleCreateResponse> {
-        const {exerciseExampleBundles, equipmentRefs, tutorials, ...rest} = body;
+        const {exerciseExampleBundles, equipmentRefs, ...rest} = body;
         const id = v4();
 
         const exerciseExample = new ExerciseExamplesEntity();
@@ -131,22 +127,11 @@ export class ExerciseExampleService {
             return entity;
         });
 
-        const tutorialEntities = tutorials.map((el) => {
-            const entity = new ExerciseExamplesTutorialsEntity();
-            entity.value = el.value;
-            entity.title = el.title;
-            entity.language = el.language;
-            entity.author = el.author;
-            entity.resourceType = el.resourceType;
-            entity.exerciseExampleId = id;
-            return entity;
-        });
 
         await this.exerciseExamplesRepository.manager.transaction(async (manager) => {
             await manager.save(ExerciseExamplesEntity, exerciseExample);
             await manager.save(ExerciseExampleBundlesEntity, bundles);
             await manager.save(ExerciseExamplesEquipmentsEntity, equipmentRefsEntities);
-            await manager.save(ExerciseExamplesTutorialsEntity, tutorialEntities);
         });
 
         return {id: id};
@@ -167,7 +152,7 @@ export class ExerciseExampleService {
             throw new NotFoundException(`Exercise example with id ${id} not found`);
         }
 
-        const {exerciseExampleBundles, equipmentRefs, tutorials, ...rest} = body;
+        const {exerciseExampleBundles, equipmentRefs, ...rest} = body;
 
         const exerciseExample = new ExerciseExamplesEntity();
         Object.assign(exerciseExample, rest);
@@ -188,26 +173,14 @@ export class ExerciseExampleService {
             return entity;
         });
 
-        const tutorialEntities = tutorials.map((el) => {
-            const entity = new ExerciseExamplesTutorialsEntity();
-            entity.value = el.value;
-            entity.title = el.title;
-            entity.language = el.language;
-            entity.author = el.author;
-            entity.resourceType = el.resourceType;
-            entity.exerciseExampleId = id;
-            return entity;
-        });
 
         await this.exerciseExamplesRepository.manager.transaction(async (manager) => {
             await manager.delete(ExerciseExampleBundlesEntity, {exerciseExampleId: id});
             await manager.delete(ExerciseExamplesEquipmentsEntity, {exerciseExampleId: id});
-            await manager.delete(ExerciseExamplesTutorialsEntity, {exerciseExampleId: id});
 
             await manager.save(ExerciseExamplesEntity, exerciseExample);
             await manager.save(ExerciseExampleBundlesEntity, bundles);
             await manager.save(ExerciseExamplesEquipmentsEntity, equipmentRefsEntities);
-            await manager.save(ExerciseExamplesTutorialsEntity, tutorialEntities);
         });
     }
 }

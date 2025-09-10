@@ -3,7 +3,6 @@ import {ExerciseCategoryEnum} from "../../../lib/exercise-category.enum";
 import {WeightTypeEnum} from "../../../lib/weight-type.enum";
 import {ExperienceEnum} from "../../../lib/experience.enum";
 import {ForceTypeEnum} from "../../../lib/force-type.enum";
-import {ResourceTypeEnum} from "../../../lib/resource-type.enum";
 import {IsEnum, IsInt, IsString, IsUUID, ValidateNested} from "class-validator";
 import {Type} from "class-transformer";
 
@@ -23,31 +22,6 @@ export class ExerciseExampleEquipmentRefsRequest {
     equipmentId: string;
 }
 
-export class ExerciseExampleTutorialRequest {
-    @ApiProperty({ type: 'string', example: 'tutorialId1' })
-    @IsString()
-    id: string;
-
-    @ApiProperty({ type: 'string', example: 'Introduction to Bench Press' })
-    @IsString()
-    title: string;
-
-    @ApiProperty({ type: 'string', example: 'Detailed explanation of the bench press exercise.' })
-    @IsString()
-    value: string;
-
-    @ApiProperty({ type: 'string', example: 'en' })
-    @IsString()
-    language: string;
-
-    @ApiProperty({ type: 'string', example: 'https://example.com/tutorial-video' })
-    @IsString()
-    author: string;
-
-    @ApiProperty({ type: 'string', example: ResourceTypeEnum.YOUTUBE_VIDEO })
-    @IsEnum(ResourceTypeEnum)
-    resourceType: ResourceTypeEnum;
-}
 
 export class ExerciseExampleRequest {
     id?: string;
@@ -94,8 +68,4 @@ export class ExerciseExampleRequest {
     @Type(() => ExerciseExampleEquipmentRefsRequest)
     equipmentRefs: ExerciseExampleEquipmentRefsRequest[];
 
-    @ApiProperty({ type: [ExerciseExampleTutorialRequest] })
-    @ValidateNested({ each: true })
-    @Type(() => ExerciseExampleTutorialRequest)
-    tutorials: ExerciseExampleTutorialRequest[];
 }
