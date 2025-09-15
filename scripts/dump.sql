@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 16.3 (Debian 16.3-1.pgdg120+1)
--- Dumped by pg_dump version 16.3 (Debian 16.3-1.pgdg120+1)
+-- Dumped from database version 15.5 (Debian 15.5-1.pgdg120+1)
+-- Dumped by pg_dump version 15.5 (Debian 15.5-1.pgdg120+1)
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -15,6 +15,80 @@ SET check_function_bodies = false;
 SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
+
+ALTER TABLE IF EXISTS ONLY public.excluded_muscles DROP CONSTRAINT IF EXISTS "FK_fb5bf30c118024b483e9e2d88c8";
+ALTER TABLE IF EXISTS ONLY public.exercises DROP CONSTRAINT IF EXISTS "FK_f2cff4897a8c9ce4a3511086e1e";
+ALTER TABLE IF EXISTS ONLY public.equipments DROP CONSTRAINT IF EXISTS "FK_dbe5cf6e8bfb13366defd7706ab";
+ALTER TABLE IF EXISTS ONLY public.exercise_examples_equipments DROP CONSTRAINT IF EXISTS "FK_ca612324a3e3a31b91989cac790";
+ALTER TABLE IF EXISTS ONLY public.exercises DROP CONSTRAINT IF EXISTS "FK_b0947cc4c27363a5d4525d103dd";
+ALTER TABLE IF EXISTS ONLY public.exercise_examples_equipments DROP CONSTRAINT IF EXISTS "FK_a97b574c6a2ddefc48ce4e34f80";
+ALTER TABLE IF EXISTS ONLY public.muscles DROP CONSTRAINT IF EXISTS "FK_97c14a3154bde81534490d92186";
+ALTER TABLE IF EXISTS ONLY public.weight_history DROP CONSTRAINT IF EXISTS "FK_90d01effa2fdd927e738e232f0e";
+ALTER TABLE IF EXISTS ONLY public.iterations DROP CONSTRAINT IF EXISTS "FK_83c23650e879d2d07e375574069";
+ALTER TABLE IF EXISTS ONLY public.excluded_equipments DROP CONSTRAINT IF EXISTS "FK_67d0ce866c36449a91e2b5e7296";
+ALTER TABLE IF EXISTS ONLY public.exercise_example_bundles DROP CONSTRAINT IF EXISTS "FK_600bedaa30ff58235320ef11133";
+ALTER TABLE IF EXISTS ONLY public.muscle_exercise_bundles DROP CONSTRAINT IF EXISTS "FK_5b415788262521c5bfe20147ddc";
+ALTER TABLE IF EXISTS ONLY public.excluded_muscles DROP CONSTRAINT IF EXISTS "FK_487dfe271837b6e15ee40561fc7";
+ALTER TABLE IF EXISTS ONLY public.excluded_equipments DROP CONSTRAINT IF EXISTS "FK_3fc2cde19015c5361418979a02a";
+ALTER TABLE IF EXISTS ONLY public.exercise_example_bundles DROP CONSTRAINT IF EXISTS "FK_2d9baa79828c7180ebf28ff5065";
+ALTER TABLE IF EXISTS ONLY public.muscle_exercise_bundles DROP CONSTRAINT IF EXISTS "FK_183fdb588e33d2d612dc4998e95";
+ALTER TABLE IF EXISTS ONLY public.trainings DROP CONSTRAINT IF EXISTS "FK_0a6488e45e7e8ed7d5f69e0dead";
+DROP INDEX IF EXISTS public."IDX_b43dd7bd8917f9fca521d49232";
+ALTER TABLE IF EXISTS ONLY public.users DROP CONSTRAINT IF EXISTS "UQ_97672ac88f789774dd47f7c8be3";
+ALTER TABLE IF EXISTS ONLY public.equipment_groups DROP CONSTRAINT IF EXISTS "PK_f2248d363b3cd233ec04be2cfac";
+ALTER TABLE IF EXISTS ONLY public.iterations DROP CONSTRAINT IF EXISTS "PK_d62c93eaa6fc8129cb942633d12";
+ALTER TABLE IF EXISTS ONLY public.muscles DROP CONSTRAINT IF EXISTS "PK_d447d24f0750ae71b1ec5ae9668";
+ALTER TABLE IF EXISTS ONLY public.muscle_groups DROP CONSTRAINT IF EXISTS "PK_c992270adab7acafcedcf3e4428";
+ALTER TABLE IF EXISTS ONLY public.exercises DROP CONSTRAINT IF EXISTS "PK_c4c46f5fa89a58ba7c2d894e3c3";
+ALTER TABLE IF EXISTS ONLY public.exercise_example_bundles DROP CONSTRAINT IF EXISTS "PK_c2cc4b67be9e9d112e21443a32a";
+ALTER TABLE IF EXISTS ONLY public.trainings DROP CONSTRAINT IF EXISTS "PK_b67237502b175163e47dc85018d";
+ALTER TABLE IF EXISTS ONLY public.exercise_examples_equipments DROP CONSTRAINT IF EXISTS "PK_aa80c21af8dbad5c0146c09e43c";
+ALTER TABLE IF EXISTS ONLY public.weight_history DROP CONSTRAINT IF EXISTS "PK_a5697ac8bfdda68bc5e37d25297";
+ALTER TABLE IF EXISTS ONLY public.users DROP CONSTRAINT IF EXISTS "PK_a3ffb1c0c8416b9fc6f907b7433";
+ALTER TABLE IF EXISTS ONLY public.excluded_muscles DROP CONSTRAINT IF EXISTS "PK_9557dfb4752d43a0520eaf71ddd";
+ALTER TABLE IF EXISTS ONLY public.exercise_examples DROP CONSTRAINT IF EXISTS "PK_6ec4db5d5601a567816d4de278b";
+ALTER TABLE IF EXISTS ONLY public.excluded_equipments DROP CONSTRAINT IF EXISTS "PK_6833f08aa872b23c33a2b207073";
+ALTER TABLE IF EXISTS ONLY public.equipments DROP CONSTRAINT IF EXISTS "PK_250348d5d9ae4946bcd634f3e61";
+ALTER TABLE IF EXISTS ONLY public.muscle_exercise_bundles DROP CONSTRAINT IF EXISTS "PK_228cbcce883be9a79735d6de922";
+DROP TABLE IF EXISTS public.weight_history;
+DROP TABLE IF EXISTS public.users;
+DROP TABLE IF EXISTS public.trainings;
+DROP TABLE IF EXISTS public.muscles;
+DROP TABLE IF EXISTS public.muscle_groups;
+DROP TABLE IF EXISTS public.muscle_exercise_bundles;
+DROP TABLE IF EXISTS public.iterations;
+DROP TABLE IF EXISTS public.exercises;
+DROP TABLE IF EXISTS public.exercise_examples_equipments;
+DROP TABLE IF EXISTS public.exercise_examples;
+DROP TABLE IF EXISTS public.exercise_example_bundles;
+DROP TABLE IF EXISTS public.excluded_muscles;
+DROP TABLE IF EXISTS public.excluded_equipments;
+DROP TABLE IF EXISTS public.equipments;
+DROP TABLE IF EXISTS public.equipment_groups;
+DROP TYPE IF EXISTS public.users_experience_enum;
+DROP TYPE IF EXISTS public.muscles_type_enum;
+DROP TYPE IF EXISTS public.muscle_groups_type_enum;
+DROP TYPE IF EXISTS public.exercise_examples_weight_type_enum;
+DROP TYPE IF EXISTS public.exercise_examples_force_type_enum;
+DROP TYPE IF EXISTS public.exercise_examples_experience_enum;
+DROP TYPE IF EXISTS public.exercise_examples_category_enum;
+DROP TYPE IF EXISTS public.equipments_type_enum;
+DROP TYPE IF EXISTS public.equipment_groups_type_enum;
+DROP EXTENSION IF EXISTS "uuid-ossp";
+-- *not* dropping schema, since initdb creates it
+--
+-- Name: public; Type: SCHEMA; Schema: -; Owner: -
+--
+
+-- *not* creating schema, since initdb creates it
+
+
+--
+-- Name: SCHEMA public; Type: COMMENT; Schema: -; Owner: -
+--
+
+COMMENT ON SCHEMA public IS '';
+
 
 --
 -- Name: uuid-ossp; Type: EXTENSION; Schema: -; Owner: -
@@ -40,7 +114,7 @@ CREATE TYPE public.equipment_groups_type_enum AS ENUM (
     'cable_machines',
     'body_weight',
     'benches_and_racks'
-    );
+);
 
 
 --
@@ -93,7 +167,7 @@ CREATE TYPE public.equipments_type_enum AS ENUM (
     'squat_rack',
     'preacher_curl_bench',
     'row_bench'
-    );
+);
 
 
 --
@@ -103,7 +177,7 @@ CREATE TYPE public.equipments_type_enum AS ENUM (
 CREATE TYPE public.exercise_examples_category_enum AS ENUM (
     'compound',
     'isolation'
-    );
+);
 
 
 --
@@ -115,7 +189,7 @@ CREATE TYPE public.exercise_examples_experience_enum AS ENUM (
     'intermediate',
     'advanced',
     'pro'
-    );
+);
 
 
 --
@@ -126,7 +200,8 @@ CREATE TYPE public.exercise_examples_force_type_enum AS ENUM (
     'push',
     'pull',
     'hinge'
-    );
+);
+
 
 --
 -- Name: exercise_examples_weight_type_enum; Type: TYPE; Schema: public; Owner: -
@@ -136,7 +211,7 @@ CREATE TYPE public.exercise_examples_weight_type_enum AS ENUM (
     'free',
     'fixed',
     'body_weight'
-    );
+);
 
 
 --
@@ -150,7 +225,7 @@ CREATE TYPE public.muscle_groups_type_enum AS ENUM (
     'legs',
     'arms_and_forearms',
     'shoulder_muscles'
-    );
+);
 
 
 --
@@ -179,7 +254,7 @@ CREATE TYPE public.muscles_type_enum AS ENUM (
     'biceps',
     'triceps',
     'forearm'
-    );
+);
 
 
 --
@@ -191,7 +266,7 @@ CREATE TYPE public.users_experience_enum AS ENUM (
     'intermediate',
     'advanced',
     'pro'
-    );
+);
 
 
 SET default_tablespace = '';
@@ -202,13 +277,12 @@ SET default_table_access_method = heap;
 -- Name: equipment_groups; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.equipment_groups
-(
-    id         uuid                        DEFAULT public.uuid_generate_v4() NOT NULL,
-    name       character varying,
-    type       public.equipment_groups_type_enum,
-    created_at timestamp without time zone DEFAULT now()                     NOT NULL,
-    updated_at timestamp without time zone DEFAULT now()                     NOT NULL
+CREATE TABLE public.equipment_groups (
+    id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
+    name character varying,
+    type public.equipment_groups_type_enum,
+    created_at timestamp without time zone DEFAULT now() NOT NULL,
+    updated_at timestamp without time zone DEFAULT now() NOT NULL
 );
 
 
@@ -216,14 +290,13 @@ CREATE TABLE public.equipment_groups
 -- Name: equipments; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.equipments
-(
-    id                 uuid                        DEFAULT public.uuid_generate_v4() NOT NULL,
-    name               character varying,
+CREATE TABLE public.equipments (
+    id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
+    name character varying,
     equipment_group_id uuid,
-    type               public.equipments_type_enum,
-    created_at         timestamp without time zone DEFAULT now()                     NOT NULL,
-    updated_at         timestamp without time zone DEFAULT now()                     NOT NULL
+    type public.equipments_type_enum,
+    created_at timestamp without time zone DEFAULT now() NOT NULL,
+    updated_at timestamp without time zone DEFAULT now() NOT NULL
 );
 
 
@@ -231,13 +304,12 @@ CREATE TABLE public.equipments
 -- Name: excluded_equipments; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.excluded_equipments
-(
-    id           uuid                        DEFAULT public.uuid_generate_v4() NOT NULL,
+CREATE TABLE public.excluded_equipments (
+    id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
     equipment_id uuid,
-    user_id      uuid,
-    created_at   timestamp without time zone DEFAULT now()                     NOT NULL,
-    updated_at   timestamp without time zone DEFAULT now()                     NOT NULL
+    user_id uuid,
+    created_at timestamp without time zone DEFAULT now() NOT NULL,
+    updated_at timestamp without time zone DEFAULT now() NOT NULL
 );
 
 
@@ -245,13 +317,12 @@ CREATE TABLE public.excluded_equipments
 -- Name: excluded_muscles; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.excluded_muscles
-(
-    id         uuid                        DEFAULT public.uuid_generate_v4() NOT NULL,
-    muscle_id  uuid,
-    created_at timestamp without time zone DEFAULT now()                     NOT NULL,
-    user_id    uuid,
-    updated_at timestamp without time zone DEFAULT now()                     NOT NULL
+CREATE TABLE public.excluded_muscles (
+    id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
+    muscle_id uuid,
+    created_at timestamp without time zone DEFAULT now() NOT NULL,
+    user_id uuid,
+    updated_at timestamp without time zone DEFAULT now() NOT NULL
 );
 
 
@@ -259,14 +330,13 @@ CREATE TABLE public.excluded_muscles
 -- Name: exercise_example_bundles; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.exercise_example_bundles
-(
-    id                  uuid                        DEFAULT public.uuid_generate_v4() NOT NULL,
-    percentage          integer,
+CREATE TABLE public.exercise_example_bundles (
+    id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
+    percentage integer,
     exercise_example_id uuid,
-    muscle_id           uuid,
-    created_at          timestamp without time zone DEFAULT now()                     NOT NULL,
-    updated_at          timestamp without time zone DEFAULT now()                     NOT NULL
+    muscle_id uuid,
+    created_at timestamp without time zone DEFAULT now() NOT NULL,
+    updated_at timestamp without time zone DEFAULT now() NOT NULL
 );
 
 
@@ -274,18 +344,17 @@ CREATE TABLE public.exercise_example_bundles
 -- Name: exercise_examples; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.exercise_examples
-(
-    id          uuid                        DEFAULT public.uuid_generate_v4() NOT NULL,
-    name        character varying,
-    created_at  timestamp without time zone DEFAULT now()                     NOT NULL,
-    updated_at  timestamp without time zone DEFAULT now()                     NOT NULL,
-    image_url   character varying,
+CREATE TABLE public.exercise_examples (
+    id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
+    name character varying,
+    created_at timestamp without time zone DEFAULT now() NOT NULL,
+    updated_at timestamp without time zone DEFAULT now() NOT NULL,
+    image_url character varying,
     description character varying,
-    category    public.exercise_examples_category_enum,
+    category public.exercise_examples_category_enum,
     weight_type public.exercise_examples_weight_type_enum,
-    force_type  public.exercise_examples_force_type_enum,
-    experience  public.exercise_examples_experience_enum
+    force_type public.exercise_examples_force_type_enum,
+    experience public.exercise_examples_experience_enum
 );
 
 
@@ -293,30 +362,29 @@ CREATE TABLE public.exercise_examples
 -- Name: exercise_examples_equipments; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.exercise_examples_equipments
-(
-    id                  uuid                        DEFAULT public.uuid_generate_v4() NOT NULL,
-    created_at          timestamp without time zone DEFAULT now()                     NOT NULL,
-    updated_at          timestamp without time zone DEFAULT now()                     NOT NULL,
-    equipment_id        uuid,
+CREATE TABLE public.exercise_examples_equipments (
+    id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
+    created_at timestamp without time zone DEFAULT now() NOT NULL,
+    updated_at timestamp without time zone DEFAULT now() NOT NULL,
+    equipment_id uuid,
     exercise_example_id uuid
 );
+
 
 --
 -- Name: exercises; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.exercises
-(
-    id                  uuid                        DEFAULT public.uuid_generate_v4() NOT NULL,
-    name                character varying,
-    volume              numeric(10, 1),
-    repetitions         integer,
-    intensity           numeric(5, 2),
-    training_id         uuid,
+CREATE TABLE public.exercises (
+    id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
+    name character varying,
+    volume numeric(10,1),
+    repetitions integer,
+    intensity numeric(5,2),
+    training_id uuid,
     exercise_example_id uuid,
-    created_at          timestamp without time zone DEFAULT now()                     NOT NULL,
-    updated_at          timestamp without time zone DEFAULT now()                     NOT NULL
+    created_at timestamp without time zone DEFAULT now() NOT NULL,
+    updated_at timestamp without time zone DEFAULT now() NOT NULL
 );
 
 
@@ -324,14 +392,13 @@ CREATE TABLE public.exercises
 -- Name: iterations; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.iterations
-(
-    id          uuid                        DEFAULT public.uuid_generate_v4() NOT NULL,
-    weight      numeric(5, 1),
+CREATE TABLE public.iterations (
+    id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
+    weight numeric(5,1),
     repetitions integer,
     exercise_id uuid,
-    created_at  timestamp without time zone DEFAULT now()                     NOT NULL,
-    updated_at  timestamp without time zone DEFAULT now()                     NOT NULL
+    created_at timestamp without time zone DEFAULT now() NOT NULL,
+    updated_at timestamp without time zone DEFAULT now() NOT NULL
 );
 
 
@@ -339,14 +406,13 @@ CREATE TABLE public.iterations
 -- Name: muscle_exercise_bundles; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.muscle_exercise_bundles
-(
-    id                  uuid                        DEFAULT public.uuid_generate_v4() NOT NULL,
-    percentage          integer,
+CREATE TABLE public.muscle_exercise_bundles (
+    id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
+    percentage integer,
     exercise_example_id uuid,
-    muscle_id           uuid,
-    created_at          timestamp without time zone DEFAULT now()                     NOT NULL,
-    updated_at          timestamp without time zone DEFAULT now()                     NOT NULL
+    muscle_id uuid,
+    created_at timestamp without time zone DEFAULT now() NOT NULL,
+    updated_at timestamp without time zone DEFAULT now() NOT NULL
 );
 
 
@@ -354,13 +420,12 @@ CREATE TABLE public.muscle_exercise_bundles
 -- Name: muscle_groups; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.muscle_groups
-(
-    id         uuid                        DEFAULT public.uuid_generate_v4() NOT NULL,
-    name       character varying,
-    created_at timestamp without time zone DEFAULT now()                     NOT NULL,
-    updated_at timestamp without time zone DEFAULT now()                     NOT NULL,
-    type       public.muscle_groups_type_enum
+CREATE TABLE public.muscle_groups (
+    id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
+    name character varying,
+    created_at timestamp without time zone DEFAULT now() NOT NULL,
+    updated_at timestamp without time zone DEFAULT now() NOT NULL,
+    type public.muscle_groups_type_enum
 );
 
 
@@ -368,14 +433,13 @@ CREATE TABLE public.muscle_groups
 -- Name: muscles; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.muscles
-(
-    id                  uuid                        DEFAULT public.uuid_generate_v4() NOT NULL,
-    name                character varying,
-    muscle_group_id     uuid,
-    created_at          timestamp without time zone DEFAULT now()                     NOT NULL,
-    updated_at          timestamp without time zone DEFAULT now()                     NOT NULL,
-    type                public.muscles_type_enum,
+CREATE TABLE public.muscles (
+    id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
+    name character varying,
+    muscle_group_id uuid,
+    created_at timestamp without time zone DEFAULT now() NOT NULL,
+    updated_at timestamp without time zone DEFAULT now() NOT NULL,
+    type public.muscles_type_enum,
     recovery_time_hours integer
 );
 
@@ -384,16 +448,15 @@ CREATE TABLE public.muscles
 -- Name: trainings; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.trainings
-(
-    id          uuid                        DEFAULT public.uuid_generate_v4() NOT NULL,
-    duration    integer,
-    volume      numeric(10, 1),
+CREATE TABLE public.trainings (
+    id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
+    duration integer,
+    volume numeric(10,1),
     repetitions integer,
-    intensity   numeric(5, 2),
-    user_id     uuid,
-    created_at  timestamp without time zone DEFAULT now()                     NOT NULL,
-    updated_at  timestamp without time zone DEFAULT now()                     NOT NULL
+    intensity numeric(5,2),
+    user_id uuid,
+    created_at timestamp without time zone DEFAULT now() NOT NULL,
+    updated_at timestamp without time zone DEFAULT now() NOT NULL
 );
 
 
@@ -401,15 +464,14 @@ CREATE TABLE public.trainings
 -- Name: users; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.users
-(
-    id         uuid                        DEFAULT public.uuid_generate_v4() NOT NULL,
-    email      character varying                                             NOT NULL,
-    password   character varying                                             NOT NULL,
-    name       character varying                                             NOT NULL,
-    created_at timestamp without time zone DEFAULT now()                     NOT NULL,
-    updated_at timestamp without time zone DEFAULT now()                     NOT NULL,
-    height     double precision                                              NOT NULL,
+CREATE TABLE public.users (
+    id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
+    email character varying NOT NULL,
+    password character varying NOT NULL,
+    name character varying NOT NULL,
+    created_at timestamp without time zone DEFAULT now() NOT NULL,
+    updated_at timestamp without time zone DEFAULT now() NOT NULL,
+    height double precision NOT NULL,
     experience public.users_experience_enum
 );
 
@@ -418,13 +480,12 @@ CREATE TABLE public.users
 -- Name: weight_history; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.weight_history
-(
-    id         uuid                        DEFAULT public.uuid_generate_v4() NOT NULL,
-    user_id    uuid,
-    weight     numeric(5, 1)                                                 NOT NULL,
-    created_at timestamp without time zone DEFAULT now()                     NOT NULL,
-    updated_at timestamp without time zone DEFAULT now()                     NOT NULL
+CREATE TABLE public.weight_history (
+    id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
+    user_id uuid,
+    weight numeric(5,1) NOT NULL,
+    created_at timestamp without time zone DEFAULT now() NOT NULL,
+    updated_at timestamp without time zone DEFAULT now() NOT NULL
 );
 
 
@@ -432,5818 +493,2016 @@ CREATE TABLE public.weight_history
 -- Data for Name: equipment_groups; Type: TABLE DATA; Schema: public; Owner: -
 --
 
-INSERT INTO public.equipment_groups
-VALUES ('56550c17-dd77-40c2-8737-fde011dcbbaa', 'Free Weight', 'free_weight', '2024-07-26 15:20:13.307246',
-        '2024-07-26 15:20:13.307246');
-INSERT INTO public.equipment_groups
-VALUES ('fcfa00b0-820c-494a-ac9e-ff4cf4e69489', 'Machines', 'machines', '2024-07-26 15:21:01.438902',
-        '2024-07-26 15:21:01.438902');
-INSERT INTO public.equipment_groups
-VALUES ('7f343be4-0ec8-458a-a45b-d5ab7c1973de', 'Cable Machines', 'cable_machines', '2024-07-26 15:22:38.32104',
-        '2024-07-26 15:22:38.32104');
-INSERT INTO public.equipment_groups
-VALUES ('3670c91d-010e-4e58-b1c6-282fb5fe12c6', 'Body Weight', 'body_weight', '2024-07-26 15:23:05.785405',
-        '2024-07-26 15:23:05.785405');
-INSERT INTO public.equipment_groups
-VALUES ('9f7ba689-6791-4c1e-8ad7-da558a028fac', 'Benches & Racks', 'benches_and_racks', '2024-07-26 15:23:43.201296',
-        '2024-07-26 15:23:43.201296');
+COPY public.equipment_groups (id, name, type, created_at, updated_at) FROM stdin;
+56550c17-dd77-40c2-8737-fde011dcbbaa	Free Weight	free_weight	2024-07-26 15:20:13.307246	2024-07-26 15:20:13.307246
+fcfa00b0-820c-494a-ac9e-ff4cf4e69489	Machines	machines	2024-07-26 15:21:01.438902	2024-07-26 15:21:01.438902
+7f343be4-0ec8-458a-a45b-d5ab7c1973de	Cable Machines	cable_machines	2024-07-26 15:22:38.32104	2024-07-26 15:22:38.32104
+3670c91d-010e-4e58-b1c6-282fb5fe12c6	Body Weight	body_weight	2024-07-26 15:23:05.785405	2024-07-26 15:23:05.785405
+9f7ba689-6791-4c1e-8ad7-da558a028fac	Benches & Racks	benches_and_racks	2024-07-26 15:23:43.201296	2024-07-26 15:23:43.201296
+\.
 
 
 --
 -- Data for Name: equipments; Type: TABLE DATA; Schema: public; Owner: -
 --
 
-INSERT INTO public.equipments
-VALUES ('9d66ac93-3a48-429d-aeaa-54302856e204', 'Dumbbells', '56550c17-dd77-40c2-8737-fde011dcbbaa', 'dumbbells',
-        '2024-07-26 15:27:07.977174', '2024-07-26 15:27:07.977174');
-INSERT INTO public.equipments
-VALUES ('b17ae8af-2d78-4e77-b45b-39253c28247a', 'Barbell', '56550c17-dd77-40c2-8737-fde011dcbbaa', 'barbell',
-        '2024-07-26 15:27:53.397531', '2024-07-26 15:27:53.397531');
-INSERT INTO public.equipments
-VALUES ('ad130932-4b2f-4e7b-b3a4-c20b4a6b85ae', 'EZ Bar', '56550c17-dd77-40c2-8737-fde011dcbbaa', 'ez_bar',
-        '2024-07-26 15:27:53.397531', '2024-07-26 15:27:53.397531');
-INSERT INTO public.equipments
-VALUES ('21aad68b-b21b-4452-9ebf-7407be8e613d', 'Trap Bar', '56550c17-dd77-40c2-8737-fde011dcbbaa', 'trap_bar',
-        '2024-07-26 15:27:53.397531', '2024-07-26 15:27:53.397531');
-INSERT INTO public.equipments
-VALUES ('15495639-2adb-41b8-899c-493ac0172f57', 'Straight Bar', '56550c17-dd77-40c2-8737-fde011dcbbaa', 'straight_bar',
-        '2024-07-26 15:30:17.071839', '2024-07-26 15:30:17.071839');
-INSERT INTO public.equipments
-VALUES ('331a0c35-f5a5-478d-ba7c-9f14ba2ee0fa', 'Cord Handles', '56550c17-dd77-40c2-8737-fde011dcbbaa', 'cord_handles',
-        '2024-07-26 15:30:34.728288', '2024-07-26 15:30:34.728288');
-INSERT INTO public.equipments
-VALUES ('527227fe-8182-4aec-949a-66335c5ce25e', 'AB Machines', 'fcfa00b0-820c-494a-ac9e-ff4cf4e69489', 'ab_machines',
-        '2024-07-27 09:01:03.349338', '2024-07-27 09:01:03.349338');
-INSERT INTO public.equipments
-VALUES ('3f2fb6e0-df68-4881-a735-f07ea083aaa7', 'Butterfly', 'fcfa00b0-820c-494a-ac9e-ff4cf4e69489', 'butterfly',
-        '2024-07-27 09:01:03.349338', '2024-07-27 09:01:03.349338');
-INSERT INTO public.equipments
-VALUES ('526347a3-ee32-473d-9b5d-049f526ae48e', 'Butterfly Reverse', 'fcfa00b0-820c-494a-ac9e-ff4cf4e69489',
-        'butterfly_reverse', '2024-07-27 09:01:03.349338', '2024-07-27 09:01:03.349338');
-INSERT INTO public.equipments
-VALUES ('c74a2236-739f-476b-96d9-a11487d4049f', 'Leg Extension Machines', 'fcfa00b0-820c-494a-ac9e-ff4cf4e69489',
-        'leg_extension_machines', '2024-07-27 09:01:03.349338', '2024-07-27 09:01:03.349338');
-INSERT INTO public.equipments
-VALUES ('a8a80e95-9165-4200-af80-cd7608099307', 'Leg Curl Machines', 'fcfa00b0-820c-494a-ac9e-ff4cf4e69489',
-        'leg_curl_machines', '2024-07-27 09:03:40.163591', '2024-07-27 09:03:40.163591');
-INSERT INTO public.equipments
-VALUES ('79e4532a-afda-421f-9b5f-8c2de5f63ec0', 'Chest Press Machines', 'fcfa00b0-820c-494a-ac9e-ff4cf4e69489',
-        'chest_press_machines', '2024-07-27 09:03:40.163591', '2024-07-27 09:03:40.163591');
-INSERT INTO public.equipments
-VALUES ('0d0f8242-be68-4086-b665-0a11ff6a0dcd', 'Biceps Machines', 'fcfa00b0-820c-494a-ac9e-ff4cf4e69489',
-        'biceps_machines', '2024-07-27 09:03:40.163591', '2024-07-27 09:03:40.163591');
-INSERT INTO public.equipments
-VALUES ('623e0be7-870a-4bca-b053-76e99c9ea7e0', 'Smith Machines', 'fcfa00b0-820c-494a-ac9e-ff4cf4e69489',
-        'smith_machines', '2024-07-27 09:03:40.163591', '2024-07-27 09:03:40.163591');
-INSERT INTO public.equipments
-VALUES ('20e225dd-68d7-409b-9b7d-5ef6d4224d02', 'Hack Squat Machines', 'fcfa00b0-820c-494a-ac9e-ff4cf4e69489',
-        'hack_squat_machines', '2024-07-27 09:03:40.163591', '2024-07-27 09:03:40.163591');
-INSERT INTO public.equipments
-VALUES ('6ba064c9-68b3-4b76-af61-6a81eee230c8', 'Deadlift Machines', 'fcfa00b0-820c-494a-ac9e-ff4cf4e69489',
-        'deadlift_machines', '2024-07-27 09:03:40.163591', '2024-07-27 09:03:40.163591');
-INSERT INTO public.equipments
-VALUES ('6c587294-e384-4941-b90d-e6ec64b8731d', 'Shoulder Press Machines', 'fcfa00b0-820c-494a-ac9e-ff4cf4e69489',
-        'shoulder_press_machines', '2024-07-27 09:03:40.163591', '2024-07-27 09:03:40.163591');
-INSERT INTO public.equipments
-VALUES ('0268b0d7-f8e4-47ea-b9da-969427b43adf', 'Lateral Raise Machines', 'fcfa00b0-820c-494a-ac9e-ff4cf4e69489',
-        'lateral_raise_machines', '2024-07-27 09:03:40.163591', '2024-07-27 09:03:40.163591');
-INSERT INTO public.equipments
-VALUES ('f3166b1f-125f-4fb9-a443-e1fc2b1c0f8f', 'Triceps Machines', 'fcfa00b0-820c-494a-ac9e-ff4cf4e69489',
-        'triceps_machines', '2024-07-27 09:03:40.163591', '2024-07-27 09:03:40.163591');
-INSERT INTO public.equipments
-VALUES ('7752a881-139d-4cf4-98b2-e92e9de0e2e5', 'Calf Raise Machines', 'fcfa00b0-820c-494a-ac9e-ff4cf4e69489',
-        'calf_raise_machines', '2024-07-27 09:03:40.163591', '2024-07-27 09:03:40.163591');
-INSERT INTO public.equipments
-VALUES ('f3dadde9-6213-4a90-8fc0-12bd7bf7ea6b', 'Glute Machines', 'fcfa00b0-820c-494a-ac9e-ff4cf4e69489',
-        'glute_machines', '2024-07-27 09:03:40.163591', '2024-07-27 09:03:40.163591');
-INSERT INTO public.equipments
-VALUES ('18995b62-6971-4750-84fe-0c2bc712f352', 'Lat Pulldown', '7f343be4-0ec8-458a-a45b-d5ab7c1973de', 'lat_pulldown',
-        '2024-07-27 09:04:50.495', '2024-07-27 09:04:50.495');
-INSERT INTO public.equipments
-VALUES ('752ee7ba-ae88-46f0-95fb-e0a316212f16', 'Cable', '7f343be4-0ec8-458a-a45b-d5ab7c1973de', 'cable',
-        '2024-07-27 09:04:50.495', '2024-07-27 09:04:50.495');
-INSERT INTO public.equipments
-VALUES ('a6628e7c-1488-4268-82ee-5174f3a5a2a5', 'Cable Crossover', '7f343be4-0ec8-458a-a45b-d5ab7c1973de',
-        'cable_crossover', '2024-07-27 09:04:50.495', '2024-07-27 09:04:50.495');
-INSERT INTO public.equipments
-VALUES ('373d04ea-8079-439a-82a3-d118da6253b1', 'Row Cable', '7f343be4-0ec8-458a-a45b-d5ab7c1973de', 'row_cable',
-        '2024-07-27 09:04:50.495', '2024-07-27 09:04:50.495');
-INSERT INTO public.equipments
-VALUES ('ddf4299a-fc48-47bd-9bdf-7e3d7692b09f', 'Pull Up Bar', '3670c91d-010e-4e58-b1c6-282fb5fe12c6', 'pull_up_bar',
-        '2024-07-27 09:05:48.252957', '2024-07-27 09:05:48.252957');
-INSERT INTO public.equipments
-VALUES ('c01e10b9-4ef6-4f23-9b41-7f6d5d4d1e85', 'Dip Bars', '3670c91d-010e-4e58-b1c6-282fb5fe12c6', 'dip_bars',
-        '2024-07-27 09:05:48.252957', '2024-07-27 09:05:48.252957');
-INSERT INTO public.equipments
-VALUES ('afe516f8-6dc9-45ca-b95e-81142c336878', 'Romain Chair', '3670c91d-010e-4e58-b1c6-282fb5fe12c6', 'romain_chair',
-        '2024-07-27 09:05:48.252957', '2024-07-27 09:05:48.252957');
-INSERT INTO public.equipments
-VALUES ('306270ba-834e-461e-81ce-45fd5a77c99f', 'Glute Ham Raise Bench', '3670c91d-010e-4e58-b1c6-282fb5fe12c6',
-        'glute_ham_raise_bench', '2024-07-27 09:05:48.252957', '2024-07-27 09:05:48.252957');
-INSERT INTO public.equipments
-VALUES ('85dbccf6-454e-4440-8905-50a90d91dbcc', 'Flat Bench', '9f7ba689-6791-4c1e-8ad7-da558a028fac', 'flat_bench',
-        '2024-07-27 09:07:42.088418', '2024-07-27 09:07:42.088418');
-INSERT INTO public.equipments
-VALUES ('6215cbaf-6065-4534-a9d5-a588c1b3dc28', 'Adjustable Bench', '9f7ba689-6791-4c1e-8ad7-da558a028fac',
-        'adjustable_bench', '2024-07-27 09:07:42.088418', '2024-07-27 09:07:42.088418');
-INSERT INTO public.equipments
-VALUES ('c4d5e6fe-30fd-4f16-8646-634102d1bf1b', 'Decline Bench', '9f7ba689-6791-4c1e-8ad7-da558a028fac',
-        'decline_bench', '2024-07-27 09:07:42.088418', '2024-07-27 09:07:42.088418');
-INSERT INTO public.equipments
-VALUES ('e7fc1da0-48df-4338-b03f-1cea01cd12d5', 'Flat Bench with Rack', '9f7ba689-6791-4c1e-8ad7-da558a028fac',
-        'flat_bench_with_rack', '2024-07-27 09:07:42.088418', '2024-07-27 09:07:42.088418');
-INSERT INTO public.equipments
-VALUES ('6345b70f-6e3f-46e2-9d51-3be51250ed99', 'Incline Bench with Rack', '9f7ba689-6791-4c1e-8ad7-da558a028fac',
-        'incline_bench_with_rack', '2024-07-27 09:07:42.088418', '2024-07-27 09:07:42.088418');
-INSERT INTO public.equipments
-VALUES ('9677e942-8a9b-4754-a27f-7e4d945681a1', 'Decline Bench with Rack', '9f7ba689-6791-4c1e-8ad7-da558a028fac',
-        'decline_bench_with_rack', '2024-07-27 09:07:42.088418', '2024-07-27 09:07:42.088418');
-INSERT INTO public.equipments
-VALUES ('a025ec57-670e-45ea-962e-9c9430786666', 'Squat Rack', '9f7ba689-6791-4c1e-8ad7-da558a028fac', 'squat_rack',
-        '2024-07-27 09:07:42.088418', '2024-07-27 09:07:42.088418');
-INSERT INTO public.equipments
-VALUES ('061ad8e2-77aa-4ba8-9a41-51788e7803c7', 'Preacher Curl Bench', '9f7ba689-6791-4c1e-8ad7-da558a028fac',
-        'preacher_curl_bench', '2024-07-27 09:07:42.088418', '2024-07-27 09:07:42.088418');
-INSERT INTO public.equipments
-VALUES ('0eda801d-e31d-4943-8a73-68c702f3d3d2', 'Row Bench', '9f7ba689-6791-4c1e-8ad7-da558a028fac', 'row_bench',
-        '2024-07-27 09:07:42.088418', '2024-07-27 09:07:42.088418');
-INSERT INTO public.equipments
-VALUES ('af38ec0a-1465-45a8-99ba-a394224530dc', 'Rope', '56550c17-dd77-40c2-8737-fde011dcbbaa', 'rope',
-        '2024-08-23 14:52:12.166064', '2024-08-23 14:52:12.166064');
-INSERT INTO public.equipments
-VALUES ('524da8cf-0303-4c53-8761-832a5fdb54ed', 'V Bar', '56550c17-dd77-40c2-8737-fde011dcbbaa', 'v_bar',
-        '2024-08-26 14:04:38.569404', '2024-08-26 14:04:38.569404');
-INSERT INTO public.equipments
-VALUES ('9a4df37b-9fdb-4c19-93b3-d99393d9e605', 'Adductor Machine', 'fcfa00b0-820c-494a-ac9e-ff4cf4e69489',
-        'adductor_machine', '2024-08-31 21:32:21.683976', '2024-08-31 21:32:21.683976');
-INSERT INTO public.equipments
-VALUES ('32bed80a-1512-4945-9654-8d710618ef81', 'Abductor Machine', 'fcfa00b0-820c-494a-ac9e-ff4cf4e69489',
-        'abductor_machine', '2024-08-31 21:32:21.683976', '2024-08-31 21:32:21.683976');
-INSERT INTO public.equipments
-VALUES ('1959d942-75fb-4ece-b501-b7cf8884d479', 'Leg Press Machine', 'fcfa00b0-820c-494a-ac9e-ff4cf4e69489',
-        'leg_press_machine', '2024-09-01 13:12:20.206731', '2024-09-01 13:12:20.206731');
-INSERT INTO public.equipments
-VALUES ('c7c51826-c595-4ae8-9ac4-4421b2afc4ad', 'Close Grip Handle', '56550c17-dd77-40c2-8737-fde011dcbbaa',
-        'close_grip_handle', '2024-09-05 20:34:47.669664', '2024-09-05 20:34:47.669664');
-INSERT INTO public.equipments
-VALUES ('dec9f53a-7dac-4199-b4ff-ab0624090b8b', 'Wide Grip Handle', '56550c17-dd77-40c2-8737-fde011dcbbaa',
-        'wide_grip_handle', '2024-09-05 20:34:47.669664', '2024-09-05 20:34:47.669664');
+COPY public.equipments (id, name, equipment_group_id, type, created_at, updated_at) FROM stdin;
+9d66ac93-3a48-429d-aeaa-54302856e204	Dumbbells	56550c17-dd77-40c2-8737-fde011dcbbaa	dumbbells	2024-07-26 15:27:07.977174	2024-07-26 15:27:07.977174
+b17ae8af-2d78-4e77-b45b-39253c28247a	Barbell	56550c17-dd77-40c2-8737-fde011dcbbaa	barbell	2024-07-26 15:27:53.397531	2024-07-26 15:27:53.397531
+ad130932-4b2f-4e7b-b3a4-c20b4a6b85ae	EZ Bar	56550c17-dd77-40c2-8737-fde011dcbbaa	ez_bar	2024-07-26 15:27:53.397531	2024-07-26 15:27:53.397531
+21aad68b-b21b-4452-9ebf-7407be8e613d	Trap Bar	56550c17-dd77-40c2-8737-fde011dcbbaa	trap_bar	2024-07-26 15:27:53.397531	2024-07-26 15:27:53.397531
+15495639-2adb-41b8-899c-493ac0172f57	Straight Bar	56550c17-dd77-40c2-8737-fde011dcbbaa	straight_bar	2024-07-26 15:30:17.071839	2024-07-26 15:30:17.071839
+331a0c35-f5a5-478d-ba7c-9f14ba2ee0fa	Cord Handles	56550c17-dd77-40c2-8737-fde011dcbbaa	cord_handles	2024-07-26 15:30:34.728288	2024-07-26 15:30:34.728288
+527227fe-8182-4aec-949a-66335c5ce25e	AB Machines	fcfa00b0-820c-494a-ac9e-ff4cf4e69489	ab_machines	2024-07-27 09:01:03.349338	2024-07-27 09:01:03.349338
+3f2fb6e0-df68-4881-a735-f07ea083aaa7	Butterfly	fcfa00b0-820c-494a-ac9e-ff4cf4e69489	butterfly	2024-07-27 09:01:03.349338	2024-07-27 09:01:03.349338
+526347a3-ee32-473d-9b5d-049f526ae48e	Butterfly Reverse	fcfa00b0-820c-494a-ac9e-ff4cf4e69489	butterfly_reverse	2024-07-27 09:01:03.349338	2024-07-27 09:01:03.349338
+c74a2236-739f-476b-96d9-a11487d4049f	Leg Extension Machines	fcfa00b0-820c-494a-ac9e-ff4cf4e69489	leg_extension_machines	2024-07-27 09:01:03.349338	2024-07-27 09:01:03.349338
+a8a80e95-9165-4200-af80-cd7608099307	Leg Curl Machines	fcfa00b0-820c-494a-ac9e-ff4cf4e69489	leg_curl_machines	2024-07-27 09:03:40.163591	2024-07-27 09:03:40.163591
+79e4532a-afda-421f-9b5f-8c2de5f63ec0	Chest Press Machines	fcfa00b0-820c-494a-ac9e-ff4cf4e69489	chest_press_machines	2024-07-27 09:03:40.163591	2024-07-27 09:03:40.163591
+0d0f8242-be68-4086-b665-0a11ff6a0dcd	Biceps Machines	fcfa00b0-820c-494a-ac9e-ff4cf4e69489	biceps_machines	2024-07-27 09:03:40.163591	2024-07-27 09:03:40.163591
+623e0be7-870a-4bca-b053-76e99c9ea7e0	Smith Machines	fcfa00b0-820c-494a-ac9e-ff4cf4e69489	smith_machines	2024-07-27 09:03:40.163591	2024-07-27 09:03:40.163591
+20e225dd-68d7-409b-9b7d-5ef6d4224d02	Hack Squat Machines	fcfa00b0-820c-494a-ac9e-ff4cf4e69489	hack_squat_machines	2024-07-27 09:03:40.163591	2024-07-27 09:03:40.163591
+6ba064c9-68b3-4b76-af61-6a81eee230c8	Deadlift Machines	fcfa00b0-820c-494a-ac9e-ff4cf4e69489	deadlift_machines	2024-07-27 09:03:40.163591	2024-07-27 09:03:40.163591
+6c587294-e384-4941-b90d-e6ec64b8731d	Shoulder Press Machines	fcfa00b0-820c-494a-ac9e-ff4cf4e69489	shoulder_press_machines	2024-07-27 09:03:40.163591	2024-07-27 09:03:40.163591
+0268b0d7-f8e4-47ea-b9da-969427b43adf	Lateral Raise Machines	fcfa00b0-820c-494a-ac9e-ff4cf4e69489	lateral_raise_machines	2024-07-27 09:03:40.163591	2024-07-27 09:03:40.163591
+f3166b1f-125f-4fb9-a443-e1fc2b1c0f8f	Triceps Machines	fcfa00b0-820c-494a-ac9e-ff4cf4e69489	triceps_machines	2024-07-27 09:03:40.163591	2024-07-27 09:03:40.163591
+7752a881-139d-4cf4-98b2-e92e9de0e2e5	Calf Raise Machines	fcfa00b0-820c-494a-ac9e-ff4cf4e69489	calf_raise_machines	2024-07-27 09:03:40.163591	2024-07-27 09:03:40.163591
+f3dadde9-6213-4a90-8fc0-12bd7bf7ea6b	Glute Machines	fcfa00b0-820c-494a-ac9e-ff4cf4e69489	glute_machines	2024-07-27 09:03:40.163591	2024-07-27 09:03:40.163591
+18995b62-6971-4750-84fe-0c2bc712f352	Lat Pulldown	7f343be4-0ec8-458a-a45b-d5ab7c1973de	lat_pulldown	2024-07-27 09:04:50.495	2024-07-27 09:04:50.495
+752ee7ba-ae88-46f0-95fb-e0a316212f16	Cable	7f343be4-0ec8-458a-a45b-d5ab7c1973de	cable	2024-07-27 09:04:50.495	2024-07-27 09:04:50.495
+a6628e7c-1488-4268-82ee-5174f3a5a2a5	Cable Crossover	7f343be4-0ec8-458a-a45b-d5ab7c1973de	cable_crossover	2024-07-27 09:04:50.495	2024-07-27 09:04:50.495
+373d04ea-8079-439a-82a3-d118da6253b1	Row Cable	7f343be4-0ec8-458a-a45b-d5ab7c1973de	row_cable	2024-07-27 09:04:50.495	2024-07-27 09:04:50.495
+ddf4299a-fc48-47bd-9bdf-7e3d7692b09f	Pull Up Bar	3670c91d-010e-4e58-b1c6-282fb5fe12c6	pull_up_bar	2024-07-27 09:05:48.252957	2024-07-27 09:05:48.252957
+c01e10b9-4ef6-4f23-9b41-7f6d5d4d1e85	Dip Bars	3670c91d-010e-4e58-b1c6-282fb5fe12c6	dip_bars	2024-07-27 09:05:48.252957	2024-07-27 09:05:48.252957
+afe516f8-6dc9-45ca-b95e-81142c336878	Romain Chair	3670c91d-010e-4e58-b1c6-282fb5fe12c6	romain_chair	2024-07-27 09:05:48.252957	2024-07-27 09:05:48.252957
+306270ba-834e-461e-81ce-45fd5a77c99f	Glute Ham Raise Bench	3670c91d-010e-4e58-b1c6-282fb5fe12c6	glute_ham_raise_bench	2024-07-27 09:05:48.252957	2024-07-27 09:05:48.252957
+85dbccf6-454e-4440-8905-50a90d91dbcc	Flat Bench	9f7ba689-6791-4c1e-8ad7-da558a028fac	flat_bench	2024-07-27 09:07:42.088418	2024-07-27 09:07:42.088418
+6215cbaf-6065-4534-a9d5-a588c1b3dc28	Adjustable Bench	9f7ba689-6791-4c1e-8ad7-da558a028fac	adjustable_bench	2024-07-27 09:07:42.088418	2024-07-27 09:07:42.088418
+c4d5e6fe-30fd-4f16-8646-634102d1bf1b	Decline Bench	9f7ba689-6791-4c1e-8ad7-da558a028fac	decline_bench	2024-07-27 09:07:42.088418	2024-07-27 09:07:42.088418
+e7fc1da0-48df-4338-b03f-1cea01cd12d5	Flat Bench with Rack	9f7ba689-6791-4c1e-8ad7-da558a028fac	flat_bench_with_rack	2024-07-27 09:07:42.088418	2024-07-27 09:07:42.088418
+6345b70f-6e3f-46e2-9d51-3be51250ed99	Incline Bench with Rack	9f7ba689-6791-4c1e-8ad7-da558a028fac	incline_bench_with_rack	2024-07-27 09:07:42.088418	2024-07-27 09:07:42.088418
+9677e942-8a9b-4754-a27f-7e4d945681a1	Decline Bench with Rack	9f7ba689-6791-4c1e-8ad7-da558a028fac	decline_bench_with_rack	2024-07-27 09:07:42.088418	2024-07-27 09:07:42.088418
+a025ec57-670e-45ea-962e-9c9430786666	Squat Rack	9f7ba689-6791-4c1e-8ad7-da558a028fac	squat_rack	2024-07-27 09:07:42.088418	2024-07-27 09:07:42.088418
+061ad8e2-77aa-4ba8-9a41-51788e7803c7	Preacher Curl Bench	9f7ba689-6791-4c1e-8ad7-da558a028fac	preacher_curl_bench	2024-07-27 09:07:42.088418	2024-07-27 09:07:42.088418
+0eda801d-e31d-4943-8a73-68c702f3d3d2	Row Bench	9f7ba689-6791-4c1e-8ad7-da558a028fac	row_bench	2024-07-27 09:07:42.088418	2024-07-27 09:07:42.088418
+af38ec0a-1465-45a8-99ba-a394224530dc	Rope	56550c17-dd77-40c2-8737-fde011dcbbaa	rope	2024-08-23 14:52:12.166064	2024-08-23 14:52:12.166064
+524da8cf-0303-4c53-8761-832a5fdb54ed	V Bar	56550c17-dd77-40c2-8737-fde011dcbbaa	v_bar	2024-08-26 14:04:38.569404	2024-08-26 14:04:38.569404
+9a4df37b-9fdb-4c19-93b3-d99393d9e605	Adductor Machine	fcfa00b0-820c-494a-ac9e-ff4cf4e69489	adductor_machine	2024-08-31 21:32:21.683976	2024-08-31 21:32:21.683976
+32bed80a-1512-4945-9654-8d710618ef81	Abductor Machine	fcfa00b0-820c-494a-ac9e-ff4cf4e69489	abductor_machine	2024-08-31 21:32:21.683976	2024-08-31 21:32:21.683976
+1959d942-75fb-4ece-b501-b7cf8884d479	Leg Press Machine	fcfa00b0-820c-494a-ac9e-ff4cf4e69489	leg_press_machine	2024-09-01 13:12:20.206731	2024-09-01 13:12:20.206731
+c7c51826-c595-4ae8-9ac4-4421b2afc4ad	Close Grip Handle	56550c17-dd77-40c2-8737-fde011dcbbaa	close_grip_handle	2024-09-05 20:34:47.669664	2024-09-05 20:34:47.669664
+dec9f53a-7dac-4199-b4ff-ab0624090b8b	Wide Grip Handle	56550c17-dd77-40c2-8737-fde011dcbbaa	wide_grip_handle	2024-09-05 20:34:47.669664	2024-09-05 20:34:47.669664
+\.
 
 
 --
 -- Data for Name: excluded_equipments; Type: TABLE DATA; Schema: public; Owner: -
 --
 
+COPY public.excluded_equipments (id, equipment_id, user_id, created_at, updated_at) FROM stdin;
+a9e59706-9f75-4718-8586-0137171a7ab5	b17ae8af-2d78-4e77-b45b-39253c28247a	8609c741-baec-4aac-87a6-2c1ddcda3809	2025-09-10 14:45:32.236181	2025-09-10 14:45:32.236181
+2c187846-8a3b-4ccc-bcd2-802297f01680	b17ae8af-2d78-4e77-b45b-39253c28247a	6b85d5f5-0f89-440d-8ae6-11efe039c5f1	2025-09-10 14:46:39.822108	2025-09-10 14:46:39.822108
+\.
+
 
 --
 -- Data for Name: excluded_muscles; Type: TABLE DATA; Schema: public; Owner: -
 --
+
+COPY public.excluded_muscles (id, muscle_id, created_at, user_id, updated_at) FROM stdin;
+685420c7-27fc-4796-be07-2d5f6b266490	2e0faf2b-31a5-4c63-ac15-454be132796f	2025-09-10 14:45:32.236181	8609c741-baec-4aac-87a6-2c1ddcda3809	2025-09-10 14:45:32.236181
+28f2d014-0715-43e6-b12c-3949e54df16b	831f39bd-80a8-4d11-9964-bde1788abae1	2025-09-12 09:46:35.793764	f7ec50f6-2112-402d-9d59-0397dea94b90	2025-09-12 09:46:35.793764
+e08345fe-4c91-4344-a523-28232b9c4481	be38dcef-1bc8-487b-a44f-96df1ab9e68c	2025-09-12 09:46:35.793764	f7ec50f6-2112-402d-9d59-0397dea94b90	2025-09-12 09:46:35.793764
+08d60958-aefe-4323-ba6f-bd1dc22bad10	831f39bd-80a8-4d11-9964-bde1788abae1	2025-09-12 09:57:02.208294	7613e175-eb6a-4277-9370-ad0a5a35b019	2025-09-12 09:57:02.208294
+7fb0e456-b78c-4c71-aa25-0dd76fb23c99	be38dcef-1bc8-487b-a44f-96df1ab9e68c	2025-09-12 09:57:02.208294	7613e175-eb6a-4277-9370-ad0a5a35b019	2025-09-12 09:57:02.208294
+d1ccb68e-7701-441f-a01a-9e9c1ac60048	2e0faf2b-31a5-4c63-ac15-454be132796f	2025-09-13 18:17:23.219612	6b85d5f5-0f89-440d-8ae6-11efe039c5f1	2025-09-13 18:17:23.219612
+0a8e63db-dbd5-44f4-bf73-cfafa5cf3720	3eeaa9fa-0847-4780-9d01-185f91252794	2025-09-13 18:17:23.219612	6b85d5f5-0f89-440d-8ae6-11efe039c5f1	2025-09-13 18:17:23.219612
+4ae47eb0-1994-48b8-a804-030f7aaa73b7	fa8025e6-e106-475c-8b9d-77831132fb47	2025-09-13 18:17:23.219612	6b85d5f5-0f89-440d-8ae6-11efe039c5f1	2025-09-13 18:17:23.219612
+cc080d53-b300-4e4b-9fb5-3538c50a1a47	ab1dbd50-83a4-42c7-a3cd-da1784818ec8	2025-09-13 18:17:23.219612	6b85d5f5-0f89-440d-8ae6-11efe039c5f1	2025-09-13 18:17:23.219612
+\.
 
 
 --
 -- Data for Name: exercise_example_bundles; Type: TABLE DATA; Schema: public; Owner: -
 --
 
-INSERT INTO public.exercise_example_bundles
-VALUES ('88a227ca-81cf-463f-94f0-b75d6cc75d35', 7, '11644e17-247a-46b0-a391-b3b2a2a6bba8',
-        '831f39bd-80a8-4d11-9964-bde1788abae1', '2024-08-26 14:15:00.637773', '2024-08-26 14:15:00.637773');
-INSERT INTO public.exercise_example_bundles
-VALUES ('e29c077b-a6a5-4b93-9680-ba40bcfc5345', 3, '11644e17-247a-46b0-a391-b3b2a2a6bba8',
-        '9e69205f-6c6e-44a7-8ee6-89215e28a28e', '2024-08-26 14:15:00.637773', '2024-08-26 14:15:00.637773');
-INSERT INTO public.exercise_example_bundles
-VALUES ('5f8e03d7-7651-4cba-8bd5-b70776118cd2', 10, '11644e17-247a-46b0-a391-b3b2a2a6bba8',
-        '97136fa7-622a-49d6-9d09-403a631d253d', '2024-08-26 14:15:00.637773', '2024-08-26 14:15:00.637773');
-INSERT INTO public.exercise_example_bundles
-VALUES ('20ca0e99-8e9a-4313-8b35-21555c94f268', 70, '11644e17-247a-46b0-a391-b3b2a2a6bba8',
-        '0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a', '2024-08-26 14:15:00.637773', '2024-08-26 14:15:00.637773');
-INSERT INTO public.exercise_example_bundles
-VALUES ('e28949e2-b238-43e1-98db-b5969877e4f5', 10, '11644e17-247a-46b0-a391-b3b2a2a6bba8',
-        '9a8024fe-c721-4bea-969c-db88674b5ece', '2024-08-26 14:15:00.637773', '2024-08-26 14:15:00.637773');
-INSERT INTO public.exercise_example_bundles
-VALUES ('6782aa22-6e1a-4f3a-b8d3-f49cb5f11527', 80, '6cb225d2-be00-461d-9bf0-7f0c87cfea0b',
-        '0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a', '2024-08-23 13:51:17.104274', '2024-08-23 13:51:17.104274');
-INSERT INTO public.exercise_example_bundles
-VALUES ('7a781077-e89b-42bb-95e6-4bf7c887cc29', 20, '6cb225d2-be00-461d-9bf0-7f0c87cfea0b',
-        '9a8024fe-c721-4bea-969c-db88674b5ece', '2024-08-23 13:51:17.104274', '2024-08-23 13:51:17.104274');
-INSERT INTO public.exercise_example_bundles
-VALUES ('6999837a-f658-4cc1-9845-75f0227aaab0', 80, 'b790c6a6-ecd1-4b3a-afbc-22cd82e55658',
-        '0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a', '2024-08-23 14:29:51.275739', '2024-08-23 14:29:51.275739');
-INSERT INTO public.exercise_example_bundles
-VALUES ('2e9c4465-b20f-4e59-99f7-350ed659af26', 20, 'b790c6a6-ecd1-4b3a-afbc-22cd82e55658',
-        '9a8024fe-c721-4bea-969c-db88674b5ece', '2024-08-23 14:29:51.275739', '2024-08-23 14:29:51.275739');
-INSERT INTO public.exercise_example_bundles
-VALUES ('76b8152c-3971-4713-888f-4c412c5107f1', 85, '4d3a89ab-70ae-4311-8b40-a058b2f3057b',
-        '0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a', '2024-08-23 14:41:48.917167', '2024-08-23 14:41:48.917167');
-INSERT INTO public.exercise_example_bundles
-VALUES ('9ca41f6a-2cf1-4b4c-a280-28858703f3c9', 15, '4d3a89ab-70ae-4311-8b40-a058b2f3057b',
-        '9a8024fe-c721-4bea-969c-db88674b5ece', '2024-08-23 14:41:48.917167', '2024-08-23 14:41:48.917167');
-INSERT INTO public.exercise_example_bundles
-VALUES ('cf554580-e8a2-4485-99c9-ca9069b84603', 80, '0e2fe1e8-f8f1-48e6-b360-8c9d4d9991a6',
-        '0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a', '2024-08-23 14:53:43.913741', '2024-08-23 14:53:43.913741');
-INSERT INTO public.exercise_example_bundles
-VALUES ('4897d4d8-17c7-4cf0-9ee5-41160d8f1f42', 20, '0e2fe1e8-f8f1-48e6-b360-8c9d4d9991a6',
-        '9a8024fe-c721-4bea-969c-db88674b5ece', '2024-08-23 14:53:43.913741', '2024-08-23 14:53:43.913741');
-INSERT INTO public.exercise_example_bundles
-VALUES ('d630120e-c17f-461e-8e47-c238101bbbea', 5, 'ab0d7384-444e-446a-911d-f64ac31db8ef',
-        'b4658891-9713-48c4-864c-8dd907da19b0', '2024-08-23 15:30:18.889592', '2024-08-23 15:30:18.889592');
-INSERT INTO public.exercise_example_bundles
-VALUES ('71b829f5-c42e-427a-86a1-2b0c9959e9cf', 30, 'ab0d7384-444e-446a-911d-f64ac31db8ef',
-        'c57aa60c-61ea-4498-b01f-fedcafe8a32a', '2024-08-23 15:30:18.889592', '2024-08-23 15:30:18.889592');
-INSERT INTO public.exercise_example_bundles
-VALUES ('87dc02f1-1516-4fca-93ac-6f2b5e7312b9', 15, 'ab0d7384-444e-446a-911d-f64ac31db8ef',
-        'd736a513-9d73-47a3-bffc-c14911662ea2', '2024-08-23 15:30:18.889592', '2024-08-23 15:30:18.889592');
-INSERT INTO public.exercise_example_bundles
-VALUES ('dcebd1df-e9b5-4cb8-ac2f-d6f169fe4b58', 45, 'ab0d7384-444e-446a-911d-f64ac31db8ef',
-        '0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a', '2024-08-23 15:30:18.889592', '2024-08-23 15:30:18.889592');
-INSERT INTO public.exercise_example_bundles
-VALUES ('9b49ec23-4c23-4b11-bdd5-8226abc7b0a0', 5, 'ab0d7384-444e-446a-911d-f64ac31db8ef',
-        '9a8024fe-c721-4bea-969c-db88674b5ece', '2024-08-23 15:30:18.889592', '2024-08-23 15:30:18.889592');
-INSERT INTO public.exercise_example_bundles
-VALUES ('e67acbe6-3752-4843-9000-d87f877b8849', 5, '650e9725-d36c-4688-bcab-adf93dfe9e5d',
-        'b4658891-9713-48c4-864c-8dd907da19b0', '2024-08-23 15:44:41.332965', '2024-08-23 15:44:41.332965');
-INSERT INTO public.exercise_example_bundles
-VALUES ('652efe63-0e4b-4830-a0d2-9443672da215', 25, '650e9725-d36c-4688-bcab-adf93dfe9e5d',
-        'c57aa60c-61ea-4498-b01f-fedcafe8a32a', '2024-08-23 15:44:41.332965', '2024-08-23 15:44:41.332965');
-INSERT INTO public.exercise_example_bundles
-VALUES ('2a0e87be-8d27-47ad-a4d1-1011e9298693', 15, '650e9725-d36c-4688-bcab-adf93dfe9e5d',
-        'd736a513-9d73-47a3-bffc-c14911662ea2', '2024-08-23 15:44:41.332965', '2024-08-23 15:44:41.332965');
-INSERT INTO public.exercise_example_bundles
-VALUES ('6e92c283-f0bb-4161-a291-eb46bafdd40e', 50, '650e9725-d36c-4688-bcab-adf93dfe9e5d',
-        '0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a', '2024-08-23 15:44:41.332965', '2024-08-23 15:44:41.332965');
-INSERT INTO public.exercise_example_bundles
-VALUES ('cc503015-28c3-4090-b072-53d7dbf43b16', 5, '650e9725-d36c-4688-bcab-adf93dfe9e5d',
-        '9a8024fe-c721-4bea-969c-db88674b5ece', '2024-08-23 15:44:41.332965', '2024-08-23 15:44:41.332965');
-INSERT INTO public.exercise_example_bundles
-VALUES ('39313a9e-b4b3-47e4-842e-208bb338e74a', 5, '3b828d2f-797f-4a45-9d1d-1d3efe38fb54',
-        'b4658891-9713-48c4-864c-8dd907da19b0', '2024-08-23 15:50:27.647239', '2024-08-23 15:50:27.647239');
-INSERT INTO public.exercise_example_bundles
-VALUES ('a4ff9fe6-5923-4888-9ad8-bc3caff0c3ce', 25, '3b828d2f-797f-4a45-9d1d-1d3efe38fb54',
-        'c57aa60c-61ea-4498-b01f-fedcafe8a32a', '2024-08-23 15:50:27.647239', '2024-08-23 15:50:27.647239');
-INSERT INTO public.exercise_example_bundles
-VALUES ('30f2a505-55c2-4bd0-b74f-cfa6bdbeed17', 15, '3b828d2f-797f-4a45-9d1d-1d3efe38fb54',
-        'd736a513-9d73-47a3-bffc-c14911662ea2', '2024-08-23 15:50:27.647239', '2024-08-23 15:50:27.647239');
-INSERT INTO public.exercise_example_bundles
-VALUES ('c4eef49f-0b04-44de-90b0-148484007fa4', 50, '3b828d2f-797f-4a45-9d1d-1d3efe38fb54',
-        '0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a', '2024-08-23 15:50:27.647239', '2024-08-23 15:50:27.647239');
-INSERT INTO public.exercise_example_bundles
-VALUES ('ac6025bc-b4cb-4775-8d78-82ae1634df2d', 5, '3b828d2f-797f-4a45-9d1d-1d3efe38fb54',
-        '9a8024fe-c721-4bea-969c-db88674b5ece', '2024-08-23 15:50:27.647239', '2024-08-23 15:50:27.647239');
-INSERT INTO public.exercise_example_bundles
-VALUES ('e5d05435-4c49-4900-987e-0be1fed5df55', 10, '7517ae2f-c198-4a33-8a1d-1dc7327d1430',
-        'c57aa60c-61ea-4498-b01f-fedcafe8a32a', '2024-08-23 20:29:25.1916', '2024-08-23 20:29:25.1916');
-INSERT INTO public.exercise_example_bundles
-VALUES ('15793138-fe56-4263-be2f-6df2b9b8eed6', 15, '7517ae2f-c198-4a33-8a1d-1dc7327d1430',
-        'd736a513-9d73-47a3-bffc-c14911662ea2', '2024-08-23 20:29:25.1916', '2024-08-23 20:29:25.1916');
-INSERT INTO public.exercise_example_bundles
-VALUES ('e05517be-f96e-4c2e-955e-51026b7fad31', 70, '7517ae2f-c198-4a33-8a1d-1dc7327d1430',
-        '0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a', '2024-08-23 20:29:25.1916', '2024-08-23 20:29:25.1916');
-INSERT INTO public.exercise_example_bundles
-VALUES ('9aa0603b-61eb-4f10-9e48-13f176ec547b', 5, '7517ae2f-c198-4a33-8a1d-1dc7327d1430',
-        '9a8024fe-c721-4bea-969c-db88674b5ece', '2024-08-23 20:29:25.1916', '2024-08-23 20:29:25.1916');
-INSERT INTO public.exercise_example_bundles
-VALUES ('cd6fc1f9-fc65-40f9-b6a3-0dc66104ce4e', 10, '4aafe702-f2fc-4fa2-a7fb-c31c279adeda',
-        'c57aa60c-61ea-4498-b01f-fedcafe8a32a', '2024-08-23 20:36:43.355792', '2024-08-23 20:36:43.355792');
-INSERT INTO public.exercise_example_bundles
-VALUES ('94df2963-cd52-40e6-8acc-6a7bce910a77', 15, '4aafe702-f2fc-4fa2-a7fb-c31c279adeda',
-        'd736a513-9d73-47a3-bffc-c14911662ea2', '2024-08-23 20:36:43.355792', '2024-08-23 20:36:43.355792');
-INSERT INTO public.exercise_example_bundles
-VALUES ('2a64ad71-1bc3-41eb-b583-c82a795e5ca1', 65, '4aafe702-f2fc-4fa2-a7fb-c31c279adeda',
-        '0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a', '2024-08-23 20:36:43.355792', '2024-08-23 20:36:43.355792');
-INSERT INTO public.exercise_example_bundles
-VALUES ('0be804c3-aa15-4ba1-ab73-1fa05ab89781', 10, '4aafe702-f2fc-4fa2-a7fb-c31c279adeda',
-        '9a8024fe-c721-4bea-969c-db88674b5ece', '2024-08-23 20:36:43.355792', '2024-08-23 20:36:43.355792');
-INSERT INTO public.exercise_example_bundles
-VALUES ('296368ee-2357-4884-843b-001815eb58eb', 5, 'faf6674c-2a2a-4b03-ab8b-7a033052b572',
-        '831f39bd-80a8-4d11-9964-bde1788abae1', '2024-08-24 13:49:36.256733', '2024-08-24 13:49:36.256733');
-INSERT INTO public.exercise_example_bundles
-VALUES ('4f8dead0-6147-4e91-9471-ed0cc16a55e2', 15, 'faf6674c-2a2a-4b03-ab8b-7a033052b572',
-        '97136fa7-622a-49d6-9d09-403a631d253d', '2024-08-24 13:49:36.256733', '2024-08-24 13:49:36.256733');
-INSERT INTO public.exercise_example_bundles
-VALUES ('6ef6e9e6-7c76-4e9a-8175-50c156ab6a5f', 70, 'faf6674c-2a2a-4b03-ab8b-7a033052b572',
-        '0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a', '2024-08-24 13:49:36.256733', '2024-08-24 13:49:36.256733');
-INSERT INTO public.exercise_example_bundles
-VALUES ('0de77642-bf82-42ba-a9d4-20a07baedd16', 10, 'faf6674c-2a2a-4b03-ab8b-7a033052b572',
-        '9a8024fe-c721-4bea-969c-db88674b5ece', '2024-08-24 13:49:36.256733', '2024-08-24 13:49:36.256733');
-INSERT INTO public.exercise_example_bundles
-VALUES ('113dc604-3006-4bc6-be1b-37224b7d22fe', 50, '93e6b1c4-0510-41d4-983c-a1fde003881f',
-        'c57aa60c-61ea-4498-b01f-fedcafe8a32a', '2024-08-24 13:55:14.342158', '2024-08-24 13:55:14.342158');
-INSERT INTO public.exercise_example_bundles
-VALUES ('a51e0538-ad97-4c59-9b1f-5b309afbbc51', 15, '93e6b1c4-0510-41d4-983c-a1fde003881f',
-        'd736a513-9d73-47a3-bffc-c14911662ea2', '2024-08-24 13:55:14.342158', '2024-08-24 13:55:14.342158');
-INSERT INTO public.exercise_example_bundles
-VALUES ('3aebaec1-6632-4c73-ba8c-6952dba05975', 30, '93e6b1c4-0510-41d4-983c-a1fde003881f',
-        '0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a', '2024-08-24 13:55:14.342158', '2024-08-24 13:55:14.342158');
-INSERT INTO public.exercise_example_bundles
-VALUES ('064356e6-5f00-447c-be92-417544cafb0f', 5, '93e6b1c4-0510-41d4-983c-a1fde003881f',
-        '9a8024fe-c721-4bea-969c-db88674b5ece', '2024-08-24 13:55:14.342158', '2024-08-24 13:55:14.342158');
-INSERT INTO public.exercise_example_bundles
-VALUES ('14388af7-5dec-40f2-93f9-251203ac087f', 5, '0eaa8980-e29e-4f33-88b0-915db5cf309a',
-        'c57aa60c-61ea-4498-b01f-fedcafe8a32a', '2024-08-24 15:00:28.261712', '2024-08-24 15:00:28.261712');
-INSERT INTO public.exercise_example_bundles
-VALUES ('03e7efda-d175-45ce-9424-e35e1694177b', 20, '0eaa8980-e29e-4f33-88b0-915db5cf309a',
-        'd736a513-9d73-47a3-bffc-c14911662ea2', '2024-08-24 15:00:28.261712', '2024-08-24 15:00:28.261712');
-INSERT INTO public.exercise_example_bundles
-VALUES ('e462d49b-8854-4d9c-a2b4-7e613438fe8d', 70, '0eaa8980-e29e-4f33-88b0-915db5cf309a',
-        '0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a', '2024-08-24 15:00:28.261712', '2024-08-24 15:00:28.261712');
-INSERT INTO public.exercise_example_bundles
-VALUES ('f5cdbe03-ce9d-447f-9c6a-c199db0346cf', 5, '0eaa8980-e29e-4f33-88b0-915db5cf309a',
-        '9a8024fe-c721-4bea-969c-db88674b5ece', '2024-08-24 15:00:28.261712', '2024-08-24 15:00:28.261712');
-INSERT INTO public.exercise_example_bundles
-VALUES ('cb83ce2d-8aee-47ea-9b4e-a71f4b618d8a', 15, '9f0c8916-a08b-4fe5-9f24-e1680ef627a8',
-        'c57aa60c-61ea-4498-b01f-fedcafe8a32a', '2024-08-24 15:05:24.066839', '2024-08-24 15:05:24.066839');
-INSERT INTO public.exercise_example_bundles
-VALUES ('eb65b18d-1ecc-4bc4-b9f1-920c31315722', 15, '9f0c8916-a08b-4fe5-9f24-e1680ef627a8',
-        'd736a513-9d73-47a3-bffc-c14911662ea2', '2024-08-24 15:05:24.066839', '2024-08-24 15:05:24.066839');
-INSERT INTO public.exercise_example_bundles
-VALUES ('03d7628e-87b2-40b7-95db-da120ea3cf9e', 65, '9f0c8916-a08b-4fe5-9f24-e1680ef627a8',
-        '0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a', '2024-08-24 15:05:24.066839', '2024-08-24 15:05:24.066839');
-INSERT INTO public.exercise_example_bundles
-VALUES ('996f10ba-b0a0-445b-81e7-29b390dd755d', 5, '9f0c8916-a08b-4fe5-9f24-e1680ef627a8',
-        '9a8024fe-c721-4bea-969c-db88674b5ece', '2024-08-24 15:05:24.066839', '2024-08-24 15:05:24.066839');
-INSERT INTO public.exercise_example_bundles
-VALUES ('337b2432-790c-4da6-89bb-e9d3494fc6db', 5, '547f1f7e-3ee1-4b39-99eb-3462b1ec13af',
-        '831f39bd-80a8-4d11-9964-bde1788abae1', '2024-08-24 15:14:04.496892', '2024-08-24 15:14:04.496892');
-INSERT INTO public.exercise_example_bundles
-VALUES ('46745aee-08e8-4f56-b1b4-5aec7ff13476', 15, '547f1f7e-3ee1-4b39-99eb-3462b1ec13af',
-        '97136fa7-622a-49d6-9d09-403a631d253d', '2024-08-24 15:14:04.496892', '2024-08-24 15:14:04.496892');
-INSERT INTO public.exercise_example_bundles
-VALUES ('abd6d56d-1d25-422f-b795-f278139c9572', 70, '547f1f7e-3ee1-4b39-99eb-3462b1ec13af',
-        '0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a', '2024-08-24 15:14:04.496892', '2024-08-24 15:14:04.496892');
-INSERT INTO public.exercise_example_bundles
-VALUES ('8c76f415-184d-4cd4-8e31-8776f8594f67', 10, '547f1f7e-3ee1-4b39-99eb-3462b1ec13af',
-        '9a8024fe-c721-4bea-969c-db88674b5ece', '2024-08-24 15:14:04.496892', '2024-08-24 15:14:04.496892');
-INSERT INTO public.exercise_example_bundles
-VALUES ('ac8a1331-b694-4383-883d-1303ae5bf228', 3, '275097d4-3c8d-4040-9b2e-5f294919df04',
-        '1ddbb748-37a6-4d66-a7d4-4957bdbc647f', '2024-08-24 15:21:25.320698', '2024-08-24 15:21:25.320698');
-INSERT INTO public.exercise_example_bundles
-VALUES ('2d9192aa-8c25-4b78-b6da-6111d54f0d10', 3, '275097d4-3c8d-4040-9b2e-5f294919df04',
-        '9e69205f-6c6e-44a7-8ee6-89215e28a28e', '2024-08-24 15:21:25.320698', '2024-08-24 15:21:25.320698');
-INSERT INTO public.exercise_example_bundles
-VALUES ('1bf5346d-a25e-44e9-987b-16018d0a9d33', 5, '275097d4-3c8d-4040-9b2e-5f294919df04',
-        'c57aa60c-61ea-4498-b01f-fedcafe8a32a', '2024-08-24 15:21:25.320698', '2024-08-24 15:21:25.320698');
-INSERT INTO public.exercise_example_bundles
-VALUES ('663ac7b2-0efa-4af8-8e68-5b3743275b36', 5, '275097d4-3c8d-4040-9b2e-5f294919df04',
-        'd736a513-9d73-47a3-bffc-c14911662ea2', '2024-08-24 15:21:25.320698', '2024-08-24 15:21:25.320698');
-INSERT INTO public.exercise_example_bundles
-VALUES ('9dd4593f-1740-4bb6-9b42-ac12612b60c2', 74, '275097d4-3c8d-4040-9b2e-5f294919df04',
-        '0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a', '2024-08-24 15:21:25.320698', '2024-08-24 15:21:25.320698');
-INSERT INTO public.exercise_example_bundles
-VALUES ('d6378421-7dd2-4e30-8e29-e9b54007c407', 10, '275097d4-3c8d-4040-9b2e-5f294919df04',
-        '9a8024fe-c721-4bea-969c-db88674b5ece', '2024-08-24 15:21:25.320698', '2024-08-24 15:21:25.320698');
-INSERT INTO public.exercise_example_bundles
-VALUES ('499e865a-3135-4ba7-b234-ad2829a7a45f', 3, '5985d847-0473-444e-8fe0-9da5341ef986',
-        '9e69205f-6c6e-44a7-8ee6-89215e28a28e', '2024-08-26 14:10:38.4213', '2024-08-26 14:10:38.4213');
-INSERT INTO public.exercise_example_bundles
-VALUES ('7e8e06b7-05da-4185-ada7-5fe66e050ee1', 5, '5985d847-0473-444e-8fe0-9da5341ef986',
-        'c57aa60c-61ea-4498-b01f-fedcafe8a32a', '2024-08-26 14:10:38.4213', '2024-08-26 14:10:38.4213');
-INSERT INTO public.exercise_example_bundles
-VALUES ('1a6610cb-266c-4631-b48a-f7cb7fac9d87', 7, '5985d847-0473-444e-8fe0-9da5341ef986',
-        'd736a513-9d73-47a3-bffc-c14911662ea2', '2024-08-26 14:10:38.4213', '2024-08-26 14:10:38.4213');
-INSERT INTO public.exercise_example_bundles
-VALUES ('0db79f53-e4a4-444a-8634-08b66cf9235f', 75, '5985d847-0473-444e-8fe0-9da5341ef986',
-        '0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a', '2024-08-26 14:10:38.4213', '2024-08-26 14:10:38.4213');
-INSERT INTO public.exercise_example_bundles
-VALUES ('a91744b3-2a6a-4c0f-a493-db486500377d', 10, '5985d847-0473-444e-8fe0-9da5341ef986',
-        '9a8024fe-c721-4bea-969c-db88674b5ece', '2024-08-26 14:10:38.4213', '2024-08-26 14:10:38.4213');
-INSERT INTO public.exercise_example_bundles
-VALUES ('7bd3907b-eacc-46dd-842f-47941c61279f', 10, '50774526-c91f-4d71-82a8-456526b0fbd0',
-        '831f39bd-80a8-4d11-9964-bde1788abae1', '2024-08-26 14:21:24.517126', '2024-08-26 14:21:24.517126');
-INSERT INTO public.exercise_example_bundles
-VALUES ('a757a9c8-94b8-4890-9c45-b4fc096f1a28', 3, '50774526-c91f-4d71-82a8-456526b0fbd0',
-        '9e69205f-6c6e-44a7-8ee6-89215e28a28e', '2024-08-26 14:21:24.517126', '2024-08-26 14:21:24.517126');
-INSERT INTO public.exercise_example_bundles
-VALUES ('d6d66074-2ad3-4169-9948-05cc659e74f0', 7, '50774526-c91f-4d71-82a8-456526b0fbd0',
-        'c57aa60c-61ea-4498-b01f-fedcafe8a32a', '2024-08-26 14:21:24.517126', '2024-08-26 14:21:24.517126');
-INSERT INTO public.exercise_example_bundles
-VALUES ('235a838e-41db-4402-ada9-6919697d8852', 5, '50774526-c91f-4d71-82a8-456526b0fbd0',
-        'd736a513-9d73-47a3-bffc-c14911662ea2', '2024-08-26 14:21:24.517126', '2024-08-26 14:21:24.517126');
-INSERT INTO public.exercise_example_bundles
-VALUES ('08df3ca9-1e6b-46ee-8cc5-dff2ef9989fe', 75, '50774526-c91f-4d71-82a8-456526b0fbd0',
-        '0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a', '2024-08-26 14:21:24.517126', '2024-08-26 14:21:24.517126');
-INSERT INTO public.exercise_example_bundles
-VALUES ('dbbd9f85-c19f-4775-a1d8-0117a3fdb8c0', 3, '385fb192-7c2c-405a-b483-f36e32e241c8',
-        '831f39bd-80a8-4d11-9964-bde1788abae1', '2024-08-26 14:31:15.925866', '2024-08-26 14:31:15.925866');
-INSERT INTO public.exercise_example_bundles
-VALUES ('ead15f95-2373-4ae3-93c2-4b25a299c691', 30, '385fb192-7c2c-405a-b483-f36e32e241c8',
-        'c57aa60c-61ea-4498-b01f-fedcafe8a32a', '2024-08-26 14:31:15.925866', '2024-08-26 14:31:15.925866');
-INSERT INTO public.exercise_example_bundles
-VALUES ('3bce6cda-6a21-4139-a1b1-61242b994c35', 7, '385fb192-7c2c-405a-b483-f36e32e241c8',
-        'd736a513-9d73-47a3-bffc-c14911662ea2', '2024-08-26 14:31:15.925866', '2024-08-26 14:31:15.925866');
-INSERT INTO public.exercise_example_bundles
-VALUES ('3c16442f-55c3-44a6-aaee-227ffe547d1b', 60, '385fb192-7c2c-405a-b483-f36e32e241c8',
-        '0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a', '2024-08-26 14:31:15.925866', '2024-08-26 14:31:15.925866');
-INSERT INTO public.exercise_example_bundles
-VALUES ('c9e17142-9f8e-4aee-a248-23c3b8f81e1b', 33, 'c21d3b0f-c8a8-4b7f-92ea-90dc567a1183',
-        'c57aa60c-61ea-4498-b01f-fedcafe8a32a', '2024-08-26 14:36:25.64298', '2024-08-26 14:36:25.64298');
-INSERT INTO public.exercise_example_bundles
-VALUES ('a1ae109e-f6d9-4875-83a0-8271fabf798b', 10, 'c21d3b0f-c8a8-4b7f-92ea-90dc567a1183',
-        'd736a513-9d73-47a3-bffc-c14911662ea2', '2024-08-26 14:36:25.64298', '2024-08-26 14:36:25.64298');
-INSERT INTO public.exercise_example_bundles
-VALUES ('abd1f4e9-2c21-48fa-9183-54a67d26b8c0', 57, 'c21d3b0f-c8a8-4b7f-92ea-90dc567a1183',
-        '0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a', '2024-08-26 14:36:25.64298', '2024-08-26 14:36:25.64298');
-INSERT INTO public.exercise_example_bundles
-VALUES ('21e181ac-103a-4976-83ef-bf7d79bf373d', 3, '04d275d8-71df-4695-ace9-899ce6e41b29',
-        'c57aa60c-61ea-4498-b01f-fedcafe8a32a', '2024-08-26 14:39:55.631326', '2024-08-26 14:39:55.631326');
-INSERT INTO public.exercise_example_bundles
-VALUES ('cdfc0623-dfef-4ddc-a118-d027ee0efacb', 7, '04d275d8-71df-4695-ace9-899ce6e41b29',
-        'd736a513-9d73-47a3-bffc-c14911662ea2', '2024-08-26 14:39:55.631326', '2024-08-26 14:39:55.631326');
-INSERT INTO public.exercise_example_bundles
-VALUES ('4ef797d6-9579-4c34-bb18-eef1a7b5cf5b', 90, '04d275d8-71df-4695-ace9-899ce6e41b29',
-        '0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a', '2024-08-26 14:39:55.631326', '2024-08-26 14:39:55.631326');
-INSERT INTO public.exercise_example_bundles
-VALUES ('73d55224-e0cc-4625-a0f6-2c13f2c02a86', 5, '1b4402c2-2459-45c1-8d24-356322c71d20',
-        '9e69205f-6c6e-44a7-8ee6-89215e28a28e', '2024-08-26 14:46:34.082451', '2024-08-26 14:46:34.082451');
-INSERT INTO public.exercise_example_bundles
-VALUES ('293f3ce5-ca84-4ce2-8d4a-d25e088c1272', 5, '1b4402c2-2459-45c1-8d24-356322c71d20',
-        'd736a513-9d73-47a3-bffc-c14911662ea2', '2024-08-26 14:46:34.082451', '2024-08-26 14:46:34.082451');
-INSERT INTO public.exercise_example_bundles
-VALUES ('e9e55355-5a3e-4a26-8605-82e056734465', 90, '1b4402c2-2459-45c1-8d24-356322c71d20',
-        '0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a', '2024-08-26 14:46:34.082451', '2024-08-26 14:46:34.082451');
-INSERT INTO public.exercise_example_bundles
-VALUES ('68ce91fd-05a6-49e2-a3a7-47c2bde7f3a0', 5, '4f9bdd10-28bc-447e-8cf5-fbf47cd9af79',
-        '9e69205f-6c6e-44a7-8ee6-89215e28a28e', '2024-08-26 14:52:11.244098', '2024-08-26 14:52:11.244098');
-INSERT INTO public.exercise_example_bundles
-VALUES ('609d1d59-52b1-4a47-9274-795756d11360', 5, '4f9bdd10-28bc-447e-8cf5-fbf47cd9af79',
-        'd736a513-9d73-47a3-bffc-c14911662ea2', '2024-08-26 14:52:11.244098', '2024-08-26 14:52:11.244098');
-INSERT INTO public.exercise_example_bundles
-VALUES ('111cdf18-c08f-4133-8e95-8aa4549ef28c', 90, '4f9bdd10-28bc-447e-8cf5-fbf47cd9af79',
-        '0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a', '2024-08-26 14:52:11.244098', '2024-08-26 14:52:11.244098');
-INSERT INTO public.exercise_example_bundles
-VALUES ('1aea43fc-04d5-4c68-a744-6da969b4e0ec', 5, '6a312bde-cc33-450b-8f1d-6091ccffe9cc',
-        '831f39bd-80a8-4d11-9964-bde1788abae1', '2024-08-26 15:16:20.199318', '2024-08-26 15:16:20.199318');
-INSERT INTO public.exercise_example_bundles
-VALUES ('c5a1bbba-5a08-45ef-b15e-bbd8e1ec03ea', 5, '6a312bde-cc33-450b-8f1d-6091ccffe9cc',
-        '9e69205f-6c6e-44a7-8ee6-89215e28a28e', '2024-08-26 15:16:20.199318', '2024-08-26 15:16:20.199318');
-INSERT INTO public.exercise_example_bundles
-VALUES ('3a96266d-7ef7-4e52-9506-20a930f7941a', 5, '6a312bde-cc33-450b-8f1d-6091ccffe9cc',
-        'd736a513-9d73-47a3-bffc-c14911662ea2', '2024-08-26 15:16:20.199318', '2024-08-26 15:16:20.199318');
-INSERT INTO public.exercise_example_bundles
-VALUES ('eafb9352-ecfd-40d0-a070-02526d31c373', 85, '6a312bde-cc33-450b-8f1d-6091ccffe9cc',
-        '0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a', '2024-08-26 15:16:20.199318', '2024-08-26 15:16:20.199318');
-INSERT INTO public.exercise_example_bundles
-VALUES ('90ad90a5-335d-4ff0-9e11-4b201a07a6ba', 4, '21e7460d-aa00-448b-8c82-994a73e0164c',
-        '9e69205f-6c6e-44a7-8ee6-89215e28a28e', '2024-08-26 15:20:51.083182', '2024-08-26 15:20:51.083182');
-INSERT INTO public.exercise_example_bundles
-VALUES ('76982849-abc8-464e-afb0-447a8131dbd2', 4, '21e7460d-aa00-448b-8c82-994a73e0164c',
-        'c57aa60c-61ea-4498-b01f-fedcafe8a32a', '2024-08-26 15:20:51.083182', '2024-08-26 15:20:51.083182');
-INSERT INTO public.exercise_example_bundles
-VALUES ('e7bf4936-7256-470e-bbe7-7e0cc9fb3417', 7, '21e7460d-aa00-448b-8c82-994a73e0164c',
-        'd736a513-9d73-47a3-bffc-c14911662ea2', '2024-08-26 15:20:51.083182', '2024-08-26 15:20:51.083182');
-INSERT INTO public.exercise_example_bundles
-VALUES ('ae3dd37f-9fa3-4f6b-b55e-6b5b602a2eb0', 85, '21e7460d-aa00-448b-8c82-994a73e0164c',
-        '0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a', '2024-08-26 15:20:51.083182', '2024-08-26 15:20:51.083182');
-INSERT INTO public.exercise_example_bundles
-VALUES ('0bcb7511-93a0-44d3-84f9-069817c301b9', 3, 'ee8cc366-d33b-45a6-84b0-4ab416585ad1',
-        '831f39bd-80a8-4d11-9964-bde1788abae1', '2024-08-27 16:05:54.978989', '2024-08-27 16:05:54.978989');
-INSERT INTO public.exercise_example_bundles
-VALUES ('184b87a1-9a62-4c30-84af-1d41ee495921', 5, 'ee8cc366-d33b-45a6-84b0-4ab416585ad1',
-        '9e69205f-6c6e-44a7-8ee6-89215e28a28e', '2024-08-27 16:05:54.978989', '2024-08-27 16:05:54.978989');
-INSERT INTO public.exercise_example_bundles
-VALUES ('9d8bb8b1-eaaa-45fd-bd2a-793ffdf705bb', 7, 'ee8cc366-d33b-45a6-84b0-4ab416585ad1',
-        'c57aa60c-61ea-4498-b01f-fedcafe8a32a', '2024-08-27 16:05:54.978989', '2024-08-27 16:05:54.978989');
-INSERT INTO public.exercise_example_bundles
-VALUES ('5d6a57a3-3484-4157-8e13-704b6fc2b01f', 20, 'ee8cc366-d33b-45a6-84b0-4ab416585ad1',
-        'd736a513-9d73-47a3-bffc-c14911662ea2', '2024-08-27 16:05:54.978989', '2024-08-27 16:05:54.978989');
-INSERT INTO public.exercise_example_bundles
-VALUES ('228def8d-0219-4b5f-b953-77558ab99b01', 65, 'ee8cc366-d33b-45a6-84b0-4ab416585ad1',
-        '0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a', '2024-08-27 16:05:54.978989', '2024-08-27 16:05:54.978989');
-INSERT INTO public.exercise_example_bundles
-VALUES ('0c6a8197-d0c6-4436-b902-0e06b20f08ac', 85, '490df80e-d34c-42cf-bfe5-c27ddd2cd734',
-        '0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a', '2024-08-27 17:08:58.77674', '2024-08-27 17:08:58.77674');
-INSERT INTO public.exercise_example_bundles
-VALUES ('9f643fad-c319-409f-996f-f73ed0be2be5', 7, '490df80e-d34c-42cf-bfe5-c27ddd2cd734',
-        'd736a513-9d73-47a3-bffc-c14911662ea2', '2024-08-27 17:08:58.77674', '2024-08-27 17:08:58.77674');
-INSERT INTO public.exercise_example_bundles
-VALUES ('e73950e2-a50a-43af-921c-511a7bf30eae', 5, '490df80e-d34c-42cf-bfe5-c27ddd2cd734',
-        'b4658891-9713-48c4-864c-8dd907da19b0', '2024-08-27 17:08:58.77674', '2024-08-27 17:08:58.77674');
-INSERT INTO public.exercise_example_bundles
-VALUES ('4a711708-1db5-4d8a-b0b4-9b7a0de9ed8b', 3, '490df80e-d34c-42cf-bfe5-c27ddd2cd734',
-        'f6e65bfe-0746-4a8f-8210-0e9bf88d9886', '2024-08-27 17:08:58.77674', '2024-08-27 17:08:58.77674');
-INSERT INTO public.exercise_example_bundles
-VALUES ('dc847242-4679-44c9-b745-7b297eac4c01', 55, 'e21344ff-b825-4a99-bf8b-a778bf1964d1',
-        '0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a', '2024-08-27 17:14:24.429554', '2024-08-27 17:14:24.429554');
-INSERT INTO public.exercise_example_bundles
-VALUES ('0600b519-6d37-4fde-b790-79ea0d48112f', 25, 'e21344ff-b825-4a99-bf8b-a778bf1964d1',
-        'c57aa60c-61ea-4498-b01f-fedcafe8a32a', '2024-08-27 17:14:24.429554', '2024-08-27 17:14:24.429554');
-INSERT INTO public.exercise_example_bundles
-VALUES ('328de5b9-70a8-4eb9-b08f-9520e3cbb86e', 15, 'e21344ff-b825-4a99-bf8b-a778bf1964d1',
-        'd736a513-9d73-47a3-bffc-c14911662ea2', '2024-08-27 17:14:24.429554', '2024-08-27 17:14:24.429554');
-INSERT INTO public.exercise_example_bundles
-VALUES ('223035aa-6c8e-418b-8285-f93ab5950ef2', 5, 'e21344ff-b825-4a99-bf8b-a778bf1964d1',
-        'f6e65bfe-0746-4a8f-8210-0e9bf88d9886', '2024-08-27 17:14:24.429554', '2024-08-27 17:14:24.429554');
-INSERT INTO public.exercise_example_bundles
-VALUES ('d75b33f1-1a5d-4443-8165-207c728f97de', 85, 'd6743870-0d5a-4180-9671-181b8f65e03e',
-        '0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a', '2024-08-27 17:17:13.843181', '2024-08-27 17:17:13.843181');
-INSERT INTO public.exercise_example_bundles
-VALUES ('09b6b03b-1f0a-411f-b4a9-65e0e3dd6251', 10, 'd6743870-0d5a-4180-9671-181b8f65e03e',
-        'd736a513-9d73-47a3-bffc-c14911662ea2', '2024-08-27 17:17:13.843181', '2024-08-27 17:17:13.843181');
-INSERT INTO public.exercise_example_bundles
-VALUES ('194b2a4e-0e5b-4ce2-9eba-ad5f6ed14e28', 5, 'd6743870-0d5a-4180-9671-181b8f65e03e',
-        'b4658891-9713-48c4-864c-8dd907da19b0', '2024-08-27 17:17:13.843181', '2024-08-27 17:17:13.843181');
-INSERT INTO public.exercise_example_bundles
-VALUES ('95ad4d7e-324f-40cc-9d49-45db44ea0f1f', 90, '855bd9e5-3546-4cfd-b048-e8017f01bfeb',
-        '0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a', '2024-08-27 17:37:27.246315', '2024-08-27 17:37:27.246315');
-INSERT INTO public.exercise_example_bundles
-VALUES ('e7f23007-ba25-4d73-843e-511f4cfd5737', 7, '855bd9e5-3546-4cfd-b048-e8017f01bfeb',
-        'd736a513-9d73-47a3-bffc-c14911662ea2', '2024-08-27 17:37:27.246315', '2024-08-27 17:37:27.246315');
-INSERT INTO public.exercise_example_bundles
-VALUES ('ca071223-d031-49f3-8998-0a4e9c43ac04', 3, '855bd9e5-3546-4cfd-b048-e8017f01bfeb',
-        '9a8024fe-c721-4bea-969c-db88674b5ece', '2024-08-27 17:37:27.246315', '2024-08-27 17:37:27.246315');
-INSERT INTO public.exercise_example_bundles
-VALUES ('fe5a7d39-3e3a-4a5c-94bb-c2c3a9f41bd7', 85, '53defdc5-bfec-4af4-bfba-60440e3493cc',
-        '0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a', '2024-08-27 17:40:04.038365', '2024-08-27 17:40:04.038365');
-INSERT INTO public.exercise_example_bundles
-VALUES ('dc55bf23-a1e2-439a-a330-313276f65c49', 10, '53defdc5-bfec-4af4-bfba-60440e3493cc',
-        'd736a513-9d73-47a3-bffc-c14911662ea2', '2024-08-27 17:40:04.038365', '2024-08-27 17:40:04.038365');
-INSERT INTO public.exercise_example_bundles
-VALUES ('4b4553ac-4060-4f3e-88db-7366cde47744', 5, '53defdc5-bfec-4af4-bfba-60440e3493cc',
-        'b4658891-9713-48c4-864c-8dd907da19b0', '2024-08-27 17:40:04.038365', '2024-08-27 17:40:04.038365');
-INSERT INTO public.exercise_example_bundles
-VALUES ('43b6f73e-fbbb-4174-86d0-ffdca377721d', 85, '748e0a60-9429-4a9d-8a6b-3ba76a7fc4b2',
-        '0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a', '2024-08-27 17:41:21.150235', '2024-08-27 17:41:21.150235');
-INSERT INTO public.exercise_example_bundles
-VALUES ('33498eb0-fac1-4a2e-84c5-ad04089181ab', 10, '748e0a60-9429-4a9d-8a6b-3ba76a7fc4b2',
-        '9e69205f-6c6e-44a7-8ee6-89215e28a28e', '2024-08-27 17:41:21.150235', '2024-08-27 17:41:21.150235');
-INSERT INTO public.exercise_example_bundles
-VALUES ('86d04a02-0f80-4f1e-88b9-df9a92e05310', 5, '748e0a60-9429-4a9d-8a6b-3ba76a7fc4b2',
-        'd736a513-9d73-47a3-bffc-c14911662ea2', '2024-08-27 17:41:21.150235', '2024-08-27 17:41:21.150235');
-INSERT INTO public.exercise_example_bundles
-VALUES ('4250a8bb-f09e-40be-b305-8a58e486319c', 90, 'a90f4822-63c5-42b9-943c-ff0ceacad1eb',
-        '0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a', '2024-08-27 17:44:25.493574', '2024-08-27 17:44:25.493574');
-INSERT INTO public.exercise_example_bundles
-VALUES ('e85c86b2-941a-41d7-a060-ae9efcc440ef', 7, 'a90f4822-63c5-42b9-943c-ff0ceacad1eb',
-        'd736a513-9d73-47a3-bffc-c14911662ea2', '2024-08-27 17:44:25.493574', '2024-08-27 17:44:25.493574');
-INSERT INTO public.exercise_example_bundles
-VALUES ('8c5fc4c7-284f-47b1-b3d3-667369204674', 3, 'a90f4822-63c5-42b9-943c-ff0ceacad1eb',
-        'c57aa60c-61ea-4498-b01f-fedcafe8a32a', '2024-08-27 17:44:25.493574', '2024-08-27 17:44:25.493574');
-INSERT INTO public.exercise_example_bundles
-VALUES ('6a155359-0805-4787-a022-ce3812bcf05c', 85, 'ddc2e877-7197-42fa-ae1e-59706d209774',
-        '97a87b01-35e8-490a-94b9-9bdae9c2f965', '2024-08-27 19:58:20.496346', '2024-08-27 19:58:20.496346');
-INSERT INTO public.exercise_example_bundles
-VALUES ('fefc9491-3df3-4e18-9f17-2746e3989075', 10, 'ddc2e877-7197-42fa-ae1e-59706d209774',
-        '9a8024fe-c721-4bea-969c-db88674b5ece', '2024-08-27 19:58:20.496346', '2024-08-27 19:58:20.496346');
-INSERT INTO public.exercise_example_bundles
-VALUES ('9ef3dd63-ae20-4b40-9f0e-ff3d9390c73b', 5, 'ddc2e877-7197-42fa-ae1e-59706d209774',
-        'c57aa60c-61ea-4498-b01f-fedcafe8a32a', '2024-08-27 19:58:20.496346', '2024-08-27 19:58:20.496346');
-INSERT INTO public.exercise_example_bundles
-VALUES ('7687354a-a9e4-4eea-8a55-9515da80328a', 70, '8324ae75-08e9-48de-a00b-55d229085712',
-        '97a87b01-35e8-490a-94b9-9bdae9c2f965', '2024-08-27 20:02:25.698074', '2024-08-27 20:02:25.698074');
-INSERT INTO public.exercise_example_bundles
-VALUES ('9cf926d9-80bd-444c-8f6c-0ff9c558e8e2', 25, '8324ae75-08e9-48de-a00b-55d229085712',
-        '9a8024fe-c721-4bea-969c-db88674b5ece', '2024-08-27 20:02:25.698074', '2024-08-27 20:02:25.698074');
-INSERT INTO public.exercise_example_bundles
-VALUES ('75d3423c-38d0-4260-a912-4eeacbe4fc1a', 5, '8324ae75-08e9-48de-a00b-55d229085712',
-        'c57aa60c-61ea-4498-b01f-fedcafe8a32a', '2024-08-27 20:02:25.698074', '2024-08-27 20:02:25.698074');
-INSERT INTO public.exercise_example_bundles
-VALUES ('e24cd5ac-96e4-4955-9357-8cef40f6b2cf', 85, 'bbfbcfe2-1f56-492e-afa6-75e595b84fde',
-        '97a87b01-35e8-490a-94b9-9bdae9c2f965', '2024-08-27 20:04:23.484123', '2024-08-27 20:04:23.484123');
-INSERT INTO public.exercise_example_bundles
-VALUES ('800b2a70-816c-49f0-a8b9-870aff6088b8', 10, 'bbfbcfe2-1f56-492e-afa6-75e595b84fde',
-        '9a8024fe-c721-4bea-969c-db88674b5ece', '2024-08-27 20:04:23.484123', '2024-08-27 20:04:23.484123');
-INSERT INTO public.exercise_example_bundles
-VALUES ('479ce6bc-3090-41f5-ae9a-f07004aa44b2', 5, 'bbfbcfe2-1f56-492e-afa6-75e595b84fde',
-        'c57aa60c-61ea-4498-b01f-fedcafe8a32a', '2024-08-27 20:04:23.484123', '2024-08-27 20:04:23.484123');
-INSERT INTO public.exercise_example_bundles
-VALUES ('6f734756-9c48-4dcd-bee2-6bed69665219', 80, '09386394-e4e1-4a6d-adce-d5f5a518485c',
-        '97a87b01-35e8-490a-94b9-9bdae9c2f965', '2024-08-27 20:09:12.659219', '2024-08-27 20:09:12.659219');
-INSERT INTO public.exercise_example_bundles
-VALUES ('3d22c4c2-ebc1-4aea-a9e0-6e35b6b50cb4', 15, '09386394-e4e1-4a6d-adce-d5f5a518485c',
-        '9a8024fe-c721-4bea-969c-db88674b5ece', '2024-08-27 20:09:12.659219', '2024-08-27 20:09:12.659219');
-INSERT INTO public.exercise_example_bundles
-VALUES ('f760f86f-5b69-469e-a4ba-393f949e1a8c', 5, '09386394-e4e1-4a6d-adce-d5f5a518485c',
-        'c57aa60c-61ea-4498-b01f-fedcafe8a32a', '2024-08-27 20:09:12.659219', '2024-08-27 20:09:12.659219');
-INSERT INTO public.exercise_example_bundles
-VALUES ('afb55144-4d6a-4132-bbda-a5dc1583f964', 85, 'cfb2d83a-b3dc-44e9-ab08-53f9269752d6',
-        '97a87b01-35e8-490a-94b9-9bdae9c2f965', '2024-08-27 20:11:42.127843', '2024-08-27 20:11:42.127843');
-INSERT INTO public.exercise_example_bundles
-VALUES ('a6857925-338c-491e-8808-e1996bf2e9b7', 10, 'cfb2d83a-b3dc-44e9-ab08-53f9269752d6',
-        '9a8024fe-c721-4bea-969c-db88674b5ece', '2024-08-27 20:11:42.127843', '2024-08-27 20:11:42.127843');
-INSERT INTO public.exercise_example_bundles
-VALUES ('2ee74b2f-791d-4c57-8048-ccafdb6aa5c4', 5, 'cfb2d83a-b3dc-44e9-ab08-53f9269752d6',
-        'c57aa60c-61ea-4498-b01f-fedcafe8a32a', '2024-08-27 20:11:42.127843', '2024-08-27 20:11:42.127843');
-INSERT INTO public.exercise_example_bundles
-VALUES ('c4f5967c-315d-44a5-808c-c1611f1290e6', 85, '2522a61a-2190-43e9-ae52-ca6bb023815e',
-        '97a87b01-35e8-490a-94b9-9bdae9c2f965', '2024-08-27 20:13:52.515436', '2024-08-27 20:13:52.515436');
-INSERT INTO public.exercise_example_bundles
-VALUES ('df2bdb42-b9d5-4495-a53a-db3378a362ce', 10, '2522a61a-2190-43e9-ae52-ca6bb023815e',
-        '9a8024fe-c721-4bea-969c-db88674b5ece', '2024-08-27 20:13:52.515436', '2024-08-27 20:13:52.515436');
-INSERT INTO public.exercise_example_bundles
-VALUES ('6cba3937-9806-42a5-bf8b-e14a0db50c5d', 5, '2522a61a-2190-43e9-ae52-ca6bb023815e',
-        'c57aa60c-61ea-4498-b01f-fedcafe8a32a', '2024-08-27 20:13:52.515436', '2024-08-27 20:13:52.515436');
-INSERT INTO public.exercise_example_bundles
-VALUES ('c36a9453-2ebb-4e48-8645-d707664d9a14', 85, '9fc5ae4d-2868-4576-bb67-9c83663fc005',
-        '97a87b01-35e8-490a-94b9-9bdae9c2f965', '2024-08-27 20:15:21.120047', '2024-08-27 20:15:21.120047');
-INSERT INTO public.exercise_example_bundles
-VALUES ('125a37fd-101e-4192-9ad7-795e39eed73d', 10, '9fc5ae4d-2868-4576-bb67-9c83663fc005',
-        '9a8024fe-c721-4bea-969c-db88674b5ece', '2024-08-27 20:15:21.120047', '2024-08-27 20:15:21.120047');
-INSERT INTO public.exercise_example_bundles
-VALUES ('cfb15031-a060-42e0-aaf0-bd4407588e80', 5, '9fc5ae4d-2868-4576-bb67-9c83663fc005',
-        'c57aa60c-61ea-4498-b01f-fedcafe8a32a', '2024-08-27 20:15:21.120047', '2024-08-27 20:15:21.120047');
-INSERT INTO public.exercise_example_bundles
-VALUES ('212ec793-103d-485e-a0fb-78bcf7e69244', 70, '89f423d0-315f-4d93-b346-dcb468a97045',
-        '97a87b01-35e8-490a-94b9-9bdae9c2f965', '2024-08-27 20:17:28.420295', '2024-08-27 20:17:28.420295');
-INSERT INTO public.exercise_example_bundles
-VALUES ('c578ca42-13db-478c-bd7a-4968bc7fceb7', 25, '89f423d0-315f-4d93-b346-dcb468a97045',
-        '9a8024fe-c721-4bea-969c-db88674b5ece', '2024-08-27 20:17:28.420295', '2024-08-27 20:17:28.420295');
-INSERT INTO public.exercise_example_bundles
-VALUES ('1d693839-4b53-4a99-b42c-c73816b5161e', 5, '89f423d0-315f-4d93-b346-dcb468a97045',
-        'c57aa60c-61ea-4498-b01f-fedcafe8a32a', '2024-08-27 20:17:28.420295', '2024-08-27 20:17:28.420295');
-INSERT INTO public.exercise_example_bundles
-VALUES ('c1a35037-a4fa-4a0d-b014-8a123c7e5371', 85, '194fa2ee-7f92-4982-903e-3db80293d773',
-        '97a87b01-35e8-490a-94b9-9bdae9c2f965', '2024-08-27 20:20:16.525543', '2024-08-27 20:20:16.525543');
-INSERT INTO public.exercise_example_bundles
-VALUES ('1ba42609-7d2e-4934-8452-1cdebdef5545', 10, '194fa2ee-7f92-4982-903e-3db80293d773',
-        '9a8024fe-c721-4bea-969c-db88674b5ece', '2024-08-27 20:20:16.525543', '2024-08-27 20:20:16.525543');
-INSERT INTO public.exercise_example_bundles
-VALUES ('f500643c-e69d-4f80-a477-0ffcc4b35c03', 5, '194fa2ee-7f92-4982-903e-3db80293d773',
-        'c57aa60c-61ea-4498-b01f-fedcafe8a32a', '2024-08-27 20:20:16.525543', '2024-08-27 20:20:16.525543');
-INSERT INTO public.exercise_example_bundles
-VALUES ('e006cd44-daa3-4fa0-af65-7fe2e178bc65', 85, 'f2fb31f0-7f6b-42b6-9a79-c22453ac6a63',
-        '97a87b01-35e8-490a-94b9-9bdae9c2f965', '2024-08-27 20:24:43.755434', '2024-08-27 20:24:43.755434');
-INSERT INTO public.exercise_example_bundles
-VALUES ('77ef457c-da51-4cdf-93ad-b6640f250f6d', 10, 'f2fb31f0-7f6b-42b6-9a79-c22453ac6a63',
-        '9a8024fe-c721-4bea-969c-db88674b5ece', '2024-08-27 20:24:43.755434', '2024-08-27 20:24:43.755434');
-INSERT INTO public.exercise_example_bundles
-VALUES ('220ad7dc-5334-486c-a6c6-9504ed2865ee', 5, 'f2fb31f0-7f6b-42b6-9a79-c22453ac6a63',
-        'c57aa60c-61ea-4498-b01f-fedcafe8a32a', '2024-08-27 20:24:43.755434', '2024-08-27 20:24:43.755434');
-INSERT INTO public.exercise_example_bundles
-VALUES ('359c0953-b4ef-491e-b221-327ebb8b4332', 70, '5e3c933f-7511-463e-88b1-a139c8276e69',
-        '97a87b01-35e8-490a-94b9-9bdae9c2f965', '2024-08-27 20:27:54.267144', '2024-08-27 20:27:54.267144');
-INSERT INTO public.exercise_example_bundles
-VALUES ('802888ae-b322-4b39-a632-7637af500f7f', 25, '5e3c933f-7511-463e-88b1-a139c8276e69',
-        '9a8024fe-c721-4bea-969c-db88674b5ece', '2024-08-27 20:27:54.267144', '2024-08-27 20:27:54.267144');
-INSERT INTO public.exercise_example_bundles
-VALUES ('0aea0f3c-3a35-481c-bf47-0c67621a3190', 5, '5e3c933f-7511-463e-88b1-a139c8276e69',
-        'c57aa60c-61ea-4498-b01f-fedcafe8a32a', '2024-08-27 20:27:54.267144', '2024-08-27 20:27:54.267144');
-INSERT INTO public.exercise_example_bundles
-VALUES ('286f93a5-488c-445c-a83b-9f7f594e1a9f', 80, 'e7f390fd-7435-44e1-b354-c62073934c66',
-        '97a87b01-35e8-490a-94b9-9bdae9c2f965', '2024-08-27 20:29:12.669187', '2024-08-27 20:29:12.669187');
-INSERT INTO public.exercise_example_bundles
-VALUES ('65cd8ab4-5fb8-47ef-ab4c-69ee14f6b74b', 15, 'e7f390fd-7435-44e1-b354-c62073934c66',
-        '9a8024fe-c721-4bea-969c-db88674b5ece', '2024-08-27 20:29:12.669187', '2024-08-27 20:29:12.669187');
-INSERT INTO public.exercise_example_bundles
-VALUES ('396c6aeb-d8a3-4e2d-93bb-a232a59e1eb9', 5, 'e7f390fd-7435-44e1-b354-c62073934c66',
-        'c57aa60c-61ea-4498-b01f-fedcafe8a32a', '2024-08-27 20:29:12.669187', '2024-08-27 20:29:12.669187');
-INSERT INTO public.exercise_example_bundles
-VALUES ('35506cbe-e3e9-40dc-b9ea-f4860277ae16', 80, '7e0566c6-eefb-4992-a673-d19902933c26',
-        '97a87b01-35e8-490a-94b9-9bdae9c2f965', '2024-08-28 20:36:41.156018', '2024-08-28 20:36:41.156018');
-INSERT INTO public.exercise_example_bundles
-VALUES ('9f0a3f11-df67-4c5b-8cad-0d27c7f88515', 15, '7e0566c6-eefb-4992-a673-d19902933c26',
-        '9a8024fe-c721-4bea-969c-db88674b5ece', '2024-08-28 20:36:41.156018', '2024-08-28 20:36:41.156018');
-INSERT INTO public.exercise_example_bundles
-VALUES ('8032cadc-a816-463a-b641-8c9a1a9b7e7f', 5, '7e0566c6-eefb-4992-a673-d19902933c26',
-        'c57aa60c-61ea-4498-b01f-fedcafe8a32a', '2024-08-28 20:36:41.156018', '2024-08-28 20:36:41.156018');
-INSERT INTO public.exercise_example_bundles
-VALUES ('04ce1d65-c38b-41d6-b147-8443ac574a39', 90, '7fd82f79-1f5f-4bae-8f2d-b94ecae595d5',
-        '97a87b01-35e8-490a-94b9-9bdae9c2f965', '2024-08-28 20:38:26.227275', '2024-08-28 20:38:26.227275');
-INSERT INTO public.exercise_example_bundles
-VALUES ('9181bc7c-a816-4a6c-a98f-dd3546ac088e', 7, '7fd82f79-1f5f-4bae-8f2d-b94ecae595d5',
-        '9a8024fe-c721-4bea-969c-db88674b5ece', '2024-08-28 20:38:26.227275', '2024-08-28 20:38:26.227275');
-INSERT INTO public.exercise_example_bundles
-VALUES ('81ac49ef-d773-45d0-b49c-8dfabb43b04a', 3, '7fd82f79-1f5f-4bae-8f2d-b94ecae595d5',
-        'c57aa60c-61ea-4498-b01f-fedcafe8a32a', '2024-08-28 20:38:26.227275', '2024-08-28 20:38:26.227275');
-INSERT INTO public.exercise_example_bundles
-VALUES ('22bffc78-de7c-42c1-8961-1e4d90d0fbc5', 80, '908341ec-de1f-44bd-b84d-74ff8a7162a0',
-        '97a87b01-35e8-490a-94b9-9bdae9c2f965', '2024-08-28 20:40:22.165845', '2024-08-28 20:40:22.165845');
-INSERT INTO public.exercise_example_bundles
-VALUES ('571a48fc-5925-4f15-8dfc-e213be2f1f10', 15, '908341ec-de1f-44bd-b84d-74ff8a7162a0',
-        '9a8024fe-c721-4bea-969c-db88674b5ece', '2024-08-28 20:40:22.165845', '2024-08-28 20:40:22.165845');
-INSERT INTO public.exercise_example_bundles
-VALUES ('56d11ef9-22f5-47a2-8f76-d4726626535c', 5, '908341ec-de1f-44bd-b84d-74ff8a7162a0',
-        'c57aa60c-61ea-4498-b01f-fedcafe8a32a', '2024-08-28 20:40:22.165845', '2024-08-28 20:40:22.165845');
-INSERT INTO public.exercise_example_bundles
-VALUES ('fae3fbba-87c1-48b9-a1f5-c413c4f8199d', 85, 'a2736a56-04b3-4437-835e-1e2dc8029c9e',
-        '97a87b01-35e8-490a-94b9-9bdae9c2f965', '2024-08-28 20:42:25.590465', '2024-08-28 20:42:25.590465');
-INSERT INTO public.exercise_example_bundles
-VALUES ('72b533bf-7ecc-44ef-a3d6-8341e89a57f4', 10, 'a2736a56-04b3-4437-835e-1e2dc8029c9e',
-        '9a8024fe-c721-4bea-969c-db88674b5ece', '2024-08-28 20:42:25.590465', '2024-08-28 20:42:25.590465');
-INSERT INTO public.exercise_example_bundles
-VALUES ('5bbfac84-4013-45a8-9b99-9f2c4bdc9f2a', 5, 'a2736a56-04b3-4437-835e-1e2dc8029c9e',
-        'c57aa60c-61ea-4498-b01f-fedcafe8a32a', '2024-08-28 20:42:25.590465', '2024-08-28 20:42:25.590465');
-INSERT INTO public.exercise_example_bundles
-VALUES ('d6ea6f0f-7ebd-4227-b328-5163f5d3b37c', 85, 'da809d98-950b-4ca0-a71b-c67d21fd66da',
-        '97a87b01-35e8-490a-94b9-9bdae9c2f965', '2024-08-28 20:44:17.61958', '2024-08-28 20:44:17.61958');
-INSERT INTO public.exercise_example_bundles
-VALUES ('26369c9c-9bd0-480b-aa2d-99d56c2ba5ce', 10, 'da809d98-950b-4ca0-a71b-c67d21fd66da',
-        '9a8024fe-c721-4bea-969c-db88674b5ece', '2024-08-28 20:44:17.61958', '2024-08-28 20:44:17.61958');
-INSERT INTO public.exercise_example_bundles
-VALUES ('8019eac5-d12c-4517-9543-d75c3533648d', 5, 'da809d98-950b-4ca0-a71b-c67d21fd66da',
-        'c57aa60c-61ea-4498-b01f-fedcafe8a32a', '2024-08-28 20:44:17.61958', '2024-08-28 20:44:17.61958');
-INSERT INTO public.exercise_example_bundles
-VALUES ('8ae65297-68ee-407b-a342-29011a79f740', 70, '4de0744d-0a78-4052-aa1b-e5340959d9fe',
-        '97a87b01-35e8-490a-94b9-9bdae9c2f965', '2024-08-28 20:45:27.519854', '2024-08-28 20:45:27.519854');
-INSERT INTO public.exercise_example_bundles
-VALUES ('8f96b5ae-66e8-43ab-9829-1d3eb4fd2b6c', 25, '4de0744d-0a78-4052-aa1b-e5340959d9fe',
-        '9a8024fe-c721-4bea-969c-db88674b5ece', '2024-08-28 20:45:27.519854', '2024-08-28 20:45:27.519854');
-INSERT INTO public.exercise_example_bundles
-VALUES ('d6255721-a7b1-40f7-9da5-eacf0d50ea55', 5, '4de0744d-0a78-4052-aa1b-e5340959d9fe',
-        'c57aa60c-61ea-4498-b01f-fedcafe8a32a', '2024-08-28 20:45:27.519854', '2024-08-28 20:45:27.519854');
-INSERT INTO public.exercise_example_bundles
-VALUES ('02c75169-d17d-4fda-9966-41f95f97b71a', 85, 'd7abed66-3c4a-490b-91cc-8e714336f9fa',
-        '97a87b01-35e8-490a-94b9-9bdae9c2f965', '2024-08-28 20:47:16.406993', '2024-08-28 20:47:16.406993');
-INSERT INTO public.exercise_example_bundles
-VALUES ('b8b6c1e7-2ca5-4cda-b338-77aa5f06a990', 10, 'd7abed66-3c4a-490b-91cc-8e714336f9fa',
-        '9a8024fe-c721-4bea-969c-db88674b5ece', '2024-08-28 20:47:16.406993', '2024-08-28 20:47:16.406993');
-INSERT INTO public.exercise_example_bundles
-VALUES ('72814fea-17fb-4f97-b4d4-cd75406e06b6', 5, 'd7abed66-3c4a-490b-91cc-8e714336f9fa',
-        'c57aa60c-61ea-4498-b01f-fedcafe8a32a', '2024-08-28 20:47:16.406993', '2024-08-28 20:47:16.406993');
-INSERT INTO public.exercise_example_bundles
-VALUES ('2da5ef47-51fc-47f2-9581-c3359b7bb7a2', 80, 'cfd086be-f452-4f1d-b0cc-3988d677a8b4',
-        '97a87b01-35e8-490a-94b9-9bdae9c2f965', '2024-08-28 20:48:17.215743', '2024-08-28 20:48:17.215743');
-INSERT INTO public.exercise_example_bundles
-VALUES ('c4156439-cf72-4c0e-913a-c1c301963353', 15, 'cfd086be-f452-4f1d-b0cc-3988d677a8b4',
-        '9a8024fe-c721-4bea-969c-db88674b5ece', '2024-08-28 20:48:17.215743', '2024-08-28 20:48:17.215743');
-INSERT INTO public.exercise_example_bundles
-VALUES ('bdf0c0fd-f77e-4dc9-9ae6-9c232684de1f', 5, 'cfd086be-f452-4f1d-b0cc-3988d677a8b4',
-        'c57aa60c-61ea-4498-b01f-fedcafe8a32a', '2024-08-28 20:48:17.215743', '2024-08-28 20:48:17.215743');
-INSERT INTO public.exercise_example_bundles
-VALUES ('59f803eb-ec03-4710-b533-2f85e4a6a304', 80, '8508cffc-1df6-4db2-9447-3bafd74a1325',
-        '97a87b01-35e8-490a-94b9-9bdae9c2f965', '2024-08-28 20:50:28.799487', '2024-08-28 20:50:28.799487');
-INSERT INTO public.exercise_example_bundles
-VALUES ('8491b0e5-ef25-4e6c-a0e0-3e83a666b5cb', 15, '8508cffc-1df6-4db2-9447-3bafd74a1325',
-        '9a8024fe-c721-4bea-969c-db88674b5ece', '2024-08-28 20:50:28.799487', '2024-08-28 20:50:28.799487');
-INSERT INTO public.exercise_example_bundles
-VALUES ('eaf9958f-405d-4f53-b955-0cbc5eaa3a31', 5, '8508cffc-1df6-4db2-9447-3bafd74a1325',
-        'c57aa60c-61ea-4498-b01f-fedcafe8a32a', '2024-08-28 20:50:28.799487', '2024-08-28 20:50:28.799487');
-INSERT INTO public.exercise_example_bundles
-VALUES ('7690f0ab-a01d-4d0a-b69d-362d8f09649d', 85, '4f1c3655-21e7-4225-a39e-944774f59f76',
-        '97a87b01-35e8-490a-94b9-9bdae9c2f965', '2024-08-28 20:51:35.460372', '2024-08-28 20:51:35.460372');
-INSERT INTO public.exercise_example_bundles
-VALUES ('e246a056-0fd4-4125-b4ca-344ffb2563bf', 10, '4f1c3655-21e7-4225-a39e-944774f59f76',
-        '9a8024fe-c721-4bea-969c-db88674b5ece', '2024-08-28 20:51:35.460372', '2024-08-28 20:51:35.460372');
-INSERT INTO public.exercise_example_bundles
-VALUES ('8e0973e3-0225-435d-a3da-af33ab7caf6a', 5, '4f1c3655-21e7-4225-a39e-944774f59f76',
-        'c57aa60c-61ea-4498-b01f-fedcafe8a32a', '2024-08-28 20:51:35.460372', '2024-08-28 20:51:35.460372');
-INSERT INTO public.exercise_example_bundles
-VALUES ('8c8d6212-2996-468e-b70c-b3cdfd8283ac', 85, '6d5dc164-3c35-4719-85f1-5c75558f0125',
-        '97a87b01-35e8-490a-94b9-9bdae9c2f965', '2024-08-28 20:53:42.341484', '2024-08-28 20:53:42.341484');
-INSERT INTO public.exercise_example_bundles
-VALUES ('32048a96-d0f0-4e0d-96c9-75d8250e936e', 10, '6d5dc164-3c35-4719-85f1-5c75558f0125',
-        '9a8024fe-c721-4bea-969c-db88674b5ece', '2024-08-28 20:53:42.341484', '2024-08-28 20:53:42.341484');
-INSERT INTO public.exercise_example_bundles
-VALUES ('d801e688-0f42-4ada-93ac-7c66dc1cdc5f', 5, '6d5dc164-3c35-4719-85f1-5c75558f0125',
-        'c57aa60c-61ea-4498-b01f-fedcafe8a32a', '2024-08-28 20:53:42.341484', '2024-08-28 20:53:42.341484');
-INSERT INTO public.exercise_example_bundles
-VALUES ('9d64ae39-0a2d-4a36-b25b-c0491ef07f09', 85, 'cebf4622-c0a9-4759-a070-48c7556da67d',
-        '97a87b01-35e8-490a-94b9-9bdae9c2f965', '2024-08-28 20:55:59.978276', '2024-08-28 20:55:59.978276');
-INSERT INTO public.exercise_example_bundles
-VALUES ('f66eca64-85ac-480c-859c-a7a202f80c40', 10, 'cebf4622-c0a9-4759-a070-48c7556da67d',
-        '9a8024fe-c721-4bea-969c-db88674b5ece', '2024-08-28 20:55:59.978276', '2024-08-28 20:55:59.978276');
-INSERT INTO public.exercise_example_bundles
-VALUES ('3e6d0801-0f61-4122-a443-f63a54d96c95', 5, 'cebf4622-c0a9-4759-a070-48c7556da67d',
-        'c57aa60c-61ea-4498-b01f-fedcafe8a32a', '2024-08-28 20:55:59.978276', '2024-08-28 20:55:59.978276');
-INSERT INTO public.exercise_example_bundles
-VALUES ('7ddb43ad-2bf4-4ee9-9d26-64e8ca647021', 85, '4d72c2f1-2c10-45a3-9f5e-1f04012c0681',
-        '97a87b01-35e8-490a-94b9-9bdae9c2f965', '2024-08-28 20:59:16.612181', '2024-08-28 20:59:16.612181');
-INSERT INTO public.exercise_example_bundles
-VALUES ('0f34d7e9-633f-4e54-bc21-578803be3f6c', 10, '4d72c2f1-2c10-45a3-9f5e-1f04012c0681',
-        '9a8024fe-c721-4bea-969c-db88674b5ece', '2024-08-28 20:59:16.612181', '2024-08-28 20:59:16.612181');
-INSERT INTO public.exercise_example_bundles
-VALUES ('e94558cd-0108-4393-9138-cc6ca0e91980', 5, '4d72c2f1-2c10-45a3-9f5e-1f04012c0681',
-        'c57aa60c-61ea-4498-b01f-fedcafe8a32a', '2024-08-28 20:59:16.612181', '2024-08-28 20:59:16.612181');
-INSERT INTO public.exercise_example_bundles
-VALUES ('0a92235f-d91e-4199-aa57-5cef5fc3aa44', 85, 'af39600b-6fc5-435a-a5f8-a1d0a9994030',
-        '97a87b01-35e8-490a-94b9-9bdae9c2f965', '2024-08-28 21:00:57.792071', '2024-08-28 21:00:57.792071');
-INSERT INTO public.exercise_example_bundles
-VALUES ('1bf2ea8e-a838-4bf6-9eb5-3eb4c517da3c', 10, 'af39600b-6fc5-435a-a5f8-a1d0a9994030',
-        '9a8024fe-c721-4bea-969c-db88674b5ece', '2024-08-28 21:00:57.792071', '2024-08-28 21:00:57.792071');
-INSERT INTO public.exercise_example_bundles
-VALUES ('8c8bacba-acf6-4e00-ab5b-a25cc233ca17', 5, 'af39600b-6fc5-435a-a5f8-a1d0a9994030',
-        'c57aa60c-61ea-4498-b01f-fedcafe8a32a', '2024-08-28 21:00:57.792071', '2024-08-28 21:00:57.792071');
-INSERT INTO public.exercise_example_bundles
-VALUES ('9788a05d-36bf-4d3c-af1d-782a0eb747c8', 80, '101f365e-5c84-438a-84b4-c8e798bd0aff',
-        '97a87b01-35e8-490a-94b9-9bdae9c2f965', '2024-08-28 21:02:48.210751', '2024-08-28 21:02:48.210751');
-INSERT INTO public.exercise_example_bundles
-VALUES ('f2ccb77e-cb64-4aec-abd2-84ecc00b7ab5', 15, '101f365e-5c84-438a-84b4-c8e798bd0aff',
-        '9a8024fe-c721-4bea-969c-db88674b5ece', '2024-08-28 21:02:48.210751', '2024-08-28 21:02:48.210751');
-INSERT INTO public.exercise_example_bundles
-VALUES ('f1576c2f-d0c8-4ab3-a11c-99543570cf1c', 5, '101f365e-5c84-438a-84b4-c8e798bd0aff',
-        'c57aa60c-61ea-4498-b01f-fedcafe8a32a', '2024-08-28 21:02:48.210751', '2024-08-28 21:02:48.210751');
-INSERT INTO public.exercise_example_bundles
-VALUES ('ddc0e6cb-ee1f-44fe-81dc-35410fc4c0d6', 80, '1f28edb2-29ae-467c-ad11-310c3f656fe2',
-        '97a87b01-35e8-490a-94b9-9bdae9c2f965', '2024-08-28 21:04:44.322521', '2024-08-28 21:04:44.322521');
-INSERT INTO public.exercise_example_bundles
-VALUES ('effbbeea-0fd3-4f82-a987-adc1ffc43554', 15, '1f28edb2-29ae-467c-ad11-310c3f656fe2',
-        '9a8024fe-c721-4bea-969c-db88674b5ece', '2024-08-28 21:04:44.322521', '2024-08-28 21:04:44.322521');
-INSERT INTO public.exercise_example_bundles
-VALUES ('f2b36da1-f603-4a55-af44-f6b39032b5f0', 5, '1f28edb2-29ae-467c-ad11-310c3f656fe2',
-        'c57aa60c-61ea-4498-b01f-fedcafe8a32a', '2024-08-28 21:04:44.322521', '2024-08-28 21:04:44.322521');
-INSERT INTO public.exercise_example_bundles
-VALUES ('9540c901-4f6e-47a6-88c9-8ea560256cd2', 85, '04a13a1c-de2b-46f4-be62-3fa6b4655d0d',
-        '97a87b01-35e8-490a-94b9-9bdae9c2f965', '2024-08-28 21:07:18.65042', '2024-08-28 21:07:18.65042');
-INSERT INTO public.exercise_example_bundles
-VALUES ('8c9bf94b-f741-457a-aeac-bf818fd5f718', 10, '04a13a1c-de2b-46f4-be62-3fa6b4655d0d',
-        '9a8024fe-c721-4bea-969c-db88674b5ece', '2024-08-28 21:07:18.65042', '2024-08-28 21:07:18.65042');
-INSERT INTO public.exercise_example_bundles
-VALUES ('631957e2-6c5f-49a5-83d5-09d6f86ec463', 5, '04a13a1c-de2b-46f4-be62-3fa6b4655d0d',
-        'c57aa60c-61ea-4498-b01f-fedcafe8a32a', '2024-08-28 21:07:18.65042', '2024-08-28 21:07:18.65042');
-INSERT INTO public.exercise_example_bundles
-VALUES ('4cc17443-d7c3-4c36-8d9e-ecd3dc543382', 85, 'a9545ccb-3ec7-4646-95c9-f3a708d0d968',
-        '97a87b01-35e8-490a-94b9-9bdae9c2f965', '2024-08-28 21:08:56.496251', '2024-08-28 21:08:56.496251');
-INSERT INTO public.exercise_example_bundles
-VALUES ('74095fef-97e6-4916-bf1e-d703ea4cb8e9', 10, 'a9545ccb-3ec7-4646-95c9-f3a708d0d968',
-        '9a8024fe-c721-4bea-969c-db88674b5ece', '2024-08-28 21:08:56.496251', '2024-08-28 21:08:56.496251');
-INSERT INTO public.exercise_example_bundles
-VALUES ('059e32e7-5719-460b-bcb6-38aa5024e8d9', 5, 'a9545ccb-3ec7-4646-95c9-f3a708d0d968',
-        'c57aa60c-61ea-4498-b01f-fedcafe8a32a', '2024-08-28 21:08:56.496251', '2024-08-28 21:08:56.496251');
-INSERT INTO public.exercise_example_bundles
-VALUES ('de8d2675-d4b6-4bb0-a1d1-890af84cdb6e', 85, 'b99df7e8-eb44-4be1-be81-701347580781',
-        '97a87b01-35e8-490a-94b9-9bdae9c2f965', '2024-08-28 21:11:35.040483', '2024-08-28 21:11:35.040483');
-INSERT INTO public.exercise_example_bundles
-VALUES ('01ce0a2c-8cb9-4542-9240-1e901564e901', 10, 'b99df7e8-eb44-4be1-be81-701347580781',
-        '9a8024fe-c721-4bea-969c-db88674b5ece', '2024-08-28 21:11:35.040483', '2024-08-28 21:11:35.040483');
-INSERT INTO public.exercise_example_bundles
-VALUES ('bdbb9c39-070c-4847-a2ab-977959c11119', 5, 'b99df7e8-eb44-4be1-be81-701347580781',
-        'c57aa60c-61ea-4498-b01f-fedcafe8a32a', '2024-08-28 21:11:35.040483', '2024-08-28 21:11:35.040483');
-INSERT INTO public.exercise_example_bundles
-VALUES ('7f67c08f-1397-41d3-b294-6f306aed2f30', 85, '8d2a9df4-af32-4943-b74b-ae901e866b32',
-        '97a87b01-35e8-490a-94b9-9bdae9c2f965', '2024-08-28 21:12:39.510696', '2024-08-28 21:12:39.510696');
-INSERT INTO public.exercise_example_bundles
-VALUES ('2e6b5842-c52d-43d2-acda-67fe18055829', 10, '8d2a9df4-af32-4943-b74b-ae901e866b32',
-        '9a8024fe-c721-4bea-969c-db88674b5ece', '2024-08-28 21:12:39.510696', '2024-08-28 21:12:39.510696');
-INSERT INTO public.exercise_example_bundles
-VALUES ('3bf2065d-b91a-436f-90fa-0ba57755cbb3', 5, '8d2a9df4-af32-4943-b74b-ae901e866b32',
-        'c57aa60c-61ea-4498-b01f-fedcafe8a32a', '2024-08-28 21:12:39.510696', '2024-08-28 21:12:39.510696');
-INSERT INTO public.exercise_example_bundles
-VALUES ('52a0e7d8-4962-4192-9dfb-9f0f5b48ac59', 85, '8ca7bf65-0ddb-4c64-ba64-f71f25c85d7c',
-        '97a87b01-35e8-490a-94b9-9bdae9c2f965', '2024-08-28 21:13:34.07981', '2024-08-28 21:13:34.07981');
-INSERT INTO public.exercise_example_bundles
-VALUES ('121f3152-c07b-44cc-b7f3-ef38e2b31c5d', 10, '8ca7bf65-0ddb-4c64-ba64-f71f25c85d7c',
-        '9a8024fe-c721-4bea-969c-db88674b5ece', '2024-08-28 21:13:34.07981', '2024-08-28 21:13:34.07981');
-INSERT INTO public.exercise_example_bundles
-VALUES ('8ae3652b-8d1e-4eac-9b91-9026dbf38473', 5, '8ca7bf65-0ddb-4c64-ba64-f71f25c85d7c',
-        'c57aa60c-61ea-4498-b01f-fedcafe8a32a', '2024-08-28 21:13:34.07981', '2024-08-28 21:13:34.07981');
-INSERT INTO public.exercise_example_bundles
-VALUES ('35d1707b-aa87-43b3-a320-752801d2a79e', 85, '12221e5c-0208-48fc-8c56-62c266932f74',
-        '2da3d8f2-6a28-45ff-90a2-ea3a6bb2afe8', '2024-08-29 15:15:51.730675', '2024-08-29 15:15:51.730675');
-INSERT INTO public.exercise_example_bundles
-VALUES ('46c80286-6bff-4f69-851b-910d2369a1d6', 10, '12221e5c-0208-48fc-8c56-62c266932f74',
-        'd736a513-9d73-47a3-bffc-c14911662ea2', '2024-08-29 15:15:51.730675', '2024-08-29 15:15:51.730675');
-INSERT INTO public.exercise_example_bundles
-VALUES ('50486b86-ebd4-4b4c-9280-8411cdc4715e', 5, '12221e5c-0208-48fc-8c56-62c266932f74',
-        '97136fa7-622a-49d6-9d09-403a631d253d', '2024-08-29 15:15:51.730675', '2024-08-29 15:15:51.730675');
-INSERT INTO public.exercise_example_bundles
-VALUES ('0da7deec-6af4-4e4a-a41d-110faa0c4576', 65, '1959abd3-4ab1-42d4-b7e2-45693b899d51',
-        '2da3d8f2-6a28-45ff-90a2-ea3a6bb2afe8', '2024-08-29 15:18:06.541035', '2024-08-29 15:18:06.541035');
-INSERT INTO public.exercise_example_bundles
-VALUES ('67e88933-f17e-4044-bf29-07ce3bff2a16', 15, '1959abd3-4ab1-42d4-b7e2-45693b899d51',
-        'd736a513-9d73-47a3-bffc-c14911662ea2', '2024-08-29 15:18:06.541035', '2024-08-29 15:18:06.541035');
-INSERT INTO public.exercise_example_bundles
-VALUES ('298c95e6-0f7b-49a3-a70f-183a2e983c62', 10, '1959abd3-4ab1-42d4-b7e2-45693b899d51',
-        '0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a', '2024-08-29 15:18:06.541035', '2024-08-29 15:18:06.541035');
-INSERT INTO public.exercise_example_bundles
-VALUES ('16e8e5fe-f74b-49aa-ba6b-f882b6404f90', 65, '4a2c7160-6cf2-456d-8ef4-80040b720420',
-        '831f39bd-80a8-4d11-9964-bde1788abae1', '2024-09-06 11:18:17.204717', '2024-09-06 11:18:17.204717');
-INSERT INTO public.exercise_example_bundles
-VALUES ('033d08b2-7d9d-42e2-aaf1-0bfe73fe9645', 5, '1959abd3-4ab1-42d4-b7e2-45693b899d51',
-        '57559b71-b757-468a-983d-a1b3cec4acef', '2024-08-29 15:18:06.541035', '2024-08-29 15:18:06.541035');
-INSERT INTO public.exercise_example_bundles
-VALUES ('e9794145-8423-4dc7-9582-24fc055ce404', 65, '48191b99-06fa-4218-b61b-c9b9abd73278',
-        '2da3d8f2-6a28-45ff-90a2-ea3a6bb2afe8', '2024-08-29 15:20:32.339592', '2024-08-29 15:20:32.339592');
-INSERT INTO public.exercise_example_bundles
-VALUES ('2de49805-defb-4a66-9797-b3988ab9598a', 15, '48191b99-06fa-4218-b61b-c9b9abd73278',
-        'd736a513-9d73-47a3-bffc-c14911662ea2', '2024-08-29 15:20:32.339592', '2024-08-29 15:20:32.339592');
-INSERT INTO public.exercise_example_bundles
-VALUES ('705d2863-3dc4-4bfd-ab14-ad96b598c0ee', 15, '48191b99-06fa-4218-b61b-c9b9abd73278',
-        '0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a', '2024-08-29 15:20:32.339592', '2024-08-29 15:20:32.339592');
-INSERT INTO public.exercise_example_bundles
-VALUES ('0e984e66-44a9-4e21-8b0e-0040f3558121', 15, '4a2c7160-6cf2-456d-8ef4-80040b720420',
-        'be38dcef-1bc8-487b-a44f-96df1ab9e68c', '2024-09-06 11:18:17.204717', '2024-09-06 11:18:17.204717');
-INSERT INTO public.exercise_example_bundles
-VALUES ('4e86593f-e6d9-435f-8f86-8383d4a953c9', 70, '92d77415-1f9a-430b-ba52-0a09ec07b3a1',
-        '2da3d8f2-6a28-45ff-90a2-ea3a6bb2afe8', '2024-08-29 15:21:42.163608', '2024-08-29 15:21:42.163608');
-INSERT INTO public.exercise_example_bundles
-VALUES ('f24f55d1-01e8-4e27-a61f-c4097fb3c8cb', 15, '92d77415-1f9a-430b-ba52-0a09ec07b3a1',
-        'd736a513-9d73-47a3-bffc-c14911662ea2', '2024-08-29 15:21:42.163608', '2024-08-29 15:21:42.163608');
-INSERT INTO public.exercise_example_bundles
-VALUES ('2509772e-d8c9-475b-9fdc-d59578f9b428', 15, '92d77415-1f9a-430b-ba52-0a09ec07b3a1',
-        '0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a', '2024-08-29 15:21:42.163608', '2024-08-29 15:21:42.163608');
-INSERT INTO public.exercise_example_bundles
-VALUES ('996ebef3-4e0e-4b2b-ac23-9b83dd52c1c4', 70, '816440ad-f8f2-4ef7-a11f-b6a2bd63fcef',
-        '97136fa7-622a-49d6-9d09-403a631d253d', '2024-08-29 15:23:10.34105', '2024-08-29 15:23:10.34105');
-INSERT INTO public.exercise_example_bundles
-VALUES ('ad8b3548-69ec-4f2a-8d80-a26ea452258e', 10, '4a2c7160-6cf2-456d-8ef4-80040b720420',
-        '97a87b01-35e8-490a-94b9-9bdae9c2f965', '2024-09-06 11:18:17.204717', '2024-09-06 11:18:17.204717');
-INSERT INTO public.exercise_example_bundles
-VALUES ('f240102b-68d2-4f97-98ba-dec59ac1d7b2', 10, '816440ad-f8f2-4ef7-a11f-b6a2bd63fcef',
-        '0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a', '2024-08-29 15:23:10.34105', '2024-08-29 15:23:10.34105');
-INSERT INTO public.exercise_example_bundles
-VALUES ('9c005217-ecae-4588-bc94-a17b6d256e16', 70, '506d1cc7-529a-42af-b5bf-4c4d0a9aa409',
-        '2da3d8f2-6a28-45ff-90a2-ea3a6bb2afe8', '2024-08-29 15:24:22.337443', '2024-08-29 15:24:22.337443');
-INSERT INTO public.exercise_example_bundles
-VALUES ('a05478f7-9b9b-4514-b8f7-473a3a3753fd', 15, '506d1cc7-529a-42af-b5bf-4c4d0a9aa409',
-        'd736a513-9d73-47a3-bffc-c14911662ea2', '2024-08-29 15:24:22.337443', '2024-08-29 15:24:22.337443');
-INSERT INTO public.exercise_example_bundles
-VALUES ('39701760-5842-4e25-a670-9de44f4d7bf1', 15, '506d1cc7-529a-42af-b5bf-4c4d0a9aa409',
-        '0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a', '2024-08-29 15:24:22.337443', '2024-08-29 15:24:22.337443');
-INSERT INTO public.exercise_example_bundles
-VALUES ('78474d36-735e-4cfe-935d-216162d59fbe', 70, '9ab8fe00-58de-48c4-942d-b10e8d16f1c1',
-        '2da3d8f2-6a28-45ff-90a2-ea3a6bb2afe8', '2024-08-29 15:26:45.186356', '2024-08-29 15:26:45.186356');
-INSERT INTO public.exercise_example_bundles
-VALUES ('f8fb1559-f946-4f2e-b8c6-10d92bd45719', 15, '9ab8fe00-58de-48c4-942d-b10e8d16f1c1',
-        'd736a513-9d73-47a3-bffc-c14911662ea2', '2024-08-29 15:26:45.186356', '2024-08-29 15:26:45.186356');
-INSERT INTO public.exercise_example_bundles
-VALUES ('e6f4ebc5-0b4b-4a73-b430-cf6654c97450', 10, '9ab8fe00-58de-48c4-942d-b10e8d16f1c1',
-        '0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a', '2024-08-29 15:26:45.186356', '2024-08-29 15:26:45.186356');
-INSERT INTO public.exercise_example_bundles
-VALUES ('8baba903-12c2-4d7f-8f0b-7e29c710dfdf', 70, '3d6e76b5-b409-4f5b-bba4-c22cb10cfbd4',
-        '97136fa7-622a-49d6-9d09-403a631d253d', '2024-08-29 15:28:20.98104', '2024-08-29 15:28:20.98104');
-INSERT INTO public.exercise_example_bundles
-VALUES ('5d3f7ec4-0cea-43e2-9759-3541ff71716d', 10, '3d6e76b5-b409-4f5b-bba4-c22cb10cfbd4',
-        '0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a', '2024-08-29 15:28:20.98104', '2024-08-29 15:28:20.98104');
-INSERT INTO public.exercise_example_bundles
-VALUES ('a0d71ab1-ffc9-44a9-b058-bed5d2c3a18e', 85, '77aa5752-a586-4dfe-b69d-4da16fff0b79',
-        '2da3d8f2-6a28-45ff-90a2-ea3a6bb2afe8', '2024-08-29 15:30:57.606742', '2024-08-29 15:30:57.606742');
-INSERT INTO public.exercise_example_bundles
-VALUES ('186ba70a-7eac-43e4-8dbd-aaefeefa2921', 10, '77aa5752-a586-4dfe-b69d-4da16fff0b79',
-        'd736a513-9d73-47a3-bffc-c14911662ea2', '2024-08-29 15:30:57.606742', '2024-08-29 15:30:57.606742');
-INSERT INTO public.exercise_example_bundles
-VALUES ('f834bc81-45b6-47fd-bb54-2a6435dc400e', 5, '77aa5752-a586-4dfe-b69d-4da16fff0b79',
-        '97136fa7-622a-49d6-9d09-403a631d253d', '2024-08-29 15:30:57.606742', '2024-08-29 15:30:57.606742');
-INSERT INTO public.exercise_example_bundles
-VALUES ('8bbcb4b4-a8b1-492f-bdb6-d4674bea4ff5', 70, '4035dfef-3cc6-4a15-a97f-c167bd274d02',
-        '2da3d8f2-6a28-45ff-90a2-ea3a6bb2afe8', '2024-08-29 15:34:32.570508', '2024-08-29 15:34:32.570508');
-INSERT INTO public.exercise_example_bundles
-VALUES ('1624cc25-90f3-463c-8f09-e6abe7b598fd', 15, '4035dfef-3cc6-4a15-a97f-c167bd274d02',
-        'd736a513-9d73-47a3-bffc-c14911662ea2', '2024-08-29 15:34:32.570508', '2024-08-29 15:34:32.570508');
-INSERT INTO public.exercise_example_bundles
-VALUES ('f5f95f04-8afc-4bf4-95d2-e37b6bc9c254', 10, '4035dfef-3cc6-4a15-a97f-c167bd274d02',
-        '0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a', '2024-08-29 15:34:32.570508', '2024-08-29 15:34:32.570508');
-INSERT INTO public.exercise_example_bundles
-VALUES ('baf0c79a-5c3a-4f8c-816a-eed36d2b6722', 60, 'aada0f37-1f30-4d61-a284-8003027bc871',
-        '97136fa7-622a-49d6-9d09-403a631d253d', '2024-08-29 20:14:43.144259', '2024-08-29 20:14:43.144259');
-INSERT INTO public.exercise_example_bundles
-VALUES ('cbf0c97b-87f3-4e43-bd24-1eab52a07b09', 15, 'aada0f37-1f30-4d61-a284-8003027bc871',
-        '831f39bd-80a8-4d11-9964-bde1788abae1', '2024-08-29 20:14:43.144259', '2024-08-29 20:14:43.144259');
-INSERT INTO public.exercise_example_bundles
-VALUES ('c4cd69f4-952e-4252-a230-40c898157d69', 60, 'afd7f719-5789-48a0-a5d9-77e9cb1669bb',
-        '97136fa7-622a-49d6-9d09-403a631d253d', '2024-08-29 20:16:07.195713', '2024-08-29 20:16:07.195713');
-INSERT INTO public.exercise_example_bundles
-VALUES ('35f7b0bc-cd7a-4212-8711-34d59cec57a7', 15, 'afd7f719-5789-48a0-a5d9-77e9cb1669bb',
-        '831f39bd-80a8-4d11-9964-bde1788abae1', '2024-08-29 20:16:07.195713', '2024-08-29 20:16:07.195713');
-INSERT INTO public.exercise_example_bundles
-VALUES ('08cfc3f2-c523-4530-9b62-978405f4d186', 70, '16ba69dc-e99d-4a71-bbcb-0f3ce096a9d9',
-        '2da3d8f2-6a28-45ff-90a2-ea3a6bb2afe8', '2024-08-29 20:17:41.63891', '2024-08-29 20:17:41.63891');
-INSERT INTO public.exercise_example_bundles
-VALUES ('c05764b0-06cb-45c8-b1e6-45a7e028eec1', 15, '16ba69dc-e99d-4a71-bbcb-0f3ce096a9d9',
-        'd736a513-9d73-47a3-bffc-c14911662ea2', '2024-08-29 20:17:41.63891', '2024-08-29 20:17:41.63891');
-INSERT INTO public.exercise_example_bundles
-VALUES ('24bcb630-9149-45f6-9672-5ab33892d7b5', 10, '16ba69dc-e99d-4a71-bbcb-0f3ce096a9d9',
-        '0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a', '2024-08-29 20:17:41.63891', '2024-08-29 20:17:41.63891');
-INSERT INTO public.exercise_example_bundles
-VALUES ('1da6f04d-13df-4d65-a7fd-281a50c0e732', 75, '3a70ce9c-b1f0-43a7-8775-7d3e7c109c5d',
-        '97136fa7-622a-49d6-9d09-403a631d253d', '2024-08-29 20:18:52.139204', '2024-08-29 20:18:52.139204');
-INSERT INTO public.exercise_example_bundles
-VALUES ('e5ab98fc-3b8d-46c6-a3f0-716e5bb5bcc3', 85, '4353173b-93b2-4fb1-b462-fc8330b15ce5',
-        '2da3d8f2-6a28-45ff-90a2-ea3a6bb2afe8', '2024-08-29 20:20:58.538331', '2024-08-29 20:20:58.538331');
-INSERT INTO public.exercise_example_bundles
-VALUES ('8b66e798-34af-4619-ac4c-2f92c35fcbf5', 15, '4353173b-93b2-4fb1-b462-fc8330b15ce5',
-        'd736a513-9d73-47a3-bffc-c14911662ea2', '2024-08-29 20:20:58.538331', '2024-08-29 20:20:58.538331');
-INSERT INTO public.exercise_example_bundles
-VALUES ('19642115-011c-498a-9c16-929cf39df0b4', 80, '1b8fe6fc-9ede-4f28-b4a0-30504db61fed',
-        '2da3d8f2-6a28-45ff-90a2-ea3a6bb2afe8', '2024-08-29 20:26:45.600818', '2024-08-29 20:26:45.600818');
-INSERT INTO public.exercise_example_bundles
-VALUES ('4e34e6e0-acb2-4693-9523-09ecac106c8d', 10, '1b8fe6fc-9ede-4f28-b4a0-30504db61fed',
-        'd736a513-9d73-47a3-bffc-c14911662ea2', '2024-08-29 20:26:45.600818', '2024-08-29 20:26:45.600818');
-INSERT INTO public.exercise_example_bundles
-VALUES ('c2a59210-7416-489f-8b30-ce4642d41e19', 65, '90b8d661-a9ef-47e5-8c98-b0599874a972',
-        '2da3d8f2-6a28-45ff-90a2-ea3a6bb2afe8', '2024-08-29 20:28:36.088381', '2024-08-29 20:28:36.088381');
-INSERT INTO public.exercise_example_bundles
-VALUES ('2abfee71-b506-41ea-b502-e32795d0d3e5', 20, '90b8d661-a9ef-47e5-8c98-b0599874a972',
-        'd736a513-9d73-47a3-bffc-c14911662ea2', '2024-08-29 20:28:36.088381', '2024-08-29 20:28:36.088381');
-INSERT INTO public.exercise_example_bundles
-VALUES ('65043464-547a-457f-ac99-90035c81e778', 10, '90b8d661-a9ef-47e5-8c98-b0599874a972',
-        '0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a', '2024-08-29 20:28:36.088381', '2024-08-29 20:28:36.088381');
-INSERT INTO public.exercise_example_bundles
-VALUES ('e7f81e4e-2e60-4ba4-8a30-850735b416ff', 85, 'ac45c513-55f3-437f-a10f-ba3c0763a746',
-        'd736a513-9d73-47a3-bffc-c14911662ea2', '2024-08-29 20:31:23.026096', '2024-08-29 20:31:23.026096');
-INSERT INTO public.exercise_example_bundles
-VALUES ('69cfa607-cddb-4635-bb1c-f4a39bf7baa6', 15, 'ac45c513-55f3-437f-a10f-ba3c0763a746',
-        '2e0faf2b-31a5-4c63-ac15-454be132796f', '2024-08-29 20:31:23.026096', '2024-08-29 20:31:23.026096');
-INSERT INTO public.exercise_example_bundles
-VALUES ('0ca31014-7d80-4f94-974c-8907ab49cd66', 25, '3a70ce9c-b1f0-43a7-8775-7d3e7c109c5d',
-        '2e0faf2b-31a5-4c63-ac15-454be132796f', '2024-08-29 20:18:52.139204', '2024-08-29 20:18:52.139204');
-INSERT INTO public.exercise_example_bundles
-VALUES ('14390b19-58d5-4baa-bfe1-1545a83dcee6', 25, 'aada0f37-1f30-4d61-a284-8003027bc871',
-        '2e0faf2b-31a5-4c63-ac15-454be132796f', '2024-08-29 20:14:43.144259', '2024-08-29 20:14:43.144259');
-INSERT INTO public.exercise_example_bundles
-VALUES ('c2f13f0a-8685-405e-a687-8f88f9c67358', 10, '1b8fe6fc-9ede-4f28-b4a0-30504db61fed',
-        '2e0faf2b-31a5-4c63-ac15-454be132796f', '2024-08-29 20:26:45.600818', '2024-08-29 20:26:45.600818');
-INSERT INTO public.exercise_example_bundles
-VALUES ('c84d35b2-b004-4603-b40f-c10fa3f6f34e', 5, '16ba69dc-e99d-4a71-bbcb-0f3ce096a9d9',
-        '2e0faf2b-31a5-4c63-ac15-454be132796f', '2024-08-29 20:17:41.63891', '2024-08-29 20:17:41.63891');
-INSERT INTO public.exercise_example_bundles
-VALUES ('9c7f4c7e-622b-4780-b9fb-d63085f63e01', 20, '816440ad-f8f2-4ef7-a11f-b6a2bd63fcef',
-        '2e0faf2b-31a5-4c63-ac15-454be132796f', '2024-08-29 15:23:10.34105', '2024-08-29 15:23:10.34105');
-INSERT INTO public.exercise_example_bundles
-VALUES ('5a0929d3-3ca3-4199-8650-733c33edff75', 20, '3d6e76b5-b409-4f5b-bba4-c22cb10cfbd4',
-        '2e0faf2b-31a5-4c63-ac15-454be132796f', '2024-08-29 15:28:20.98104', '2024-08-29 15:28:20.98104');
-INSERT INTO public.exercise_example_bundles
-VALUES ('2e773854-1c03-4979-990e-5f99034b712f', 25, 'afd7f719-5789-48a0-a5d9-77e9cb1669bb',
-        '2e0faf2b-31a5-4c63-ac15-454be132796f', '2024-08-29 20:16:07.195713', '2024-08-29 20:16:07.195713');
-INSERT INTO public.exercise_example_bundles
-VALUES ('7d31886d-671b-435c-911c-0a7eeb1b06ae', 5, '9ab8fe00-58de-48c4-942d-b10e8d16f1c1',
-        '2e0faf2b-31a5-4c63-ac15-454be132796f', '2024-08-29 15:26:45.186356', '2024-08-29 15:26:45.186356');
-INSERT INTO public.exercise_example_bundles
-VALUES ('d788b68a-eb98-4bc0-b79f-8b6453326295', 5, '1959abd3-4ab1-42d4-b7e2-45693b899d51',
-        '2e0faf2b-31a5-4c63-ac15-454be132796f', '2024-08-29 15:18:06.541035', '2024-08-29 15:18:06.541035');
-INSERT INTO public.exercise_example_bundles
-VALUES ('f9378064-767c-4923-91f7-9e262029841b', 5, '90b8d661-a9ef-47e5-8c98-b0599874a972',
-        '2e0faf2b-31a5-4c63-ac15-454be132796f', '2024-08-29 20:28:36.088381', '2024-08-29 20:28:36.088381');
-INSERT INTO public.exercise_example_bundles
-VALUES ('70288cb4-32bf-49ac-b370-c8a11609ee49', 5, '4035dfef-3cc6-4a15-a97f-c167bd274d02',
-        '2e0faf2b-31a5-4c63-ac15-454be132796f', '2024-08-29 15:34:32.570508', '2024-08-29 15:34:32.570508');
-INSERT INTO public.exercise_example_bundles
-VALUES ('1dd0c1ca-e7bb-4806-ac66-e924c4bd41c1', 5, '48191b99-06fa-4218-b61b-c9b9abd73278',
-        '2e0faf2b-31a5-4c63-ac15-454be132796f', '2024-08-29 15:20:32.339592', '2024-08-29 15:20:32.339592');
-INSERT INTO public.exercise_example_bundles
-VALUES ('d30434cf-f748-4299-af46-65f7300e4390', 90, '3a41edcb-2c19-4d06-9585-8fe745aba723',
-        '2da3d8f2-6a28-45ff-90a2-ea3a6bb2afe8', '2024-08-29 20:34:53.748206', '2024-08-29 20:34:53.748206');
-INSERT INTO public.exercise_example_bundles
-VALUES ('7300f52e-1789-4649-8f38-d8c8006be688', 10, '3a41edcb-2c19-4d06-9585-8fe745aba723',
-        'd736a513-9d73-47a3-bffc-c14911662ea2', '2024-08-29 20:34:53.748206', '2024-08-29 20:34:53.748206');
-INSERT INTO public.exercise_example_bundles
-VALUES ('e86dab08-8334-4690-8652-1c6fe128cf5f', 80, 'b8fa1238-0f58-4daa-ade8-0f8c6fa2d1b1',
-        '97136fa7-622a-49d6-9d09-403a631d253d', '2024-08-29 20:37:21.061386', '2024-08-29 20:37:21.061386');
-INSERT INTO public.exercise_example_bundles
-VALUES ('89ef302e-7b77-49e8-be04-0e3062b5c166', 10, 'b8fa1238-0f58-4daa-ade8-0f8c6fa2d1b1',
-        '2e0faf2b-31a5-4c63-ac15-454be132796f', '2024-08-29 20:37:21.061386', '2024-08-29 20:37:21.061386');
-INSERT INTO public.exercise_example_bundles
-VALUES ('89a7929f-d43e-4ecc-8b29-ef6f8688304d', 10, 'b8fa1238-0f58-4daa-ade8-0f8c6fa2d1b1',
-        '0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a', '2024-08-29 20:37:21.061386', '2024-08-29 20:37:21.061386');
-INSERT INTO public.exercise_example_bundles
-VALUES ('e08096ec-27f0-4478-bb9e-853bf4b7b07e', 70, 'ed5db0ac-4343-4e68-a884-d5f84e4020c1',
-        '97136fa7-622a-49d6-9d09-403a631d253d', '2024-08-29 20:46:11.388752', '2024-08-29 20:46:11.388752');
-INSERT INTO public.exercise_example_bundles
-VALUES ('70ff85e6-3839-408c-b9c5-d0860f1a8bf0', 30, 'ed5db0ac-4343-4e68-a884-d5f84e4020c1',
-        '2e0faf2b-31a5-4c63-ac15-454be132796f', '2024-08-29 20:46:11.388752', '2024-08-29 20:46:11.388752');
-INSERT INTO public.exercise_example_bundles
-VALUES ('b435bc67-d0b8-402f-a16f-95460d4555ca', 60, 'd20646b6-efd1-49fc-8ffa-180461aea5ab',
-        '2da3d8f2-6a28-45ff-90a2-ea3a6bb2afe8', '2024-08-29 20:48:13.154841', '2024-08-29 20:48:13.154841');
-INSERT INTO public.exercise_example_bundles
-VALUES ('c2864939-77db-47b7-b077-3b3a34d53ef3', 40, 'd20646b6-efd1-49fc-8ffa-180461aea5ab',
-        '2e0faf2b-31a5-4c63-ac15-454be132796f', '2024-08-29 20:48:13.154841', '2024-08-29 20:48:13.154841');
-INSERT INTO public.exercise_example_bundles
-VALUES ('40f232e4-b484-4a7b-8d16-42e8e8ed9883', 50, '1f8abb63-8024-46ca-ac1e-2574a839eed6',
-        '2da3d8f2-6a28-45ff-90a2-ea3a6bb2afe8', '2024-08-29 20:49:40.17922', '2024-08-29 20:49:40.17922');
-INSERT INTO public.exercise_example_bundles
-VALUES ('25c4d749-d403-4741-8783-ab5664b044d8', 20, '1f8abb63-8024-46ca-ac1e-2574a839eed6',
-        '2e0faf2b-31a5-4c63-ac15-454be132796f', '2024-08-29 20:49:40.17922', '2024-08-29 20:49:40.17922');
-INSERT INTO public.exercise_example_bundles
-VALUES ('4abedc47-6928-4e31-a8f8-0bb31b217230', 20, '1f8abb63-8024-46ca-ac1e-2574a839eed6',
-        '0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a', '2024-08-29 20:49:40.17922', '2024-08-29 20:49:40.17922');
-INSERT INTO public.exercise_example_bundles
-VALUES ('66fb7482-1a5f-4bbc-9249-25270b1c0a91', 10, '1f8abb63-8024-46ca-ac1e-2574a839eed6',
-        '9e69205f-6c6e-44a7-8ee6-89215e28a28e', '2024-08-29 20:49:40.17922', '2024-08-29 20:49:40.17922');
-INSERT INTO public.exercise_example_bundles
-VALUES ('501f29fb-afeb-4544-8562-bb19cc2c958b', 60, 'b22e5ada-86c1-4104-828b-b7e06a7f5d16',
-        '2da3d8f2-6a28-45ff-90a2-ea3a6bb2afe8', '2024-08-29 20:52:10.207849', '2024-08-29 20:52:10.207849');
-INSERT INTO public.exercise_example_bundles
-VALUES ('9d034650-7110-4fae-8c78-238edf390402', 20, 'b22e5ada-86c1-4104-828b-b7e06a7f5d16',
-        '2e0faf2b-31a5-4c63-ac15-454be132796f', '2024-08-29 20:52:10.207849', '2024-08-29 20:52:10.207849');
-INSERT INTO public.exercise_example_bundles
-VALUES ('dda329ff-1aee-42bf-9006-70d3155e9505', 20, 'b22e5ada-86c1-4104-828b-b7e06a7f5d16',
-        '0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a', '2024-08-29 20:52:10.207849', '2024-08-29 20:52:10.207849');
-INSERT INTO public.exercise_example_bundles
-VALUES ('85059bcb-312a-45ea-a5c0-1bbeb200af13', 85, '7a933584-128c-4b82-8e5b-5e7312cadfdf',
-        'd736a513-9d73-47a3-bffc-c14911662ea2', '2024-08-29 20:55:27.355761', '2024-08-29 20:55:27.355761');
-INSERT INTO public.exercise_example_bundles
-VALUES ('d71c0a45-f49c-41cf-9782-adc7229b97ed', 15, '7a933584-128c-4b82-8e5b-5e7312cadfdf',
-        'c57aa60c-61ea-4498-b01f-fedcafe8a32a', '2024-08-29 20:55:27.355761', '2024-08-29 20:55:27.355761');
-INSERT INTO public.exercise_example_bundles
-VALUES ('0ebfceaa-eddc-40b6-9b56-808df984e027', 80, '984e5dac-f3a8-4980-bfc9-da370cf45e46',
-        '97136fa7-622a-49d6-9d09-403a631d253d', '2024-08-29 20:58:25.071017', '2024-08-29 20:58:25.071017');
-INSERT INTO public.exercise_example_bundles
-VALUES ('e50f6ac0-717d-46bd-9131-ee0f408ff106', 15, '984e5dac-f3a8-4980-bfc9-da370cf45e46',
-        '2e0faf2b-31a5-4c63-ac15-454be132796f', '2024-08-29 20:58:25.071017', '2024-08-29 20:58:25.071017');
-INSERT INTO public.exercise_example_bundles
-VALUES ('110189dd-0cb4-4230-be89-48b44bdc9b1f', 5, '984e5dac-f3a8-4980-bfc9-da370cf45e46',
-        '0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a', '2024-08-29 20:58:25.071017', '2024-08-29 20:58:25.071017');
-INSERT INTO public.exercise_example_bundles
-VALUES ('2fa55741-9045-4328-b9e1-2e165aa86388', 80, 'ff188494-a871-4721-9d1e-26742539080c',
-        'd736a513-9d73-47a3-bffc-c14911662ea2', '2024-08-29 21:01:10.94488', '2024-08-29 21:01:10.94488');
-INSERT INTO public.exercise_example_bundles
-VALUES ('39ef207e-5b1f-4225-b2ba-cdd05ec9b599', 20, 'ff188494-a871-4721-9d1e-26742539080c',
-        '2e0faf2b-31a5-4c63-ac15-454be132796f', '2024-08-29 21:01:10.94488', '2024-08-29 21:01:10.94488');
-INSERT INTO public.exercise_example_bundles
-VALUES ('35979c85-f21c-4888-aa66-77d1b8dd64e5', 90, '68381c41-b015-4218-93cb-2bcb64bee255',
-        'd736a513-9d73-47a3-bffc-c14911662ea2', '2024-08-29 21:09:08.316316', '2024-08-29 21:09:08.316316');
-INSERT INTO public.exercise_example_bundles
-VALUES ('2e7a9a9f-ba5c-4125-9672-e4215bf74fd9', 10, '68381c41-b015-4218-93cb-2bcb64bee255',
-        '2da3d8f2-6a28-45ff-90a2-ea3a6bb2afe8', '2024-08-29 21:09:08.316316', '2024-08-29 21:09:08.316316');
-INSERT INTO public.exercise_example_bundles
-VALUES ('665193ee-22d3-4acb-aad1-b1fae2c92e8b', 60, '1fdffa53-d9cb-4aa1-9999-5c83fdb9be80',
-        'ab1dbd50-83a4-42c7-a3cd-da1784818ec8', '2024-08-31 21:55:50.622209', '2024-08-31 21:55:50.622209');
-INSERT INTO public.exercise_example_bundles
-VALUES ('5f289087-6c8e-46c5-a9ac-d4fb7008a3d9', 20, '1fdffa53-d9cb-4aa1-9999-5c83fdb9be80',
-        'f6e65bfe-0746-4a8f-8210-0e9bf88d9886', '2024-08-31 21:55:50.622209', '2024-08-31 21:55:50.622209');
-INSERT INTO public.exercise_example_bundles
-VALUES ('293682af-45cb-43e1-815c-3c5f1f8906bc', 10, '1fdffa53-d9cb-4aa1-9999-5c83fdb9be80',
-        '3eeaa9fa-0847-4780-9d01-185f91252794', '2024-08-31 21:55:50.622209', '2024-08-31 21:55:50.622209');
-INSERT INTO public.exercise_example_bundles
-VALUES ('3a4ad59f-8a2f-4fae-a118-67c7083b714c', 10, '1fdffa53-d9cb-4aa1-9999-5c83fdb9be80',
-        '9e69205f-6c6e-44a7-8ee6-89215e28a28e', '2024-08-31 21:55:50.622209', '2024-08-31 21:55:50.622209');
-INSERT INTO public.exercise_example_bundles
-VALUES ('9609ba95-2643-41ac-8351-8d5785904940', 60, 'a8f9abc7-4515-4f5e-a4f5-095b1b17b9e1',
-        'fa8025e6-e106-475c-8b9d-77831132fb47', '2024-08-31 22:01:53.336411', '2024-08-31 22:01:53.336411');
-INSERT INTO public.exercise_example_bundles
-VALUES ('42b3c5ca-b989-4eb6-8d1e-b902adc93ca9', 20, 'a8f9abc7-4515-4f5e-a4f5-095b1b17b9e1',
-        'f6e65bfe-0746-4a8f-8210-0e9bf88d9886', '2024-08-31 22:01:53.336411', '2024-08-31 22:01:53.336411');
-INSERT INTO public.exercise_example_bundles
-VALUES ('294f3cb7-4c44-44f7-9ed8-dd47342964ec', 10, 'a8f9abc7-4515-4f5e-a4f5-095b1b17b9e1',
-        '3eeaa9fa-0847-4780-9d01-185f91252794', '2024-08-31 22:01:53.336411', '2024-08-31 22:01:53.336411');
-INSERT INTO public.exercise_example_bundles
-VALUES ('ce0e8cfc-5814-439c-9148-d28e077e7364', 10, 'a8f9abc7-4515-4f5e-a4f5-095b1b17b9e1',
-        '57559b71-b757-468a-983d-a1b3cec4acef', '2024-08-31 22:01:53.336411', '2024-08-31 22:01:53.336411');
-INSERT INTO public.exercise_example_bundles
-VALUES ('1fe65199-035b-45e9-a8cc-4f9277202974', 80, 'e1361643-e92a-419b-8eb8-fe2a188016e0',
-        '1ddbb748-37a6-4d66-a7d4-4957bdbc647f', '2024-09-01 09:37:56.271231', '2024-09-01 09:37:56.271231');
-INSERT INTO public.exercise_example_bundles
-VALUES ('b6dd1801-a5e0-459f-bc9b-cbeb020ce49b', 20, 'e1361643-e92a-419b-8eb8-fe2a188016e0',
-        '9e69205f-6c6e-44a7-8ee6-89215e28a28e', '2024-09-01 09:37:56.271231', '2024-09-01 09:37:56.271231');
-INSERT INTO public.exercise_example_bundles
-VALUES ('36dd63dc-8238-4308-a189-9b485c28f17d', 80, 'f2cf498f-d991-4b85-b08e-58c5f9ff563e',
-        '1ddbb748-37a6-4d66-a7d4-4957bdbc647f', '2024-09-01 12:11:44.138777', '2024-09-01 12:11:44.138777');
-INSERT INTO public.exercise_example_bundles
-VALUES ('2bb7a1bc-41ee-45c6-8444-19c6b648ba00', 20, 'f2cf498f-d991-4b85-b08e-58c5f9ff563e',
-        '9e69205f-6c6e-44a7-8ee6-89215e28a28e', '2024-09-01 12:11:44.138777', '2024-09-01 12:11:44.138777');
-INSERT INTO public.exercise_example_bundles
-VALUES ('ffe226af-142e-4425-b2d5-3ac97aa42f6c', 100, '7e80becf-491c-4b48-a98a-a36fff26e29c',
-        '1ddbb748-37a6-4d66-a7d4-4957bdbc647f', '2024-09-01 12:13:55.743989', '2024-09-01 12:13:55.743989');
-INSERT INTO public.exercise_example_bundles
-VALUES ('12d800cd-2cd9-4535-8f5b-3dd88276bf5e', 100, '2f49a8e8-6f42-422c-aa6f-c23e215620e2',
-        '9e69205f-6c6e-44a7-8ee6-89215e28a28e', '2024-09-01 12:14:59.685387', '2024-09-01 12:14:59.685387');
-INSERT INTO public.exercise_example_bundles
-VALUES ('548259c5-5325-41ca-9f65-a21ac6f06a4c', 100, 'f2868e11-6e1d-4ce4-a1a8-eb0384a60b71',
-        '9e69205f-6c6e-44a7-8ee6-89215e28a28e', '2024-09-01 12:24:23.20744', '2024-09-01 12:24:23.20744');
-INSERT INTO public.exercise_example_bundles
-VALUES ('5088eca0-7009-4472-a1bd-3d571e47d6d7', 50, '38af9c0d-b19f-433d-bcda-0b974b5475cf',
-        '1ddbb748-37a6-4d66-a7d4-4957bdbc647f', '2024-09-01 12:25:43.164947', '2024-09-01 12:25:43.164947');
-INSERT INTO public.exercise_example_bundles
-VALUES ('927d6f98-b24e-4c02-8506-c5db7e0c5f25', 50, '38af9c0d-b19f-433d-bcda-0b974b5475cf',
-        '9e69205f-6c6e-44a7-8ee6-89215e28a28e', '2024-09-01 12:25:43.164947', '2024-09-01 12:25:43.164947');
-INSERT INTO public.exercise_example_bundles
-VALUES ('77d077c9-aa8f-4b73-b0e3-3e12da245b16', 70, 'c5901a9a-580c-411b-85bd-2ec738123e14',
-        '9e69205f-6c6e-44a7-8ee6-89215e28a28e', '2024-09-01 12:26:49.234868', '2024-09-01 12:26:49.234868');
-INSERT INTO public.exercise_example_bundles
-VALUES ('2d0e3632-b9f6-447b-94c2-6668e08a7a76', 30, 'c5901a9a-580c-411b-85bd-2ec738123e14',
-        '1ddbb748-37a6-4d66-a7d4-4957bdbc647f', '2024-09-01 12:26:49.234868', '2024-09-01 12:26:49.234868');
-INSERT INTO public.exercise_example_bundles
-VALUES ('d2a75a7d-bdc9-4fa0-ac98-6ae9ea2035f5', 100, '6e4bc8b2-33ab-46da-9b79-9fff2266cd27',
-        'bba5b66d-9a9c-4b44-8dd6-9574760038ee', '2024-09-01 12:41:05.649426', '2024-09-01 12:41:05.649426');
-INSERT INTO public.exercise_example_bundles
-VALUES ('bfaefd8c-4a65-46cf-bfd9-2177ab48751b', 100, '01dff88c-893b-4410-8d54-1e36013b9fdb',
-        'bba5b66d-9a9c-4b44-8dd6-9574760038ee', '2024-09-01 12:43:01.528705', '2024-09-01 12:43:01.528705');
-INSERT INTO public.exercise_example_bundles
-VALUES ('24ccb353-afba-48d6-9bc7-6c8543779030', 100, 'd2f28afc-e84c-467c-90d9-c6c2cb63acbc',
-        'bba5b66d-9a9c-4b44-8dd6-9574760038ee', '2024-09-01 12:47:02.024108', '2024-09-01 12:47:02.024108');
-INSERT INTO public.exercise_example_bundles
-VALUES ('a2e80949-83f0-41d4-a092-150735f815c9', 100, 'de4e9652-b068-4558-9fd3-38d45e5aa0d9',
-        'bba5b66d-9a9c-4b44-8dd6-9574760038ee', '2024-09-01 12:49:37.146266', '2024-09-01 12:49:37.146266');
-INSERT INTO public.exercise_example_bundles
-VALUES ('f58132c7-9c38-49e3-b6fa-b43eed443366', 100, '7227c8f6-cf65-4134-97de-d5e64cb5ff1b',
-        'bba5b66d-9a9c-4b44-8dd6-9574760038ee', '2024-09-01 12:51:11.824332', '2024-09-01 12:51:11.824332');
-INSERT INTO public.exercise_example_bundles
-VALUES ('d86c0354-1173-4398-908c-3003125195a1', 100, '46b1efa3-a4f8-4492-a81c-9e48c650dd3d',
-        'bba5b66d-9a9c-4b44-8dd6-9574760038ee', '2024-09-01 12:52:29.683458', '2024-09-01 12:52:29.683458');
-INSERT INTO public.exercise_example_bundles
-VALUES ('1e4d063b-6208-4f84-a757-ac3e792b9744', 100, '89ffca84-73f0-4a69-871f-9d9c96521a05',
-        'bba5b66d-9a9c-4b44-8dd6-9574760038ee', '2024-09-01 12:54:31.266577', '2024-09-01 12:54:31.266577');
-INSERT INTO public.exercise_example_bundles
-VALUES ('217a09cd-b8f8-400e-821f-f5d1f2a7125a', 100, 'f11c8751-e5ca-413e-b30d-2b387ec14733',
-        'bba5b66d-9a9c-4b44-8dd6-9574760038ee', '2024-09-01 12:56:50.697125', '2024-09-01 12:56:50.697125');
-INSERT INTO public.exercise_example_bundles
-VALUES ('ceae5d19-af46-45cb-80f4-75128753a8cf', 100, '9e348a26-e5d0-4ee0-b3e6-fe58563ac698',
-        'bba5b66d-9a9c-4b44-8dd6-9574760038ee', '2024-09-01 13:30:53.579257', '2024-09-01 13:30:53.579257');
-INSERT INTO public.exercise_example_bundles
-VALUES ('cae38e00-b9bc-4d32-9471-8c71d0615c51', 50, '548b3de6-0980-4795-ab86-763c20dbc325',
-        'b4658891-9713-48c4-864c-8dd907da19b0', '2024-09-02 14:01:43.614947', '2024-09-02 14:01:43.614947');
-INSERT INTO public.exercise_example_bundles
-VALUES ('298cdde5-97d3-41d5-8c6a-7dc4412161c3', 10, '548b3de6-0980-4795-ab86-763c20dbc325',
-        'c57aa60c-61ea-4498-b01f-fedcafe8a32a', '2024-09-02 14:01:43.614947', '2024-09-02 14:01:43.614947');
-INSERT INTO public.exercise_example_bundles
-VALUES ('3f96732d-12fd-436f-a1d8-7ae09719ae48', 20, '548b3de6-0980-4795-ab86-763c20dbc325',
-        'd736a513-9d73-47a3-bffc-c14911662ea2', '2024-09-02 14:01:43.614947', '2024-09-02 14:01:43.614947');
-INSERT INTO public.exercise_example_bundles
-VALUES ('a0702d6d-7932-4d63-8fdc-4210d47f35fc', 15, '548b3de6-0980-4795-ab86-763c20dbc325',
-        '0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a', '2024-09-02 14:01:43.614947', '2024-09-02 14:01:43.614947');
-INSERT INTO public.exercise_example_bundles
-VALUES ('1bee524e-4e17-4cde-94bc-e64eb6cf5e6a', 5, '548b3de6-0980-4795-ab86-763c20dbc325',
-        '2da3d8f2-6a28-45ff-90a2-ea3a6bb2afe8', '2024-09-02 14:01:43.614947', '2024-09-02 14:01:43.614947');
-INSERT INTO public.exercise_example_bundles
-VALUES ('aa5ad2cf-51e5-47ad-9f0d-b461f55de040', 50, '47f00a63-05df-4db7-b2c7-68000c72be9b',
-        'c57aa60c-61ea-4498-b01f-fedcafe8a32a', '2024-09-02 14:03:25.455092', '2024-09-02 14:03:25.455092');
-INSERT INTO public.exercise_example_bundles
-VALUES ('c3c18d61-c73d-4994-bc85-806fc28347ea', 20, '47f00a63-05df-4db7-b2c7-68000c72be9b',
-        'b4658891-9713-48c4-864c-8dd907da19b0', '2024-09-02 14:03:25.455092', '2024-09-02 14:03:25.455092');
-INSERT INTO public.exercise_example_bundles
-VALUES ('751e5e28-a612-4f2c-9b87-afa94faae500', 15, '47f00a63-05df-4db7-b2c7-68000c72be9b',
-        'd736a513-9d73-47a3-bffc-c14911662ea2', '2024-09-02 14:03:25.455092', '2024-09-02 14:03:25.455092');
-INSERT INTO public.exercise_example_bundles
-VALUES ('7cd9c8cf-281b-45d5-bc21-baeee0b34c62', 10, '47f00a63-05df-4db7-b2c7-68000c72be9b',
-        '0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a', '2024-09-02 14:03:25.455092', '2024-09-02 14:03:25.455092');
-INSERT INTO public.exercise_example_bundles
-VALUES ('d452fdb2-8103-49f6-b033-f813c5b7dbe0', 5, '47f00a63-05df-4db7-b2c7-68000c72be9b',
-        '2da3d8f2-6a28-45ff-90a2-ea3a6bb2afe8', '2024-09-02 14:03:25.455092', '2024-09-02 14:03:25.455092');
-INSERT INTO public.exercise_example_bundles
-VALUES ('495e63ea-ebbc-4063-866b-565281dfe9ce', 40, 'c0a055b2-daf6-4ecc-b97b-cfedfce6a42a',
-        'b4658891-9713-48c4-864c-8dd907da19b0', '2024-09-02 14:05:57.418333', '2024-09-02 14:05:57.418333');
-INSERT INTO public.exercise_example_bundles
-VALUES ('fcce8382-442e-44a3-890a-e43e69aa3751', 30, 'c0a055b2-daf6-4ecc-b97b-cfedfce6a42a',
-        '831f39bd-80a8-4d11-9964-bde1788abae1', '2024-09-02 14:05:57.418333', '2024-09-02 14:05:57.418333');
-INSERT INTO public.exercise_example_bundles
-VALUES ('55031ce1-4991-405c-99d4-12c776be5cb6', 15, 'c0a055b2-daf6-4ecc-b97b-cfedfce6a42a',
-        'd736a513-9d73-47a3-bffc-c14911662ea2', '2024-09-02 14:05:57.418333', '2024-09-02 14:05:57.418333');
-INSERT INTO public.exercise_example_bundles
-VALUES ('d1e4fabc-fa09-4ec7-b60c-67dd58c61631', 10, 'c0a055b2-daf6-4ecc-b97b-cfedfce6a42a',
-        '0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a', '2024-09-02 14:05:57.418333', '2024-09-02 14:05:57.418333');
-INSERT INTO public.exercise_example_bundles
-VALUES ('e7414533-17d6-488d-97e6-7d94c55ce581', 5, 'c0a055b2-daf6-4ecc-b97b-cfedfce6a42a',
-        '2da3d8f2-6a28-45ff-90a2-ea3a6bb2afe8', '2024-09-02 14:05:57.418333', '2024-09-02 14:05:57.418333');
-INSERT INTO public.exercise_example_bundles
-VALUES ('92ec36bf-a04b-4d90-b98e-cdf1451f38d7', 40, '2bc37dec-7b06-404c-af63-99bf3f60fb68',
-        'b4658891-9713-48c4-864c-8dd907da19b0', '2024-09-02 14:06:48.387808', '2024-09-02 14:06:48.387808');
-INSERT INTO public.exercise_example_bundles
-VALUES ('f7aa3b0c-5d05-4797-b27c-62d75762b001', 30, '2bc37dec-7b06-404c-af63-99bf3f60fb68',
-        '831f39bd-80a8-4d11-9964-bde1788abae1', '2024-09-02 14:06:48.387808', '2024-09-02 14:06:48.387808');
-INSERT INTO public.exercise_example_bundles
-VALUES ('d98250e4-4f3c-451a-95f2-7bbc89d6baae', 15, '2bc37dec-7b06-404c-af63-99bf3f60fb68',
-        'd736a513-9d73-47a3-bffc-c14911662ea2', '2024-09-02 14:06:48.387808', '2024-09-02 14:06:48.387808');
-INSERT INTO public.exercise_example_bundles
-VALUES ('8df965c5-f7b9-4c50-96e9-2f4c73387ce2', 10, '2bc37dec-7b06-404c-af63-99bf3f60fb68',
-        '0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a', '2024-09-02 14:06:48.387808', '2024-09-02 14:06:48.387808');
-INSERT INTO public.exercise_example_bundles
-VALUES ('d95e981b-2b22-4dd5-bdbb-1e5cdbcbaafc', 5, '2bc37dec-7b06-404c-af63-99bf3f60fb68',
-        '2da3d8f2-6a28-45ff-90a2-ea3a6bb2afe8', '2024-09-02 14:06:48.387808', '2024-09-02 14:06:48.387808');
-INSERT INTO public.exercise_example_bundles
-VALUES ('2ca1ca06-e68e-4f9e-8b49-5ac5639d469b', 70, '3488eaaa-a999-43c5-acd6-b177b8a3df8a',
-        'b4658891-9713-48c4-864c-8dd907da19b0', '2024-09-02 14:08:08.354736', '2024-09-02 14:08:08.354736');
-INSERT INTO public.exercise_example_bundles
-VALUES ('eaa10bef-fa54-4361-99df-2eeed63a0a54', 15, '3488eaaa-a999-43c5-acd6-b177b8a3df8a',
-        'd736a513-9d73-47a3-bffc-c14911662ea2', '2024-09-02 14:08:08.354736', '2024-09-02 14:08:08.354736');
-INSERT INTO public.exercise_example_bundles
-VALUES ('6cc12c43-6468-497d-be7f-f3d8de8c9ee2', 10, '3488eaaa-a999-43c5-acd6-b177b8a3df8a',
-        '0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a', '2024-09-02 14:08:08.354736', '2024-09-02 14:08:08.354736');
-INSERT INTO public.exercise_example_bundles
-VALUES ('7441231e-a3cc-4e8e-8278-de32ad2d6ae7', 5, '3488eaaa-a999-43c5-acd6-b177b8a3df8a',
-        '2da3d8f2-6a28-45ff-90a2-ea3a6bb2afe8', '2024-09-02 14:08:08.354736', '2024-09-02 14:08:08.354736');
-INSERT INTO public.exercise_example_bundles
-VALUES ('419e9e46-bbc0-4234-9f83-95a9dff57b47', 50, 'b2e39ab6-118d-46bd-ad8c-8acf9864af6c',
-        'b4658891-9713-48c4-864c-8dd907da19b0', '2024-09-02 14:57:19.332077', '2024-09-02 14:57:19.332077');
-INSERT INTO public.exercise_example_bundles
-VALUES ('62a9dca5-bd02-4672-a6df-d95c47a7f961', 10, 'b2e39ab6-118d-46bd-ad8c-8acf9864af6c',
-        'c57aa60c-61ea-4498-b01f-fedcafe8a32a', '2024-09-02 14:57:19.332077', '2024-09-02 14:57:19.332077');
-INSERT INTO public.exercise_example_bundles
-VALUES ('49a9ba5d-f661-4584-88be-150897229240', 20, 'b2e39ab6-118d-46bd-ad8c-8acf9864af6c',
-        'd736a513-9d73-47a3-bffc-c14911662ea2', '2024-09-02 14:57:19.332077', '2024-09-02 14:57:19.332077');
-INSERT INTO public.exercise_example_bundles
-VALUES ('3913bd58-9eb0-4468-bc37-7a7e6c63558a', 15, 'b2e39ab6-118d-46bd-ad8c-8acf9864af6c',
-        '0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a', '2024-09-02 14:57:19.332077', '2024-09-02 14:57:19.332077');
-INSERT INTO public.exercise_example_bundles
-VALUES ('e8bea5ac-21f7-416f-ac3f-37d44ff5399d', 5, 'b2e39ab6-118d-46bd-ad8c-8acf9864af6c',
-        '2da3d8f2-6a28-45ff-90a2-ea3a6bb2afe8', '2024-09-02 14:57:19.332077', '2024-09-02 14:57:19.332077');
-INSERT INTO public.exercise_example_bundles
-VALUES ('297188aa-acf9-40e7-8db9-fbfdbfbf95aa', 50, '885918a3-5c64-4f15-982e-1b9a91cb3743',
-        'c57aa60c-61ea-4498-b01f-fedcafe8a32a', '2024-09-02 14:58:44.037254', '2024-09-02 14:58:44.037254');
-INSERT INTO public.exercise_example_bundles
-VALUES ('f23c4989-d0fc-4ca7-b93b-8757a1d7df6b', 20, '885918a3-5c64-4f15-982e-1b9a91cb3743',
-        'b4658891-9713-48c4-864c-8dd907da19b0', '2024-09-02 14:58:44.037254', '2024-09-02 14:58:44.037254');
-INSERT INTO public.exercise_example_bundles
-VALUES ('4906b524-f12c-4510-ad19-c29256085a72', 20, '885918a3-5c64-4f15-982e-1b9a91cb3743',
-        'd736a513-9d73-47a3-bffc-c14911662ea2', '2024-09-02 14:58:44.037254', '2024-09-02 14:58:44.037254');
-INSERT INTO public.exercise_example_bundles
-VALUES ('1076a963-dc36-45a6-b341-36348b9f5ff4', 7, '885918a3-5c64-4f15-982e-1b9a91cb3743',
-        '0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a', '2024-09-02 14:58:44.037254', '2024-09-02 14:58:44.037254');
-INSERT INTO public.exercise_example_bundles
-VALUES ('2e76da48-3774-47cf-a676-ccf2dab879e5', 3, '885918a3-5c64-4f15-982e-1b9a91cb3743',
-        '2da3d8f2-6a28-45ff-90a2-ea3a6bb2afe8', '2024-09-02 14:58:44.037254', '2024-09-02 14:58:44.037254');
-INSERT INTO public.exercise_example_bundles
-VALUES ('b02df0b5-2857-4b96-939d-2b111dabf3ee', 70, '21370a0a-b01b-4e32-8f43-8648a54cd35c',
-        'b4658891-9713-48c4-864c-8dd907da19b0', '2024-09-02 15:01:10.960968', '2024-09-02 15:01:10.960968');
-INSERT INTO public.exercise_example_bundles
-VALUES ('94341571-3f9d-4cdb-9f24-08df35da9fe2', 20, '21370a0a-b01b-4e32-8f43-8648a54cd35c',
-        'd736a513-9d73-47a3-bffc-c14911662ea2', '2024-09-02 15:01:10.960968', '2024-09-02 15:01:10.960968');
-INSERT INTO public.exercise_example_bundles
-VALUES ('bb25eb75-eef2-41ee-b905-1adb5010cc85', 10, '21370a0a-b01b-4e32-8f43-8648a54cd35c',
-        '2da3d8f2-6a28-45ff-90a2-ea3a6bb2afe8', '2024-09-02 15:01:10.960968', '2024-09-02 15:01:10.960968');
-INSERT INTO public.exercise_example_bundles
-VALUES ('26c68744-752a-4590-9fff-e67b6cf08e04', 65, 'e1511aa4-1d34-4984-aa54-88f88029a96e',
-        'b4658891-9713-48c4-864c-8dd907da19b0', '2024-09-02 15:03:16.608102', '2024-09-02 15:03:16.608102');
-INSERT INTO public.exercise_example_bundles
-VALUES ('fe75416b-31f8-4b38-b389-d3e0cba09589', 20, 'e1511aa4-1d34-4984-aa54-88f88029a96e',
-        'd736a513-9d73-47a3-bffc-c14911662ea2', '2024-09-02 15:03:16.608102', '2024-09-02 15:03:16.608102');
-INSERT INTO public.exercise_example_bundles
-VALUES ('a91a64db-1e3f-4101-8cd9-c564699859c6', 10, 'e1511aa4-1d34-4984-aa54-88f88029a96e',
-        '0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a', '2024-09-02 15:03:16.608102', '2024-09-02 15:03:16.608102');
-INSERT INTO public.exercise_example_bundles
-VALUES ('2f3f8480-78b5-449c-b03a-04e4b0d871cd', 5, 'e1511aa4-1d34-4984-aa54-88f88029a96e',
-        '2da3d8f2-6a28-45ff-90a2-ea3a6bb2afe8', '2024-09-02 15:03:16.608102', '2024-09-02 15:03:16.608102');
-INSERT INTO public.exercise_example_bundles
-VALUES ('53d550d4-d50a-4b9b-9ff0-6669b0c4c187', 50, 'fff561d6-3738-4360-a110-f93dcb3c8c10',
-        'b4658891-9713-48c4-864c-8dd907da19b0', '2024-09-02 15:21:42.995922', '2024-09-02 15:21:42.995922');
-INSERT INTO public.exercise_example_bundles
-VALUES ('7528112d-c76e-4f02-bbf8-c91284a55f7c', 10, 'fff561d6-3738-4360-a110-f93dcb3c8c10',
-        'c57aa60c-61ea-4498-b01f-fedcafe8a32a', '2024-09-02 15:21:42.995922', '2024-09-02 15:21:42.995922');
-INSERT INTO public.exercise_example_bundles
-VALUES ('e7e55952-fcb5-4551-be22-c1827b7e81b7', 20, 'fff561d6-3738-4360-a110-f93dcb3c8c10',
-        'd736a513-9d73-47a3-bffc-c14911662ea2', '2024-09-02 15:21:42.995922', '2024-09-02 15:21:42.995922');
-INSERT INTO public.exercise_example_bundles
-VALUES ('e9284740-1b91-4f66-a167-4fa2052408eb', 15, 'fff561d6-3738-4360-a110-f93dcb3c8c10',
-        '0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a', '2024-09-02 15:21:42.995922', '2024-09-02 15:21:42.995922');
-INSERT INTO public.exercise_example_bundles
-VALUES ('69f3b9cc-12db-4080-b4a6-a5ca5a9c9408', 5, 'fff561d6-3738-4360-a110-f93dcb3c8c10',
-        '2da3d8f2-6a28-45ff-90a2-ea3a6bb2afe8', '2024-09-02 15:21:42.995922', '2024-09-02 15:21:42.995922');
-INSERT INTO public.exercise_example_bundles
-VALUES ('a8274f57-afb0-45e9-ac77-377ec352a183', 50, 'db9ff44c-2e27-42df-8f6a-1b64429999e1',
-        'a3a8eae0-6315-4435-8974-f2c07ec3567f', '2024-09-02 15:26:06.638726', '2024-09-02 15:26:06.638726');
-INSERT INTO public.exercise_example_bundles
-VALUES ('fb115ce3-c75c-4bbf-8ba8-ca55dfed5279', 20, 'db9ff44c-2e27-42df-8f6a-1b64429999e1',
-        'b4658891-9713-48c4-864c-8dd907da19b0', '2024-09-02 15:26:06.638726', '2024-09-02 15:26:06.638726');
-INSERT INTO public.exercise_example_bundles
-VALUES ('43b83832-f1ba-47b0-9aa4-3d7af621bf26', 15, 'db9ff44c-2e27-42df-8f6a-1b64429999e1',
-        'd736a513-9d73-47a3-bffc-c14911662ea2', '2024-09-02 15:26:06.638726', '2024-09-02 15:26:06.638726');
-INSERT INTO public.exercise_example_bundles
-VALUES ('2a8fe0c8-3cb8-4645-bb01-8f0530e5538e', 10, 'db9ff44c-2e27-42df-8f6a-1b64429999e1',
-        '0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a', '2024-09-02 15:26:06.638726', '2024-09-02 15:26:06.638726');
-INSERT INTO public.exercise_example_bundles
-VALUES ('61895bae-1f6f-4125-823b-55f720102811', 5, 'db9ff44c-2e27-42df-8f6a-1b64429999e1',
-        '2da3d8f2-6a28-45ff-90a2-ea3a6bb2afe8', '2024-09-02 15:26:06.638726', '2024-09-02 15:26:06.638726');
-INSERT INTO public.exercise_example_bundles
-VALUES ('585617ca-f3f8-45ae-ad24-d8c1f50eb16c', 50, 'ec09f8c7-04cf-4219-8033-3dd17ea5c1d9',
-        'c57aa60c-61ea-4498-b01f-fedcafe8a32a', '2024-09-02 20:16:40.188859', '2024-09-02 20:16:40.188859');
-INSERT INTO public.exercise_example_bundles
-VALUES ('cca3b598-fbbd-4058-b4f2-f6c4ba366308', 20, 'ec09f8c7-04cf-4219-8033-3dd17ea5c1d9',
-        'b4658891-9713-48c4-864c-8dd907da19b0', '2024-09-02 20:16:40.188859', '2024-09-02 20:16:40.188859');
-INSERT INTO public.exercise_example_bundles
-VALUES ('6db1bbad-9ced-46fb-90c7-0fd944b522a3', 15, 'ec09f8c7-04cf-4219-8033-3dd17ea5c1d9',
-        'd736a513-9d73-47a3-bffc-c14911662ea2', '2024-09-02 20:16:40.188859', '2024-09-02 20:16:40.188859');
-INSERT INTO public.exercise_example_bundles
-VALUES ('57690f4b-6cbe-44d8-a2aa-076e52c985f4', 10, 'ec09f8c7-04cf-4219-8033-3dd17ea5c1d9',
-        '0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a', '2024-09-02 20:16:40.188859', '2024-09-02 20:16:40.188859');
-INSERT INTO public.exercise_example_bundles
-VALUES ('718fb62d-a9cc-4205-8f51-02fcfba1dfde', 5, 'ec09f8c7-04cf-4219-8033-3dd17ea5c1d9',
-        '2da3d8f2-6a28-45ff-90a2-ea3a6bb2afe8', '2024-09-02 20:16:40.188859', '2024-09-02 20:16:40.188859');
-INSERT INTO public.exercise_example_bundles
-VALUES ('dd40df1d-73ad-4ec9-b03e-3004ed9fcee8', 50, '9be8d3a0-574b-40dc-a42c-06ab42af7e66',
-        'b4658891-9713-48c4-864c-8dd907da19b0', '2024-09-02 20:18:44.740889', '2024-09-02 20:18:44.740889');
-INSERT INTO public.exercise_example_bundles
-VALUES ('19a88fe3-7aa8-49be-a81b-6028e6015e9f', 10, '9be8d3a0-574b-40dc-a42c-06ab42af7e66',
-        'c57aa60c-61ea-4498-b01f-fedcafe8a32a', '2024-09-02 20:18:44.740889', '2024-09-02 20:18:44.740889');
-INSERT INTO public.exercise_example_bundles
-VALUES ('cf5ef5c8-a27c-4bed-985e-1fdab92a7db1', 20, '9be8d3a0-574b-40dc-a42c-06ab42af7e66',
-        'd736a513-9d73-47a3-bffc-c14911662ea2', '2024-09-02 20:18:44.740889', '2024-09-02 20:18:44.740889');
-INSERT INTO public.exercise_example_bundles
-VALUES ('33407ad5-cb99-4dd8-a8ca-cc578d5dc241', 15, '9be8d3a0-574b-40dc-a42c-06ab42af7e66',
-        '0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a', '2024-09-02 20:18:44.740889', '2024-09-02 20:18:44.740889');
-INSERT INTO public.exercise_example_bundles
-VALUES ('02dbfc42-55f0-407e-817b-00f40daa3a6d', 5, '9be8d3a0-574b-40dc-a42c-06ab42af7e66',
-        '2da3d8f2-6a28-45ff-90a2-ea3a6bb2afe8', '2024-09-02 20:18:44.740889', '2024-09-02 20:18:44.740889');
-INSERT INTO public.exercise_example_bundles
-VALUES ('d8c004ad-05db-4a62-8883-2e3816ba2b45', 65, '82890348-a566-4762-b9b4-f89e52534936',
-        'c57aa60c-61ea-4498-b01f-fedcafe8a32a', '2024-09-02 20:20:26.754243', '2024-09-02 20:20:26.754243');
-INSERT INTO public.exercise_example_bundles
-VALUES ('a58ba6fe-c4c5-4762-ba71-a647b333d202', 20, '82890348-a566-4762-b9b4-f89e52534936',
-        'd736a513-9d73-47a3-bffc-c14911662ea2', '2024-09-02 20:20:26.754243', '2024-09-02 20:20:26.754243');
-INSERT INTO public.exercise_example_bundles
-VALUES ('bcaaa94c-b612-40e8-aa90-eaa5ca0fc762', 10, '82890348-a566-4762-b9b4-f89e52534936',
-        '2da3d8f2-6a28-45ff-90a2-ea3a6bb2afe8', '2024-09-02 20:20:26.754243', '2024-09-02 20:20:26.754243');
-INSERT INTO public.exercise_example_bundles
-VALUES ('3d9b9983-ae6e-4b41-992b-e46e3acc639e', 5, '82890348-a566-4762-b9b4-f89e52534936',
-        '0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a', '2024-09-02 20:20:26.754243', '2024-09-02 20:20:26.754243');
-INSERT INTO public.exercise_example_bundles
-VALUES ('f57d7100-401f-4976-8f7b-f93aba2e6685', 55, '13fcd794-54fb-413f-8bbf-44353cd29869',
-        'b4658891-9713-48c4-864c-8dd907da19b0', '2024-09-02 20:22:38.713564', '2024-09-02 20:22:38.713564');
-INSERT INTO public.exercise_example_bundles
-VALUES ('a4581426-d2e8-410e-9e33-0b72c83f8eac', 15, '13fcd794-54fb-413f-8bbf-44353cd29869',
-        'c57aa60c-61ea-4498-b01f-fedcafe8a32a', '2024-09-02 20:22:38.713564', '2024-09-02 20:22:38.713564');
-INSERT INTO public.exercise_example_bundles
-VALUES ('c4652306-0e22-4de9-9948-69a984c30a09', 15, '13fcd794-54fb-413f-8bbf-44353cd29869',
-        'd736a513-9d73-47a3-bffc-c14911662ea2', '2024-09-02 20:22:38.713564', '2024-09-02 20:22:38.713564');
-INSERT INTO public.exercise_example_bundles
-VALUES ('67f4b8a5-7280-40f0-a7cd-75c6122e0ab0', 10, '13fcd794-54fb-413f-8bbf-44353cd29869',
-        '0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a', '2024-09-02 20:22:38.713564', '2024-09-02 20:22:38.713564');
-INSERT INTO public.exercise_example_bundles
-VALUES ('f6c8f319-5667-4a57-a57b-30b426699965', 5, '13fcd794-54fb-413f-8bbf-44353cd29869',
-        '2da3d8f2-6a28-45ff-90a2-ea3a6bb2afe8', '2024-09-02 20:22:38.713564', '2024-09-02 20:22:38.713564');
-INSERT INTO public.exercise_example_bundles
-VALUES ('cdb03dea-6933-472c-b5ed-f24b4de92334', 50, '3d0c8e76-37a9-4f4c-84fa-47a6a07aaacc',
-        'a3a8eae0-6315-4435-8974-f2c07ec3567f', '2024-09-02 20:26:26.27422', '2024-09-02 20:26:26.27422');
-INSERT INTO public.exercise_example_bundles
-VALUES ('61ef331e-7cae-4d79-afba-511428b91a58', 20, '3d0c8e76-37a9-4f4c-84fa-47a6a07aaacc',
-        'b4658891-9713-48c4-864c-8dd907da19b0', '2024-09-02 20:26:26.27422', '2024-09-02 20:26:26.27422');
-INSERT INTO public.exercise_example_bundles
-VALUES ('31fb098f-5eab-4eb1-9dab-6d3320967294', 15, '3d0c8e76-37a9-4f4c-84fa-47a6a07aaacc',
-        'd736a513-9d73-47a3-bffc-c14911662ea2', '2024-09-02 20:26:26.27422', '2024-09-02 20:26:26.27422');
-INSERT INTO public.exercise_example_bundles
-VALUES ('2874e58c-64a2-4160-bff6-a58fe9704e42', 10, '3d0c8e76-37a9-4f4c-84fa-47a6a07aaacc',
-        '0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a', '2024-09-02 20:26:26.27422', '2024-09-02 20:26:26.27422');
-INSERT INTO public.exercise_example_bundles
-VALUES ('e287f583-4a06-42c1-bf14-4f0b20b0fc5e', 5, '3d0c8e76-37a9-4f4c-84fa-47a6a07aaacc',
-        '2da3d8f2-6a28-45ff-90a2-ea3a6bb2afe8', '2024-09-02 20:26:26.27422', '2024-09-02 20:26:26.27422');
-INSERT INTO public.exercise_example_bundles
-VALUES ('71b7d499-9546-4606-a415-a34013b50cc0', 50, '8a39b1e7-986c-41e7-a0b9-44a4efb46360',
-        'c57aa60c-61ea-4498-b01f-fedcafe8a32a', '2024-09-02 20:27:53.781159', '2024-09-02 20:27:53.781159');
-INSERT INTO public.exercise_example_bundles
-VALUES ('a78d7055-c8e9-4788-98e9-f6bddd6145a8', 20, '8a39b1e7-986c-41e7-a0b9-44a4efb46360',
-        'b4658891-9713-48c4-864c-8dd907da19b0', '2024-09-02 20:27:53.781159', '2024-09-02 20:27:53.781159');
-INSERT INTO public.exercise_example_bundles
-VALUES ('34e394d2-6a46-413e-821a-1ed15ea687c3', 15, '8a39b1e7-986c-41e7-a0b9-44a4efb46360',
-        'd736a513-9d73-47a3-bffc-c14911662ea2', '2024-09-02 20:27:53.781159', '2024-09-02 20:27:53.781159');
-INSERT INTO public.exercise_example_bundles
-VALUES ('e328a42d-1375-4879-ab9d-efb182483fde', 10, '8a39b1e7-986c-41e7-a0b9-44a4efb46360',
-        '0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a', '2024-09-02 20:27:53.781159', '2024-09-02 20:27:53.781159');
-INSERT INTO public.exercise_example_bundles
-VALUES ('4cc8f8dc-780d-4faa-8bc8-daf7029f0bb5', 5, '8a39b1e7-986c-41e7-a0b9-44a4efb46360',
-        '2da3d8f2-6a28-45ff-90a2-ea3a6bb2afe8', '2024-09-02 20:27:53.781159', '2024-09-02 20:27:53.781159');
-INSERT INTO public.exercise_example_bundles
-VALUES ('578cdc91-1e88-4efa-a8ae-a6c850368e0b', 50, 'ff20bd08-57ae-465f-aa54-d1ba0f7862a9',
-        'b4658891-9713-48c4-864c-8dd907da19b0', '2024-09-02 20:29:17.390484', '2024-09-02 20:29:17.390484');
-INSERT INTO public.exercise_example_bundles
-VALUES ('eca0e00f-69c4-40aa-bd36-5a0d4d5ebd47', 20, 'ff20bd08-57ae-465f-aa54-d1ba0f7862a9',
-        'c57aa60c-61ea-4498-b01f-fedcafe8a32a', '2024-09-02 20:29:17.390484', '2024-09-02 20:29:17.390484');
-INSERT INTO public.exercise_example_bundles
-VALUES ('80ce00b7-9848-49fb-ac0a-0d31e0849c3b', 15, 'ff20bd08-57ae-465f-aa54-d1ba0f7862a9',
-        'd736a513-9d73-47a3-bffc-c14911662ea2', '2024-09-02 20:29:17.390484', '2024-09-02 20:29:17.390484');
-INSERT INTO public.exercise_example_bundles
-VALUES ('798f3a94-9ab3-46a8-a2fe-87c4f7594237', 10, 'ff20bd08-57ae-465f-aa54-d1ba0f7862a9',
-        '0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a', '2024-09-02 20:29:17.390484', '2024-09-02 20:29:17.390484');
-INSERT INTO public.exercise_example_bundles
-VALUES ('7ce4f7f5-08d5-4308-925d-4a66822f86ec', 5, 'ff20bd08-57ae-465f-aa54-d1ba0f7862a9',
-        '9e69205f-6c6e-44a7-8ee6-89215e28a28e', '2024-09-02 20:29:17.390484', '2024-09-02 20:29:17.390484');
-INSERT INTO public.exercise_example_bundles
-VALUES ('a958f328-24f6-4850-aa40-b214bd37ac20', 50, '8a73b841-1d4e-4808-8ed7-58c4931e0e96',
-        'a3a8eae0-6315-4435-8974-f2c07ec3567f', '2024-09-02 20:31:29.279768', '2024-09-02 20:31:29.279768');
-INSERT INTO public.exercise_example_bundles
-VALUES ('5f6c2edb-8dab-4f84-b752-3e4c6c249199', 20, '8a73b841-1d4e-4808-8ed7-58c4931e0e96',
-        'b4658891-9713-48c4-864c-8dd907da19b0', '2024-09-02 20:31:29.279768', '2024-09-02 20:31:29.279768');
-INSERT INTO public.exercise_example_bundles
-VALUES ('efc023d6-d593-4d92-877c-a4a4b0ac0934', 15, '8a73b841-1d4e-4808-8ed7-58c4931e0e96',
-        'd736a513-9d73-47a3-bffc-c14911662ea2', '2024-09-02 20:31:29.279768', '2024-09-02 20:31:29.279768');
-INSERT INTO public.exercise_example_bundles
-VALUES ('64ddbe87-1c8d-4bf5-a12b-a888e5e942b3', 10, '8a73b841-1d4e-4808-8ed7-58c4931e0e96',
-        '0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a', '2024-09-02 20:31:29.279768', '2024-09-02 20:31:29.279768');
-INSERT INTO public.exercise_example_bundles
-VALUES ('d2c1cb12-bd43-45ba-8af5-4ff56d8e88f8', 5, '8a73b841-1d4e-4808-8ed7-58c4931e0e96',
-        '2da3d8f2-6a28-45ff-90a2-ea3a6bb2afe8', '2024-09-02 20:31:29.279768', '2024-09-02 20:31:29.279768');
-INSERT INTO public.exercise_example_bundles
-VALUES ('3623f72c-4253-46f2-bd45-ec5f2f982d49', 50, 'b720265e-a3ce-48d3-8e8e-87e05c07b8a3',
-        'a3a8eae0-6315-4435-8974-f2c07ec3567f', '2024-09-02 20:35:21.726471', '2024-09-02 20:35:21.726471');
-INSERT INTO public.exercise_example_bundles
-VALUES ('bf2f5fc0-2e8e-4fa0-b62d-002eb9461a25', 25, 'b720265e-a3ce-48d3-8e8e-87e05c07b8a3',
-        'b4658891-9713-48c4-864c-8dd907da19b0', '2024-09-02 20:35:21.726471', '2024-09-02 20:35:21.726471');
-INSERT INTO public.exercise_example_bundles
-VALUES ('8bfa2f10-24cc-4cd9-aaa4-b60f228c5feb', 15, 'b720265e-a3ce-48d3-8e8e-87e05c07b8a3',
-        'd736a513-9d73-47a3-bffc-c14911662ea2', '2024-09-02 20:35:21.726471', '2024-09-02 20:35:21.726471');
-INSERT INTO public.exercise_example_bundles
-VALUES ('868e3eb0-599b-4539-9341-16aa8e671b4d', 5, 'b720265e-a3ce-48d3-8e8e-87e05c07b8a3',
-        '0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a', '2024-09-02 20:35:21.726471', '2024-09-02 20:35:21.726471');
-INSERT INTO public.exercise_example_bundles
-VALUES ('808ba929-d9c3-45d2-8604-277eb7c891a1', 5, 'b720265e-a3ce-48d3-8e8e-87e05c07b8a3',
-        '2da3d8f2-6a28-45ff-90a2-ea3a6bb2afe8', '2024-09-02 20:35:21.726471', '2024-09-02 20:35:21.726471');
-INSERT INTO public.exercise_example_bundles
-VALUES ('a9794a20-79d4-4bb2-9a0a-69c6887cd232', 50, 'f6dd98f1-ad1d-4ea2-ba97-9939ce0fc028',
-        'c57aa60c-61ea-4498-b01f-fedcafe8a32a', '2024-09-02 20:38:34.928917', '2024-09-02 20:38:34.928917');
-INSERT INTO public.exercise_example_bundles
-VALUES ('b8c03846-a25a-42f6-b229-fed2e8e3f651', 20, 'f6dd98f1-ad1d-4ea2-ba97-9939ce0fc028',
-        'b4658891-9713-48c4-864c-8dd907da19b0', '2024-09-02 20:38:34.928917', '2024-09-02 20:38:34.928917');
-INSERT INTO public.exercise_example_bundles
-VALUES ('260afdf5-1f7a-437d-8cbf-d57aa977d547', 15, 'f6dd98f1-ad1d-4ea2-ba97-9939ce0fc028',
-        'd736a513-9d73-47a3-bffc-c14911662ea2', '2024-09-02 20:38:34.928917', '2024-09-02 20:38:34.928917');
-INSERT INTO public.exercise_example_bundles
-VALUES ('c2254db1-b4bd-4f10-8841-170021f900c7', 10, 'f6dd98f1-ad1d-4ea2-ba97-9939ce0fc028',
-        '0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a', '2024-09-02 20:38:34.928917', '2024-09-02 20:38:34.928917');
-INSERT INTO public.exercise_example_bundles
-VALUES ('dd1eaf23-6781-47fd-b324-e494f1f55ea8', 5, 'f6dd98f1-ad1d-4ea2-ba97-9939ce0fc028',
-        '2da3d8f2-6a28-45ff-90a2-ea3a6bb2afe8', '2024-09-02 20:38:34.928917', '2024-09-02 20:38:34.928917');
-INSERT INTO public.exercise_example_bundles
-VALUES ('598fb070-45b0-45a3-8b6b-6cabd3fefe3b', 55, 'f467d244-5568-40f6-bd7a-b3bdcad82398',
-        'a3a8eae0-6315-4435-8974-f2c07ec3567f', '2024-09-02 20:40:09.534173', '2024-09-02 20:40:09.534173');
-INSERT INTO public.exercise_example_bundles
-VALUES ('4c259132-0608-4fb3-9e7c-ecf887e9dff7', 25, 'f467d244-5568-40f6-bd7a-b3bdcad82398',
-        'b4658891-9713-48c4-864c-8dd907da19b0', '2024-09-02 20:40:09.534173', '2024-09-02 20:40:09.534173');
-INSERT INTO public.exercise_example_bundles
-VALUES ('32ea1579-f69a-4a8e-95de-e7e1634f4f40', 10, 'f467d244-5568-40f6-bd7a-b3bdcad82398',
-        'd736a513-9d73-47a3-bffc-c14911662ea2', '2024-09-02 20:40:09.534173', '2024-09-02 20:40:09.534173');
-INSERT INTO public.exercise_example_bundles
-VALUES ('d521c8a8-d258-4f9a-857d-5d4cd68a8f5a', 5, 'f467d244-5568-40f6-bd7a-b3bdcad82398',
-        '0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a', '2024-09-02 20:40:09.534173', '2024-09-02 20:40:09.534173');
-INSERT INTO public.exercise_example_bundles
-VALUES ('9a0ceb2b-d429-4741-b6cf-6cdfc0c29751', 5, 'f467d244-5568-40f6-bd7a-b3bdcad82398',
-        '2da3d8f2-6a28-45ff-90a2-ea3a6bb2afe8', '2024-09-02 20:40:09.534173', '2024-09-02 20:40:09.534173');
-INSERT INTO public.exercise_example_bundles
-VALUES ('1893f253-4b41-492b-95f0-8c091d6e2569', 55, '2780e6d9-a86f-4038-b96f-ef59f961cb4b',
-        'b4658891-9713-48c4-864c-8dd907da19b0', '2024-09-02 20:42:00.051897', '2024-09-02 20:42:00.051897');
-INSERT INTO public.exercise_example_bundles
-VALUES ('49d522fb-2005-42da-9e69-b089262ad289', 15, '2780e6d9-a86f-4038-b96f-ef59f961cb4b',
-        'c57aa60c-61ea-4498-b01f-fedcafe8a32a', '2024-09-02 20:42:00.051897', '2024-09-02 20:42:00.051897');
-INSERT INTO public.exercise_example_bundles
-VALUES ('46238992-0fea-4fa8-8064-c96238d0058d', 15, '2780e6d9-a86f-4038-b96f-ef59f961cb4b',
-        'd736a513-9d73-47a3-bffc-c14911662ea2', '2024-09-02 20:42:00.051897', '2024-09-02 20:42:00.051897');
-INSERT INTO public.exercise_example_bundles
-VALUES ('62d5b1fd-5c27-4fc3-ab24-b69e087e03a4', 10, '2780e6d9-a86f-4038-b96f-ef59f961cb4b',
-        '0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a', '2024-09-02 20:42:00.051897', '2024-09-02 20:42:00.051897');
-INSERT INTO public.exercise_example_bundles
-VALUES ('71b7678d-f504-4019-bc24-5b6ad68deaa0', 5, '2780e6d9-a86f-4038-b96f-ef59f961cb4b',
-        '2da3d8f2-6a28-45ff-90a2-ea3a6bb2afe8', '2024-09-02 20:42:00.051897', '2024-09-02 20:42:00.051897');
-INSERT INTO public.exercise_example_bundles
-VALUES ('069263f6-0c7e-4020-95b5-43764e32cc4e', 50, 'e68781f2-7021-4907-af54-de18b80d181a',
-        'c57aa60c-61ea-4498-b01f-fedcafe8a32a', '2024-09-02 20:59:37.528935', '2024-09-02 20:59:37.528935');
-INSERT INTO public.exercise_example_bundles
-VALUES ('a9ca38cd-9531-41b9-97c8-0990a5016fb6', 20, 'e68781f2-7021-4907-af54-de18b80d181a',
-        'b4658891-9713-48c4-864c-8dd907da19b0', '2024-09-02 20:59:37.528935', '2024-09-02 20:59:37.528935');
-INSERT INTO public.exercise_example_bundles
-VALUES ('5c49d817-38fc-4b3f-9619-161630e6e215', 15, 'e68781f2-7021-4907-af54-de18b80d181a',
-        'd736a513-9d73-47a3-bffc-c14911662ea2', '2024-09-02 20:59:37.528935', '2024-09-02 20:59:37.528935');
-INSERT INTO public.exercise_example_bundles
-VALUES ('ad953d94-05eb-47ef-9197-3e26f61eb796', 10, 'e68781f2-7021-4907-af54-de18b80d181a',
-        '0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a', '2024-09-02 20:59:37.528935', '2024-09-02 20:59:37.528935');
-INSERT INTO public.exercise_example_bundles
-VALUES ('3b99d4e8-0b7d-432b-9e4b-e60757b62ee6', 5, 'e68781f2-7021-4907-af54-de18b80d181a',
-        '9e69205f-6c6e-44a7-8ee6-89215e28a28e', '2024-09-02 20:59:37.528935', '2024-09-02 20:59:37.528935');
-INSERT INTO public.exercise_example_bundles
-VALUES ('9817ae7f-071d-40b4-aa50-c348fc7ccf3f', 60, '5b7d739c-d130-466c-a5ac-9e8b318b77ad',
-        'b4658891-9713-48c4-864c-8dd907da19b0', '2024-09-02 21:01:10.560238', '2024-09-02 21:01:10.560238');
-INSERT INTO public.exercise_example_bundles
-VALUES ('c5e806f0-6b91-41e8-9503-086ddba0e8c4', 15, '5b7d739c-d130-466c-a5ac-9e8b318b77ad',
-        'c57aa60c-61ea-4498-b01f-fedcafe8a32a', '2024-09-02 21:01:10.560238', '2024-09-02 21:01:10.560238');
-INSERT INTO public.exercise_example_bundles
-VALUES ('d90e98e8-dec2-4d25-9357-1524b8e28e15', 15, '5b7d739c-d130-466c-a5ac-9e8b318b77ad',
-        'd736a513-9d73-47a3-bffc-c14911662ea2', '2024-09-02 21:01:10.560238', '2024-09-02 21:01:10.560238');
-INSERT INTO public.exercise_example_bundles
-VALUES ('c5cc4238-8ba4-4f55-9e0e-8ece2e3bdb4d', 10, '5b7d739c-d130-466c-a5ac-9e8b318b77ad',
-        '0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a', '2024-09-02 21:01:10.560238', '2024-09-02 21:01:10.560238');
-INSERT INTO public.exercise_example_bundles
-VALUES ('183cff6e-92e5-4a05-93b6-a4d1a5a6b545', 55, '3edb750e-4725-4338-a079-d48dc8797917',
-        'a3a8eae0-6315-4435-8974-f2c07ec3567f', '2024-09-02 21:02:37.709949', '2024-09-02 21:02:37.709949');
-INSERT INTO public.exercise_example_bundles
-VALUES ('4f0d755b-3118-4a40-9827-89d364a5856a', 25, '3edb750e-4725-4338-a079-d48dc8797917',
-        'b4658891-9713-48c4-864c-8dd907da19b0', '2024-09-02 21:02:37.709949', '2024-09-02 21:02:37.709949');
-INSERT INTO public.exercise_example_bundles
-VALUES ('f87a5c3e-69ca-4998-bc35-f65148348624', 10, '3edb750e-4725-4338-a079-d48dc8797917',
-        'd736a513-9d73-47a3-bffc-c14911662ea2', '2024-09-02 21:02:37.709949', '2024-09-02 21:02:37.709949');
-INSERT INTO public.exercise_example_bundles
-VALUES ('f41a92e7-999e-4ee0-92ba-652e03cea5f6', 5, '3edb750e-4725-4338-a079-d48dc8797917',
-        '0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a', '2024-09-02 21:02:37.709949', '2024-09-02 21:02:37.709949');
-INSERT INTO public.exercise_example_bundles
-VALUES ('501e9b90-6ca2-4526-9c86-d6e045c87bcd', 5, '3edb750e-4725-4338-a079-d48dc8797917',
-        '2da3d8f2-6a28-45ff-90a2-ea3a6bb2afe8', '2024-09-02 21:02:37.709949', '2024-09-02 21:02:37.709949');
-INSERT INTO public.exercise_example_bundles
-VALUES ('d93ec391-190c-47b3-a1f3-dd5f7375d0c3', 55, 'ff2d84fc-ff6d-4637-8128-91c1495c98e8',
-        'c57aa60c-61ea-4498-b01f-fedcafe8a32a', '2024-09-02 21:04:38.434026', '2024-09-02 21:04:38.434026');
-INSERT INTO public.exercise_example_bundles
-VALUES ('3d1f0782-2a0b-40ec-84af-9b1f24dfd3df', 25, 'ff2d84fc-ff6d-4637-8128-91c1495c98e8',
-        'b4658891-9713-48c4-864c-8dd907da19b0', '2024-09-02 21:04:38.434026', '2024-09-02 21:04:38.434026');
-INSERT INTO public.exercise_example_bundles
-VALUES ('5373add3-ec9d-450c-a564-dd44b1e1389e', 10, 'ff2d84fc-ff6d-4637-8128-91c1495c98e8',
-        'd736a513-9d73-47a3-bffc-c14911662ea2', '2024-09-02 21:04:38.434026', '2024-09-02 21:04:38.434026');
-INSERT INTO public.exercise_example_bundles
-VALUES ('82e6479f-3d65-4914-b9fd-1b674a85eea5', 5, 'ff2d84fc-ff6d-4637-8128-91c1495c98e8',
-        '0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a', '2024-09-02 21:04:38.434026', '2024-09-02 21:04:38.434026');
-INSERT INTO public.exercise_example_bundles
-VALUES ('d6ccf972-3f11-4c93-8296-7186a31c0b8b', 5, 'ff2d84fc-ff6d-4637-8128-91c1495c98e8',
-        '2da3d8f2-6a28-45ff-90a2-ea3a6bb2afe8', '2024-09-02 21:04:38.434026', '2024-09-02 21:04:38.434026');
-INSERT INTO public.exercise_example_bundles
-VALUES ('68047e9a-a15c-4c5d-8d11-dc7b11ac7109', 55, 'c2059aab-d7b5-4532-a8a7-ad15a4054b33',
-        'a3a8eae0-6315-4435-8974-f2c07ec3567f', '2024-09-02 21:07:15.402214', '2024-09-02 21:07:15.402214');
-INSERT INTO public.exercise_example_bundles
-VALUES ('149f0854-768d-43e8-9c09-a19efc85240b', 25, 'c2059aab-d7b5-4532-a8a7-ad15a4054b33',
-        'b4658891-9713-48c4-864c-8dd907da19b0', '2024-09-02 21:07:15.402214', '2024-09-02 21:07:15.402214');
-INSERT INTO public.exercise_example_bundles
-VALUES ('a708760b-daab-4ab9-b998-1dc94209f916', 10, 'c2059aab-d7b5-4532-a8a7-ad15a4054b33',
-        'd736a513-9d73-47a3-bffc-c14911662ea2', '2024-09-02 21:07:15.402214', '2024-09-02 21:07:15.402214');
-INSERT INTO public.exercise_example_bundles
-VALUES ('58256fcd-9913-4fe0-b218-32a52ff843e2', 5, 'c2059aab-d7b5-4532-a8a7-ad15a4054b33',
-        '0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a', '2024-09-02 21:07:15.402214', '2024-09-02 21:07:15.402214');
-INSERT INTO public.exercise_example_bundles
-VALUES ('131f61c2-cb27-4472-88a7-c16b45e23bc8', 5, 'c2059aab-d7b5-4532-a8a7-ad15a4054b33',
-        '2da3d8f2-6a28-45ff-90a2-ea3a6bb2afe8', '2024-09-02 21:07:15.402214', '2024-09-02 21:07:15.402214');
-INSERT INTO public.exercise_example_bundles
-VALUES ('b3546a7f-e024-4115-b7ed-5087cd8f844f', 55, '118eab6d-cae9-4c0b-b8e6-57f3e5541f1a',
-        'b4658891-9713-48c4-864c-8dd907da19b0', '2024-09-02 21:09:41.736088', '2024-09-02 21:09:41.736088');
-INSERT INTO public.exercise_example_bundles
-VALUES ('8006aca8-856a-494e-8688-3e31b2d55cf6', 25, '118eab6d-cae9-4c0b-b8e6-57f3e5541f1a',
-        'c57aa60c-61ea-4498-b01f-fedcafe8a32a', '2024-09-02 21:09:41.736088', '2024-09-02 21:09:41.736088');
-INSERT INTO public.exercise_example_bundles
-VALUES ('763c57f9-2fe9-4e5d-b264-468cbbbedb1f', 10, '118eab6d-cae9-4c0b-b8e6-57f3e5541f1a',
-        'd736a513-9d73-47a3-bffc-c14911662ea2', '2024-09-02 21:09:41.736088', '2024-09-02 21:09:41.736088');
-INSERT INTO public.exercise_example_bundles
-VALUES ('288d9741-02a9-4496-b33c-01d6310ec876', 5, '118eab6d-cae9-4c0b-b8e6-57f3e5541f1a',
-        '0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a', '2024-09-02 21:09:41.736088', '2024-09-02 21:09:41.736088');
-INSERT INTO public.exercise_example_bundles
-VALUES ('08de4265-a66d-46c8-910a-e6fbfbce38bb', 5, '118eab6d-cae9-4c0b-b8e6-57f3e5541f1a',
-        '2da3d8f2-6a28-45ff-90a2-ea3a6bb2afe8', '2024-09-02 21:09:41.736088', '2024-09-02 21:09:41.736088');
-INSERT INTO public.exercise_example_bundles
-VALUES ('32d93875-6dc1-4a8f-af7a-d8ef6dc1c781', 55, '9a4eec3b-3f0b-4b36-a2b5-0f544376cf78',
-        'a3a8eae0-6315-4435-8974-f2c07ec3567f', '2024-09-02 21:11:10.380693', '2024-09-02 21:11:10.380693');
-INSERT INTO public.exercise_example_bundles
-VALUES ('e07f52d1-31cc-404a-b460-ef4738712c37', 25, '9a4eec3b-3f0b-4b36-a2b5-0f544376cf78',
-        'b4658891-9713-48c4-864c-8dd907da19b0', '2024-09-02 21:11:10.380693', '2024-09-02 21:11:10.380693');
-INSERT INTO public.exercise_example_bundles
-VALUES ('897b7e98-d545-4ec3-b3c4-1e47c75690b0', 10, '9a4eec3b-3f0b-4b36-a2b5-0f544376cf78',
-        'd736a513-9d73-47a3-bffc-c14911662ea2', '2024-09-02 21:11:10.380693', '2024-09-02 21:11:10.380693');
-INSERT INTO public.exercise_example_bundles
-VALUES ('206240ac-efde-463d-8584-7d01f8bad56f', 5, '9a4eec3b-3f0b-4b36-a2b5-0f544376cf78',
-        '0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a', '2024-09-02 21:11:10.380693', '2024-09-02 21:11:10.380693');
-INSERT INTO public.exercise_example_bundles
-VALUES ('b374b24d-b8b0-4684-8deb-4eb9dc78dc3f', 5, '9a4eec3b-3f0b-4b36-a2b5-0f544376cf78',
-        '2da3d8f2-6a28-45ff-90a2-ea3a6bb2afe8', '2024-09-02 21:11:10.380693', '2024-09-02 21:11:10.380693');
-INSERT INTO public.exercise_example_bundles
-VALUES ('77fe7821-f4f7-4b15-839f-68516846d623', 100, '61a31a0d-a736-48b5-b03e-44aa1ad7f3eb',
-        '9a8024fe-c721-4bea-969c-db88674b5ece', '2024-09-03 08:30:59.474466', '2024-09-03 08:30:59.474466');
-INSERT INTO public.exercise_example_bundles
-VALUES ('d8a25b8f-5332-4992-abbd-9386a563eb8a', 70, 'c5864272-ae27-4363-add6-7ead1b7b3379',
-        '9a8024fe-c721-4bea-969c-db88674b5ece', '2024-09-03 08:32:01.591329', '2024-09-03 08:32:01.591329');
-INSERT INTO public.exercise_example_bundles
-VALUES ('2144643d-d3e8-4183-9601-b9e08ed6ad3a', 30, 'c5864272-ae27-4363-add6-7ead1b7b3379',
-        '97a87b01-35e8-490a-94b9-9bdae9c2f965', '2024-09-03 08:32:01.591329', '2024-09-03 08:32:01.591329');
-INSERT INTO public.exercise_example_bundles
-VALUES ('79796c30-3a78-4d0a-a24b-aa69aa0b08ea', 100, 'ddaf509f-3c99-437c-b872-a4651a91601f',
-        '9a8024fe-c721-4bea-969c-db88674b5ece', '2024-09-03 08:33:21.458375', '2024-09-03 08:33:21.458375');
-INSERT INTO public.exercise_example_bundles
-VALUES ('08f1397f-6ca5-40d5-9b6b-c5ba65df6d4b', 70, 'd3f54e1c-6333-4a15-b09b-0264ec0b68fe',
-        '9a8024fe-c721-4bea-969c-db88674b5ece', '2024-09-03 08:35:16.713569', '2024-09-03 08:35:16.713569');
-INSERT INTO public.exercise_example_bundles
-VALUES ('d59ccf5a-6d28-42f4-87e6-e3b0508b24df', 30, 'd3f54e1c-6333-4a15-b09b-0264ec0b68fe',
-        '97a87b01-35e8-490a-94b9-9bdae9c2f965', '2024-09-03 08:35:16.713569', '2024-09-03 08:35:16.713569');
-INSERT INTO public.exercise_example_bundles
-VALUES ('9cea8943-3eb8-4585-a8b8-170e3a8bc076', 100, '414a1891-1a28-4dbe-84e3-a992c6e879bc',
-        '9a8024fe-c721-4bea-969c-db88674b5ece', '2024-09-03 08:56:48.834366', '2024-09-03 08:56:48.834366');
-INSERT INTO public.exercise_example_bundles
-VALUES ('72ec03cb-99b7-4f20-884f-6cb58d58b365', 100, 'd59d340d-774d-4c81-8b3d-251175936221',
-        '9a8024fe-c721-4bea-969c-db88674b5ece', '2024-09-03 09:26:50.093766', '2024-09-03 09:26:50.093766');
-INSERT INTO public.exercise_example_bundles
-VALUES ('2ff28181-5f74-4519-9cf5-43f9adec8b57', 100, '10870aab-3086-462e-a64e-14710e3fbffe',
-        '9a8024fe-c721-4bea-969c-db88674b5ece', '2024-09-03 09:28:24.998072', '2024-09-03 09:28:24.998072');
-INSERT INTO public.exercise_example_bundles
-VALUES ('e87880da-349b-494a-b3a4-4b656071c566', 100, 'bb9c756b-0c9e-4e87-826f-bb2cbd16d86b',
-        '9a8024fe-c721-4bea-969c-db88674b5ece', '2024-09-03 09:30:01.946161', '2024-09-03 09:30:01.946161');
-INSERT INTO public.exercise_example_bundles
-VALUES ('46c1a824-0332-4ec6-83d2-8f552ddf0fce', 100, '7545289f-f7c8-456b-98e9-f7b15600254c',
-        '9a8024fe-c721-4bea-969c-db88674b5ece', '2024-09-03 09:32:06.552156', '2024-09-03 09:32:06.552156');
-INSERT INTO public.exercise_example_bundles
-VALUES ('b3709a19-39e6-4169-8069-ae367dd202c2', 70, 'b35c5710-3c80-4f48-8ee4-295e5a15999f',
-        '9a8024fe-c721-4bea-969c-db88674b5ece', '2024-09-03 09:34:29.276295', '2024-09-03 09:34:29.276295');
-INSERT INTO public.exercise_example_bundles
-VALUES ('0d52854b-e27e-4782-adcb-bf8da1d3e177', 30, 'b35c5710-3c80-4f48-8ee4-295e5a15999f',
-        '97a87b01-35e8-490a-94b9-9bdae9c2f965', '2024-09-03 09:34:29.276295', '2024-09-03 09:34:29.276295');
-INSERT INTO public.exercise_example_bundles
-VALUES ('ba1413d9-afef-46ac-8584-3f42c11bd477', 100, 'd7871e0c-5e1b-4ffd-a9ab-951028246a01',
-        '9a8024fe-c721-4bea-969c-db88674b5ece', '2024-09-03 09:37:05.55708', '2024-09-03 09:37:05.55708');
-INSERT INTO public.exercise_example_bundles
-VALUES ('acba4525-01c1-410c-841e-b991866ab3e4', 100, 'b53daf0a-c7b6-4be8-9230-b33695eb5340',
-        '9a8024fe-c721-4bea-969c-db88674b5ece', '2024-09-03 09:38:26.924716', '2024-09-03 09:38:26.924716');
-INSERT INTO public.exercise_example_bundles
-VALUES ('47f6a25f-37aa-4064-9e7c-af061f2d405c', 60, '60bd8dbc-6bb8-4be0-9ee7-f4c5a295c5b4',
-        '9a8024fe-c721-4bea-969c-db88674b5ece', '2024-09-03 09:39:30.851233', '2024-09-03 09:39:30.851233');
-INSERT INTO public.exercise_example_bundles
-VALUES ('d5539c2a-5c50-4e2e-aed5-1fa1a52d0567', 40, '60bd8dbc-6bb8-4be0-9ee7-f4c5a295c5b4',
-        '97a87b01-35e8-490a-94b9-9bdae9c2f965', '2024-09-03 09:39:30.851233', '2024-09-03 09:39:30.851233');
-INSERT INTO public.exercise_example_bundles
-VALUES ('8313a784-75c0-4c85-ab10-f6a627db3137', 100, 'a2f8dd49-606e-4d86-ae04-8af61c0b40e9',
-        '9a8024fe-c721-4bea-969c-db88674b5ece', '2024-09-03 09:42:04.640407', '2024-09-03 09:42:04.640407');
-INSERT INTO public.exercise_example_bundles
-VALUES ('f85cb30f-b0da-46b6-ac77-eac8f628923d', 100, 'b515dd55-701a-45f4-938f-fdb26d2d5cba',
-        '9a8024fe-c721-4bea-969c-db88674b5ece', '2024-09-03 09:43:17.736414', '2024-09-03 09:43:17.736414');
-INSERT INTO public.exercise_example_bundles
-VALUES ('21d7eec5-d0bf-4913-8b61-240221f32039', 100, 'f5f03cc7-c2bc-4367-9042-107114d634ce',
-        '9a8024fe-c721-4bea-969c-db88674b5ece', '2024-09-03 09:44:32.014646', '2024-09-03 09:44:32.014646');
-INSERT INTO public.exercise_example_bundles
-VALUES ('c69c04cf-f711-4866-a3c8-8a60aaf3dd31', 60, '7d823dc8-8303-4ddd-a25d-935569c662b7',
-        'f6e65bfe-0746-4a8f-8210-0e9bf88d9886', '2024-09-03 11:04:13.308425', '2024-09-03 11:04:13.308425');
-INSERT INTO public.exercise_example_bundles
-VALUES ('a4644e43-c978-495b-b5e4-63d2fcdd1bab', 25, '7d823dc8-8303-4ddd-a25d-935569c662b7',
-        '3eeaa9fa-0847-4780-9d01-185f91252794', '2024-09-03 11:04:13.308425', '2024-09-03 11:04:13.308425');
-INSERT INTO public.exercise_example_bundles
-VALUES ('eff2f1a3-de83-4e03-b0f4-fee02f852193', 15, '7d823dc8-8303-4ddd-a25d-935569c662b7',
-        'af854064-078a-4f50-af1d-8744e866751e', '2024-09-03 11:04:13.308425', '2024-09-03 11:04:13.308425');
-INSERT INTO public.exercise_example_bundles
-VALUES ('f8b8172b-586a-4841-9d16-72d8756422c3', 70, '78b3c689-0222-46de-a7b3-9bd6c75b920c',
-        'f6e65bfe-0746-4a8f-8210-0e9bf88d9886', '2024-09-03 11:07:53.755464', '2024-09-03 11:07:53.755464');
-INSERT INTO public.exercise_example_bundles
-VALUES ('73426df6-c10d-4f95-b90d-cb19cfa7fbd7', 30, '78b3c689-0222-46de-a7b3-9bd6c75b920c',
-        '3eeaa9fa-0847-4780-9d01-185f91252794', '2024-09-03 11:07:53.755464', '2024-09-03 11:07:53.755464');
-INSERT INTO public.exercise_example_bundles
-VALUES ('5fe31cd2-1b87-4890-8363-1067dac89d72', 40, 'b39cc5b5-8335-4918-a504-f9cdfb85ceba',
-        'f6e65bfe-0746-4a8f-8210-0e9bf88d9886', '2024-09-03 11:13:27.419115', '2024-09-03 11:13:27.419115');
-INSERT INTO public.exercise_example_bundles
-VALUES ('add03f52-05bf-4a2a-a417-3e5754a5085f', 25, 'b39cc5b5-8335-4918-a504-f9cdfb85ceba',
-        '3eeaa9fa-0847-4780-9d01-185f91252794', '2024-09-03 11:13:27.419115', '2024-09-03 11:13:27.419115');
-INSERT INTO public.exercise_example_bundles
-VALUES ('2bbe774b-e917-4c3d-9dca-eedae6a604bc', 15, 'b39cc5b5-8335-4918-a504-f9cdfb85ceba',
-        '9e69205f-6c6e-44a7-8ee6-89215e28a28e', '2024-09-03 11:13:27.419115', '2024-09-03 11:13:27.419115');
-INSERT INTO public.exercise_example_bundles
-VALUES ('b59d4d6e-68ee-4183-ba80-77bc8c82c73a', 10, 'b39cc5b5-8335-4918-a504-f9cdfb85ceba',
-        'af854064-078a-4f50-af1d-8744e866751e', '2024-09-03 11:13:27.419115', '2024-09-03 11:13:27.419115');
-INSERT INTO public.exercise_example_bundles
-VALUES ('39e2a981-65dc-4f85-b55d-fcbfa65f9f54', 10, 'b39cc5b5-8335-4918-a504-f9cdfb85ceba',
-        '2e0faf2b-31a5-4c63-ac15-454be132796f', '2024-09-03 11:13:27.419115', '2024-09-03 11:13:27.419115');
-INSERT INTO public.exercise_example_bundles
-VALUES ('b800cf88-63c7-496a-a592-ed8406423c77', 70, 'd806b4f1-399c-4ceb-bb91-663ec0350e6d',
-        'f6e65bfe-0746-4a8f-8210-0e9bf88d9886', '2024-09-03 11:21:01.347013', '2024-09-03 11:21:01.347013');
-INSERT INTO public.exercise_example_bundles
-VALUES ('e30561d3-fc9b-4c3e-b22b-fdecc4614bec', 20, 'd806b4f1-399c-4ceb-bb91-663ec0350e6d',
-        '3eeaa9fa-0847-4780-9d01-185f91252794', '2024-09-03 11:21:01.347013', '2024-09-03 11:21:01.347013');
-INSERT INTO public.exercise_example_bundles
-VALUES ('c7cd7641-e004-476b-bfa4-c6453e756c21', 10, 'd806b4f1-399c-4ceb-bb91-663ec0350e6d',
-        'af854064-078a-4f50-af1d-8744e866751e', '2024-09-03 11:21:01.347013', '2024-09-03 11:21:01.347013');
-INSERT INTO public.exercise_example_bundles
-VALUES ('a6b6b8b5-f7d2-49b3-8fca-a6dde4d4a178', 40, '3a39a222-7b4d-4e0e-9e7e-034d78b5d6bf',
-        'f6e65bfe-0746-4a8f-8210-0e9bf88d9886', '2024-09-05 12:48:41.924678', '2024-09-05 12:48:41.924678');
-INSERT INTO public.exercise_example_bundles
-VALUES ('842d4be9-1e0a-4650-8eac-6a53e7d35caa', 25, '3a39a222-7b4d-4e0e-9e7e-034d78b5d6bf',
-        '3eeaa9fa-0847-4780-9d01-185f91252794', '2024-09-05 12:48:41.924678', '2024-09-05 12:48:41.924678');
-INSERT INTO public.exercise_example_bundles
-VALUES ('60a05bbe-7c57-41d5-98b1-c10791059097', 15, '3a39a222-7b4d-4e0e-9e7e-034d78b5d6bf',
-        '9e69205f-6c6e-44a7-8ee6-89215e28a28e', '2024-09-05 12:48:41.924678', '2024-09-05 12:48:41.924678');
-INSERT INTO public.exercise_example_bundles
-VALUES ('aa91246b-a32c-416d-8e06-2385770a2c80', 10, '3a39a222-7b4d-4e0e-9e7e-034d78b5d6bf',
-        'af854064-078a-4f50-af1d-8744e866751e', '2024-09-05 12:48:41.924678', '2024-09-05 12:48:41.924678');
-INSERT INTO public.exercise_example_bundles
-VALUES ('2b8b74d8-210e-470e-a416-f67fea243d7b', 10, '3a39a222-7b4d-4e0e-9e7e-034d78b5d6bf',
-        '2e0faf2b-31a5-4c63-ac15-454be132796f', '2024-09-05 12:48:41.924678', '2024-09-05 12:48:41.924678');
-INSERT INTO public.exercise_example_bundles
-VALUES ('3f04cd37-a1f7-470c-ac9a-9397e7791061', 60, 'be3c01a7-3bd0-448c-844b-583bd824c90b',
-        '3eeaa9fa-0847-4780-9d01-185f91252794', '2024-09-05 12:54:46.787474', '2024-09-05 12:54:46.787474');
-INSERT INTO public.exercise_example_bundles
-VALUES ('2edbdadf-b0db-4b2d-b687-28b0d264c3c5', 25, 'be3c01a7-3bd0-448c-844b-583bd824c90b',
-        'f6e65bfe-0746-4a8f-8210-0e9bf88d9886', '2024-09-05 12:54:46.787474', '2024-09-05 12:54:46.787474');
-INSERT INTO public.exercise_example_bundles
-VALUES ('37373366-c75a-4a20-b2c6-0bb4d73f9ec8', 15, 'be3c01a7-3bd0-448c-844b-583bd824c90b',
-        'af854064-078a-4f50-af1d-8744e866751e', '2024-09-05 12:54:46.787474', '2024-09-05 12:54:46.787474');
-INSERT INTO public.exercise_example_bundles
-VALUES ('e1cb1276-8fa3-4f65-9d56-bd930006b3ed', 40, '1dcd59ab-674e-49d8-9a06-9c17c2a05730',
-        '3eeaa9fa-0847-4780-9d01-185f91252794', '2024-09-05 12:56:19.204431', '2024-09-05 12:56:19.204431');
-INSERT INTO public.exercise_example_bundles
-VALUES ('5bd268c8-7ccf-4059-94a9-349445e724fd', 20, '1dcd59ab-674e-49d8-9a06-9c17c2a05730',
-        'f6e65bfe-0746-4a8f-8210-0e9bf88d9886', '2024-09-05 12:56:19.204431', '2024-09-05 12:56:19.204431');
-INSERT INTO public.exercise_example_bundles
-VALUES ('272762c2-0aee-4198-84e9-58f9b99a1fdc', 10, '1dcd59ab-674e-49d8-9a06-9c17c2a05730',
-        'af854064-078a-4f50-af1d-8744e866751e', '2024-09-05 12:56:19.204431', '2024-09-05 12:56:19.204431');
-INSERT INTO public.exercise_example_bundles
-VALUES ('d7676ecb-cdef-4441-8479-3d1a42acecad', 10, '1dcd59ab-674e-49d8-9a06-9c17c2a05730',
-        '9a8024fe-c721-4bea-969c-db88674b5ece', '2024-09-05 12:56:19.204431', '2024-09-05 12:56:19.204431');
-INSERT INTO public.exercise_example_bundles
-VALUES ('f4c18b16-3563-46d5-8062-56af109acd74', 10, '1dcd59ab-674e-49d8-9a06-9c17c2a05730',
-        '9e69205f-6c6e-44a7-8ee6-89215e28a28e', '2024-09-05 12:56:19.204431', '2024-09-05 12:56:19.204431');
-INSERT INTO public.exercise_example_bundles
-VALUES ('5817e3d5-ffd4-4543-a12e-237d876f1339', 5, '1dcd59ab-674e-49d8-9a06-9c17c2a05730',
-        '831f39bd-80a8-4d11-9964-bde1788abae1', '2024-09-05 12:56:19.204431', '2024-09-05 12:56:19.204431');
-INSERT INTO public.exercise_example_bundles
-VALUES ('3f44efad-9c7d-4110-976b-144eb6029d60', 5, '1dcd59ab-674e-49d8-9a06-9c17c2a05730',
-        'bba5b66d-9a9c-4b44-8dd6-9574760038ee', '2024-09-05 12:56:19.204431', '2024-09-05 12:56:19.204431');
-INSERT INTO public.exercise_example_bundles
-VALUES ('2f390946-0d11-4488-b65a-60a3169fdb1d', 100, '05b3842c-2a19-484e-bae3-a12e86c2fa4c',
-        '3eeaa9fa-0847-4780-9d01-185f91252794', '2024-09-05 12:59:02.107348', '2024-09-05 12:59:02.107348');
-INSERT INTO public.exercise_example_bundles
-VALUES ('bc31176a-f375-4478-80c6-f79ab1be7128', 45, 'ad98534e-b2d9-4fef-9983-578ef12b28f7',
-        '3eeaa9fa-0847-4780-9d01-185f91252794', '2024-09-05 13:05:01.297358', '2024-09-05 13:05:01.297358');
-INSERT INTO public.exercise_example_bundles
-VALUES ('72059e17-0f4e-4509-8c61-87fd6cc970ab', 15, 'ad98534e-b2d9-4fef-9983-578ef12b28f7',
-        'f6e65bfe-0746-4a8f-8210-0e9bf88d9886', '2024-09-05 13:05:01.297358', '2024-09-05 13:05:01.297358');
-INSERT INTO public.exercise_example_bundles
-VALUES ('f5e048f1-610b-4e8b-bd50-ba69149702e2', 10, 'ad98534e-b2d9-4fef-9983-578ef12b28f7',
-        'bba5b66d-9a9c-4b44-8dd6-9574760038ee', '2024-09-05 13:05:01.297358', '2024-09-05 13:05:01.297358');
-INSERT INTO public.exercise_example_bundles
-VALUES ('7ec3e174-07a2-4b61-bb7b-c5153eeaf639', 10, 'ad98534e-b2d9-4fef-9983-578ef12b28f7',
-        '831f39bd-80a8-4d11-9964-bde1788abae1', '2024-09-05 13:05:01.297358', '2024-09-05 13:05:01.297358');
-INSERT INTO public.exercise_example_bundles
-VALUES ('dcdcd2b2-9fed-46ee-9777-aab8aa9ec6dd', 7, 'ad98534e-b2d9-4fef-9983-578ef12b28f7',
-        '9a8024fe-c721-4bea-969c-db88674b5ece', '2024-09-05 13:05:01.297358', '2024-09-05 13:05:01.297358');
-INSERT INTO public.exercise_example_bundles
-VALUES ('94e52c10-6026-4e84-81d6-20d125dfd0bc', 5, 'ad98534e-b2d9-4fef-9983-578ef12b28f7',
-        'fa8025e6-e106-475c-8b9d-77831132fb47', '2024-09-05 13:05:01.297358', '2024-09-05 13:05:01.297358');
-INSERT INTO public.exercise_example_bundles
-VALUES ('6edb3c8c-38bf-4022-80e4-577de7362360', 5, 'ad98534e-b2d9-4fef-9983-578ef12b28f7',
-        '9e69205f-6c6e-44a7-8ee6-89215e28a28e', '2024-09-05 13:05:01.297358', '2024-09-05 13:05:01.297358');
-INSERT INTO public.exercise_example_bundles
-VALUES ('f4840fe0-6586-48a6-bed7-afacceeb8242', 3, 'ad98534e-b2d9-4fef-9983-578ef12b28f7',
-        '2e0faf2b-31a5-4c63-ac15-454be132796f', '2024-09-05 13:05:01.297358', '2024-09-05 13:05:01.297358');
-INSERT INTO public.exercise_example_bundles
-VALUES ('9d59ae3c-a960-4905-91be-12bc650b2612', 50, 'b5c6e6a6-6eec-422c-ad4a-8dca82287312',
-        '3eeaa9fa-0847-4780-9d01-185f91252794', '2024-09-05 13:06:37.166724', '2024-09-05 13:06:37.166724');
-INSERT INTO public.exercise_example_bundles
-VALUES ('6a2e5043-8903-4113-8a02-f9994811602d', 20, 'b5c6e6a6-6eec-422c-ad4a-8dca82287312',
-        'f6e65bfe-0746-4a8f-8210-0e9bf88d9886', '2024-09-05 13:06:37.166724', '2024-09-05 13:06:37.166724');
-INSERT INTO public.exercise_example_bundles
-VALUES ('bba26f13-e47c-4151-af35-eb5ee59c0805', 10, 'b5c6e6a6-6eec-422c-ad4a-8dca82287312',
-        '9a8024fe-c721-4bea-969c-db88674b5ece', '2024-09-05 13:06:37.166724', '2024-09-05 13:06:37.166724');
-INSERT INTO public.exercise_example_bundles
-VALUES ('e8f4405f-65e1-495b-9a48-34c5f73f21b2', 8, 'b5c6e6a6-6eec-422c-ad4a-8dca82287312',
-        '831f39bd-80a8-4d11-9964-bde1788abae1', '2024-09-05 13:06:37.166724', '2024-09-05 13:06:37.166724');
-INSERT INTO public.exercise_example_bundles
-VALUES ('12299097-0fe2-4bfa-92dd-0306811e0c43', 5, 'b5c6e6a6-6eec-422c-ad4a-8dca82287312',
-        '9e69205f-6c6e-44a7-8ee6-89215e28a28e', '2024-09-05 13:06:37.166724', '2024-09-05 13:06:37.166724');
-INSERT INTO public.exercise_example_bundles
-VALUES ('d0aa9220-4a4c-4d00-82d0-5ae7f5daa45d', 4, 'b5c6e6a6-6eec-422c-ad4a-8dca82287312',
-        '2e0faf2b-31a5-4c63-ac15-454be132796f', '2024-09-05 13:06:37.166724', '2024-09-05 13:06:37.166724');
-INSERT INTO public.exercise_example_bundles
-VALUES ('9500c7da-8e02-4c92-ab20-95a09baf0dce', 3, 'b5c6e6a6-6eec-422c-ad4a-8dca82287312',
-        '97a87b01-35e8-490a-94b9-9bdae9c2f965', '2024-09-05 13:06:37.166724', '2024-09-05 13:06:37.166724');
-INSERT INTO public.exercise_example_bundles
-VALUES ('7f71d91d-375e-438b-9750-cd754633912b', 100, '9b3f9b20-544d-49e1-880e-879e24e81581',
-        '3eeaa9fa-0847-4780-9d01-185f91252794', '2024-09-05 13:08:00.585569', '2024-09-05 13:08:00.585569');
-INSERT INTO public.exercise_example_bundles
-VALUES ('447e297b-fe5a-4d05-b707-0cb3d31ace56', 40, '12070323-971e-421a-9eaf-bdce4f8e0464',
-        '3eeaa9fa-0847-4780-9d01-185f91252794', '2024-09-05 13:10:41.481258', '2024-09-05 13:10:41.481258');
-INSERT INTO public.exercise_example_bundles
-VALUES ('319abf7d-062b-452d-894a-b9654e4c9ee3', 15, '12070323-971e-421a-9eaf-bdce4f8e0464',
-        'f6e65bfe-0746-4a8f-8210-0e9bf88d9886', '2024-09-05 13:10:41.481258', '2024-09-05 13:10:41.481258');
-INSERT INTO public.exercise_example_bundles
-VALUES ('d1686678-da2d-4c22-a8c6-67b46cea3dc3', 10, '12070323-971e-421a-9eaf-bdce4f8e0464',
-        '9a8024fe-c721-4bea-969c-db88674b5ece', '2024-09-05 13:10:41.481258', '2024-09-05 13:10:41.481258');
-INSERT INTO public.exercise_example_bundles
-VALUES ('143018a5-7f18-4962-b553-6ba01a1d2c32', 10, '12070323-971e-421a-9eaf-bdce4f8e0464',
-        '831f39bd-80a8-4d11-9964-bde1788abae1', '2024-09-05 13:10:41.481258', '2024-09-05 13:10:41.481258');
-INSERT INTO public.exercise_example_bundles
-VALUES ('6a5b282f-37cc-4487-a745-30788a1a554b', 5, '12070323-971e-421a-9eaf-bdce4f8e0464',
-        '9e69205f-6c6e-44a7-8ee6-89215e28a28e', '2024-09-05 13:10:41.481258', '2024-09-05 13:10:41.481258');
-INSERT INTO public.exercise_example_bundles
-VALUES ('b2b18c0b-f6b1-495f-9e7c-7bcee8dd26ec', 5, '12070323-971e-421a-9eaf-bdce4f8e0464',
-        'fa8025e6-e106-475c-8b9d-77831132fb47', '2024-09-05 13:10:41.481258', '2024-09-05 13:10:41.481258');
-INSERT INTO public.exercise_example_bundles
-VALUES ('7f637036-e75b-4f95-a576-df4e6a4a45c5', 5, '12070323-971e-421a-9eaf-bdce4f8e0464',
-        '2e0faf2b-31a5-4c63-ac15-454be132796f', '2024-09-05 13:10:41.481258', '2024-09-05 13:10:41.481258');
-INSERT INTO public.exercise_example_bundles
-VALUES ('6e483253-db76-4ff5-99df-710b4e9e7577', 5, '12070323-971e-421a-9eaf-bdce4f8e0464',
-        '9a8024fe-c721-4bea-969c-db88674b5ece', '2024-09-05 13:10:41.481258', '2024-09-05 13:10:41.481258');
-INSERT INTO public.exercise_example_bundles
-VALUES ('ad0a2f1b-b30a-4b2b-a9e7-321cecbac09d', 5, '12070323-971e-421a-9eaf-bdce4f8e0464',
-        '9a8024fe-c721-4bea-969c-db88674b5ece', '2024-09-05 13:10:41.481258', '2024-09-05 13:10:41.481258');
-INSERT INTO public.exercise_example_bundles
-VALUES ('4588e1ee-71e6-49d3-a675-d5e2657009e4', 40, '379d64cd-24bf-4a81-9b97-936c9a088e17',
-        '3eeaa9fa-0847-4780-9d01-185f91252794', '2024-09-05 13:12:38.910309', '2024-09-05 13:12:38.910309');
-INSERT INTO public.exercise_example_bundles
-VALUES ('468c3db9-3af7-4d62-9f15-a756663f3411', 15, '379d64cd-24bf-4a81-9b97-936c9a088e17',
-        'f6e65bfe-0746-4a8f-8210-0e9bf88d9886', '2024-09-05 13:12:38.910309', '2024-09-05 13:12:38.910309');
-INSERT INTO public.exercise_example_bundles
-VALUES ('68d5c2f0-1cb8-40cb-afe4-6a2a32bee1c2', 10, '379d64cd-24bf-4a81-9b97-936c9a088e17',
-        '9a8024fe-c721-4bea-969c-db88674b5ece', '2024-09-05 13:12:38.910309', '2024-09-05 13:12:38.910309');
-INSERT INTO public.exercise_example_bundles
-VALUES ('3fa4e33a-3dcc-4524-8c01-d79cc019a712', 7, '379d64cd-24bf-4a81-9b97-936c9a088e17',
-        'bba5b66d-9a9c-4b44-8dd6-9574760038ee', '2024-09-05 13:12:38.910309', '2024-09-05 13:12:38.910309');
-INSERT INTO public.exercise_example_bundles
-VALUES ('48eca50d-76a6-47e9-a78a-38348474e689', 8, '379d64cd-24bf-4a81-9b97-936c9a088e17',
-        '831f39bd-80a8-4d11-9964-bde1788abae1', '2024-09-05 13:12:38.910309', '2024-09-05 13:12:38.910309');
-INSERT INTO public.exercise_example_bundles
-VALUES ('ba8c3a56-d44c-499c-93a9-97c87734ebb4', 5, '379d64cd-24bf-4a81-9b97-936c9a088e17',
-        '2e0faf2b-31a5-4c63-ac15-454be132796f', '2024-09-05 13:12:38.910309', '2024-09-05 13:12:38.910309');
-INSERT INTO public.exercise_example_bundles
-VALUES ('4365efab-34bc-4673-9f65-0466844939c6', 5, '379d64cd-24bf-4a81-9b97-936c9a088e17',
-        '9e69205f-6c6e-44a7-8ee6-89215e28a28e', '2024-09-05 13:12:38.910309', '2024-09-05 13:12:38.910309');
-INSERT INTO public.exercise_example_bundles
-VALUES ('988238b3-fec8-4889-a426-b03477dcc36a', 5, '379d64cd-24bf-4a81-9b97-936c9a088e17',
-        'fa8025e6-e106-475c-8b9d-77831132fb47', '2024-09-05 13:12:38.910309', '2024-09-05 13:12:38.910309');
-INSERT INTO public.exercise_example_bundles
-VALUES ('cdb08ccc-75b5-43f5-bf41-a79a38a7cbf4', 5, '379d64cd-24bf-4a81-9b97-936c9a088e17',
-        '9a8024fe-c721-4bea-969c-db88674b5ece', '2024-09-05 13:12:38.910309', '2024-09-05 13:12:38.910309');
-INSERT INTO public.exercise_example_bundles
-VALUES ('a3626612-00a0-4f73-ac78-f51cb8fbd346', 45, '04d3e242-807d-4cba-9be4-e3d11a8efbc4',
-        '3eeaa9fa-0847-4780-9d01-185f91252794', '2024-09-05 13:33:56.327812', '2024-09-05 13:33:56.327812');
-INSERT INTO public.exercise_example_bundles
-VALUES ('59bfe0db-76dc-4c29-853a-f48e13cd301d', 20, '04d3e242-807d-4cba-9be4-e3d11a8efbc4',
-        'f6e65bfe-0746-4a8f-8210-0e9bf88d9886', '2024-09-05 13:33:56.327812', '2024-09-05 13:33:56.327812');
-INSERT INTO public.exercise_example_bundles
-VALUES ('e75dde46-83c5-4c9a-a625-f95f80aa1c30', 15, '04d3e242-807d-4cba-9be4-e3d11a8efbc4',
-        'bba5b66d-9a9c-4b44-8dd6-9574760038ee', '2024-09-05 13:33:56.327812', '2024-09-05 13:33:56.327812');
-INSERT INTO public.exercise_example_bundles
-VALUES ('cbae1be5-9872-46c8-b20b-0a5c6c7f75f4', 10, '04d3e242-807d-4cba-9be4-e3d11a8efbc4',
-        '57559b71-b757-468a-983d-a1b3cec4acef', '2024-09-05 13:33:56.327812', '2024-09-05 13:33:56.327812');
-INSERT INTO public.exercise_example_bundles
-VALUES ('a19faf4e-0695-4235-af9a-2aadbef4f657', 5, '04d3e242-807d-4cba-9be4-e3d11a8efbc4',
-        '9e69205f-6c6e-44a7-8ee6-89215e28a28e', '2024-09-05 13:33:56.327812', '2024-09-05 13:33:56.327812');
-INSERT INTO public.exercise_example_bundles
-VALUES ('a78eeaf2-da99-41aa-af19-e1b3f51b276a', 5, '04d3e242-807d-4cba-9be4-e3d11a8efbc4',
-        'fa8025e6-e106-475c-8b9d-77831132fb47', '2024-09-05 13:33:56.327812', '2024-09-05 13:33:56.327812');
-INSERT INTO public.exercise_example_bundles
-VALUES ('e8793fda-b9b5-4591-9a1e-932fb3a8b4d0', 35, 'ca38bcba-658f-4c7a-be54-b2c3f845fbe0',
-        '3eeaa9fa-0847-4780-9d01-185f91252794', '2024-09-05 13:37:08.612465', '2024-09-05 13:37:08.612465');
-INSERT INTO public.exercise_example_bundles
-VALUES ('a68eaaf1-8ebe-484d-89a8-6578f1d1a043', 20, 'ca38bcba-658f-4c7a-be54-b2c3f845fbe0',
-        'f6e65bfe-0746-4a8f-8210-0e9bf88d9886', '2024-09-05 13:37:08.612465', '2024-09-05 13:37:08.612465');
-INSERT INTO public.exercise_example_bundles
-VALUES ('fb83eccf-c0ab-41a6-84c0-a7bc2ad35dd2', 10, 'ca38bcba-658f-4c7a-be54-b2c3f845fbe0',
-        '9a8024fe-c721-4bea-969c-db88674b5ece', '2024-09-05 13:37:08.612465', '2024-09-05 13:37:08.612465');
-INSERT INTO public.exercise_example_bundles
-VALUES ('aa549ad5-916b-4d80-8b9e-6fe464682741', 10, 'ca38bcba-658f-4c7a-be54-b2c3f845fbe0',
-        'fa8025e6-e106-475c-8b9d-77831132fb47', '2024-09-05 13:37:08.612465', '2024-09-05 13:37:08.612465');
-INSERT INTO public.exercise_example_bundles
-VALUES ('2ae9267f-035d-47af-bdd3-5ff29d1b2f93', 8, 'ca38bcba-658f-4c7a-be54-b2c3f845fbe0',
-        'bba5b66d-9a9c-4b44-8dd6-9574760038ee', '2024-09-05 13:37:08.612465', '2024-09-05 13:37:08.612465');
-INSERT INTO public.exercise_example_bundles
-VALUES ('7984788e-00a5-4a8c-8296-84dce0215644', 7, 'ca38bcba-658f-4c7a-be54-b2c3f845fbe0',
-        '831f39bd-80a8-4d11-9964-bde1788abae1', '2024-09-05 13:37:08.612465', '2024-09-05 13:37:08.612465');
-INSERT INTO public.exercise_example_bundles
-VALUES ('12bee044-c9db-4696-a7b8-0cd7b3829af5', 5, 'ca38bcba-658f-4c7a-be54-b2c3f845fbe0',
-        '9e69205f-6c6e-44a7-8ee6-89215e28a28e', '2024-09-05 13:37:08.612465', '2024-09-05 13:37:08.612465');
-INSERT INTO public.exercise_example_bundles
-VALUES ('4ef43474-2e7d-45f6-9738-e4ef20a0531a', 5, 'ca38bcba-658f-4c7a-be54-b2c3f845fbe0',
-        '2e0faf2b-31a5-4c63-ac15-454be132796f', '2024-09-05 13:37:08.612465', '2024-09-05 13:37:08.612465');
-INSERT INTO public.exercise_example_bundles
-VALUES ('573f26e3-4b64-4bc2-b24d-71f93851f779', 60, 'f11ef4dd-cc6b-42ad-844d-0e94cef691f0',
-        '3eeaa9fa-0847-4780-9d01-185f91252794', '2024-09-05 13:38:49.27546', '2024-09-05 13:38:49.27546');
-INSERT INTO public.exercise_example_bundles
-VALUES ('a1b482fd-16a1-4881-aa94-63c8cf09ee9b', 20, 'f11ef4dd-cc6b-42ad-844d-0e94cef691f0',
-        'f6e65bfe-0746-4a8f-8210-0e9bf88d9886', '2024-09-05 13:38:49.27546', '2024-09-05 13:38:49.27546');
-INSERT INTO public.exercise_example_bundles
-VALUES ('52cc8414-03dc-4088-8307-cb46f5d5582b', 10, 'f11ef4dd-cc6b-42ad-844d-0e94cef691f0',
-        'bba5b66d-9a9c-4b44-8dd6-9574760038ee', '2024-09-05 13:38:49.27546', '2024-09-05 13:38:49.27546');
-INSERT INTO public.exercise_example_bundles
-VALUES ('9c3d9abc-bc57-4d47-8ced-bfecc08e6f0f', 5, 'f11ef4dd-cc6b-42ad-844d-0e94cef691f0',
-        '9e69205f-6c6e-44a7-8ee6-89215e28a28e', '2024-09-05 13:38:49.27546', '2024-09-05 13:38:49.27546');
-INSERT INTO public.exercise_example_bundles
-VALUES ('0507da20-e4ba-46c0-9125-ac3721998498', 5, 'f11ef4dd-cc6b-42ad-844d-0e94cef691f0',
-        'fa8025e6-e106-475c-8b9d-77831132fb47', '2024-09-05 13:38:49.27546', '2024-09-05 13:38:49.27546');
-INSERT INTO public.exercise_example_bundles
-VALUES ('8dfc7666-e826-41b8-a14c-3d68480c0e67', 5, '4a2c7160-6cf2-456d-8ef4-80040b720420',
-        '9e69205f-6c6e-44a7-8ee6-89215e28a28e', '2024-09-06 11:18:17.204717', '2024-09-06 11:18:17.204717');
-INSERT INTO public.exercise_example_bundles
-VALUES ('3edf6550-61ba-4a11-8a1c-5bae1fd52fdf', 5, '4a2c7160-6cf2-456d-8ef4-80040b720420',
-        '2e0faf2b-31a5-4c63-ac15-454be132796f', '2024-09-06 11:18:17.204717', '2024-09-06 11:18:17.204717');
-INSERT INTO public.exercise_example_bundles
-VALUES ('6f37f1c9-1a67-4a39-bce5-24099deeb3d7', 65, '93c687ff-68f2-44d0-9f3a-8c4c15c960e8',
-        '831f39bd-80a8-4d11-9964-bde1788abae1', '2024-09-06 11:21:03.166194', '2024-09-06 11:21:03.166194');
-INSERT INTO public.exercise_example_bundles
-VALUES ('f722506d-066d-4a04-b940-0ee70a63d430', 15, '93c687ff-68f2-44d0-9f3a-8c4c15c960e8',
-        'be38dcef-1bc8-487b-a44f-96df1ab9e68c', '2024-09-06 11:21:03.166194', '2024-09-06 11:21:03.166194');
-INSERT INTO public.exercise_example_bundles
-VALUES ('28c87efa-199b-45d7-89c5-da28dd60826e', 10, '93c687ff-68f2-44d0-9f3a-8c4c15c960e8',
-        '97a87b01-35e8-490a-94b9-9bdae9c2f965', '2024-09-06 11:21:03.166194', '2024-09-06 11:21:03.166194');
-INSERT INTO public.exercise_example_bundles
-VALUES ('4a9cc7c5-3094-43ae-9c6a-822da6bd7fc4', 5, '93c687ff-68f2-44d0-9f3a-8c4c15c960e8',
-        '9e69205f-6c6e-44a7-8ee6-89215e28a28e', '2024-09-06 11:21:03.166194', '2024-09-06 11:21:03.166194');
-INSERT INTO public.exercise_example_bundles
-VALUES ('6a0923e7-8571-4f93-8783-732f62353310', 5, '93c687ff-68f2-44d0-9f3a-8c4c15c960e8',
-        '2e0faf2b-31a5-4c63-ac15-454be132796f', '2024-09-06 11:21:03.166194', '2024-09-06 11:21:03.166194');
-INSERT INTO public.exercise_example_bundles
-VALUES ('c3252c5a-9d70-4a95-bcd9-33ead66ec1d0', 50, '676f21e5-7b5a-4c11-a505-4545822673de',
-        '3eeaa9fa-0847-4780-9d01-185f91252794', '2024-09-05 13:42:24.38038', '2024-09-05 13:42:24.38038');
-INSERT INTO public.exercise_example_bundles
-VALUES ('f786ba22-3c42-4a77-bf4e-dd30600e207a', 15, '676f21e5-7b5a-4c11-a505-4545822673de',
-        'f6e65bfe-0746-4a8f-8210-0e9bf88d9886', '2024-09-05 13:42:24.38038', '2024-09-05 13:42:24.38038');
-INSERT INTO public.exercise_example_bundles
-VALUES ('000b177a-6079-40d2-a8a6-611b6c8c6b59', 10, '676f21e5-7b5a-4c11-a505-4545822673de',
-        '9a8024fe-c721-4bea-969c-db88674b5ece', '2024-09-05 13:42:24.38038', '2024-09-05 13:42:24.38038');
-INSERT INTO public.exercise_example_bundles
-VALUES ('3201207c-8b2b-4756-b568-7150774e9ce9', 8, '676f21e5-7b5a-4c11-a505-4545822673de',
-        '831f39bd-80a8-4d11-9964-bde1788abae1', '2024-09-05 13:42:24.38038', '2024-09-05 13:42:24.38038');
-INSERT INTO public.exercise_example_bundles
-VALUES ('4c83d473-aac3-40dd-bc3f-43222a9d47af', 5, '676f21e5-7b5a-4c11-a505-4545822673de',
-        '9e69205f-6c6e-44a7-8ee6-89215e28a28e', '2024-09-05 13:42:24.38038', '2024-09-05 13:42:24.38038');
-INSERT INTO public.exercise_example_bundles
-VALUES ('369774ae-3fa5-49ba-8fe4-efbf2a96caaf', 5, '676f21e5-7b5a-4c11-a505-4545822673de',
-        '2e0faf2b-31a5-4c63-ac15-454be132796f', '2024-09-05 13:42:24.38038', '2024-09-05 13:42:24.38038');
-INSERT INTO public.exercise_example_bundles
-VALUES ('7fd9da8d-9d60-4727-a482-bf535b081879', 4, '676f21e5-7b5a-4c11-a505-4545822673de',
-        'bba5b66d-9a9c-4b44-8dd6-9574760038ee', '2024-09-05 13:42:24.38038', '2024-09-05 13:42:24.38038');
-INSERT INTO public.exercise_example_bundles
-VALUES ('092058c5-ce41-44a2-9096-594578eafeab', 3, '676f21e5-7b5a-4c11-a505-4545822673de',
-        'fa8025e6-e106-475c-8b9d-77831132fb47', '2024-09-05 13:42:24.38038', '2024-09-05 13:42:24.38038');
-INSERT INTO public.exercise_example_bundles
-VALUES ('40dd069b-411c-47bd-927e-acb092e8f8a4', 50, 'c18b086c-b0c3-4d1c-a6a3-2653e36c5dff',
-        '3eeaa9fa-0847-4780-9d01-185f91252794', '2024-09-05 13:44:20.961447', '2024-09-05 13:44:20.961447');
-INSERT INTO public.exercise_example_bundles
-VALUES ('11b0a348-8fb1-43d3-96e3-954724791249', 15, 'c18b086c-b0c3-4d1c-a6a3-2653e36c5dff',
-        'f6e65bfe-0746-4a8f-8210-0e9bf88d9886', '2024-09-05 13:44:20.961447', '2024-09-05 13:44:20.961447');
-INSERT INTO public.exercise_example_bundles
-VALUES ('0c2f2725-ba0d-4863-b9e9-d2c4690849c8', 10, 'c18b086c-b0c3-4d1c-a6a3-2653e36c5dff',
-        '9a8024fe-c721-4bea-969c-db88674b5ece', '2024-09-05 13:44:20.961447', '2024-09-05 13:44:20.961447');
-INSERT INTO public.exercise_example_bundles
-VALUES ('ec3ab52c-48ac-4054-8184-d3e97cc629b3', 8, 'c18b086c-b0c3-4d1c-a6a3-2653e36c5dff',
-        '831f39bd-80a8-4d11-9964-bde1788abae1', '2024-09-05 13:44:20.961447', '2024-09-05 13:44:20.961447');
-INSERT INTO public.exercise_example_bundles
-VALUES ('74008a11-0824-4a11-b5ee-6f55972c6f25', 5, 'c18b086c-b0c3-4d1c-a6a3-2653e36c5dff',
-        '9e69205f-6c6e-44a7-8ee6-89215e28a28e', '2024-09-05 13:44:20.961447', '2024-09-05 13:44:20.961447');
-INSERT INTO public.exercise_example_bundles
-VALUES ('e565a702-d85f-4402-9ebd-daf0ee67af5b', 5, 'c18b086c-b0c3-4d1c-a6a3-2653e36c5dff',
-        '2e0faf2b-31a5-4c63-ac15-454be132796f', '2024-09-05 13:44:20.961447', '2024-09-05 13:44:20.961447');
-INSERT INTO public.exercise_example_bundles
-VALUES ('93e28c5e-936c-43a7-b5b2-5de9169c5585', 4, 'c18b086c-b0c3-4d1c-a6a3-2653e36c5dff',
-        'bba5b66d-9a9c-4b44-8dd6-9574760038ee', '2024-09-05 13:44:20.961447', '2024-09-05 13:44:20.961447');
-INSERT INTO public.exercise_example_bundles
-VALUES ('b8394291-cd16-408e-9c0f-d1e81557dec9', 3, 'c18b086c-b0c3-4d1c-a6a3-2653e36c5dff',
-        'fa8025e6-e106-475c-8b9d-77831132fb47', '2024-09-05 13:44:20.961447', '2024-09-05 13:44:20.961447');
-INSERT INTO public.exercise_example_bundles
-VALUES ('1b50bce5-dddc-4205-a9af-a7b0978ff5f7', 55, '738d7264-00af-48dd-a475-3c4d12e28188',
-        '831f39bd-80a8-4d11-9964-bde1788abae1', '2024-09-06 21:19:43.236977', '2024-09-06 21:19:43.236977');
-INSERT INTO public.exercise_example_bundles
-VALUES ('5eb93ce4-b597-4553-9961-a071ca7cd75c', 10, '738d7264-00af-48dd-a475-3c4d12e28188',
-        'be38dcef-1bc8-487b-a44f-96df1ab9e68c', '2024-09-06 21:19:43.236977', '2024-09-06 21:19:43.236977');
-INSERT INTO public.exercise_example_bundles
-VALUES ('be6dda29-d6e5-4012-8796-131b8a4fffd6', 15, '738d7264-00af-48dd-a475-3c4d12e28188',
-        '97a87b01-35e8-490a-94b9-9bdae9c2f965', '2024-09-06 21:19:43.236977', '2024-09-06 21:19:43.236977');
-INSERT INTO public.exercise_example_bundles
-VALUES ('95790dff-e412-4d24-b17a-79b42de69b79', 10, '738d7264-00af-48dd-a475-3c4d12e28188',
-        '9e69205f-6c6e-44a7-8ee6-89215e28a28e', '2024-09-06 21:19:43.236977', '2024-09-06 21:19:43.236977');
-INSERT INTO public.exercise_example_bundles
-VALUES ('0762b8ba-4468-443c-a2d8-5579b7bbf3eb', 5, '738d7264-00af-48dd-a475-3c4d12e28188',
-        'af854064-078a-4f50-af1d-8744e866751e', '2024-09-06 21:19:43.236977', '2024-09-06 21:19:43.236977');
-INSERT INTO public.exercise_example_bundles
-VALUES ('622b8031-1c1b-49c9-9e63-f3762df8d02e', 60, '6115df45-ddad-4fa6-bfb0-1c0cd72de766',
-        '3eeaa9fa-0847-4780-9d01-185f91252794', '2024-09-05 13:49:52.432525', '2024-09-05 13:49:52.432525');
-INSERT INTO public.exercise_example_bundles
-VALUES ('a8594500-ecb4-46fe-b22f-4e379f6ae596', 20, '6115df45-ddad-4fa6-bfb0-1c0cd72de766',
-        'f6e65bfe-0746-4a8f-8210-0e9bf88d9886', '2024-09-05 13:49:52.432525', '2024-09-05 13:49:52.432525');
-INSERT INTO public.exercise_example_bundles
-VALUES ('363bed68-7c64-466b-849a-ad66e8845ef9', 10, '6115df45-ddad-4fa6-bfb0-1c0cd72de766',
-        'af854064-078a-4f50-af1d-8744e866751e', '2024-09-05 13:49:52.432525', '2024-09-05 13:49:52.432525');
-INSERT INTO public.exercise_example_bundles
-VALUES ('5151da34-47fc-4816-896a-1ec8007d3588', 10, '6115df45-ddad-4fa6-bfb0-1c0cd72de766',
-        '2e0faf2b-31a5-4c63-ac15-454be132796f', '2024-09-05 13:49:52.432525', '2024-09-05 13:49:52.432525');
-INSERT INTO public.exercise_example_bundles
-VALUES ('0416a5e7-c3b1-4d20-9063-b1256253676a', 5, '738d7264-00af-48dd-a475-3c4d12e28188',
-        '2e0faf2b-31a5-4c63-ac15-454be132796f', '2024-09-06 21:19:43.236977', '2024-09-06 21:19:43.236977');
-INSERT INTO public.exercise_example_bundles
-VALUES ('7668a9ca-f5cb-4aba-a902-f36a2367ccfd', 65, 'e84c6031-9d71-41a1-ae2c-6c9901ea1d6b',
-        '831f39bd-80a8-4d11-9964-bde1788abae1', '2024-09-06 21:22:25.310157', '2024-09-06 21:22:25.310157');
-INSERT INTO public.exercise_example_bundles
-VALUES ('7c5536a5-7f46-44ef-9832-f22c868a623d', 15, 'e84c6031-9d71-41a1-ae2c-6c9901ea1d6b',
-        'be38dcef-1bc8-487b-a44f-96df1ab9e68c', '2024-09-06 21:22:25.310157', '2024-09-06 21:22:25.310157');
-INSERT INTO public.exercise_example_bundles
-VALUES ('61ed68e2-b998-4448-bf83-8b01c97bd882', 10, 'e84c6031-9d71-41a1-ae2c-6c9901ea1d6b',
-        '97a87b01-35e8-490a-94b9-9bdae9c2f965', '2024-09-06 21:22:25.310157', '2024-09-06 21:22:25.310157');
-INSERT INTO public.exercise_example_bundles
-VALUES ('0064cdf1-41c9-48b7-a1c2-98e2264764b9', 5, 'e84c6031-9d71-41a1-ae2c-6c9901ea1d6b',
-        '9e69205f-6c6e-44a7-8ee6-89215e28a28e', '2024-09-06 21:22:25.310157', '2024-09-06 21:22:25.310157');
-INSERT INTO public.exercise_example_bundles
-VALUES ('2b814e64-5335-4973-bc6a-1d53c120325d', 5, 'e84c6031-9d71-41a1-ae2c-6c9901ea1d6b',
-        'af854064-078a-4f50-af1d-8744e866751e', '2024-09-06 21:22:25.310157', '2024-09-06 21:22:25.310157');
-INSERT INTO public.exercise_example_bundles
-VALUES ('febfc0ca-ed9c-42d9-9791-a5c966716037', 55, 'bd3338ee-1841-4686-a98c-3493ab9cfa7e',
-        '831f39bd-80a8-4d11-9964-bde1788abae1', '2024-09-06 21:26:46.662273', '2024-09-06 21:26:46.662273');
-INSERT INTO public.exercise_example_bundles
-VALUES ('38f8df08-24dd-41db-b825-0f44d862b8d8', 15, 'bd3338ee-1841-4686-a98c-3493ab9cfa7e',
-        'be38dcef-1bc8-487b-a44f-96df1ab9e68c', '2024-09-06 21:26:46.662273', '2024-09-06 21:26:46.662273');
-INSERT INTO public.exercise_example_bundles
-VALUES ('f2983c8c-d27f-4350-bdf3-0a819679320b', 20, 'bd3338ee-1841-4686-a98c-3493ab9cfa7e',
-        '97a87b01-35e8-490a-94b9-9bdae9c2f965', '2024-09-06 21:26:46.662273', '2024-09-06 21:26:46.662273');
-INSERT INTO public.exercise_example_bundles
-VALUES ('b5b2a3b7-dc7b-44e0-9094-e8b7265ceead', 5, 'bd3338ee-1841-4686-a98c-3493ab9cfa7e',
-        '9e69205f-6c6e-44a7-8ee6-89215e28a28e', '2024-09-06 21:26:46.662273', '2024-09-06 21:26:46.662273');
-INSERT INTO public.exercise_example_bundles
-VALUES ('aef507f6-100d-464c-b91b-b131cadf73f7', 5, 'bd3338ee-1841-4686-a98c-3493ab9cfa7e',
-        '2e0faf2b-31a5-4c63-ac15-454be132796f', '2024-09-06 21:26:46.662273', '2024-09-06 21:26:46.662273');
-INSERT INTO public.exercise_example_bundles
-VALUES ('3b7afe47-0b45-4f4f-b3d0-255a5a0c1a91', 65, 'eaf575b3-2cb6-45a3-914f-81838c4c7e4d',
-        '831f39bd-80a8-4d11-9964-bde1788abae1', '2024-09-06 21:28:12.845416', '2024-09-06 21:28:12.845416');
-INSERT INTO public.exercise_example_bundles
-VALUES ('473b0af2-29f4-4a99-ae36-b8680a3ad5ca', 10, 'eaf575b3-2cb6-45a3-914f-81838c4c7e4d',
-        'be38dcef-1bc8-487b-a44f-96df1ab9e68c', '2024-09-06 21:28:12.845416', '2024-09-06 21:28:12.845416');
-INSERT INTO public.exercise_example_bundles
-VALUES ('2fde2f4b-7bed-4ca6-a0bc-0a367ea24ea3', 55, 'f4041256-a9ac-430d-b611-d8a957e2aeb0',
-        '831f39bd-80a8-4d11-9964-bde1788abae1', '2024-09-06 11:10:17.46328', '2024-09-06 11:10:17.46328');
-INSERT INTO public.exercise_example_bundles
-VALUES ('dec0afde-24ac-4bcb-8453-0aebaea468da', 10, 'f4041256-a9ac-430d-b611-d8a957e2aeb0',
-        'be38dcef-1bc8-487b-a44f-96df1ab9e68c', '2024-09-06 11:10:17.46328', '2024-09-06 11:10:17.46328');
-INSERT INTO public.exercise_example_bundles
-VALUES ('db53724b-0547-4883-9300-a0813b2af5a6', 10, 'f4041256-a9ac-430d-b611-d8a957e2aeb0',
-        '97a87b01-35e8-490a-94b9-9bdae9c2f965', '2024-09-06 11:10:17.46328', '2024-09-06 11:10:17.46328');
-INSERT INTO public.exercise_example_bundles
-VALUES ('52623943-4364-4c71-b207-bd8b4c1c5d2d', 10, 'f4041256-a9ac-430d-b611-d8a957e2aeb0',
-        '9e69205f-6c6e-44a7-8ee6-89215e28a28e', '2024-09-06 11:10:17.46328', '2024-09-06 11:10:17.46328');
-INSERT INTO public.exercise_example_bundles
-VALUES ('33052402-98d2-4901-bb32-4224484099e1', 10, 'f4041256-a9ac-430d-b611-d8a957e2aeb0',
-        'af854064-078a-4f50-af1d-8744e866751e', '2024-09-06 11:10:17.46328', '2024-09-06 11:10:17.46328');
-INSERT INTO public.exercise_example_bundles
-VALUES ('2d55299e-1d67-4aa7-af6c-baf457a301c1', 5, 'f4041256-a9ac-430d-b611-d8a957e2aeb0',
-        '2e0faf2b-31a5-4c63-ac15-454be132796f', '2024-09-06 11:10:17.46328', '2024-09-06 11:10:17.46328');
-INSERT INTO public.exercise_example_bundles
-VALUES ('b626e61f-1aea-4cb7-a8e8-240205284164', 10, 'eaf575b3-2cb6-45a3-914f-81838c4c7e4d',
-        '97a87b01-35e8-490a-94b9-9bdae9c2f965', '2024-09-06 21:28:12.845416', '2024-09-06 21:28:12.845416');
-INSERT INTO public.exercise_example_bundles
-VALUES ('152cebdd-9694-4d20-9efc-39d81a79b890', 5, 'eaf575b3-2cb6-45a3-914f-81838c4c7e4d',
-        '9e69205f-6c6e-44a7-8ee6-89215e28a28e', '2024-09-06 21:28:12.845416', '2024-09-06 21:28:12.845416');
-INSERT INTO public.exercise_example_bundles
-VALUES ('f17b7ae4-b9dc-4dd5-9881-7fed29e08042', 5, 'eaf575b3-2cb6-45a3-914f-81838c4c7e4d',
-        '2e0faf2b-31a5-4c63-ac15-454be132796f', '2024-09-06 21:28:12.845416', '2024-09-06 21:28:12.845416');
-INSERT INTO public.exercise_example_bundles
-VALUES ('8e5f25c5-346c-42a2-855b-16b25b7f8702', 5, 'eaf575b3-2cb6-45a3-914f-81838c4c7e4d',
-        'af854064-078a-4f50-af1d-8744e866751e', '2024-09-06 21:28:12.845416', '2024-09-06 21:28:12.845416');
-INSERT INTO public.exercise_example_bundles
-VALUES ('1999c5e5-1b9a-452f-8752-7a75751b780f', 60, '8e687b8b-0142-49f7-92e9-4d5df9aa86c9',
-        '831f39bd-80a8-4d11-9964-bde1788abae1', '2024-09-06 11:15:01.146699', '2024-09-06 11:15:01.146699');
-INSERT INTO public.exercise_example_bundles
-VALUES ('196ff6e4-96fb-4da5-9813-cfe47dd945f9', 15, '8e687b8b-0142-49f7-92e9-4d5df9aa86c9',
-        'be38dcef-1bc8-487b-a44f-96df1ab9e68c', '2024-09-06 11:15:01.146699', '2024-09-06 11:15:01.146699');
-INSERT INTO public.exercise_example_bundles
-VALUES ('36f17b19-f223-4500-b307-49380b1d73a6', 10, '8e687b8b-0142-49f7-92e9-4d5df9aa86c9',
-        '97a87b01-35e8-490a-94b9-9bdae9c2f965', '2024-09-06 11:15:01.146699', '2024-09-06 11:15:01.146699');
-INSERT INTO public.exercise_example_bundles
-VALUES ('6a2666d4-7422-4da4-971c-4a6101fd074d', 10, '8e687b8b-0142-49f7-92e9-4d5df9aa86c9',
-        '9e69205f-6c6e-44a7-8ee6-89215e28a28e', '2024-09-06 11:15:01.146699', '2024-09-06 11:15:01.146699');
-INSERT INTO public.exercise_example_bundles
-VALUES ('d276fa03-ab01-4860-aba8-5a4f6b574de1', 5, '8e687b8b-0142-49f7-92e9-4d5df9aa86c9',
-        '2e0faf2b-31a5-4c63-ac15-454be132796f', '2024-09-06 11:15:01.146699', '2024-09-06 11:15:01.146699');
-INSERT INTO public.exercise_example_bundles
-VALUES ('2369c753-f2cf-4539-bdbe-8d9b99c6cae7', 65, 'c25a5f07-d65f-4ba9-9b0d-cb4d5b426455',
-        '831f39bd-80a8-4d11-9964-bde1788abae1', '2024-09-06 21:31:44.430901', '2024-09-06 21:31:44.430901');
-INSERT INTO public.exercise_example_bundles
-VALUES ('9e31db73-25cc-4119-9ea5-973d0859e61e', 10, 'c25a5f07-d65f-4ba9-9b0d-cb4d5b426455',
-        'be38dcef-1bc8-487b-a44f-96df1ab9e68c', '2024-09-06 21:31:44.430901', '2024-09-06 21:31:44.430901');
-INSERT INTO public.exercise_example_bundles
-VALUES ('5d30d318-cbd7-49dc-9733-06a8509c1ed8', 15, 'c25a5f07-d65f-4ba9-9b0d-cb4d5b426455',
-        '97a87b01-35e8-490a-94b9-9bdae9c2f965', '2024-09-06 21:31:44.430901', '2024-09-06 21:31:44.430901');
-INSERT INTO public.exercise_example_bundles
-VALUES ('ef99c481-5701-4b35-a39d-90512d95e0c3', 5, 'c25a5f07-d65f-4ba9-9b0d-cb4d5b426455',
-        '9e69205f-6c6e-44a7-8ee6-89215e28a28e', '2024-09-06 21:31:44.430901', '2024-09-06 21:31:44.430901');
-INSERT INTO public.exercise_example_bundles
-VALUES ('e8c11793-76d5-4948-84cb-1778f9df30d9', 5, 'c25a5f07-d65f-4ba9-9b0d-cb4d5b426455',
-        '2e0faf2b-31a5-4c63-ac15-454be132796f', '2024-09-06 21:31:44.430901', '2024-09-06 21:31:44.430901');
-INSERT INTO public.exercise_example_bundles
-VALUES ('c18174dd-a173-4c90-84cf-466ab02c15e2', 65, '85a317d2-6cf2-4155-a6ea-a271afc4a803',
-        '831f39bd-80a8-4d11-9964-bde1788abae1', '2024-09-06 21:35:46.031644', '2024-09-06 21:35:46.031644');
-INSERT INTO public.exercise_example_bundles
-VALUES ('de586e58-2983-41fd-9649-8e31a08af7aa', 10, '85a317d2-6cf2-4155-a6ea-a271afc4a803',
-        'be38dcef-1bc8-487b-a44f-96df1ab9e68c', '2024-09-06 21:35:46.031644', '2024-09-06 21:35:46.031644');
-INSERT INTO public.exercise_example_bundles
-VALUES ('11c00366-7ac8-4555-8f50-1cbe326933e7', 15, '85a317d2-6cf2-4155-a6ea-a271afc4a803',
-        '97a87b01-35e8-490a-94b9-9bdae9c2f965', '2024-09-06 21:35:46.031644', '2024-09-06 21:35:46.031644');
-INSERT INTO public.exercise_example_bundles
-VALUES ('8b485101-9e96-4ba3-ae06-d1a0d89e8465', 5, '85a317d2-6cf2-4155-a6ea-a271afc4a803',
-        '9e69205f-6c6e-44a7-8ee6-89215e28a28e', '2024-09-06 21:35:46.031644', '2024-09-06 21:35:46.031644');
-INSERT INTO public.exercise_example_bundles
-VALUES ('b6fb6228-dedd-471d-a310-036d09afdf6a', 5, '85a317d2-6cf2-4155-a6ea-a271afc4a803',
-        '2e0faf2b-31a5-4c63-ac15-454be132796f', '2024-09-06 21:35:46.031644', '2024-09-06 21:35:46.031644');
-INSERT INTO public.exercise_example_bundles
-VALUES ('04596653-eec9-4275-916b-6bc78bed79cd', 50, 'c1ca2c25-9148-4977-99fe-3acda0b4ad33',
-        '2e0faf2b-31a5-4c63-ac15-454be132796f', '2024-09-07 14:58:48.647073', '2024-09-07 14:58:48.647073');
-INSERT INTO public.exercise_example_bundles
-VALUES ('df2f485c-e733-4556-8a28-b45cd0bcb795', 20, 'c1ca2c25-9148-4977-99fe-3acda0b4ad33',
-        '831f39bd-80a8-4d11-9964-bde1788abae1', '2024-09-07 14:58:48.647073', '2024-09-07 14:58:48.647073');
-INSERT INTO public.exercise_example_bundles
-VALUES ('0b2014c3-e8dc-4d18-bb78-004b599509e7', 10, 'c1ca2c25-9148-4977-99fe-3acda0b4ad33',
-        'be38dcef-1bc8-487b-a44f-96df1ab9e68c', '2024-09-07 14:58:48.647073', '2024-09-07 14:58:48.647073');
-INSERT INTO public.exercise_example_bundles
-VALUES ('5f39b604-3f04-4d76-9f37-58075277a902', 10, 'c1ca2c25-9148-4977-99fe-3acda0b4ad33',
-        '97a87b01-35e8-490a-94b9-9bdae9c2f965', '2024-09-07 14:58:48.647073', '2024-09-07 14:58:48.647073');
-INSERT INTO public.exercise_example_bundles
-VALUES ('09cdada1-e4c0-412c-8cdd-7a002a9e1559', 5, 'c1ca2c25-9148-4977-99fe-3acda0b4ad33',
-        '9e69205f-6c6e-44a7-8ee6-89215e28a28e', '2024-09-07 14:58:48.647073', '2024-09-07 14:58:48.647073');
-INSERT INTO public.exercise_example_bundles
-VALUES ('3f8c2b7c-4415-4876-9571-7150f1873cd2', 5, 'c1ca2c25-9148-4977-99fe-3acda0b4ad33',
-        'af854064-078a-4f50-af1d-8744e866751e', '2024-09-07 14:58:48.647073', '2024-09-07 14:58:48.647073');
-INSERT INTO public.exercise_example_bundles
-VALUES ('0da5b130-2131-46e8-8e97-f74214341c9d', 45, '950cd0cd-fc3b-442f-aba9-3c48bfc6cda9',
-        '2e0faf2b-31a5-4c63-ac15-454be132796f', '2024-09-07 15:00:25.341203', '2024-09-07 15:00:25.341203');
-INSERT INTO public.exercise_example_bundles
-VALUES ('4a5c0218-e1a6-4f70-b8bd-60203215b73b', 20, '950cd0cd-fc3b-442f-aba9-3c48bfc6cda9',
-        '831f39bd-80a8-4d11-9964-bde1788abae1', '2024-09-07 15:00:25.341203', '2024-09-07 15:00:25.341203');
-INSERT INTO public.exercise_example_bundles
-VALUES ('811e6032-c4b0-42e0-882f-998dea9f1302', 10, '950cd0cd-fc3b-442f-aba9-3c48bfc6cda9',
-        'be38dcef-1bc8-487b-a44f-96df1ab9e68c', '2024-09-07 15:00:25.341203', '2024-09-07 15:00:25.341203');
-INSERT INTO public.exercise_example_bundles
-VALUES ('b4cba538-86b9-4c75-83a4-cfef1155ede2', 10, '950cd0cd-fc3b-442f-aba9-3c48bfc6cda9',
-        '97a87b01-35e8-490a-94b9-9bdae9c2f965', '2024-09-07 15:00:25.341203', '2024-09-07 15:00:25.341203');
-INSERT INTO public.exercise_example_bundles
-VALUES ('17fe6d62-9675-42ad-b51c-21c6c1afe600', 5, '950cd0cd-fc3b-442f-aba9-3c48bfc6cda9',
-        '3eeaa9fa-0847-4780-9d01-185f91252794', '2024-09-07 15:00:25.341203', '2024-09-07 15:00:25.341203');
-INSERT INTO public.exercise_example_bundles
-VALUES ('13d58d88-77fc-44a2-b3b3-4a0064e2b733', 5, '950cd0cd-fc3b-442f-aba9-3c48bfc6cda9',
-        '9e69205f-6c6e-44a7-8ee6-89215e28a28e', '2024-09-07 15:00:25.341203', '2024-09-07 15:00:25.341203');
-INSERT INTO public.exercise_example_bundles
-VALUES ('ed2ca883-c717-445c-9f82-b4ae63296f13', 5, '950cd0cd-fc3b-442f-aba9-3c48bfc6cda9',
-        'af854064-078a-4f50-af1d-8744e866751e', '2024-09-07 15:00:25.341203', '2024-09-07 15:00:25.341203');
-INSERT INTO public.exercise_example_bundles
-VALUES ('cff5f88c-0f99-474d-9f77-c39852770bd8', 45, '9c029423-aa52-4b90-97c0-f5d4b4574f12',
-        '2e0faf2b-31a5-4c63-ac15-454be132796f', '2024-09-07 15:02:05.995356', '2024-09-07 15:02:05.995356');
-INSERT INTO public.exercise_example_bundles
-VALUES ('c9f95058-7ce7-4685-af59-4751a40fb825', 20, '9c029423-aa52-4b90-97c0-f5d4b4574f12',
-        '831f39bd-80a8-4d11-9964-bde1788abae1', '2024-09-07 15:02:05.995356', '2024-09-07 15:02:05.995356');
-INSERT INTO public.exercise_example_bundles
-VALUES ('babaa6a8-b402-4af0-9f3c-bf6e2187a279', 10, '9c029423-aa52-4b90-97c0-f5d4b4574f12',
-        'be38dcef-1bc8-487b-a44f-96df1ab9e68c', '2024-09-07 15:02:05.995356', '2024-09-07 15:02:05.995356');
-INSERT INTO public.exercise_example_bundles
-VALUES ('cc176078-2705-4aeb-83ef-a630f7e0a50a', 10, '9c029423-aa52-4b90-97c0-f5d4b4574f12',
-        '97a87b01-35e8-490a-94b9-9bdae9c2f965', '2024-09-07 15:02:05.995356', '2024-09-07 15:02:05.995356');
-INSERT INTO public.exercise_example_bundles
-VALUES ('9a5f7be1-b516-455f-b4c4-2acde1e03a6c', 5, '9c029423-aa52-4b90-97c0-f5d4b4574f12',
-        '3eeaa9fa-0847-4780-9d01-185f91252794', '2024-09-07 15:02:05.995356', '2024-09-07 15:02:05.995356');
-INSERT INTO public.exercise_example_bundles
-VALUES ('70fe8445-b9ee-4d83-9a5f-9bfc0c49eed3', 5, '9c029423-aa52-4b90-97c0-f5d4b4574f12',
-        '9e69205f-6c6e-44a7-8ee6-89215e28a28e', '2024-09-07 15:02:05.995356', '2024-09-07 15:02:05.995356');
-INSERT INTO public.exercise_example_bundles
-VALUES ('898eaf49-1cfc-4870-8daa-33e94b1d2d0c', 5, '9c029423-aa52-4b90-97c0-f5d4b4574f12',
-        'af854064-078a-4f50-af1d-8744e866751e', '2024-09-07 15:02:05.995356', '2024-09-07 15:02:05.995356');
-INSERT INTO public.exercise_example_bundles
-VALUES ('931ce218-aa1c-4a4d-8108-f26316ba7358', 45, 'baa3f656-0ad7-422b-ba8b-e5e9f5d4cd63',
-        '2e0faf2b-31a5-4c63-ac15-454be132796f', '2024-09-07 15:06:50.267036', '2024-09-07 15:06:50.267036');
-INSERT INTO public.exercise_example_bundles
-VALUES ('c6b38ff6-41ee-46df-ad51-43150d627569', 20, 'baa3f656-0ad7-422b-ba8b-e5e9f5d4cd63',
-        '831f39bd-80a8-4d11-9964-bde1788abae1', '2024-09-07 15:06:50.267036', '2024-09-07 15:06:50.267036');
-INSERT INTO public.exercise_example_bundles
-VALUES ('7ee1d9c4-da73-4837-9b65-9e83112815f5', 10, 'baa3f656-0ad7-422b-ba8b-e5e9f5d4cd63',
-        'be38dcef-1bc8-487b-a44f-96df1ab9e68c', '2024-09-07 15:06:50.267036', '2024-09-07 15:06:50.267036');
-INSERT INTO public.exercise_example_bundles
-VALUES ('325eab79-9031-41c0-9cf7-71cedd59106b', 10, 'baa3f656-0ad7-422b-ba8b-e5e9f5d4cd63',
-        '97a87b01-35e8-490a-94b9-9bdae9c2f965', '2024-09-07 15:06:50.267036', '2024-09-07 15:06:50.267036');
-INSERT INTO public.exercise_example_bundles
-VALUES ('a4194639-4174-4bdd-a078-9b1d38eb6a46', 5, 'baa3f656-0ad7-422b-ba8b-e5e9f5d4cd63',
-        'af854064-078a-4f50-af1d-8744e866751e', '2024-09-07 15:06:50.267036', '2024-09-07 15:06:50.267036');
-INSERT INTO public.exercise_example_bundles
-VALUES ('86974d77-0a14-44fd-bea2-7e9360f628ad', 5, 'baa3f656-0ad7-422b-ba8b-e5e9f5d4cd63',
-        '9e69205f-6c6e-44a7-8ee6-89215e28a28e', '2024-09-07 15:06:50.267036', '2024-09-07 15:06:50.267036');
-INSERT INTO public.exercise_example_bundles
-VALUES ('e43c89c1-e7a6-48bd-a88b-3f7089906601', 50, '6389ce45-7d30-4372-8c29-e5816d893b1a',
-        '2e0faf2b-31a5-4c63-ac15-454be132796f', '2024-09-07 15:09:04.680336', '2024-09-07 15:09:04.680336');
-INSERT INTO public.exercise_example_bundles
-VALUES ('a1e0ea08-9bee-42d7-9a39-447330f4b571', 25, '6389ce45-7d30-4372-8c29-e5816d893b1a',
-        '831f39bd-80a8-4d11-9964-bde1788abae1', '2024-09-07 15:09:04.680336', '2024-09-07 15:09:04.680336');
-INSERT INTO public.exercise_example_bundles
-VALUES ('d40ca442-e40b-4b0f-929f-805fe6fa491e', 10, '6389ce45-7d30-4372-8c29-e5816d893b1a',
-        'be38dcef-1bc8-487b-a44f-96df1ab9e68c', '2024-09-07 15:09:04.680336', '2024-09-07 15:09:04.680336');
-INSERT INTO public.exercise_example_bundles
-VALUES ('4974131e-8cf4-4868-af44-ac0bb0fade14', 10, '6389ce45-7d30-4372-8c29-e5816d893b1a',
-        '97a87b01-35e8-490a-94b9-9bdae9c2f965', '2024-09-07 15:09:04.680336', '2024-09-07 15:09:04.680336');
-INSERT INTO public.exercise_example_bundles
-VALUES ('e6151c51-414d-4fb2-8e1e-63536ffb7c43', 5, '6389ce45-7d30-4372-8c29-e5816d893b1a',
-        '9e69205f-6c6e-44a7-8ee6-89215e28a28e', '2024-09-07 15:09:04.680336', '2024-09-07 15:09:04.680336');
-INSERT INTO public.exercise_example_bundles
-VALUES ('16570ebf-21fc-432f-9fbe-739b3d09b190', 50, '31b8aa6a-448d-4e4c-bd1e-6386060b526e',
-        '2e0faf2b-31a5-4c63-ac15-454be132796f', '2024-09-07 15:12:48.568175', '2024-09-07 15:12:48.568175');
-INSERT INTO public.exercise_example_bundles
-VALUES ('5dddf6a4-c55d-4fee-8fe0-6fbb53d0157c', 25, '31b8aa6a-448d-4e4c-bd1e-6386060b526e',
-        '831f39bd-80a8-4d11-9964-bde1788abae1', '2024-09-07 15:12:48.568175', '2024-09-07 15:12:48.568175');
-INSERT INTO public.exercise_example_bundles
-VALUES ('de809322-eb20-4328-ab2e-feb86176adb0', 10, '31b8aa6a-448d-4e4c-bd1e-6386060b526e',
-        'be38dcef-1bc8-487b-a44f-96df1ab9e68c', '2024-09-07 15:12:48.568175', '2024-09-07 15:12:48.568175');
-INSERT INTO public.exercise_example_bundles
-VALUES ('b2906212-0664-4395-bb19-efa719e12453', 10, '31b8aa6a-448d-4e4c-bd1e-6386060b526e',
-        '97a87b01-35e8-490a-94b9-9bdae9c2f965', '2024-09-07 15:12:48.568175', '2024-09-07 15:12:48.568175');
-INSERT INTO public.exercise_example_bundles
-VALUES ('d18892d3-e778-43c4-a05f-7e80a3b660d2', 5, '31b8aa6a-448d-4e4c-bd1e-6386060b526e',
-        '9e69205f-6c6e-44a7-8ee6-89215e28a28e', '2024-09-07 15:12:48.568175', '2024-09-07 15:12:48.568175');
-INSERT INTO public.exercise_example_bundles
-VALUES ('920a925e-69aa-4934-bc71-f8704ce94711', 45, '13826a3e-6b12-464c-95c8-5790f0e13947',
-        '2e0faf2b-31a5-4c63-ac15-454be132796f', '2024-09-07 15:16:24.608904', '2024-09-07 15:16:24.608904');
-INSERT INTO public.exercise_example_bundles
-VALUES ('f64f99e2-5440-4122-b679-21dcb53ee9d4', 25, '13826a3e-6b12-464c-95c8-5790f0e13947',
-        '831f39bd-80a8-4d11-9964-bde1788abae1', '2024-09-07 15:16:24.608904', '2024-09-07 15:16:24.608904');
-INSERT INTO public.exercise_example_bundles
-VALUES ('8524bee1-b0cf-41d0-b17a-2489194041d0', 10, '13826a3e-6b12-464c-95c8-5790f0e13947',
-        'be38dcef-1bc8-487b-a44f-96df1ab9e68c', '2024-09-07 15:16:24.608904', '2024-09-07 15:16:24.608904');
-INSERT INTO public.exercise_example_bundles
-VALUES ('b70ca8f2-d63e-4a4d-8ce7-e7f7cd912f73', 5, '13826a3e-6b12-464c-95c8-5790f0e13947',
-        'af854064-078a-4f50-af1d-8744e866751e', '2024-09-07 15:16:24.608904', '2024-09-07 15:16:24.608904');
-INSERT INTO public.exercise_example_bundles
-VALUES ('d3c49568-4071-42de-9dbd-3abe5b2eabc4', 10, '13826a3e-6b12-464c-95c8-5790f0e13947',
-        '97a87b01-35e8-490a-94b9-9bdae9c2f965', '2024-09-07 15:16:24.608904', '2024-09-07 15:16:24.608904');
-INSERT INTO public.exercise_example_bundles
-VALUES ('dd9ff26f-e73d-44b4-84e4-9edda9748e6b', 5, '13826a3e-6b12-464c-95c8-5790f0e13947',
-        '9e69205f-6c6e-44a7-8ee6-89215e28a28e', '2024-09-07 15:16:24.608904', '2024-09-07 15:16:24.608904');
-INSERT INTO public.exercise_example_bundles
-VALUES ('4ac63c29-f2f4-4934-ac64-c9176f9aa1d9', 50, '91f6781b-915e-4bb4-8d8c-e345aa66e42d',
-        '2e0faf2b-31a5-4c63-ac15-454be132796f', '2024-09-07 15:18:31.434096', '2024-09-07 15:18:31.434096');
-INSERT INTO public.exercise_example_bundles
-VALUES ('1a89f13f-87ed-4aa4-b77a-8fb943eafd9b', 20, '91f6781b-915e-4bb4-8d8c-e345aa66e42d',
-        '831f39bd-80a8-4d11-9964-bde1788abae1', '2024-09-07 15:18:31.434096', '2024-09-07 15:18:31.434096');
-INSERT INTO public.exercise_example_bundles
-VALUES ('7ea3abc8-7fb1-4c6d-9794-c31d2c2e37f4', 10, '91f6781b-915e-4bb4-8d8c-e345aa66e42d',
-        'be38dcef-1bc8-487b-a44f-96df1ab9e68c', '2024-09-07 15:18:31.434096', '2024-09-07 15:18:31.434096');
-INSERT INTO public.exercise_example_bundles
-VALUES ('5e01189f-946c-4ccf-b578-cbac38ebf909', 10, '91f6781b-915e-4bb4-8d8c-e345aa66e42d',
-        '97a87b01-35e8-490a-94b9-9bdae9c2f965', '2024-09-07 15:18:31.434096', '2024-09-07 15:18:31.434096');
-INSERT INTO public.exercise_example_bundles
-VALUES ('5fd33866-b3ef-4e1f-940e-285834e06adf', 5, '91f6781b-915e-4bb4-8d8c-e345aa66e42d',
-        '9e69205f-6c6e-44a7-8ee6-89215e28a28e', '2024-09-07 15:18:31.434096', '2024-09-07 15:18:31.434096');
-INSERT INTO public.exercise_example_bundles
-VALUES ('323c5b2d-7cca-4826-a914-73756f585a0d', 5, '91f6781b-915e-4bb4-8d8c-e345aa66e42d',
-        'd736a513-9d73-47a3-bffc-c14911662ea2', '2024-09-07 15:18:31.434096', '2024-09-07 15:18:31.434096');
-INSERT INTO public.exercise_example_bundles
-VALUES ('f023984f-8be8-4ed7-b9d0-c6196790cf4d', 50, 'cbb152c0-ba9c-47ea-a8a3-28ad88f56eb6',
-        '2e0faf2b-31a5-4c63-ac15-454be132796f', '2024-09-07 15:29:18.465228', '2024-09-07 15:29:18.465228');
-INSERT INTO public.exercise_example_bundles
-VALUES ('ee35a8f2-6720-4b6b-a1b8-c4fc21e45a52', 20, 'cbb152c0-ba9c-47ea-a8a3-28ad88f56eb6',
-        '831f39bd-80a8-4d11-9964-bde1788abae1', '2024-09-07 15:29:18.465228', '2024-09-07 15:29:18.465228');
-INSERT INTO public.exercise_example_bundles
-VALUES ('978e0673-772a-42f5-83d0-a0122f4a403b', 10, 'cbb152c0-ba9c-47ea-a8a3-28ad88f56eb6',
-        'be38dcef-1bc8-487b-a44f-96df1ab9e68c', '2024-09-07 15:29:18.465228', '2024-09-07 15:29:18.465228');
-INSERT INTO public.exercise_example_bundles
-VALUES ('da69f56a-f402-4723-861e-56face3b8e46', 10, 'cbb152c0-ba9c-47ea-a8a3-28ad88f56eb6',
-        '97a87b01-35e8-490a-94b9-9bdae9c2f965', '2024-09-07 15:29:18.465228', '2024-09-07 15:29:18.465228');
-INSERT INTO public.exercise_example_bundles
-VALUES ('16f64440-dd6f-41cd-b527-8e67adefec95', 5, 'cbb152c0-ba9c-47ea-a8a3-28ad88f56eb6',
-        'af854064-078a-4f50-af1d-8744e866751e', '2024-09-07 15:29:18.465228', '2024-09-07 15:29:18.465228');
-INSERT INTO public.exercise_example_bundles
-VALUES ('f0523dee-943b-4af5-80fb-12b760f279d1', 5, 'cbb152c0-ba9c-47ea-a8a3-28ad88f56eb6',
-        '9e69205f-6c6e-44a7-8ee6-89215e28a28e', '2024-09-07 15:29:18.465228', '2024-09-07 15:29:18.465228');
-INSERT INTO public.exercise_example_bundles
-VALUES ('c43f2da6-54d9-4fc5-8601-5d7db179c894', 40, '0be1c49c-d742-4881-b014-360bc297af34',
-        '2e0faf2b-31a5-4c63-ac15-454be132796f', '2024-09-07 19:52:35.870322', '2024-09-07 19:52:35.870322');
-INSERT INTO public.exercise_example_bundles
-VALUES ('bc8d7884-f6c6-40a1-bcc9-a462236736fd', 25, '0be1c49c-d742-4881-b014-360bc297af34',
-        '831f39bd-80a8-4d11-9964-bde1788abae1', '2024-09-07 19:52:35.870322', '2024-09-07 19:52:35.870322');
-INSERT INTO public.exercise_example_bundles
-VALUES ('9716a3aa-79ac-486d-b275-7ed98c0c4ac0', 10, '0be1c49c-d742-4881-b014-360bc297af34',
-        'be38dcef-1bc8-487b-a44f-96df1ab9e68c', '2024-09-07 19:52:35.870322', '2024-09-07 19:52:35.870322');
-INSERT INTO public.exercise_example_bundles
-VALUES ('df471f0d-ecd5-438c-9e40-0feedd44dfc0', 15, '0be1c49c-d742-4881-b014-360bc297af34',
-        '97a87b01-35e8-490a-94b9-9bdae9c2f965', '2024-09-07 19:52:35.870322', '2024-09-07 19:52:35.870322');
-INSERT INTO public.exercise_example_bundles
-VALUES ('dfd92cee-9c81-43aa-9e87-d65c24369cc3', 5, '0be1c49c-d742-4881-b014-360bc297af34',
-        'af854064-078a-4f50-af1d-8744e866751e', '2024-09-07 19:52:35.870322', '2024-09-07 19:52:35.870322');
-INSERT INTO public.exercise_example_bundles
-VALUES ('edf52bfc-d41c-4219-985e-27d0d4703e70', 5, '0be1c49c-d742-4881-b014-360bc297af34',
-        'd736a513-9d73-47a3-bffc-c14911662ea2', '2024-09-07 19:52:35.870322', '2024-09-07 19:52:35.870322');
-INSERT INTO public.exercise_example_bundles
-VALUES ('62d9110e-aa57-4c3a-9947-fcef8a37d6b3', 35, '8cccb149-8553-494d-bcb5-ffa9b06e7c0f',
-        '2e0faf2b-31a5-4c63-ac15-454be132796f', '2024-09-07 19:54:36.126896', '2024-09-07 19:54:36.126896');
-INSERT INTO public.exercise_example_bundles
-VALUES ('f54a726c-1b88-4eaf-ac59-ce1063a8b9b6', 30, '8cccb149-8553-494d-bcb5-ffa9b06e7c0f',
-        '831f39bd-80a8-4d11-9964-bde1788abae1', '2024-09-07 19:54:36.126896', '2024-09-07 19:54:36.126896');
-INSERT INTO public.exercise_example_bundles
-VALUES ('bf542745-2401-4669-af05-4a8c380e728f', 10, '8cccb149-8553-494d-bcb5-ffa9b06e7c0f',
-        'be38dcef-1bc8-487b-a44f-96df1ab9e68c', '2024-09-07 19:54:36.126896', '2024-09-07 19:54:36.126896');
-INSERT INTO public.exercise_example_bundles
-VALUES ('d02f2579-f3ec-4ad5-a234-7336f60f6d37', 15, '8cccb149-8553-494d-bcb5-ffa9b06e7c0f',
-        '97a87b01-35e8-490a-94b9-9bdae9c2f965', '2024-09-07 19:54:36.126896', '2024-09-07 19:54:36.126896');
-INSERT INTO public.exercise_example_bundles
-VALUES ('f3117807-fb8c-442d-b038-ceb037decd57', 5, '8cccb149-8553-494d-bcb5-ffa9b06e7c0f',
-        '9e69205f-6c6e-44a7-8ee6-89215e28a28e', '2024-09-07 19:54:36.126896', '2024-09-07 19:54:36.126896');
-INSERT INTO public.exercise_example_bundles
-VALUES ('7aef49f0-2588-4a5a-be95-88389e961df6', 5, '8cccb149-8553-494d-bcb5-ffa9b06e7c0f',
-        'd736a513-9d73-47a3-bffc-c14911662ea2', '2024-09-07 19:54:36.126896', '2024-09-07 19:54:36.126896');
-INSERT INTO public.exercise_example_bundles
-VALUES ('cfff2662-0b53-499b-a21e-844feb5b845a', 35, '7470e789-9509-4e22-9078-67857074867d',
-        '2e0faf2b-31a5-4c63-ac15-454be132796f', '2024-09-07 19:56:54.237455', '2024-09-07 19:56:54.237455');
-INSERT INTO public.exercise_example_bundles
-VALUES ('a11b891d-d55c-4934-bc12-1488bddfa9e9', 30, '7470e789-9509-4e22-9078-67857074867d',
-        '831f39bd-80a8-4d11-9964-bde1788abae1', '2024-09-07 19:56:54.237455', '2024-09-07 19:56:54.237455');
-INSERT INTO public.exercise_example_bundles
-VALUES ('3bb58d65-d91f-4d2a-b65a-bda55e3f19cb', 10, '7470e789-9509-4e22-9078-67857074867d',
-        'be38dcef-1bc8-487b-a44f-96df1ab9e68c', '2024-09-07 19:56:54.237455', '2024-09-07 19:56:54.237455');
-INSERT INTO public.exercise_example_bundles
-VALUES ('304f458b-3945-41aa-a266-2c150fe3377e', 10, '7470e789-9509-4e22-9078-67857074867d',
-        '97a87b01-35e8-490a-94b9-9bdae9c2f965', '2024-09-07 19:56:54.237455', '2024-09-07 19:56:54.237455');
-INSERT INTO public.exercise_example_bundles
-VALUES ('b2c81681-e828-42d3-9b49-68f84d4ac1ad', 5, '7470e789-9509-4e22-9078-67857074867d',
-        '0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a', '2024-09-07 19:56:54.237455', '2024-09-07 19:56:54.237455');
-INSERT INTO public.exercise_example_bundles
-VALUES ('1c45117c-eb4a-4759-b2b0-8713fbaf5dd6', 5, '7470e789-9509-4e22-9078-67857074867d',
-        'af854064-078a-4f50-af1d-8744e866751e', '2024-09-07 19:56:54.237455', '2024-09-07 19:56:54.237455');
-INSERT INTO public.exercise_example_bundles
-VALUES ('7c8f53bd-bfc5-4a56-afa6-fd67b6495e9a', 5, '7470e789-9509-4e22-9078-67857074867d',
-        'd736a513-9d73-47a3-bffc-c14911662ea2', '2024-09-07 19:56:54.237455', '2024-09-07 19:56:54.237455');
-INSERT INTO public.exercise_example_bundles
-VALUES ('b566eca9-1aae-4cd4-a080-01ba6b2fa715', 35, '7976a83a-f4db-4cc5-9cac-7f16f2bc430f',
-        '2e0faf2b-31a5-4c63-ac15-454be132796f', '2024-09-07 19:58:28.342184', '2024-09-07 19:58:28.342184');
-INSERT INTO public.exercise_example_bundles
-VALUES ('6e2ddd0d-c37c-4f9c-8d7c-285901101e2f', 30, '7976a83a-f4db-4cc5-9cac-7f16f2bc430f',
-        '831f39bd-80a8-4d11-9964-bde1788abae1', '2024-09-07 19:58:28.342184', '2024-09-07 19:58:28.342184');
-INSERT INTO public.exercise_example_bundles
-VALUES ('84c78846-89df-49e2-b923-652fe07dd433', 10, '7976a83a-f4db-4cc5-9cac-7f16f2bc430f',
-        'be38dcef-1bc8-487b-a44f-96df1ab9e68c', '2024-09-07 19:58:28.342184', '2024-09-07 19:58:28.342184');
-INSERT INTO public.exercise_example_bundles
-VALUES ('3ce9e59e-30ca-47cc-8e54-3edd1c3bf95a', 10, '7976a83a-f4db-4cc5-9cac-7f16f2bc430f',
-        '97a87b01-35e8-490a-94b9-9bdae9c2f965', '2024-09-07 19:58:28.342184', '2024-09-07 19:58:28.342184');
-INSERT INTO public.exercise_example_bundles
-VALUES ('f6f39160-cfbf-461a-8225-9bf1ef231bc6', 5, '7976a83a-f4db-4cc5-9cac-7f16f2bc430f',
-        '0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a', '2024-09-07 19:58:28.342184', '2024-09-07 19:58:28.342184');
-INSERT INTO public.exercise_example_bundles
-VALUES ('3d95cf7b-2bb7-41fa-abd8-30d0d643f274', 5, '7976a83a-f4db-4cc5-9cac-7f16f2bc430f',
-        'af854064-078a-4f50-af1d-8744e866751e', '2024-09-07 19:58:28.342184', '2024-09-07 19:58:28.342184');
-INSERT INTO public.exercise_example_bundles
-VALUES ('9f9da2f0-fefd-42ff-9842-b6c6c2428f78', 5, '7976a83a-f4db-4cc5-9cac-7f16f2bc430f',
-        'd736a513-9d73-47a3-bffc-c14911662ea2', '2024-09-07 19:58:28.342184', '2024-09-07 19:58:28.342184');
-INSERT INTO public.exercise_example_bundles
-VALUES ('eac78cee-51e1-4a27-a832-62559a1448d0', 40, '6da53baf-d357-4392-927f-7da1bf7449dc',
-        '2e0faf2b-31a5-4c63-ac15-454be132796f', '2024-09-07 20:02:52.943146', '2024-09-07 20:02:52.943146');
-INSERT INTO public.exercise_example_bundles
-VALUES ('55658ed4-29b8-4485-8728-3f3910f9b702', 35, '6da53baf-d357-4392-927f-7da1bf7449dc',
-        '831f39bd-80a8-4d11-9964-bde1788abae1', '2024-09-07 20:02:52.943146', '2024-09-07 20:02:52.943146');
-INSERT INTO public.exercise_example_bundles
-VALUES ('40845ab1-f237-4914-b632-af04c9571c01', 10, '6da53baf-d357-4392-927f-7da1bf7449dc',
-        'be38dcef-1bc8-487b-a44f-96df1ab9e68c', '2024-09-07 20:02:52.943146', '2024-09-07 20:02:52.943146');
-INSERT INTO public.exercise_example_bundles
-VALUES ('2f233433-b9c2-46d0-81eb-1ed1a2695b34', 15, '6da53baf-d357-4392-927f-7da1bf7449dc',
-        '97a87b01-35e8-490a-94b9-9bdae9c2f965', '2024-09-07 20:02:52.943146', '2024-09-07 20:02:52.943146');
-INSERT INTO public.exercise_example_bundles
-VALUES ('ff330dd6-ab2a-4b74-9462-0e24969dac48', 35, '6bb0675d-eba0-496c-bd20-5fd11a4a0282',
-        '2e0faf2b-31a5-4c63-ac15-454be132796f', '2024-09-07 20:04:30.72297', '2024-09-07 20:04:30.72297');
-INSERT INTO public.exercise_example_bundles
-VALUES ('aabb6dc5-a123-4083-9921-a16245de0fb4', 30, '6bb0675d-eba0-496c-bd20-5fd11a4a0282',
-        '831f39bd-80a8-4d11-9964-bde1788abae1', '2024-09-07 20:04:30.72297', '2024-09-07 20:04:30.72297');
-INSERT INTO public.exercise_example_bundles
-VALUES ('a7d61b05-b0d6-4fc7-8c9e-8fb2bac040e6', 10, '6bb0675d-eba0-496c-bd20-5fd11a4a0282',
-        'be38dcef-1bc8-487b-a44f-96df1ab9e68c', '2024-09-07 20:04:30.72297', '2024-09-07 20:04:30.72297');
-INSERT INTO public.exercise_example_bundles
-VALUES ('5eac08d8-2126-4619-9060-79e4e3e46a92', 15, '6bb0675d-eba0-496c-bd20-5fd11a4a0282',
-        '97a87b01-35e8-490a-94b9-9bdae9c2f965', '2024-09-07 20:04:30.72297', '2024-09-07 20:04:30.72297');
-INSERT INTO public.exercise_example_bundles
-VALUES ('642b9c59-6a25-4ef4-bff8-9ea148b478ec', 10, '6bb0675d-eba0-496c-bd20-5fd11a4a0282',
-        'd736a513-9d73-47a3-bffc-c14911662ea2', '2024-09-07 20:04:30.72297', '2024-09-07 20:04:30.72297');
-INSERT INTO public.exercise_example_bundles
-VALUES ('3884f935-ed47-4fbc-a29b-17819f0476d8', 60, '5de5124e-8ebb-4477-b4b3-e1122cc80496',
-        '2e0faf2b-31a5-4c63-ac15-454be132796f', '2024-09-07 20:10:41.925041', '2024-09-07 20:10:41.925041');
-INSERT INTO public.exercise_example_bundles
-VALUES ('a1205580-6024-4d08-837f-5c3880d0d401', 15, '5de5124e-8ebb-4477-b4b3-e1122cc80496',
-        'd736a513-9d73-47a3-bffc-c14911662ea2', '2024-09-07 20:10:41.925041', '2024-09-07 20:10:41.925041');
-INSERT INTO public.exercise_example_bundles
-VALUES ('bdf670db-b6e6-49ae-a2aa-b48274140080', 10, '5de5124e-8ebb-4477-b4b3-e1122cc80496',
-        '97136fa7-622a-49d6-9d09-403a631d253d', '2024-09-07 20:10:41.925041', '2024-09-07 20:10:41.925041');
-INSERT INTO public.exercise_example_bundles
-VALUES ('bc25ec75-3de0-4b73-82b4-99836e20163c', 10, '5de5124e-8ebb-4477-b4b3-e1122cc80496',
-        'be38dcef-1bc8-487b-a44f-96df1ab9e68c', '2024-09-07 20:10:41.925041', '2024-09-07 20:10:41.925041');
-INSERT INTO public.exercise_example_bundles
-VALUES ('2b306687-a369-49c7-97ac-d3ad5f8955c6', 5, '5de5124e-8ebb-4477-b4b3-e1122cc80496',
-        'af854064-078a-4f50-af1d-8744e866751e', '2024-09-07 20:10:41.925041', '2024-09-07 20:10:41.925041');
-INSERT INTO public.exercise_example_bundles
-VALUES ('735ac3f8-9efe-486d-9866-c479121bcead', 40, 'd180a698-a12e-4731-8234-b96e8f3ca7d9',
-        '2e0faf2b-31a5-4c63-ac15-454be132796f', '2024-09-07 20:15:00.943224', '2024-09-07 20:15:00.943224');
-INSERT INTO public.exercise_example_bundles
-VALUES ('fb4640b6-b796-478e-b224-78d82f33f05c', 20, 'd180a698-a12e-4731-8234-b96e8f3ca7d9',
-        'd736a513-9d73-47a3-bffc-c14911662ea2', '2024-09-07 20:15:00.943224', '2024-09-07 20:15:00.943224');
-INSERT INTO public.exercise_example_bundles
-VALUES ('eb2b7f66-8ac3-4091-9e21-7cce0de95383', 15, 'd180a698-a12e-4731-8234-b96e8f3ca7d9',
-        '97136fa7-622a-49d6-9d09-403a631d253d', '2024-09-07 20:15:00.943224', '2024-09-07 20:15:00.943224');
-INSERT INTO public.exercise_example_bundles
-VALUES ('3c49e28d-a6fe-4f38-877f-d48ad5ea9358', 15, 'd180a698-a12e-4731-8234-b96e8f3ca7d9',
-        '0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a', '2024-09-07 20:15:00.943224', '2024-09-07 20:15:00.943224');
-INSERT INTO public.exercise_example_bundles
-VALUES ('21bf1c29-d4bf-4923-a287-727384c935f8', 10, 'd180a698-a12e-4731-8234-b96e8f3ca7d9',
-        '97a87b01-35e8-490a-94b9-9bdae9c2f965', '2024-09-07 20:15:00.943224', '2024-09-07 20:15:00.943224');
-INSERT INTO public.exercise_example_bundles
-VALUES ('cf9e5e55-7b64-47d4-a802-dacb9143830e', 75, '49ef1d62-a375-485a-84bd-289a5548e81b',
-        '2e0faf2b-31a5-4c63-ac15-454be132796f', '2024-09-07 20:17:27.649577', '2024-09-07 20:17:27.649577');
-INSERT INTO public.exercise_example_bundles
-VALUES ('d3dbe92e-2530-41ed-9334-3c54c30c031f', 15, '49ef1d62-a375-485a-84bd-289a5548e81b',
-        'd736a513-9d73-47a3-bffc-c14911662ea2', '2024-09-07 20:17:27.649577', '2024-09-07 20:17:27.649577');
-INSERT INTO public.exercise_example_bundles
-VALUES ('1e566253-18c1-42f3-84d3-49c279772349', 10, '49ef1d62-a375-485a-84bd-289a5548e81b',
-        '97136fa7-622a-49d6-9d09-403a631d253d', '2024-09-07 20:17:27.649577', '2024-09-07 20:17:27.649577');
-INSERT INTO public.exercise_example_bundles
-VALUES ('d617a7a4-abc6-4a98-b9c1-d8da53c90a1d', 90, 'abe543c6-ec69-49ad-b9ca-ef959ffa10f2',
-        '2e0faf2b-31a5-4c63-ac15-454be132796f', '2024-09-07 20:18:56.613425', '2024-09-07 20:18:56.613425');
-INSERT INTO public.exercise_example_bundles
-VALUES ('66794ab8-14ad-4045-9a17-012ecf75ac9b', 10, 'abe543c6-ec69-49ad-b9ca-ef959ffa10f2',
-        'd736a513-9d73-47a3-bffc-c14911662ea2', '2024-09-07 20:18:56.613425', '2024-09-07 20:18:56.613425');
-INSERT INTO public.exercise_example_bundles
-VALUES ('402ef2ca-01e2-46d1-9b08-04b138ee617e', 90, 'cae7b841-a7f8-4973-baf0-4aadbbdcd0ca',
-        '2e0faf2b-31a5-4c63-ac15-454be132796f', '2024-09-07 20:20:03.755164', '2024-09-07 20:20:03.755164');
-INSERT INTO public.exercise_example_bundles
-VALUES ('b69df3db-beff-4445-987b-2f66ef913bce', 10, 'cae7b841-a7f8-4973-baf0-4aadbbdcd0ca',
-        'd736a513-9d73-47a3-bffc-c14911662ea2', '2024-09-07 20:20:03.755164', '2024-09-07 20:20:03.755164');
-INSERT INTO public.exercise_example_bundles
-VALUES ('01ed8156-fa48-4ca5-af38-db7f94126131', 85, 'ad76d69c-5e90-4643-b507-9e9226d8b5cd',
-        '2e0faf2b-31a5-4c63-ac15-454be132796f', '2024-09-07 20:21:09.849007', '2024-09-07 20:21:09.849007');
-INSERT INTO public.exercise_example_bundles
-VALUES ('e25f65d3-ab3a-45e4-80e1-6bc9629721b8', 15, 'ad76d69c-5e90-4643-b507-9e9226d8b5cd',
-        'd736a513-9d73-47a3-bffc-c14911662ea2', '2024-09-07 20:21:09.849007', '2024-09-07 20:21:09.849007');
-INSERT INTO public.exercise_example_bundles
-VALUES ('31754844-e40a-4144-8145-fce5e864d6ca', 85, 'f451289a-6d35-4926-981d-8ebae71741a2',
-        '2e0faf2b-31a5-4c63-ac15-454be132796f', '2024-09-07 20:22:58.472372', '2024-09-07 20:22:58.472372');
-INSERT INTO public.exercise_example_bundles
-VALUES ('85c06814-73c9-4971-b219-4039f1ab2585', 15, 'f451289a-6d35-4926-981d-8ebae71741a2',
-        'd736a513-9d73-47a3-bffc-c14911662ea2', '2024-09-07 20:22:58.472372', '2024-09-07 20:22:58.472372');
-INSERT INTO public.exercise_example_bundles
-VALUES ('383206de-d0af-4659-b7ae-fbac8d1e6bb4', 60, '98791e1d-6029-4cb2-bcaf-611a337208ef',
-        '2e0faf2b-31a5-4c63-ac15-454be132796f', '2024-09-07 20:24:09.675744', '2024-09-07 20:24:09.675744');
-INSERT INTO public.exercise_example_bundles
-VALUES ('470ed192-4f82-4963-898a-e91414d710f1', 20, '98791e1d-6029-4cb2-bcaf-611a337208ef',
-        '831f39bd-80a8-4d11-9964-bde1788abae1', '2024-09-07 20:24:09.675744', '2024-09-07 20:24:09.675744');
-INSERT INTO public.exercise_example_bundles
-VALUES ('1bfd0477-3207-40fa-bb18-1a48177acf00', 10, '98791e1d-6029-4cb2-bcaf-611a337208ef',
-        'd736a513-9d73-47a3-bffc-c14911662ea2', '2024-09-07 20:24:09.675744', '2024-09-07 20:24:09.675744');
-INSERT INTO public.exercise_example_bundles
-VALUES ('e75d5d14-ca6f-4d25-a538-9e0df26af7c6', 10, '98791e1d-6029-4cb2-bcaf-611a337208ef',
-        '97136fa7-622a-49d6-9d09-403a631d253d', '2024-09-07 20:24:09.675744', '2024-09-07 20:24:09.675744');
-INSERT INTO public.exercise_example_bundles
-VALUES ('6aae4415-bbc3-44a4-8b95-d907e67c8bcd', 40, '22df24eb-6bb7-45bc-ab46-9d6022eec774',
-        '57559b71-b757-468a-983d-a1b3cec4acef', '2024-09-07 20:34:58.045285', '2024-09-07 20:34:58.045285');
-INSERT INTO public.exercise_example_bundles
-VALUES ('5e750acc-b9c4-4c06-8ebc-c8ad2b7a9241', 20, '22df24eb-6bb7-45bc-ab46-9d6022eec774',
-        'f6e65bfe-0746-4a8f-8210-0e9bf88d9886', '2024-09-07 20:34:58.045285', '2024-09-07 20:34:58.045285');
-INSERT INTO public.exercise_example_bundles
-VALUES ('d945bc7e-d784-4402-9e54-103a92e9d11f', 15, '22df24eb-6bb7-45bc-ab46-9d6022eec774',
-        '3eeaa9fa-0847-4780-9d01-185f91252794', '2024-09-07 20:34:58.045285', '2024-09-07 20:34:58.045285');
-INSERT INTO public.exercise_example_bundles
-VALUES ('cf106642-d0d6-42ce-bb7e-63be5402e3ba', 10, '22df24eb-6bb7-45bc-ab46-9d6022eec774',
-        '9e69205f-6c6e-44a7-8ee6-89215e28a28e', '2024-09-07 20:34:58.045285', '2024-09-07 20:34:58.045285');
-INSERT INTO public.exercise_example_bundles
-VALUES ('7b888edc-3b9d-4eea-8a85-52e7858a5884', 5, '22df24eb-6bb7-45bc-ab46-9d6022eec774',
-        'bba5b66d-9a9c-4b44-8dd6-9574760038ee', '2024-09-07 20:34:58.045285', '2024-09-07 20:34:58.045285');
-INSERT INTO public.exercise_example_bundles
-VALUES ('8515e7fa-2d20-4f97-b361-2f0bb188dbdb', 45, '978f906a-8584-4cdf-9d7f-f96d60865e3b',
-        '57559b71-b757-468a-983d-a1b3cec4acef', '2024-09-07 20:36:12.352776', '2024-09-07 20:36:12.352776');
-INSERT INTO public.exercise_example_bundles
-VALUES ('dc586d63-cc0c-41c2-8992-37e009aa393c', 20, '978f906a-8584-4cdf-9d7f-f96d60865e3b',
-        'f6e65bfe-0746-4a8f-8210-0e9bf88d9886', '2024-09-07 20:36:12.352776', '2024-09-07 20:36:12.352776');
-INSERT INTO public.exercise_example_bundles
-VALUES ('cdae357d-4da7-4182-a5bd-ad0181a53dd0', 15, '978f906a-8584-4cdf-9d7f-f96d60865e3b',
-        '3eeaa9fa-0847-4780-9d01-185f91252794', '2024-09-07 20:36:12.352776', '2024-09-07 20:36:12.352776');
-INSERT INTO public.exercise_example_bundles
-VALUES ('8f267974-5388-4218-8506-bafab9a5f640', 10, '978f906a-8584-4cdf-9d7f-f96d60865e3b',
-        '9e69205f-6c6e-44a7-8ee6-89215e28a28e', '2024-09-07 20:36:12.352776', '2024-09-07 20:36:12.352776');
-INSERT INTO public.exercise_example_bundles
-VALUES ('0a86f131-e562-41ea-967e-835b5ccbb846', 5, '978f906a-8584-4cdf-9d7f-f96d60865e3b',
-        'bba5b66d-9a9c-4b44-8dd6-9574760038ee', '2024-09-07 20:36:12.352776', '2024-09-07 20:36:12.352776');
-INSERT INTO public.exercise_example_bundles
-VALUES ('3bd23c16-cf64-4dfa-b77e-4f68d8efe436', 45, '4da455c2-c154-4da7-b9c5-6195bd137eec',
-        '57559b71-b757-468a-983d-a1b3cec4acef', '2024-09-07 20:38:40.69634', '2024-09-07 20:38:40.69634');
-INSERT INTO public.exercise_example_bundles
-VALUES ('f6f28133-7980-48b7-b970-78c88564f813', 20, '4da455c2-c154-4da7-b9c5-6195bd137eec',
-        'f6e65bfe-0746-4a8f-8210-0e9bf88d9886', '2024-09-07 20:38:40.69634', '2024-09-07 20:38:40.69634');
-INSERT INTO public.exercise_example_bundles
-VALUES ('3dcdf064-66c5-4eed-8594-08df3f1a781e', 15, '4da455c2-c154-4da7-b9c5-6195bd137eec',
-        '3eeaa9fa-0847-4780-9d01-185f91252794', '2024-09-07 20:38:40.69634', '2024-09-07 20:38:40.69634');
-INSERT INTO public.exercise_example_bundles
-VALUES ('729ad4b5-d746-489b-9fde-5af2b394c398', 5, '4da455c2-c154-4da7-b9c5-6195bd137eec',
-        '9e69205f-6c6e-44a7-8ee6-89215e28a28e', '2024-09-07 20:38:40.69634', '2024-09-07 20:38:40.69634');
-INSERT INTO public.exercise_example_bundles
-VALUES ('3afac987-6f49-4148-b2cf-907c5f43d8da', 10, '4da455c2-c154-4da7-b9c5-6195bd137eec',
-        'fa8025e6-e106-475c-8b9d-77831132fb47', '2024-09-07 20:38:40.69634', '2024-09-07 20:38:40.69634');
-INSERT INTO public.exercise_example_bundles
-VALUES ('20f356f2-fb0d-4efa-8a81-fae31f7b04d6', 5, '4da455c2-c154-4da7-b9c5-6195bd137eec',
-        'bba5b66d-9a9c-4b44-8dd6-9574760038ee', '2024-09-07 20:38:40.69634', '2024-09-07 20:38:40.69634');
-INSERT INTO public.exercise_example_bundles
-VALUES ('a160038f-5d6d-417a-9491-80c8bfb40aa8', 40, '945bdcdb-6aee-42df-a974-3fedc0b76846',
-        '57559b71-b757-468a-983d-a1b3cec4acef', '2024-09-07 20:40:09.752009', '2024-09-07 20:40:09.752009');
-INSERT INTO public.exercise_example_bundles
-VALUES ('fb25b94b-5031-4bf7-8d77-a6406e85820e', 20, '945bdcdb-6aee-42df-a974-3fedc0b76846',
-        'f6e65bfe-0746-4a8f-8210-0e9bf88d9886', '2024-09-07 20:40:09.752009', '2024-09-07 20:40:09.752009');
-INSERT INTO public.exercise_example_bundles
-VALUES ('2c78e894-1bc4-4986-bbc9-980d9ab3a1df', 15, '945bdcdb-6aee-42df-a974-3fedc0b76846',
-        '3eeaa9fa-0847-4780-9d01-185f91252794', '2024-09-07 20:40:09.752009', '2024-09-07 20:40:09.752009');
-INSERT INTO public.exercise_example_bundles
-VALUES ('e7631dcd-4bad-4fc2-8f0e-03da67de5480', 5, '945bdcdb-6aee-42df-a974-3fedc0b76846',
-        '9e69205f-6c6e-44a7-8ee6-89215e28a28e', '2024-09-07 20:40:09.752009', '2024-09-07 20:40:09.752009');
-INSERT INTO public.exercise_example_bundles
-VALUES ('1b5193b1-abc7-431d-a1eb-d5738af912f0', 10, '945bdcdb-6aee-42df-a974-3fedc0b76846',
-        'fa8025e6-e106-475c-8b9d-77831132fb47', '2024-09-07 20:40:09.752009', '2024-09-07 20:40:09.752009');
-INSERT INTO public.exercise_example_bundles
-VALUES ('60e6f623-5f8d-4411-9b00-c96f64f0abc9', 5, '945bdcdb-6aee-42df-a974-3fedc0b76846',
-        'bba5b66d-9a9c-4b44-8dd6-9574760038ee', '2024-09-07 20:40:09.752009', '2024-09-07 20:40:09.752009');
-INSERT INTO public.exercise_example_bundles
-VALUES ('04cea34f-dc3e-4503-9854-756f56387c34', 5, '945bdcdb-6aee-42df-a974-3fedc0b76846',
-        'd736a513-9d73-47a3-bffc-c14911662ea2', '2024-09-07 20:40:09.752009', '2024-09-07 20:40:09.752009');
-INSERT INTO public.exercise_example_bundles
-VALUES ('dee2ae2d-cfa6-4127-b010-a4bb0bb1efb0', 45, '64406a09-56a6-43da-9329-ff0fb0d83e4f',
-        '57559b71-b757-468a-983d-a1b3cec4acef', '2024-09-07 20:41:37.055327', '2024-09-07 20:41:37.055327');
-INSERT INTO public.exercise_example_bundles
-VALUES ('41e3e2e0-bac9-4150-97ca-d31d89432494', 25, '64406a09-56a6-43da-9329-ff0fb0d83e4f',
-        'f6e65bfe-0746-4a8f-8210-0e9bf88d9886', '2024-09-07 20:41:37.055327', '2024-09-07 20:41:37.055327');
-INSERT INTO public.exercise_example_bundles
-VALUES ('ee2d9495-8e7a-46c4-b2c1-dd8a3a549b60', 15, '64406a09-56a6-43da-9329-ff0fb0d83e4f',
-        '3eeaa9fa-0847-4780-9d01-185f91252794', '2024-09-07 20:41:37.055327', '2024-09-07 20:41:37.055327');
-INSERT INTO public.exercise_example_bundles
-VALUES ('e09ec1cb-1490-4515-951a-aa1d9bfed29c', 10, '64406a09-56a6-43da-9329-ff0fb0d83e4f',
-        'fa8025e6-e106-475c-8b9d-77831132fb47', '2024-09-07 20:41:37.055327', '2024-09-07 20:41:37.055327');
-INSERT INTO public.exercise_example_bundles
-VALUES ('172746a4-6770-4107-8a74-c31dfd4c1405', 5, '64406a09-56a6-43da-9329-ff0fb0d83e4f',
-        'bba5b66d-9a9c-4b44-8dd6-9574760038ee', '2024-09-07 20:41:37.055327', '2024-09-07 20:41:37.055327');
-INSERT INTO public.exercise_example_bundles
-VALUES ('13d7c1cc-db93-4a66-b9da-3f778c1bf3b7', 100, '10f8ff0e-38c6-465d-b99a-26c4026d22c6',
-        '57559b71-b757-468a-983d-a1b3cec4acef', '2024-09-07 20:42:37.458041', '2024-09-07 20:42:37.458041');
-INSERT INTO public.exercise_example_bundles
-VALUES ('c5f257c3-ca5f-4989-aff9-ae45611c2527', 40, '88baf661-c550-4ecd-b15a-0d1ca4d41116',
-        '57559b71-b757-468a-983d-a1b3cec4acef', '2024-09-07 20:44:02.286561', '2024-09-07 20:44:02.286561');
-INSERT INTO public.exercise_example_bundles
-VALUES ('5e19c4ac-598e-48ca-aaf3-c8998934188b', 20, '88baf661-c550-4ecd-b15a-0d1ca4d41116',
-        'f6e65bfe-0746-4a8f-8210-0e9bf88d9886', '2024-09-07 20:44:02.286561', '2024-09-07 20:44:02.286561');
-INSERT INTO public.exercise_example_bundles
-VALUES ('ed522320-13ea-4cd6-911d-1ecef87d38ab', 10, '88baf661-c550-4ecd-b15a-0d1ca4d41116',
-        '3eeaa9fa-0847-4780-9d01-185f91252794', '2024-09-07 20:44:02.286561', '2024-09-07 20:44:02.286561');
-INSERT INTO public.exercise_example_bundles
-VALUES ('4ff8b084-3ecd-47b6-ba07-cc125e7ed43f', 10, '88baf661-c550-4ecd-b15a-0d1ca4d41116',
-        'fa8025e6-e106-475c-8b9d-77831132fb47', '2024-09-07 20:44:02.286561', '2024-09-07 20:44:02.286561');
-INSERT INTO public.exercise_example_bundles
-VALUES ('3aeae9c4-0cb4-47c3-8fd8-59fafa6f596d', 5, '88baf661-c550-4ecd-b15a-0d1ca4d41116',
-        '9e69205f-6c6e-44a7-8ee6-89215e28a28e', '2024-09-07 20:44:02.286561', '2024-09-07 20:44:02.286561');
-INSERT INTO public.exercise_example_bundles
-VALUES ('7d4736e7-93c1-4c48-800a-8621bc98450c', 5, '88baf661-c550-4ecd-b15a-0d1ca4d41116',
-        'bba5b66d-9a9c-4b44-8dd6-9574760038ee', '2024-09-07 20:44:02.286561', '2024-09-07 20:44:02.286561');
-INSERT INTO public.exercise_example_bundles
-VALUES ('83cd0ae0-7bd3-4f4b-85cd-9afa912bd2a3', 5, '88baf661-c550-4ecd-b15a-0d1ca4d41116',
-        'af854064-078a-4f50-af1d-8744e866751e', '2024-09-07 20:44:02.286561', '2024-09-07 20:44:02.286561');
-INSERT INTO public.exercise_example_bundles
-VALUES ('a5078f66-8605-4994-8551-6342615025af', 5, '88baf661-c550-4ecd-b15a-0d1ca4d41116',
-        'd736a513-9d73-47a3-bffc-c14911662ea2', '2024-09-07 20:44:02.286561', '2024-09-07 20:44:02.286561');
-INSERT INTO public.exercise_example_bundles
-VALUES ('8dd4ad2f-d16b-4936-be37-2fc3ea8564b8', 60, '4dc80274-2d3e-482e-a736-9f9399330c76',
-        '57559b71-b757-468a-983d-a1b3cec4acef', '2024-09-07 20:50:37.235521', '2024-09-07 20:50:37.235521');
-INSERT INTO public.exercise_example_bundles
-VALUES ('41ac9156-023e-4c6a-8035-10b576258bd6', 15, '4dc80274-2d3e-482e-a736-9f9399330c76',
-        '3eeaa9fa-0847-4780-9d01-185f91252794', '2024-09-07 20:50:37.235521', '2024-09-07 20:50:37.235521');
-INSERT INTO public.exercise_example_bundles
-VALUES ('6ce5f934-0b86-47c0-a533-bd2672ef4d82', 10, '4dc80274-2d3e-482e-a736-9f9399330c76',
-        'f6e65bfe-0746-4a8f-8210-0e9bf88d9886', '2024-09-07 20:50:37.235521', '2024-09-07 20:50:37.235521');
-INSERT INTO public.exercise_example_bundles
-VALUES ('0dcd8867-f106-481d-ab44-c828e928acdc', 5, '4dc80274-2d3e-482e-a736-9f9399330c76',
-        'bba5b66d-9a9c-4b44-8dd6-9574760038ee', '2024-09-07 20:50:37.235521', '2024-09-07 20:50:37.235521');
-INSERT INTO public.exercise_example_bundles
-VALUES ('587c4651-7672-47af-9684-e9b2c82b0982', 5, '4dc80274-2d3e-482e-a736-9f9399330c76',
-        'fa8025e6-e106-475c-8b9d-77831132fb47', '2024-09-07 20:50:37.235521', '2024-09-07 20:50:37.235521');
-INSERT INTO public.exercise_example_bundles
-VALUES ('a2a49d26-2e2c-457a-9d44-95c9ac080a08', 5, '4dc80274-2d3e-482e-a736-9f9399330c76',
-        '9e69205f-6c6e-44a7-8ee6-89215e28a28e', '2024-09-07 20:50:37.235521', '2024-09-07 20:50:37.235521');
-INSERT INTO public.exercise_example_bundles
-VALUES ('ab601233-5efd-427f-932e-3a8de1fb064e', 50, '14dbd276-30fe-4558-9cf0-104751b58f2d',
-        '57559b71-b757-468a-983d-a1b3cec4acef', '2024-09-07 20:51:46.766406', '2024-09-07 20:51:46.766406');
-INSERT INTO public.exercise_example_bundles
-VALUES ('3692e200-0d04-44ca-bff3-e82ba4daef3e', 20, '14dbd276-30fe-4558-9cf0-104751b58f2d',
-        '3eeaa9fa-0847-4780-9d01-185f91252794', '2024-09-07 20:51:46.766406', '2024-09-07 20:51:46.766406');
-INSERT INTO public.exercise_example_bundles
-VALUES ('48691026-7a07-4c02-a155-62434655abe2', 15, '14dbd276-30fe-4558-9cf0-104751b58f2d',
-        'f6e65bfe-0746-4a8f-8210-0e9bf88d9886', '2024-09-07 20:51:46.766406', '2024-09-07 20:51:46.766406');
-INSERT INTO public.exercise_example_bundles
-VALUES ('db8c2b19-f357-422b-95c5-1f117af66bb1', 10, '14dbd276-30fe-4558-9cf0-104751b58f2d',
-        'bba5b66d-9a9c-4b44-8dd6-9574760038ee', '2024-09-07 20:51:46.766406', '2024-09-07 20:51:46.766406');
-INSERT INTO public.exercise_example_bundles
-VALUES ('2927bee2-a622-4ea3-b64b-80fb248f7e62', 5, '14dbd276-30fe-4558-9cf0-104751b58f2d',
-        '9e69205f-6c6e-44a7-8ee6-89215e28a28e', '2024-09-07 20:51:46.766406', '2024-09-07 20:51:46.766406');
-INSERT INTO public.exercise_example_bundles
-VALUES ('b0172753-b565-45eb-826b-678e57df25e8', 50, '2fd70951-2d44-407e-a7ee-daa94bf6af87',
-        '57559b71-b757-468a-983d-a1b3cec4acef', '2024-09-07 20:53:13.268137', '2024-09-07 20:53:13.268137');
-INSERT INTO public.exercise_example_bundles
-VALUES ('b29b647a-184b-4a5b-918e-f462325b7234', 10, '2fd70951-2d44-407e-a7ee-daa94bf6af87',
-        '3eeaa9fa-0847-4780-9d01-185f91252794', '2024-09-07 20:53:13.268137', '2024-09-07 20:53:13.268137');
-INSERT INTO public.exercise_example_bundles
-VALUES ('62f2e1bb-4ee5-4623-a3df-dc16e4f3d230', 10, '2fd70951-2d44-407e-a7ee-daa94bf6af87',
-        'f6e65bfe-0746-4a8f-8210-0e9bf88d9886', '2024-09-07 20:53:13.268137', '2024-09-07 20:53:13.268137');
-INSERT INTO public.exercise_example_bundles
-VALUES ('ca24fb50-cb82-4f6a-9554-1a98c0c5047d', 5, '2fd70951-2d44-407e-a7ee-daa94bf6af87',
-        'bba5b66d-9a9c-4b44-8dd6-9574760038ee', '2024-09-07 20:53:13.268137', '2024-09-07 20:53:13.268137');
-INSERT INTO public.exercise_example_bundles
-VALUES ('fe3704ca-0334-4ddb-ac38-939265ecfecc', 5, '2fd70951-2d44-407e-a7ee-daa94bf6af87',
-        'fa8025e6-e106-475c-8b9d-77831132fb47', '2024-09-07 20:53:13.268137', '2024-09-07 20:53:13.268137');
-INSERT INTO public.exercise_example_bundles
-VALUES ('145dc20e-ffef-406d-8029-56708d4f2a5f', 5, '2fd70951-2d44-407e-a7ee-daa94bf6af87',
-        '9e69205f-6c6e-44a7-8ee6-89215e28a28e', '2024-09-07 20:53:13.268137', '2024-09-07 20:53:13.268137');
-INSERT INTO public.exercise_example_bundles
-VALUES ('d31ff3b9-981b-492d-828e-749585958a2c', 5, '2fd70951-2d44-407e-a7ee-daa94bf6af87',
-        '2e0faf2b-31a5-4c63-ac15-454be132796f', '2024-09-07 20:53:13.268137', '2024-09-07 20:53:13.268137');
-INSERT INTO public.exercise_example_bundles
-VALUES ('a600fa27-3c11-40d7-a5f3-a1eba8a306b0', 5, '2fd70951-2d44-407e-a7ee-daa94bf6af87',
-        'af854064-078a-4f50-af1d-8744e866751e', '2024-09-07 20:53:13.268137', '2024-09-07 20:53:13.268137');
-INSERT INTO public.exercise_example_bundles
-VALUES ('acbf23ca-f849-4be5-96d6-069b396df944', 5, '2fd70951-2d44-407e-a7ee-daa94bf6af87',
-        '97136fa7-622a-49d6-9d09-403a631d253d', '2024-09-07 20:53:13.268137', '2024-09-07 20:53:13.268137');
-INSERT INTO public.exercise_example_bundles
-VALUES ('3dddf20c-58a0-484e-82c5-941989022716', 50, '24c43903-d3a7-4a39-9231-5bc7d5cec5da',
-        '57559b71-b757-468a-983d-a1b3cec4acef', '2024-09-07 20:54:24.87991', '2024-09-07 20:54:24.87991');
-INSERT INTO public.exercise_example_bundles
-VALUES ('28a82488-e53a-444b-b791-d9ef74c855c5', 15, '24c43903-d3a7-4a39-9231-5bc7d5cec5da',
-        '3eeaa9fa-0847-4780-9d01-185f91252794', '2024-09-07 20:54:24.87991', '2024-09-07 20:54:24.87991');
-INSERT INTO public.exercise_example_bundles
-VALUES ('43996194-de24-41b9-92f0-a4cdd639e565', 10, '24c43903-d3a7-4a39-9231-5bc7d5cec5da',
-        'f6e65bfe-0746-4a8f-8210-0e9bf88d9886', '2024-09-07 20:54:24.87991', '2024-09-07 20:54:24.87991');
-INSERT INTO public.exercise_example_bundles
-VALUES ('a0ac67f2-86a0-4510-b004-36a49909d293', 10, '24c43903-d3a7-4a39-9231-5bc7d5cec5da',
-        'bba5b66d-9a9c-4b44-8dd6-9574760038ee', '2024-09-07 20:54:24.87991', '2024-09-07 20:54:24.87991');
-INSERT INTO public.exercise_example_bundles
-VALUES ('c1b8e757-2495-4d92-9661-9333085a87d0', 5, '24c43903-d3a7-4a39-9231-5bc7d5cec5da',
-        'fa8025e6-e106-475c-8b9d-77831132fb47', '2024-09-07 20:54:24.87991', '2024-09-07 20:54:24.87991');
-INSERT INTO public.exercise_example_bundles
-VALUES ('172dafd4-e015-40e4-93c6-c0f0b4732e05', 5, '24c43903-d3a7-4a39-9231-5bc7d5cec5da',
-        '9e69205f-6c6e-44a7-8ee6-89215e28a28e', '2024-09-07 20:54:24.87991', '2024-09-07 20:54:24.87991');
-INSERT INTO public.exercise_example_bundles
-VALUES ('7c7f3959-3a8f-425a-994f-41e61565c6dd', 5, '24c43903-d3a7-4a39-9231-5bc7d5cec5da',
-        '9a8024fe-c721-4bea-969c-db88674b5ece', '2024-09-07 20:54:24.87991', '2024-09-07 20:54:24.87991');
-INSERT INTO public.exercise_example_bundles
-VALUES ('324dc943-29ae-4955-8217-47367a7fa497', 45, 'de763854-d06d-43e9-9973-f4ca8839201b',
-        '57559b71-b757-468a-983d-a1b3cec4acef', '2024-09-07 20:55:27.305656', '2024-09-07 20:55:27.305656');
-INSERT INTO public.exercise_example_bundles
-VALUES ('23b68a42-301f-46db-805d-0a640e63973a', 15, 'de763854-d06d-43e9-9973-f4ca8839201b',
-        '3eeaa9fa-0847-4780-9d01-185f91252794', '2024-09-07 20:55:27.305656', '2024-09-07 20:55:27.305656');
-INSERT INTO public.exercise_example_bundles
-VALUES ('fe6f410d-22d3-4e1a-bcce-1b761c7a8184', 10, 'de763854-d06d-43e9-9973-f4ca8839201b',
-        'f6e65bfe-0746-4a8f-8210-0e9bf88d9886', '2024-09-07 20:55:27.305656', '2024-09-07 20:55:27.305656');
-INSERT INTO public.exercise_example_bundles
-VALUES ('14171eae-5b21-4d75-bd46-d1ef9ad66e0a', 10, 'de763854-d06d-43e9-9973-f4ca8839201b',
-        'bba5b66d-9a9c-4b44-8dd6-9574760038ee', '2024-09-07 20:55:27.305656', '2024-09-07 20:55:27.305656');
-INSERT INTO public.exercise_example_bundles
-VALUES ('3f825a76-3910-4633-87b2-06dc445af286', 5, 'de763854-d06d-43e9-9973-f4ca8839201b',
-        'fa8025e6-e106-475c-8b9d-77831132fb47', '2024-09-07 20:55:27.305656', '2024-09-07 20:55:27.305656');
-INSERT INTO public.exercise_example_bundles
-VALUES ('2b400ce0-ac45-4f7a-bccc-6fb4c73f17c7', 5, 'de763854-d06d-43e9-9973-f4ca8839201b',
-        '9e69205f-6c6e-44a7-8ee6-89215e28a28e', '2024-09-07 20:55:27.305656', '2024-09-07 20:55:27.305656');
-INSERT INTO public.exercise_example_bundles
-VALUES ('737b0420-e917-4774-8d69-85395952f220', 5, 'de763854-d06d-43e9-9973-f4ca8839201b',
-        '2e0faf2b-31a5-4c63-ac15-454be132796f', '2024-09-07 20:55:27.305656', '2024-09-07 20:55:27.305656');
-INSERT INTO public.exercise_example_bundles
-VALUES ('8a45a417-bee1-462d-916d-e3fd92eaf5e4', 5, 'de763854-d06d-43e9-9973-f4ca8839201b',
-        'af854064-078a-4f50-af1d-8744e866751e', '2024-09-07 20:55:27.305656', '2024-09-07 20:55:27.305656');
-INSERT INTO public.exercise_example_bundles
-VALUES ('5334e195-9c2e-4202-a1ac-399bdf30f18e', 50, '5ab252b3-204d-4846-80e8-a7629f2d2e25',
-        '57559b71-b757-468a-983d-a1b3cec4acef', '2024-09-07 20:56:42.185416', '2024-09-07 20:56:42.185416');
-INSERT INTO public.exercise_example_bundles
-VALUES ('cd3d799b-134a-43db-a252-45561d639151', 10, '5ab252b3-204d-4846-80e8-a7629f2d2e25',
-        '3eeaa9fa-0847-4780-9d01-185f91252794', '2024-09-07 20:56:42.185416', '2024-09-07 20:56:42.185416');
-INSERT INTO public.exercise_example_bundles
-VALUES ('8e6f6a81-e376-4ffc-8fec-96f433035410', 10, '5ab252b3-204d-4846-80e8-a7629f2d2e25',
-        'f6e65bfe-0746-4a8f-8210-0e9bf88d9886', '2024-09-07 20:56:42.185416', '2024-09-07 20:56:42.185416');
-INSERT INTO public.exercise_example_bundles
-VALUES ('b8f3d4df-103d-41f3-8170-efa183558376', 10, '5ab252b3-204d-4846-80e8-a7629f2d2e25',
-        'bba5b66d-9a9c-4b44-8dd6-9574760038ee', '2024-09-07 20:56:42.185416', '2024-09-07 20:56:42.185416');
-INSERT INTO public.exercise_example_bundles
-VALUES ('b4b0d204-40c4-4208-9fd6-25a828bafca2', 10, '5ab252b3-204d-4846-80e8-a7629f2d2e25',
-        '9e69205f-6c6e-44a7-8ee6-89215e28a28e', '2024-09-07 20:56:42.185416', '2024-09-07 20:56:42.185416');
-INSERT INTO public.exercise_example_bundles
-VALUES ('2fc95643-cf06-45fd-ae08-6a61c472b195', 5, '5ab252b3-204d-4846-80e8-a7629f2d2e25',
-        '9a8024fe-c721-4bea-969c-db88674b5ece', '2024-09-07 20:56:42.185416', '2024-09-07 20:56:42.185416');
-INSERT INTO public.exercise_example_bundles
-VALUES ('7cb49257-4e49-4b11-bc58-dc63cd674967', 5, '5ab252b3-204d-4846-80e8-a7629f2d2e25',
-        'fa8025e6-e106-475c-8b9d-77831132fb47', '2024-09-07 20:56:42.185416', '2024-09-07 20:56:42.185416');
-INSERT INTO public.exercise_example_bundles
-VALUES ('cd6047f8-ecb8-4b9c-99dd-d3fdf31bf213', 50, '7b006564-2c61-4661-ab8c-d4cf60fdb3ed',
-        '57559b71-b757-468a-983d-a1b3cec4acef', '2024-09-07 21:00:33.460953', '2024-09-07 21:00:33.460953');
-INSERT INTO public.exercise_example_bundles
-VALUES ('48ea7153-7431-49af-9895-331328a1a212', 10, '7b006564-2c61-4661-ab8c-d4cf60fdb3ed',
-        '3eeaa9fa-0847-4780-9d01-185f91252794', '2024-09-07 21:00:33.460953', '2024-09-07 21:00:33.460953');
-INSERT INTO public.exercise_example_bundles
-VALUES ('9395b3b8-67e1-49c3-8716-cd24136d02fe', 10, '7b006564-2c61-4661-ab8c-d4cf60fdb3ed',
-        'f6e65bfe-0746-4a8f-8210-0e9bf88d9886', '2024-09-07 21:00:33.460953', '2024-09-07 21:00:33.460953');
-INSERT INTO public.exercise_example_bundles
-VALUES ('37005c08-0c7a-46ca-ba1c-70acc61f09a3', 10, '7b006564-2c61-4661-ab8c-d4cf60fdb3ed',
-        'bba5b66d-9a9c-4b44-8dd6-9574760038ee', '2024-09-07 21:00:33.460953', '2024-09-07 21:00:33.460953');
-INSERT INTO public.exercise_example_bundles
-VALUES ('e6f0d90e-0590-4770-9f13-8802f3591f17', 5, '7b006564-2c61-4661-ab8c-d4cf60fdb3ed',
-        '9e69205f-6c6e-44a7-8ee6-89215e28a28e', '2024-09-07 21:00:33.460953', '2024-09-07 21:00:33.460953');
-INSERT INTO public.exercise_example_bundles
-VALUES ('4483cf87-35c1-4815-a6d4-ef21877baa87', 5, '7b006564-2c61-4661-ab8c-d4cf60fdb3ed',
-        'fa8025e6-e106-475c-8b9d-77831132fb47', '2024-09-07 21:00:33.460953', '2024-09-07 21:00:33.460953');
-INSERT INTO public.exercise_example_bundles
-VALUES ('91a86f6b-0ba4-4162-afff-3eba211a8b8f', 5, '7b006564-2c61-4661-ab8c-d4cf60fdb3ed',
-        'af854064-078a-4f50-af1d-8744e866751e', '2024-09-07 21:00:33.460953', '2024-09-07 21:00:33.460953');
-INSERT INTO public.exercise_example_bundles
-VALUES ('8a9060fd-c91a-44b5-b92c-9eb898bb663c', 50, '1e51b837-215d-4069-9d14-c9510c1b1b61',
-        '57559b71-b757-468a-983d-a1b3cec4acef', '2024-09-07 21:02:58.930421', '2024-09-07 21:02:58.930421');
-INSERT INTO public.exercise_example_bundles
-VALUES ('20a7dd55-31e9-4588-8550-f2fe21cd500d', 15, '1e51b837-215d-4069-9d14-c9510c1b1b61',
-        '3eeaa9fa-0847-4780-9d01-185f91252794', '2024-09-07 21:02:58.930421', '2024-09-07 21:02:58.930421');
-INSERT INTO public.exercise_example_bundles
-VALUES ('d9e09c88-3718-49c5-8e7d-65eb6442dbd4', 10, '1e51b837-215d-4069-9d14-c9510c1b1b61',
-        'f6e65bfe-0746-4a8f-8210-0e9bf88d9886', '2024-09-07 21:02:58.930421', '2024-09-07 21:02:58.930421');
-INSERT INTO public.exercise_example_bundles
-VALUES ('0de8621e-7220-4e35-955a-792f60a01ac4', 10, '1e51b837-215d-4069-9d14-c9510c1b1b61',
-        'bba5b66d-9a9c-4b44-8dd6-9574760038ee', '2024-09-07 21:02:58.930421', '2024-09-07 21:02:58.930421');
-INSERT INTO public.exercise_example_bundles
-VALUES ('5760020d-058c-4dfd-84e8-623821a039a8', 5, '1e51b837-215d-4069-9d14-c9510c1b1b61',
-        'fa8025e6-e106-475c-8b9d-77831132fb47', '2024-09-07 21:02:58.930421', '2024-09-07 21:02:58.930421');
-INSERT INTO public.exercise_example_bundles
-VALUES ('365dcf98-65cb-458f-8fd2-184dc100bded', 5, '1e51b837-215d-4069-9d14-c9510c1b1b61',
-        '9e69205f-6c6e-44a7-8ee6-89215e28a28e', '2024-09-07 21:02:58.930421', '2024-09-07 21:02:58.930421');
-INSERT INTO public.exercise_example_bundles
-VALUES ('2dd8dbf8-9866-40a7-9bac-c3d72065744b', 50, '4ef87c39-b004-4c4c-82a8-ddd0338de8c8',
-        '57559b71-b757-468a-983d-a1b3cec4acef', '2024-09-08 11:38:55.964892', '2024-09-08 11:38:55.964892');
-INSERT INTO public.exercise_example_bundles
-VALUES ('1c57ea00-537e-4635-86a7-20585566856c', 10, '4ef87c39-b004-4c4c-82a8-ddd0338de8c8',
-        '3eeaa9fa-0847-4780-9d01-185f91252794', '2024-09-08 11:38:55.964892', '2024-09-08 11:38:55.964892');
-INSERT INTO public.exercise_example_bundles
-VALUES ('6d1b20e6-53f6-4aed-89d0-d47d90ccbc91', 10, '4ef87c39-b004-4c4c-82a8-ddd0338de8c8',
-        'f6e65bfe-0746-4a8f-8210-0e9bf88d9886', '2024-09-08 11:38:55.964892', '2024-09-08 11:38:55.964892');
-INSERT INTO public.exercise_example_bundles
-VALUES ('e85465ca-9d47-4084-b6b1-f23e84c72ee7', 10, '4ef87c39-b004-4c4c-82a8-ddd0338de8c8',
-        'bba5b66d-9a9c-4b44-8dd6-9574760038ee', '2024-09-08 11:38:55.964892', '2024-09-08 11:38:55.964892');
-INSERT INTO public.exercise_example_bundles
-VALUES ('3a4ff004-8b9b-48b4-b1c5-7ef54dd610f3', 5, '4ef87c39-b004-4c4c-82a8-ddd0338de8c8',
-        'fa8025e6-e106-475c-8b9d-77831132fb47', '2024-09-08 11:38:55.964892', '2024-09-08 11:38:55.964892');
-INSERT INTO public.exercise_example_bundles
-VALUES ('f0ce2d1e-7f53-4da9-a3bd-35d8422656c2', 5, '4ef87c39-b004-4c4c-82a8-ddd0338de8c8',
-        '9e69205f-6c6e-44a7-8ee6-89215e28a28e', '2024-09-08 11:38:55.964892', '2024-09-08 11:38:55.964892');
-INSERT INTO public.exercise_example_bundles
-VALUES ('03e669a3-20c1-46ce-b95f-af1348ecd05a', 5, '4ef87c39-b004-4c4c-82a8-ddd0338de8c8',
-        'af854064-078a-4f50-af1d-8744e866751e', '2024-09-08 11:38:55.964892', '2024-09-08 11:38:55.964892');
-INSERT INTO public.exercise_example_bundles
-VALUES ('a0529af5-c9fa-4d78-b7a5-af79b7552e3e', 60, 'ea89fe55-c50f-4bbf-acc1-96e7df46101a',
-        '57559b71-b757-468a-983d-a1b3cec4acef', '2024-09-08 11:42:23.518364', '2024-09-08 11:42:23.518364');
-INSERT INTO public.exercise_example_bundles
-VALUES ('9b4141b4-556d-42bf-b20e-1d49eb75f2bd', 15, 'ea89fe55-c50f-4bbf-acc1-96e7df46101a',
-        '3eeaa9fa-0847-4780-9d01-185f91252794', '2024-09-08 11:42:23.518364', '2024-09-08 11:42:23.518364');
-INSERT INTO public.exercise_example_bundles
-VALUES ('373e90da-d8ca-4ef3-b7b2-67c5084b5e34', 15, 'ea89fe55-c50f-4bbf-acc1-96e7df46101a',
-        'f6e65bfe-0746-4a8f-8210-0e9bf88d9886', '2024-09-08 11:42:23.518364', '2024-09-08 11:42:23.518364');
-INSERT INTO public.exercise_example_bundles
-VALUES ('9a934b68-08ca-42c6-b2c1-e32dd761821f', 10, 'ea89fe55-c50f-4bbf-acc1-96e7df46101a',
-        'bba5b66d-9a9c-4b44-8dd6-9574760038ee', '2024-09-08 11:42:23.518364', '2024-09-08 11:42:23.518364');
-INSERT INTO public.exercise_example_bundles
-VALUES ('73732593-c4a5-41a4-82fe-3446512de353', 60, '395bb56a-d4af-4f4a-abb3-51a9ef1dc686',
-        '57559b71-b757-468a-983d-a1b3cec4acef', '2024-09-08 11:47:42.81733', '2024-09-08 11:47:42.81733');
-INSERT INTO public.exercise_example_bundles
-VALUES ('9f0452c8-98ab-46b1-a3ec-a98dd546ef60', 15, '395bb56a-d4af-4f4a-abb3-51a9ef1dc686',
-        '3eeaa9fa-0847-4780-9d01-185f91252794', '2024-09-08 11:47:42.81733', '2024-09-08 11:47:42.81733');
-INSERT INTO public.exercise_example_bundles
-VALUES ('334fad35-9b90-4225-ac11-1e7f66e84bdc', 15, '395bb56a-d4af-4f4a-abb3-51a9ef1dc686',
-        'f6e65bfe-0746-4a8f-8210-0e9bf88d9886', '2024-09-08 11:47:42.81733', '2024-09-08 11:47:42.81733');
-INSERT INTO public.exercise_example_bundles
-VALUES ('ab30edbf-7dff-49b4-bfeb-13c6a5b550e1', 10, '395bb56a-d4af-4f4a-abb3-51a9ef1dc686',
-        'bba5b66d-9a9c-4b44-8dd6-9574760038ee', '2024-09-08 11:47:42.81733', '2024-09-08 11:47:42.81733');
-INSERT INTO public.exercise_example_bundles
-VALUES ('764b1774-ca25-4a14-b39b-0271f07408a6', 60, 'a40b23bf-bd6d-41d0-adbe-254bce002c2d',
-        '57559b71-b757-468a-983d-a1b3cec4acef', '2024-09-08 11:48:44.503582', '2024-09-08 11:48:44.503582');
-INSERT INTO public.exercise_example_bundles
-VALUES ('01fe2468-45c4-4e68-9c95-e94ef327e231', 15, 'a40b23bf-bd6d-41d0-adbe-254bce002c2d',
-        '3eeaa9fa-0847-4780-9d01-185f91252794', '2024-09-08 11:48:44.503582', '2024-09-08 11:48:44.503582');
-INSERT INTO public.exercise_example_bundles
-VALUES ('fe432bdc-f8a3-4077-af60-c168bea664f8', 15, 'a40b23bf-bd6d-41d0-adbe-254bce002c2d',
-        'f6e65bfe-0746-4a8f-8210-0e9bf88d9886', '2024-09-08 11:48:44.503582', '2024-09-08 11:48:44.503582');
-INSERT INTO public.exercise_example_bundles
-VALUES ('4801b33f-b858-4498-baf8-c823b4b17323', 10, 'a40b23bf-bd6d-41d0-adbe-254bce002c2d',
-        'bba5b66d-9a9c-4b44-8dd6-9574760038ee', '2024-09-08 11:48:44.503582', '2024-09-08 11:48:44.503582');
-INSERT INTO public.exercise_example_bundles
-VALUES ('4d7d999a-7e92-4164-95c7-055befe45e61', 50, 'a4bf88ee-8865-4b1f-88a3-28cf59d28739',
-        '57559b71-b757-468a-983d-a1b3cec4acef', '2024-09-08 11:51:56.637589', '2024-09-08 11:51:56.637589');
-INSERT INTO public.exercise_example_bundles
-VALUES ('b6be382e-a4e1-4a30-8a8f-c6bdfa710e64', 10, 'a4bf88ee-8865-4b1f-88a3-28cf59d28739',
-        '3eeaa9fa-0847-4780-9d01-185f91252794', '2024-09-08 11:51:56.637589', '2024-09-08 11:51:56.637589');
-INSERT INTO public.exercise_example_bundles
-VALUES ('e3e91ff8-4db2-47b8-9515-495b814f8aa8', 10, 'a4bf88ee-8865-4b1f-88a3-28cf59d28739',
-        'f6e65bfe-0746-4a8f-8210-0e9bf88d9886', '2024-09-08 11:51:56.637589', '2024-09-08 11:51:56.637589');
-INSERT INTO public.exercise_example_bundles
-VALUES ('4960b897-73f1-49eb-9263-8505ea3825bc', 10, 'a4bf88ee-8865-4b1f-88a3-28cf59d28739',
-        'bba5b66d-9a9c-4b44-8dd6-9574760038ee', '2024-09-08 11:51:56.637589', '2024-09-08 11:51:56.637589');
-INSERT INTO public.exercise_example_bundles
-VALUES ('ef6fb8c4-2ee5-4bde-986f-fb9a3c39cedf', 5, 'a4bf88ee-8865-4b1f-88a3-28cf59d28739',
-        'fa8025e6-e106-475c-8b9d-77831132fb47', '2024-09-08 11:51:56.637589', '2024-09-08 11:51:56.637589');
-INSERT INTO public.exercise_example_bundles
-VALUES ('737f60c4-0799-47b3-9116-e04704c06592', 5, 'a4bf88ee-8865-4b1f-88a3-28cf59d28739',
-        '9e69205f-6c6e-44a7-8ee6-89215e28a28e', '2024-09-08 11:51:56.637589', '2024-09-08 11:51:56.637589');
-INSERT INTO public.exercise_example_bundles
-VALUES ('4654978d-5878-486e-8cc5-f72130671469', 5, 'a4bf88ee-8865-4b1f-88a3-28cf59d28739',
-        '97a87b01-35e8-490a-94b9-9bdae9c2f965', '2024-09-08 11:51:56.637589', '2024-09-08 11:51:56.637589');
-INSERT INTO public.exercise_example_bundles
-VALUES ('014bebf3-485e-43d2-abe7-59a8ab511287', 5, 'a4bf88ee-8865-4b1f-88a3-28cf59d28739',
-        '9a8024fe-c721-4bea-969c-db88674b5ece', '2024-09-08 11:51:56.637589', '2024-09-08 11:51:56.637589');
-INSERT INTO public.exercise_example_bundles
-VALUES ('5794748a-de4a-4dc9-95b2-394bdde1d892', 60, '9572d666-227a-4639-9ea3-defd67123fbc',
-        '57559b71-b757-468a-983d-a1b3cec4acef', '2024-09-08 11:54:36.176918', '2024-09-08 11:54:36.176918');
-INSERT INTO public.exercise_example_bundles
-VALUES ('388cbd08-6ca8-492c-be84-fddf802144c5', 10, '9572d666-227a-4639-9ea3-defd67123fbc',
-        '3eeaa9fa-0847-4780-9d01-185f91252794', '2024-09-08 11:54:36.176918', '2024-09-08 11:54:36.176918');
-INSERT INTO public.exercise_example_bundles
-VALUES ('f856f7f8-5b2e-455e-be5d-cfa1df893c28', 10, '9572d666-227a-4639-9ea3-defd67123fbc',
-        'f6e65bfe-0746-4a8f-8210-0e9bf88d9886', '2024-09-08 11:54:36.176918', '2024-09-08 11:54:36.176918');
-INSERT INTO public.exercise_example_bundles
-VALUES ('022cef2f-834b-4f7a-94c3-02c56e8822eb', 10, '9572d666-227a-4639-9ea3-defd67123fbc',
-        'bba5b66d-9a9c-4b44-8dd6-9574760038ee', '2024-09-08 11:54:36.176918', '2024-09-08 11:54:36.176918');
-INSERT INTO public.exercise_example_bundles
-VALUES ('3f10952d-c4d0-45a8-8b2e-b4aec7b08d8c', 5, '9572d666-227a-4639-9ea3-defd67123fbc',
-        '9a8024fe-c721-4bea-969c-db88674b5ece', '2024-09-08 11:54:36.176918', '2024-09-08 11:54:36.176918');
-INSERT INTO public.exercise_example_bundles
-VALUES ('49c18583-e5eb-41e3-bbda-d6c8f5899618', 5, '9572d666-227a-4639-9ea3-defd67123fbc',
-        '97a87b01-35e8-490a-94b9-9bdae9c2f965', '2024-09-08 11:54:36.176918', '2024-09-08 11:54:36.176918');
-INSERT INTO public.exercise_example_bundles
-VALUES ('2122a6ac-dd78-49b9-8aa0-71505f91949c', 50, '21d5ce50-6ffa-44d9-869f-abcfeb518018',
-        '57559b71-b757-468a-983d-a1b3cec4acef', '2024-09-08 11:56:12.849106', '2024-09-08 11:56:12.849106');
-INSERT INTO public.exercise_example_bundles
-VALUES ('df27bd5c-b3e3-453f-8bad-9a197695907f', 15, '21d5ce50-6ffa-44d9-869f-abcfeb518018',
-        '3eeaa9fa-0847-4780-9d01-185f91252794', '2024-09-08 11:56:12.849106', '2024-09-08 11:56:12.849106');
-INSERT INTO public.exercise_example_bundles
-VALUES ('a1027c66-226d-4d7e-a027-a240ad069c87', 10, '21d5ce50-6ffa-44d9-869f-abcfeb518018',
-        'f6e65bfe-0746-4a8f-8210-0e9bf88d9886', '2024-09-08 11:56:12.849106', '2024-09-08 11:56:12.849106');
-INSERT INTO public.exercise_example_bundles
-VALUES ('561c762b-dc1e-4c70-b0fb-8a1508b4c1f4', 10, '21d5ce50-6ffa-44d9-869f-abcfeb518018',
-        'bba5b66d-9a9c-4b44-8dd6-9574760038ee', '2024-09-08 11:56:12.849106', '2024-09-08 11:56:12.849106');
-INSERT INTO public.exercise_example_bundles
-VALUES ('0f3bdcec-a804-4d39-9eba-8a96f4392310', 5, '21d5ce50-6ffa-44d9-869f-abcfeb518018',
-        'fa8025e6-e106-475c-8b9d-77831132fb47', '2024-09-08 11:56:12.849106', '2024-09-08 11:56:12.849106');
-INSERT INTO public.exercise_example_bundles
-VALUES ('a77b6bdd-7785-4654-9ba4-6671fbe6c394', 5, '21d5ce50-6ffa-44d9-869f-abcfeb518018',
-        '9e69205f-6c6e-44a7-8ee6-89215e28a28e', '2024-09-08 11:56:12.849106', '2024-09-08 11:56:12.849106');
-INSERT INTO public.exercise_example_bundles
-VALUES ('611aae5e-da1f-46b4-84a7-0fc169b22217', 5, '21d5ce50-6ffa-44d9-869f-abcfeb518018',
-        'af854064-078a-4f50-af1d-8744e866751e', '2024-09-08 11:56:12.849106', '2024-09-08 11:56:12.849106');
+COPY public.exercise_example_bundles (id, percentage, exercise_example_id, muscle_id, created_at, updated_at) FROM stdin;
+c531960e-ec9e-4b0c-9da1-0050a60e3c85	88	4f9bdd10-28bc-447e-8cf5-fbf47cd9af79	0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a	2025-09-15 16:20:19.368067	2025-09-15 16:20:19.368067
+0c2cd418-88cc-48f2-a875-4f42b63fb050	7	4f9bdd10-28bc-447e-8cf5-fbf47cd9af79	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-15 16:20:19.368067	2025-09-15 16:20:19.368067
+f2542bbb-8b14-49d6-b321-c847aa12a0a6	3	4f9bdd10-28bc-447e-8cf5-fbf47cd9af79	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-15 16:20:19.368067	2025-09-15 16:20:19.368067
+09655fa0-47ab-4395-933c-7fe77c285546	2	4f9bdd10-28bc-447e-8cf5-fbf47cd9af79	9e69205f-6c6e-44a7-8ee6-89215e28a28e	2025-09-15 16:20:19.368067	2025-09-15 16:20:19.368067
+542b37ae-d847-4117-b5be-41294d6a8672	85	11644e17-247a-46b0-a391-b3b2a2a6bba8	0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a	2025-09-15 16:29:39.931143	2025-09-15 16:29:39.931143
+4e02a850-1b5c-49b1-9275-c203170b3bc3	5	11644e17-247a-46b0-a391-b3b2a2a6bba8	97136fa7-622a-49d6-9d09-403a631d253d	2025-09-15 16:29:39.931143	2025-09-15 16:29:39.931143
+1f3d9d87-69a5-40db-bdf6-4eedba61caf4	3	11644e17-247a-46b0-a391-b3b2a2a6bba8	831f39bd-80a8-4d11-9964-bde1788abae1	2025-09-15 16:29:39.931143	2025-09-15 16:29:39.931143
+e0226b4b-5ec4-492b-94d0-660edc2b9871	2	11644e17-247a-46b0-a391-b3b2a2a6bba8	af854064-078a-4f50-af1d-8744e866751e	2025-09-15 16:29:39.931143	2025-09-15 16:29:39.931143
+c4842da7-b43b-468a-bb8e-e51ac5919899	5	11644e17-247a-46b0-a391-b3b2a2a6bba8	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-15 16:29:39.931143	2025-09-15 16:29:39.931143
+4fd5a4ad-d0c5-4053-8be6-15f852a0fbda	1	9f0c8916-a08b-4fe5-9f24-e1680ef627a8	831f39bd-80a8-4d11-9964-bde1788abae1	2025-09-15 16:36:37.883984	2025-09-15 16:36:37.883984
+c5ee695a-cb5e-4702-befb-05af870fa01e	1	9f0c8916-a08b-4fe5-9f24-e1680ef627a8	2e0faf2b-31a5-4c63-ac15-454be132796f	2025-09-15 16:36:37.883984	2025-09-15 16:36:37.883984
+078f2783-3772-4ac9-b21d-15c5570466d2	80	faf6674c-2a2a-4b03-ab8b-7a033052b572	0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a	2025-09-15 16:41:34.105112	2025-09-15 16:41:34.105112
+e3188df0-89f0-4b15-a265-13cd6bae3b3d	8	faf6674c-2a2a-4b03-ab8b-7a033052b572	97136fa7-622a-49d6-9d09-403a631d253d	2025-09-15 16:41:34.105112	2025-09-15 16:41:34.105112
+5fdecf6f-0829-4d44-afa3-53751b4722f5	6	faf6674c-2a2a-4b03-ab8b-7a033052b572	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-15 16:41:34.105112	2025-09-15 16:41:34.105112
+76ba404d-9ca1-49e5-8757-687bb00c91fd	3	faf6674c-2a2a-4b03-ab8b-7a033052b572	af854064-078a-4f50-af1d-8744e866751e	2025-09-15 16:41:34.105112	2025-09-15 16:41:34.105112
+8aaf4daa-4bc7-491e-99ff-2fca0496ce9e	3	faf6674c-2a2a-4b03-ab8b-7a033052b572	831f39bd-80a8-4d11-9964-bde1788abae1	2025-09-15 16:41:34.105112	2025-09-15 16:41:34.105112
+6ebf42fd-9744-4566-8bec-af7b31049a41	70	3b828d2f-797f-4a45-9d1d-1d3efe38fb54	0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a	2025-09-15 16:46:53.694388	2025-09-15 16:46:53.694388
+2c1239c0-2ce0-4af8-ab2a-0bcf5b5ee46d	12	3b828d2f-797f-4a45-9d1d-1d3efe38fb54	b4658891-9713-48c4-864c-8dd907da19b0	2025-09-15 16:46:53.694388	2025-09-15 16:46:53.694388
+015bfe2d-ccfc-46c3-b39e-91710cd48907	12	3b828d2f-797f-4a45-9d1d-1d3efe38fb54	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-15 16:46:53.694388	2025-09-15 16:46:53.694388
+5c310634-faa3-4b79-9b9b-472013fe3f25	3	3b828d2f-797f-4a45-9d1d-1d3efe38fb54	c57aa60c-61ea-4498-b01f-fedcafe8a32a	2025-09-15 16:46:53.694388	2025-09-15 16:46:53.694388
+833280b6-ddb0-48fb-9625-7f44b00d1d77	3	3b828d2f-797f-4a45-9d1d-1d3efe38fb54	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-15 16:46:53.694388	2025-09-15 16:46:53.694388
+dbfd6d0c-4227-4502-90e3-7b41b04c9540	80	0e2fe1e8-f8f1-48e6-b360-8c9d4d9991a6	0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a	2025-09-15 16:50:09.879898	2025-09-15 16:50:09.879898
+50354c72-8160-408d-88b9-f503773a2cb2	10	0e2fe1e8-f8f1-48e6-b360-8c9d4d9991a6	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-15 16:50:09.879898	2025-09-15 16:50:09.879898
+5c26f5a3-9e7e-4550-9e46-6ca15689a61c	6	0e2fe1e8-f8f1-48e6-b360-8c9d4d9991a6	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-15 16:50:09.879898	2025-09-15 16:50:09.879898
+eb2b7de9-f12a-4880-8d93-8f7a0766bbc3	4	0e2fe1e8-f8f1-48e6-b360-8c9d4d9991a6	c57aa60c-61ea-4498-b01f-fedcafe8a32a	2025-09-15 16:50:09.879898	2025-09-15 16:50:09.879898
+70539908-aaad-4b2f-ab48-aa0522f525f3	85	6cb225d2-be00-461d-9bf0-7f0c87cfea0b	0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a	2025-09-15 16:54:29.58636	2025-09-15 16:54:29.58636
+4373f2e9-36f3-473a-aac9-075b7d4c1434	6	6cb225d2-be00-461d-9bf0-7f0c87cfea0b	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-15 16:54:29.58636	2025-09-15 16:54:29.58636
+fc99493c-1434-4daa-b615-294ebcd3131a	5	6cb225d2-be00-461d-9bf0-7f0c87cfea0b	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-15 16:54:29.58636	2025-09-15 16:54:29.58636
+b2e259bc-97aa-47a0-87fe-59eb82a887be	4	6cb225d2-be00-461d-9bf0-7f0c87cfea0b	c57aa60c-61ea-4498-b01f-fedcafe8a32a	2025-09-15 16:54:29.58636	2025-09-15 16:54:29.58636
+b1968c9b-8000-48f1-84ef-134c9d5bd92d	88	1b4402c2-2459-45c1-8d24-356322c71d20	0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a	2025-09-15 16:21:37.396914	2025-09-15 16:21:37.396914
+a4c13f9b-532f-46d7-8a2f-ead2a2d7b5d6	6	1b4402c2-2459-45c1-8d24-356322c71d20	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-15 16:21:37.396914	2025-09-15 16:21:37.396914
+f7d0aaf7-62bf-4a1a-935b-771949ca199d	3	1b4402c2-2459-45c1-8d24-356322c71d20	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-15 16:21:37.396914	2025-09-15 16:21:37.396914
+6bc02c51-9546-4c88-8f9c-fa30be1970da	3	1b4402c2-2459-45c1-8d24-356322c71d20	9e69205f-6c6e-44a7-8ee6-89215e28a28e	2025-09-15 16:21:37.396914	2025-09-15 16:21:37.396914
+cca8554f-178f-4737-b479-ac7ce725e16e	85	5985d847-0473-444e-8fe0-9da5341ef986	0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a	2025-09-15 16:31:08.300805	2025-09-15 16:31:08.300805
+dacb54f1-be1d-40fe-ba71-2f685303ccc0	5	5985d847-0473-444e-8fe0-9da5341ef986	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-15 16:31:08.300805	2025-09-15 16:31:08.300805
+78ec8629-85cd-46a0-aefa-51e93b2a852e	4	5985d847-0473-444e-8fe0-9da5341ef986	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-15 16:31:08.300805	2025-09-15 16:31:08.300805
+38aa9f71-e31e-420b-a5c6-7e7166d0ada1	3	5985d847-0473-444e-8fe0-9da5341ef986	af854064-078a-4f50-af1d-8744e866751e	2025-09-15 16:31:08.300805	2025-09-15 16:31:08.300805
+59ae280c-4960-49eb-a3ec-fa244e925723	3	5985d847-0473-444e-8fe0-9da5341ef986	831f39bd-80a8-4d11-9964-bde1788abae1	2025-09-15 16:31:08.300805	2025-09-15 16:31:08.300805
+f74e3f2f-87b6-4d34-a3e0-ab9579e32907	82	0eaa8980-e29e-4f33-88b0-915db5cf309a	0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a	2025-09-15 16:38:05.025098	2025-09-15 16:38:05.025098
+816eaa9e-4a27-42be-b4be-1fa52a6f9726	8	0eaa8980-e29e-4f33-88b0-915db5cf309a	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-15 16:38:05.025098	2025-09-15 16:38:05.025098
+740ea2e6-15e9-44a6-a289-7460d1cf87ed	6	0eaa8980-e29e-4f33-88b0-915db5cf309a	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-15 16:38:05.025098	2025-09-15 16:38:05.025098
+2b92998c-1e8b-4907-bb6a-014a50f770ee	3	0eaa8980-e29e-4f33-88b0-915db5cf309a	c57aa60c-61ea-4498-b01f-fedcafe8a32a	2025-09-15 16:38:05.025098	2025-09-15 16:38:05.025098
+57ce6af1-768b-4a0b-acac-de4ea36db806	1	0eaa8980-e29e-4f33-88b0-915db5cf309a	b4658891-9713-48c4-864c-8dd907da19b0	2025-09-15 16:38:05.025098	2025-09-15 16:38:05.025098
+d6351419-0eb4-4800-9186-4f0cd5c0f7b3	80	4aafe702-f2fc-4fa2-a7fb-c31c279adeda	0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a	2025-09-15 16:43:20.063503	2025-09-15 16:43:20.063503
+d4d9b997-c1a4-4e2b-998b-6e455af4d50b	8	4aafe702-f2fc-4fa2-a7fb-c31c279adeda	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-15 16:43:20.063503	2025-09-15 16:43:20.063503
+649d61c1-d893-476a-92e8-cd0ede7a2f3d	6	4aafe702-f2fc-4fa2-a7fb-c31c279adeda	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-15 16:43:20.063503	2025-09-15 16:43:20.063503
+78074624-de55-4f40-b1a2-46d113ecfc0e	6	4aafe702-f2fc-4fa2-a7fb-c31c279adeda	c57aa60c-61ea-4498-b01f-fedcafe8a32a	2025-09-15 16:43:20.063503	2025-09-15 16:43:20.063503
+6a692bba-a90f-44c2-8493-a3eebf46cf78	82	650e9725-d36c-4688-bcab-adf93dfe9e5d	0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a	2025-09-15 16:47:55.713775	2025-09-15 16:47:55.713775
+7b94639a-e188-4faa-b85c-91a23ec75b52	8	650e9725-d36c-4688-bcab-adf93dfe9e5d	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-15 16:47:55.713775	2025-09-15 16:47:55.713775
+a5dbc67e-2ca7-4440-a832-680dc4fa9c77	5	650e9725-d36c-4688-bcab-adf93dfe9e5d	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-15 16:47:55.713775	2025-09-15 16:47:55.713775
+a33ca991-1c3a-491e-8a93-7e6184566029	5	650e9725-d36c-4688-bcab-adf93dfe9e5d	c57aa60c-61ea-4498-b01f-fedcafe8a32a	2025-09-15 16:47:55.713775	2025-09-15 16:47:55.713775
+54efb146-c0cd-4a22-a536-222a8a6193eb	80	4d3a89ab-70ae-4311-8b40-a058b2f3057b	0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a	2025-09-15 16:51:31.482535	2025-09-15 16:51:31.482535
+8aaa91e1-db33-4e69-8619-21e17ecb0576	8	4d3a89ab-70ae-4311-8b40-a058b2f3057b	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-15 16:51:31.482535	2025-09-15 16:51:31.482535
+b596452f-3539-4d5d-a2b8-e14e6d3d581c	7	4d3a89ab-70ae-4311-8b40-a058b2f3057b	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-15 16:51:31.482535	2025-09-15 16:51:31.482535
+23dd00b4-54f3-467e-b860-04fba578fcee	5	4d3a89ab-70ae-4311-8b40-a058b2f3057b	c57aa60c-61ea-4498-b01f-fedcafe8a32a	2025-09-15 16:51:31.482535	2025-09-15 16:51:31.482535
+51d5dc0e-fddc-4119-931b-43f248947944	45	978f906a-8584-4cdf-9d7f-f96d60865e3b	57559b71-b757-468a-983d-a1b3cec4acef	2025-09-11 16:00:42.409093	2025-09-11 16:00:42.409093
+7e95ab09-1d80-4d03-a69e-ed41888043b3	30	978f906a-8584-4cdf-9d7f-f96d60865e3b	f6e65bfe-0746-4a8f-8210-0e9bf88d9886	2025-09-11 16:00:42.409093	2025-09-11 16:00:42.409093
+2647d649-208e-4612-b3c8-1465f67364e8	10	978f906a-8584-4cdf-9d7f-f96d60865e3b	3eeaa9fa-0847-4780-9d01-185f91252794	2025-09-11 16:00:42.409093	2025-09-11 16:00:42.409093
+50c42c6e-ba1b-404e-96a4-f2f74464fd86	90	04d275d8-71df-4695-ace9-899ce6e41b29	0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a	2025-09-15 16:22:46.742312	2025-09-15 16:22:46.742312
+b34d331e-2180-4182-ae6e-3aead1c66e65	6	04d275d8-71df-4695-ace9-899ce6e41b29	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-15 16:22:46.742312	2025-09-15 16:22:46.742312
+d505646e-fcf2-4b8a-b708-3bfbfac16db4	4	04d275d8-71df-4695-ace9-899ce6e41b29	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-15 16:22:46.742312	2025-09-15 16:22:46.742312
+1800be26-794d-4c4e-8cc6-722bbf7ef445	90	275097d4-3c8d-4040-9b2e-5f294919df04	0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a	2025-09-15 16:32:48.61278	2025-09-15 16:32:48.61278
+61b3adec-63fb-45ca-aaac-f7e1dd69da58	5	275097d4-3c8d-4040-9b2e-5f294919df04	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-15 16:32:48.61278	2025-09-15 16:32:48.61278
+eeb0a945-8e7a-48e4-8df3-b92d5a27fb97	3	275097d4-3c8d-4040-9b2e-5f294919df04	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-15 16:32:48.61278	2025-09-15 16:32:48.61278
+d5337554-5e6b-44d0-aab6-186de03208db	1	275097d4-3c8d-4040-9b2e-5f294919df04	9e69205f-6c6e-44a7-8ee6-89215e28a28e	2025-09-15 16:32:48.61278	2025-09-15 16:32:48.61278
+7e5736ca-4507-4dec-99a8-8aadb4186a31	1	275097d4-3c8d-4040-9b2e-5f294919df04	1ddbb748-37a6-4d66-a7d4-4957bdbc647f	2025-09-15 16:32:48.61278	2025-09-15 16:32:48.61278
+f798332e-aea8-4380-b590-2b5b72c0d66b	45	93e6b1c4-0510-41d4-983c-a1fde003881f	b4658891-9713-48c4-864c-8dd907da19b0	2025-09-15 16:39:47.341847	2025-09-15 16:39:47.341847
+2a582940-c5ab-418a-9f50-e0d2f341cdde	40	93e6b1c4-0510-41d4-983c-a1fde003881f	0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a	2025-09-15 16:39:47.341847	2025-09-15 16:39:47.341847
+cfc64050-57d6-47e5-9859-3f529534852f	12	93e6b1c4-0510-41d4-983c-a1fde003881f	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-15 16:39:47.341847	2025-09-15 16:39:47.341847
+0bf3e4a6-7b67-4e3b-b493-5149195e97eb	3	93e6b1c4-0510-41d4-983c-a1fde003881f	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-15 16:39:47.341847	2025-09-15 16:39:47.341847
+b85bb411-d138-403c-b92e-135128d2b96e	80	7517ae2f-c198-4a33-8a1d-1dc7327d1430	0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a	2025-09-15 16:44:27.403264	2025-09-15 16:44:27.403264
+fead0ea0-c3a8-4b85-b6e9-00ebc1e5459c	8	7517ae2f-c198-4a33-8a1d-1dc7327d1430	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-15 16:44:27.403264	2025-09-15 16:44:27.403264
+62e2c4bb-56ae-4769-9c3d-900be257fd1f	6	7517ae2f-c198-4a33-8a1d-1dc7327d1430	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-15 16:44:27.403264	2025-09-15 16:44:27.403264
+42b269b9-65c6-4d2e-8536-8f4e17611fc1	6	7517ae2f-c198-4a33-8a1d-1dc7327d1430	c57aa60c-61ea-4498-b01f-fedcafe8a32a	2025-09-15 16:44:27.403264	2025-09-15 16:44:27.403264
+29503aff-9e64-4f94-bd28-179b68b539f0	50	ab0d7384-444e-446a-911d-f64ac31db8ef	0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a	2025-09-15 16:48:48.571747	2025-09-15 16:48:48.571747
+094a6b46-4f66-46f8-8926-6e47e9f07377	23	ab0d7384-444e-446a-911d-f64ac31db8ef	c57aa60c-61ea-4498-b01f-fedcafe8a32a	2025-09-15 16:48:48.571747	2025-09-15 16:48:48.571747
+6609848c-89c0-4e0d-82d8-c345029f27a5	15	ab0d7384-444e-446a-911d-f64ac31db8ef	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-15 16:48:48.571747	2025-09-15 16:48:48.571747
+f7c51423-5874-4b75-b06b-c54e7c5c54aa	10	ab0d7384-444e-446a-911d-f64ac31db8ef	b4658891-9713-48c4-864c-8dd907da19b0	2025-09-15 16:48:48.571747	2025-09-15 16:48:48.571747
+21967aff-0748-46ad-b83a-7b7b9af9b0b6	2	ab0d7384-444e-446a-911d-f64ac31db8ef	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-15 16:48:48.571747	2025-09-15 16:48:48.571747
+f8a28011-b74e-4425-b9c8-cb3e19971f18	82	b790c6a6-ecd1-4b3a-afbc-22cd82e55658	0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a	2025-09-15 16:52:31.821814	2025-09-15 16:52:31.821814
+77e825ca-eb0b-42d7-8f75-3012bd6167b9	6	b790c6a6-ecd1-4b3a-afbc-22cd82e55658	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-15 16:52:31.821814	2025-09-15 16:52:31.821814
+87793433-50ed-41bf-a932-af8ecaaedde2	6	b790c6a6-ecd1-4b3a-afbc-22cd82e55658	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-15 16:52:31.821814	2025-09-15 16:52:31.821814
+e66071be-2e01-489b-98a4-2797fdddb247	6	b790c6a6-ecd1-4b3a-afbc-22cd82e55658	c57aa60c-61ea-4498-b01f-fedcafe8a32a	2025-09-15 16:52:31.821814	2025-09-15 16:52:31.821814
+599bada6-0d68-422f-9626-60cbbccbca87	85	f2868e11-6e1d-4ce4-a1a8-eb0384a60b71	9e69205f-6c6e-44a7-8ee6-89215e28a28e	2025-09-13 13:40:01.24719	2025-09-13 13:40:01.24719
+06196480-63a8-4166-86ce-ccfcaa2632f7	15	f2868e11-6e1d-4ce4-a1a8-eb0384a60b71	1ddbb748-37a6-4d66-a7d4-4957bdbc647f	2025-09-13 13:40:01.24719	2025-09-13 13:40:01.24719
+12c26361-559a-4836-89e2-e8b0b6802102	75	e1361643-e92a-419b-8eb8-fe2a188016e0	9e69205f-6c6e-44a7-8ee6-89215e28a28e	2025-09-13 13:43:22.630852	2025-09-13 13:43:22.630852
+642905ad-564d-40fa-b0f3-a116b9408e60	25	e1361643-e92a-419b-8eb8-fe2a188016e0	1ddbb748-37a6-4d66-a7d4-4957bdbc647f	2025-09-13 13:43:22.630852	2025-09-13 13:43:22.630852
+a5740152-e861-447b-b4be-6260fc6157f3	5	68381c41-b015-4218-93cb-2bcb64bee255	2da3d8f2-6a28-45ff-90a2-ea3a6bb2afe8	2025-09-13 13:48:26.787748	2025-09-13 13:48:26.787748
+75ef2baa-163c-4cfc-a2ce-b8cd8e936d27	85	7a933584-128c-4b82-8e5b-5e7312cadfdf	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-13 13:51:08.071676	2025-09-13 13:51:08.071676
+c47fd772-7d6d-4ab6-a184-59d7ce628ac1	10	7a933584-128c-4b82-8e5b-5e7312cadfdf	c57aa60c-61ea-4498-b01f-fedcafe8a32a	2025-09-13 13:51:08.071676	2025-09-13 13:51:08.071676
+05f97a4b-a151-4778-b7b9-0777025fa71c	5	7a933584-128c-4b82-8e5b-5e7312cadfdf	2e0faf2b-31a5-4c63-ac15-454be132796f	2025-09-13 13:51:08.071676	2025-09-13 13:51:08.071676
+9158d0fb-b8d7-4d8e-a0c5-79c078c01caa	40	d20646b6-efd1-49fc-8ffa-180461aea5ab	2e0faf2b-31a5-4c63-ac15-454be132796f	2025-09-13 13:53:26.008642	2025-09-13 13:53:26.008642
+7da0e201-9cd3-4ccc-af43-4c64c29196af	40	d20646b6-efd1-49fc-8ffa-180461aea5ab	2da3d8f2-6a28-45ff-90a2-ea3a6bb2afe8	2025-09-13 13:53:26.008642	2025-09-13 13:53:26.008642
+35343fdf-bd33-48d5-86cd-4095fff623aa	10	d20646b6-efd1-49fc-8ffa-180461aea5ab	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-13 13:53:26.008642	2025-09-13 13:53:26.008642
+8123f590-1979-4634-a5cd-9a942a256ac2	5	d20646b6-efd1-49fc-8ffa-180461aea5ab	97a87b01-35e8-490a-94b9-9bdae9c2f965	2025-09-13 13:53:26.008642	2025-09-13 13:53:26.008642
+b33827ad-6bd6-47dd-a880-639050edddd3	5	d20646b6-efd1-49fc-8ffa-180461aea5ab	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-13 13:53:26.008642	2025-09-13 13:53:26.008642
+141abe97-edd4-4bef-a338-901efb96346f	80	3a41edcb-2c19-4d06-9585-8fe745aba723	2da3d8f2-6a28-45ff-90a2-ea3a6bb2afe8	2025-09-13 13:55:46.237594	2025-09-13 13:55:46.237594
+2b9abee5-8a62-4392-a6c1-05ce8fed1af8	12	3a41edcb-2c19-4d06-9585-8fe745aba723	2e0faf2b-31a5-4c63-ac15-454be132796f	2025-09-13 13:55:46.237594	2025-09-13 13:55:46.237594
+2828a072-81f0-457b-84a2-e13100784a4d	8	3a41edcb-2c19-4d06-9585-8fe745aba723	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-13 13:55:46.237594	2025-09-13 13:55:46.237594
+7374dd55-6c7e-4a06-8765-f5b3ece7a8a9	80	ac45c513-55f3-437f-a10f-ba3c0763a746	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-13 18:58:21.752864	2025-09-13 18:58:21.752864
+eb2526bf-b436-47f8-8f2b-22dce44cd3c4	12	ac45c513-55f3-437f-a10f-ba3c0763a746	c57aa60c-61ea-4498-b01f-fedcafe8a32a	2025-09-13 18:58:21.752864	2025-09-13 18:58:21.752864
+fd899dbd-1e0b-466e-a718-7af05305dec2	8	ac45c513-55f3-437f-a10f-ba3c0763a746	2e0faf2b-31a5-4c63-ac15-454be132796f	2025-09-13 18:58:21.752864	2025-09-13 18:58:21.752864
+2d5de566-a0f7-4608-98d2-967f07e1a8af	3	21d5ce50-6ffa-44d9-869f-abcfeb518018	bba5b66d-9a9c-4b44-8dd6-9574760038ee	2025-09-15 09:56:04.711459	2025-09-15 09:56:04.711459
+f3c1e428-b3b9-4ded-bfb4-1ad676cc4ba8	6	21d5ce50-6ffa-44d9-869f-abcfeb518018	3eeaa9fa-0847-4780-9d01-185f91252794	2025-09-15 09:56:04.711459	2025-09-15 09:56:04.711459
+83baffe8-41f2-40f7-8064-3bef762ce882	2	21d5ce50-6ffa-44d9-869f-abcfeb518018	1ddbb748-37a6-4d66-a7d4-4957bdbc647f	2025-09-15 09:56:04.711459	2025-09-15 09:56:04.711459
+3363aeeb-7c23-45e4-81ee-5fb9aae1c6d5	2	21d5ce50-6ffa-44d9-869f-abcfeb518018	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-15 09:56:04.711459	2025-09-15 09:56:04.711459
+9e558cfb-871b-4cb9-a8a6-1ae7a64b1602	10	21d5ce50-6ffa-44d9-869f-abcfeb518018	fa8025e6-e106-475c-8b9d-77831132fb47	2025-09-15 09:56:04.711459	2025-09-15 09:56:04.711459
+dbeea24a-a02d-4dcc-bab9-005c10b41b59	22	21d5ce50-6ffa-44d9-869f-abcfeb518018	f6e65bfe-0746-4a8f-8210-0e9bf88d9886	2025-09-15 09:56:04.711459	2025-09-15 09:56:04.711459
+f2347470-a20c-4bb3-b24f-eaa762d89147	52	21d5ce50-6ffa-44d9-869f-abcfeb518018	57559b71-b757-468a-983d-a1b3cec4acef	2025-09-15 09:56:04.711459	2025-09-15 09:56:04.711459
+f7c21a68-0dec-4470-bbfb-137084151d1f	3	21d5ce50-6ffa-44d9-869f-abcfeb518018	9e69205f-6c6e-44a7-8ee6-89215e28a28e	2025-09-15 09:56:04.711459	2025-09-15 09:56:04.711459
+ecae9280-a0f8-4155-a38d-2b38d449b6c4	65	3a70ce9c-b1f0-43a7-8775-7d3e7c109c5d	97136fa7-622a-49d6-9d09-403a631d253d	2025-09-15 13:52:46.027223	2025-09-15 13:52:46.027223
+5b68c724-27b2-420b-94da-61d1aaee0c6e	15	3a70ce9c-b1f0-43a7-8775-7d3e7c109c5d	af854064-078a-4f50-af1d-8744e866751e	2025-09-15 13:52:46.027223	2025-09-15 13:52:46.027223
+74116468-a4a7-418a-af61-bd8daedc357c	15	3a70ce9c-b1f0-43a7-8775-7d3e7c109c5d	2e0faf2b-31a5-4c63-ac15-454be132796f	2025-09-15 13:52:46.027223	2025-09-15 13:52:46.027223
+a9f4d12f-bbc8-4ade-a9f1-17ee835ace29	5	3a70ce9c-b1f0-43a7-8775-7d3e7c109c5d	2da3d8f2-6a28-45ff-90a2-ea3a6bb2afe8	2025-09-15 13:52:46.027223	2025-09-15 13:52:46.027223
+c3fa9f24-18e0-441b-bb7e-0f83db028e79	48	aada0f37-1f30-4d61-a284-8003027bc871	97136fa7-622a-49d6-9d09-403a631d253d	2025-09-15 13:58:56.657299	2025-09-15 13:58:56.657299
+864dd2f1-cde5-4cb0-9c5b-c2c90eb89673	22	aada0f37-1f30-4d61-a284-8003027bc871	af854064-078a-4f50-af1d-8744e866751e	2025-09-15 13:58:56.657299	2025-09-15 13:58:56.657299
+f2ee0274-fdfb-4bf8-8466-58a7cef0a851	20	aada0f37-1f30-4d61-a284-8003027bc871	2e0faf2b-31a5-4c63-ac15-454be132796f	2025-09-15 13:58:56.657299	2025-09-15 13:58:56.657299
+459c4493-e8bf-4af9-95aa-4674fa3a5299	5	aada0f37-1f30-4d61-a284-8003027bc871	2da3d8f2-6a28-45ff-90a2-ea3a6bb2afe8	2025-09-15 13:58:56.657299	2025-09-15 13:58:56.657299
+d7c7e757-c0d3-44ab-95a4-9eea09daf6d0	5	aada0f37-1f30-4d61-a284-8003027bc871	97a87b01-35e8-490a-94b9-9bdae9c2f965	2025-09-15 13:58:56.657299	2025-09-15 13:58:56.657299
+26908b30-6a8b-4e5e-b7ca-8254c9c6bc26	60	3d6e76b5-b409-4f5b-bba4-c22cb10cfbd4	97136fa7-622a-49d6-9d09-403a631d253d	2025-09-15 14:04:18.701842	2025-09-15 14:04:18.701842
+6701ab93-6536-411f-941c-ef5717415ae5	20	3d6e76b5-b409-4f5b-bba4-c22cb10cfbd4	af854064-078a-4f50-af1d-8744e866751e	2025-09-15 14:04:18.701842	2025-09-15 14:04:18.701842
+33c5136f-6618-4886-880d-b36d40a3686b	15	3d6e76b5-b409-4f5b-bba4-c22cb10cfbd4	2e0faf2b-31a5-4c63-ac15-454be132796f	2025-09-15 14:04:18.701842	2025-09-15 14:04:18.701842
+a58702b7-0eb2-494c-a1df-2860ac0daddc	3	3d6e76b5-b409-4f5b-bba4-c22cb10cfbd4	2da3d8f2-6a28-45ff-90a2-ea3a6bb2afe8	2025-09-15 14:04:18.701842	2025-09-15 14:04:18.701842
+2c48484a-4ee8-4b36-8b45-4a5d7923299e	2	3d6e76b5-b409-4f5b-bba4-c22cb10cfbd4	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-15 14:04:18.701842	2025-09-15 14:04:18.701842
+25174bef-30a0-4069-93c7-7bd37a16d337	60	816440ad-f8f2-4ef7-a11f-b6a2bd63fcef	97136fa7-622a-49d6-9d09-403a631d253d	2025-09-15 14:10:46.364761	2025-09-15 14:10:46.364761
+681ecafa-db07-467a-a438-cbbee399f899	20	816440ad-f8f2-4ef7-a11f-b6a2bd63fcef	af854064-078a-4f50-af1d-8744e866751e	2025-09-15 14:10:46.364761	2025-09-15 14:10:46.364761
+93df12c2-6cc9-41f2-82f2-282dfe6b6261	15	816440ad-f8f2-4ef7-a11f-b6a2bd63fcef	2e0faf2b-31a5-4c63-ac15-454be132796f	2025-09-15 14:10:46.364761	2025-09-15 14:10:46.364761
+fc56868a-9c4f-41aa-b609-532b997e5d10	3	816440ad-f8f2-4ef7-a11f-b6a2bd63fcef	2da3d8f2-6a28-45ff-90a2-ea3a6bb2afe8	2025-09-15 14:10:46.364761	2025-09-15 14:10:46.364761
+cde697d9-6f6b-4323-b7ee-ece4ed93338f	2	816440ad-f8f2-4ef7-a11f-b6a2bd63fcef	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-15 14:10:46.364761	2025-09-15 14:10:46.364761
+cf38e6ca-128b-4e3c-8039-1c87aabb0be4	45	1959abd3-4ab1-42d4-b7e2-45693b899d51	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-15 14:16:02.076244	2025-09-15 14:16:02.076244
+677ffb1c-46cd-4c7a-969d-6eb0df8646c4	20	1959abd3-4ab1-42d4-b7e2-45693b899d51	2da3d8f2-6a28-45ff-90a2-ea3a6bb2afe8	2025-09-15 14:16:02.076244	2025-09-15 14:16:02.076244
+bead2ad6-815a-4ae1-bbeb-19173e9e4917	25	1959abd3-4ab1-42d4-b7e2-45693b899d51	0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a	2025-09-15 14:16:02.076244	2025-09-15 14:16:02.076244
+597fec7d-e2a8-48e5-b58b-b383485b19e1	5	1959abd3-4ab1-42d4-b7e2-45693b899d51	2e0faf2b-31a5-4c63-ac15-454be132796f	2025-09-15 14:16:02.076244	2025-09-15 14:16:02.076244
+324c90f3-11f7-4b70-bb34-2010b88e04b0	5	1959abd3-4ab1-42d4-b7e2-45693b899d51	c57aa60c-61ea-4498-b01f-fedcafe8a32a	2025-09-15 14:16:02.076244	2025-09-15 14:16:02.076244
+e602e532-982f-4800-b29e-31cc17a29ca4	85	8d2a9df4-af32-4943-b74b-ae901e866b32	97a87b01-35e8-490a-94b9-9bdae9c2f965	2025-09-15 14:57:51.105804	2025-09-15 14:57:51.105804
+bb1fd83c-50d4-4614-bca6-af3af96f592f	10	8d2a9df4-af32-4943-b74b-ae901e866b32	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-15 14:57:51.105804	2025-09-15 14:57:51.105804
+4a8d77c6-1dd1-4319-9906-0532ed1a1484	5	8d2a9df4-af32-4943-b74b-ae901e866b32	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-15 14:57:51.105804	2025-09-15 14:57:51.105804
+be948598-a700-42e4-af65-5466887b6b64	10	a9545ccb-3ec7-4646-95c9-f3a708d0d968	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-15 15:01:20.318382	2025-09-15 15:01:20.318382
+38f89ce3-0eb4-424c-bf70-06c65ea4562c	5	a9545ccb-3ec7-4646-95c9-f3a708d0d968	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-15 15:01:20.318382	2025-09-15 15:01:20.318382
+121d7a37-8b99-496a-b383-95933cd73c48	60	1f28edb2-29ae-467c-ad11-310c3f656fe2	97a87b01-35e8-490a-94b9-9bdae9c2f965	2025-09-15 15:04:48.59729	2025-09-15 15:04:48.59729
+a0cdb5ac-4bd2-4158-949b-cd2e74b23c9d	35	1f28edb2-29ae-467c-ad11-310c3f656fe2	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-15 15:04:48.59729	2025-09-15 15:04:48.59729
+75d23719-1f0b-40de-9631-dd12b436643b	5	1f28edb2-29ae-467c-ad11-310c3f656fe2	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-15 15:04:48.59729	2025-09-15 15:04:48.59729
+4e940981-bf15-48f3-bec5-43aaa5fc522e	80	af39600b-6fc5-435a-a5f8-a1d0a9994030	97a87b01-35e8-490a-94b9-9bdae9c2f965	2025-09-15 15:08:22.510033	2025-09-15 15:08:22.510033
+569f6cc6-fe5a-4ea7-bd6b-57dcaa6c5adc	15	af39600b-6fc5-435a-a5f8-a1d0a9994030	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-15 15:08:22.510033	2025-09-15 15:08:22.510033
+a4a661df-684f-4014-a027-1971d9f9a3c9	5	af39600b-6fc5-435a-a5f8-a1d0a9994030	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-15 15:08:22.510033	2025-09-15 15:08:22.510033
+6030f420-5e70-4892-a8b0-55470e3a9d15	80	cebf4622-c0a9-4759-a070-48c7556da67d	97a87b01-35e8-490a-94b9-9bdae9c2f965	2025-09-15 15:11:48.918655	2025-09-15 15:11:48.918655
+f68966d4-c225-48ad-8cc4-9444ee9d9798	15	cebf4622-c0a9-4759-a070-48c7556da67d	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-15 15:11:48.918655	2025-09-15 15:11:48.918655
+4f8a1980-0862-4d9c-aeea-76cf2985f41e	5	cebf4622-c0a9-4759-a070-48c7556da67d	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-15 15:11:48.918655	2025-09-15 15:11:48.918655
+d370718a-747a-45e9-b586-869812821c38	80	4f1c3655-21e7-4225-a39e-944774f59f76	97a87b01-35e8-490a-94b9-9bdae9c2f965	2025-09-15 15:15:38.059272	2025-09-15 15:15:38.059272
+a2b013b5-40e4-4b4d-9396-2ab669d8e74a	15	4f1c3655-21e7-4225-a39e-944774f59f76	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-15 15:15:38.059272	2025-09-15 15:15:38.059272
+bd3d0dbb-906d-4966-a762-a45ee39633e3	5	4f1c3655-21e7-4225-a39e-944774f59f76	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-15 15:15:38.059272	2025-09-15 15:15:38.059272
+84916456-bfd9-4710-91e7-83974424b28e	60	cfd086be-f452-4f1d-b0cc-3988d677a8b4	97a87b01-35e8-490a-94b9-9bdae9c2f965	2025-09-15 15:18:53.490871	2025-09-15 15:18:53.490871
+a2dabb74-1c1c-4bbf-84a8-b8c5d14c781d	35	cfd086be-f452-4f1d-b0cc-3988d677a8b4	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-15 15:18:53.490871	2025-09-15 15:18:53.490871
+fb82bafd-3698-4603-b986-916d1629cf23	5	cfd086be-f452-4f1d-b0cc-3988d677a8b4	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-15 15:18:53.490871	2025-09-15 15:18:53.490871
+f0ffebdb-f422-4664-a6ed-54779ac6be1e	60	4de0744d-0a78-4052-aa1b-e5340959d9fe	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-15 15:21:42.982047	2025-09-15 15:21:42.982047
+659afeb9-c2d0-4b56-bdc6-c7c6f1db437f	35	4de0744d-0a78-4052-aa1b-e5340959d9fe	97a87b01-35e8-490a-94b9-9bdae9c2f965	2025-09-15 15:21:42.982047	2025-09-15 15:21:42.982047
+bfb3014d-5c67-4f80-9dcf-241c719ebd2a	5	4de0744d-0a78-4052-aa1b-e5340959d9fe	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-15 15:21:42.982047	2025-09-15 15:21:42.982047
+bd287f1b-4158-4cca-848b-16d2eeb774c3	80	a2736a56-04b3-4437-835e-1e2dc8029c9e	97a87b01-35e8-490a-94b9-9bdae9c2f965	2025-09-15 15:26:02.180732	2025-09-15 15:26:02.180732
+754b5001-6742-4363-b17f-79f390f6fcbc	15	a2736a56-04b3-4437-835e-1e2dc8029c9e	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-15 15:26:02.180732	2025-09-15 15:26:02.180732
+d25b62f5-7313-4080-803c-2da3599ba1c7	5	a2736a56-04b3-4437-835e-1e2dc8029c9e	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-15 15:26:02.180732	2025-09-15 15:26:02.180732
+d1c3a453-2459-4495-b6d5-308abf4101de	15	908341ec-de1f-44bd-b84d-74ff8a7162a0	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-15 15:27:48.789435	2025-09-15 15:27:48.789435
+14c25f73-56fe-400c-96cf-ae6d15fe5b5c	5	908341ec-de1f-44bd-b84d-74ff8a7162a0	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-15 15:27:48.789435	2025-09-15 15:27:48.789435
+db4baef5-6c77-46d6-9af0-a46bed18b20b	85	7fd82f79-1f5f-4bae-8f2d-b94ecae595d5	97a87b01-35e8-490a-94b9-9bdae9c2f965	2025-09-15 15:30:56.252495	2025-09-15 15:30:56.252495
+32a624f9-a2bd-45e8-993e-3bb36e58cc5c	12	7fd82f79-1f5f-4bae-8f2d-b94ecae595d5	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-15 15:30:56.252495	2025-09-15 15:30:56.252495
+c8d7a595-10e9-4f7c-9bc0-685c497456d5	60	2f49a8e8-6f42-422c-aa6f-c23e215620e2	9e69205f-6c6e-44a7-8ee6-89215e28a28e	2025-09-13 13:40:48.036075	2025-09-13 13:40:48.036075
+08678f90-38ce-48da-a669-780883d357e5	25	2f49a8e8-6f42-422c-aa6f-c23e215620e2	57559b71-b757-468a-983d-a1b3cec4acef	2025-09-13 13:40:48.036075	2025-09-13 13:40:48.036075
+3132c75a-d632-4caa-9924-24db513f3700	15	2f49a8e8-6f42-422c-aa6f-c23e215620e2	1ddbb748-37a6-4d66-a7d4-4957bdbc647f	2025-09-13 13:40:48.036075	2025-09-13 13:40:48.036075
+f48323b7-50cb-48fe-88ee-086f5ed25587	85	a8f9abc7-4515-4f5e-a4f5-095b1b17b9e1	fa8025e6-e106-475c-8b9d-77831132fb47	2025-09-13 13:46:43.114324	2025-09-13 13:46:43.114324
+12d336b8-41dd-4f01-89ca-f75a7f94fa45	10	a8f9abc7-4515-4f5e-a4f5-095b1b17b9e1	f6e65bfe-0746-4a8f-8210-0e9bf88d9886	2025-09-13 13:46:43.114324	2025-09-13 13:46:43.114324
+3b5c1c87-2951-4a18-9f37-c9aade011c20	5	a8f9abc7-4515-4f5e-a4f5-095b1b17b9e1	3eeaa9fa-0847-4780-9d01-185f91252794	2025-09-13 13:46:43.114324	2025-09-13 13:46:43.114324
+a50aa944-6080-4e7e-95b2-bf46eea1176d	75	ff188494-a871-4721-9d1e-26742539080c	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-13 13:49:25.881441	2025-09-13 13:49:25.881441
+c60ef09e-d200-4ab4-a0f3-580ac75f6cd5	15	ff188494-a871-4721-9d1e-26742539080c	c57aa60c-61ea-4498-b01f-fedcafe8a32a	2025-09-13 13:49:25.881441	2025-09-13 13:49:25.881441
+6c4f4225-9579-46c8-8ce1-9fd783b634ce	10	ff188494-a871-4721-9d1e-26742539080c	2da3d8f2-6a28-45ff-90a2-ea3a6bb2afe8	2025-09-13 13:49:25.881441	2025-09-13 13:49:25.881441
+accb762e-bef0-4022-b2c5-5c1e068c3e43	45	b22e5ada-86c1-4104-828b-b7e06a7f5d16	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-13 13:51:47.574343	2025-09-13 13:51:47.574343
+fbabe331-7420-4eb4-b970-4be1df7a256f	30	b22e5ada-86c1-4104-828b-b7e06a7f5d16	2da3d8f2-6a28-45ff-90a2-ea3a6bb2afe8	2025-09-13 13:51:47.574343	2025-09-13 13:51:47.574343
+6d498b92-59a3-44f3-8411-42ebac51289a	15	b22e5ada-86c1-4104-828b-b7e06a7f5d16	0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a	2025-09-13 13:51:47.574343	2025-09-13 13:51:47.574343
+13ae534b-f530-433e-9a6c-9edf542d41d4	5	b22e5ada-86c1-4104-828b-b7e06a7f5d16	2e0faf2b-31a5-4c63-ac15-454be132796f	2025-09-13 13:51:47.574343	2025-09-13 13:51:47.574343
+724d9f33-55ba-42fe-ae4b-6984f3f3b89f	5	b22e5ada-86c1-4104-828b-b7e06a7f5d16	c57aa60c-61ea-4498-b01f-fedcafe8a32a	2025-09-13 13:51:47.574343	2025-09-13 13:51:47.574343
+91912d2b-f7ac-4c46-b648-d5820d567e01	75	ed5db0ac-4343-4e68-a884-d5f84e4020c1	97136fa7-622a-49d6-9d09-403a631d253d	2025-09-13 13:54:14.75226	2025-09-13 13:54:14.75226
+a863c711-3f4d-46d6-9a7f-e9690055d02b	12	ed5db0ac-4343-4e68-a884-d5f84e4020c1	2e0faf2b-31a5-4c63-ac15-454be132796f	2025-09-13 13:54:14.75226	2025-09-13 13:54:14.75226
+53265f8d-a992-4c31-ad8b-d1ee46f4ed4a	8	ed5db0ac-4343-4e68-a884-d5f84e4020c1	af854064-078a-4f50-af1d-8744e866751e	2025-09-13 13:54:14.75226	2025-09-13 13:54:14.75226
+8308efb0-2e7d-4ec2-9423-2aa48e188e0c	5	ed5db0ac-4343-4e68-a884-d5f84e4020c1	2da3d8f2-6a28-45ff-90a2-ea3a6bb2afe8	2025-09-13 13:54:14.75226	2025-09-13 13:54:14.75226
+91315b1a-4114-42c1-be92-0e29603c890a	58	ff20bd08-57ae-465f-aa54-d1ba0f7862a9	b4658891-9713-48c4-864c-8dd907da19b0	2025-09-13 17:44:07.113635	2025-09-13 17:44:07.113635
+ff5acc92-bdbb-44e8-904f-7bf35e9972f4	22	ff20bd08-57ae-465f-aa54-d1ba0f7862a9	0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a	2025-09-13 17:44:07.113635	2025-09-13 17:44:07.113635
+0e3b875d-6c56-4afb-afbd-81f6bd3b4f03	12	ff20bd08-57ae-465f-aa54-d1ba0f7862a9	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-13 17:44:07.113635	2025-09-13 17:44:07.113635
+7ac8d79c-a332-4ed7-8cca-5f208d01a7d7	5	ff20bd08-57ae-465f-aa54-d1ba0f7862a9	c57aa60c-61ea-4498-b01f-fedcafe8a32a	2025-09-13 17:44:07.113635	2025-09-13 17:44:07.113635
+b27f2ad2-aba2-4d07-8489-e4ee3ea93364	3	ff20bd08-57ae-465f-aa54-d1ba0f7862a9	9e69205f-6c6e-44a7-8ee6-89215e28a28e	2025-09-13 17:44:07.113635	2025-09-13 17:44:07.113635
+33175784-cf0c-4748-9f85-565d710a6ae7	50	90b8d661-a9ef-47e5-8c98-b0599874a972	2da3d8f2-6a28-45ff-90a2-ea3a6bb2afe8	2025-09-13 18:59:24.368676	2025-09-13 18:59:24.368676
+65642a11-86d6-408f-ab78-06e8b8996a7d	20	90b8d661-a9ef-47e5-8c98-b0599874a972	0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a	2025-09-13 18:59:24.368676	2025-09-13 18:59:24.368676
+e4286179-373f-41c3-9c1b-d39f55ac1500	10	90b8d661-a9ef-47e5-8c98-b0599874a972	2e0faf2b-31a5-4c63-ac15-454be132796f	2025-09-13 18:59:24.368676	2025-09-13 18:59:24.368676
+a56462ff-97fe-4b38-86dd-68200f999602	15	90b8d661-a9ef-47e5-8c98-b0599874a972	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-13 18:59:24.368676	2025-09-13 18:59:24.368676
+b00f3be8-bb08-4d7c-9bc3-6ce0fc5a0c5e	5	90b8d661-a9ef-47e5-8c98-b0599874a972	97136fa7-622a-49d6-9d09-403a631d253d	2025-09-13 18:59:24.368676	2025-09-13 18:59:24.368676
+03a21fe3-bac8-4483-a3cc-03331fe07de7	75	1b8fe6fc-9ede-4f28-b4a0-30504db61fed	2da3d8f2-6a28-45ff-90a2-ea3a6bb2afe8	2025-09-15 13:49:07.426149	2025-09-15 13:49:07.426149
+83a63a30-ea8b-42d9-ba0e-f38488e626e5	10	1b8fe6fc-9ede-4f28-b4a0-30504db61fed	2e0faf2b-31a5-4c63-ac15-454be132796f	2025-09-15 13:49:07.426149	2025-09-15 13:49:07.426149
+dc66ad63-7169-4daa-8e45-298edddc7f5a	8	1b8fe6fc-9ede-4f28-b4a0-30504db61fed	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-15 13:49:07.426149	2025-09-15 13:49:07.426149
+2dea6789-eec1-4672-a535-fab15e2176ca	5	1b8fe6fc-9ede-4f28-b4a0-30504db61fed	97136fa7-622a-49d6-9d09-403a631d253d	2025-09-15 13:49:07.426149	2025-09-15 13:49:07.426149
+e3103ac1-0aeb-4589-b50d-9de5d3db9d03	2	1b8fe6fc-9ede-4f28-b4a0-30504db61fed	1ddbb748-37a6-4d66-a7d4-4957bdbc647f	2025-09-15 13:49:07.426149	2025-09-15 13:49:07.426149
+e60d43e3-42af-457f-a842-534b603e492d	50	16ba69dc-e99d-4a71-bbcb-0f3ce096a9d9	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-15 13:55:08.03466	2025-09-15 13:55:08.03466
+cf6aa6d8-9618-4d2a-bdd0-d2426766ec5f	25	16ba69dc-e99d-4a71-bbcb-0f3ce096a9d9	2da3d8f2-6a28-45ff-90a2-ea3a6bb2afe8	2025-09-15 13:55:08.03466	2025-09-15 13:55:08.03466
+c7631a70-4529-440c-9fa1-94ce4f96cbe0	20	16ba69dc-e99d-4a71-bbcb-0f3ce096a9d9	0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a	2025-09-15 13:55:08.03466	2025-09-15 13:55:08.03466
+bf299f3a-9370-4516-815a-fe3c760ba703	5	16ba69dc-e99d-4a71-bbcb-0f3ce096a9d9	2e0faf2b-31a5-4c63-ac15-454be132796f	2025-09-15 13:55:08.03466	2025-09-15 13:55:08.03466
+d0454546-c957-4eec-9e27-dbeab5001968	45	4035dfef-3cc6-4a15-a97f-c167bd274d02	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-15 14:00:56.738217	2025-09-15 14:00:56.738217
+05a4270e-4e49-4ed7-8edb-b9bda7b89e7d	25	4035dfef-3cc6-4a15-a97f-c167bd274d02	2da3d8f2-6a28-45ff-90a2-ea3a6bb2afe8	2025-09-15 14:00:56.738217	2025-09-15 14:00:56.738217
+a32afdd4-47bc-4e1f-b560-7c1b96410f30	20	4035dfef-3cc6-4a15-a97f-c167bd274d02	0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a	2025-09-15 14:00:56.738217	2025-09-15 14:00:56.738217
+81d52847-afe3-43e0-ab87-f474837b3656	5	4035dfef-3cc6-4a15-a97f-c167bd274d02	2e0faf2b-31a5-4c63-ac15-454be132796f	2025-09-15 14:00:56.738217	2025-09-15 14:00:56.738217
+ded66de7-6c5b-406c-8b74-7e38d9de671b	5	4035dfef-3cc6-4a15-a97f-c167bd274d02	c57aa60c-61ea-4498-b01f-fedcafe8a32a	2025-09-15 14:00:56.738217	2025-09-15 14:00:56.738217
+4f74006a-7805-4eb8-b440-5267b7a4d0a1	48	9ab8fe00-58de-48c4-942d-b10e8d16f1c1	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-15 14:06:14.941483	2025-09-15 14:06:14.941483
+4bc539b0-11ff-438e-9437-ea4df55d693c	22	9ab8fe00-58de-48c4-942d-b10e8d16f1c1	2da3d8f2-6a28-45ff-90a2-ea3a6bb2afe8	2025-09-15 14:06:14.941483	2025-09-15 14:06:14.941483
+b32e6078-f35b-4942-9be8-f2820a21af97	20	9ab8fe00-58de-48c4-942d-b10e8d16f1c1	0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a	2025-09-15 14:06:14.941483	2025-09-15 14:06:14.941483
+80744536-fcfd-45a3-a889-5aa6f1054131	5	9ab8fe00-58de-48c4-942d-b10e8d16f1c1	2e0faf2b-31a5-4c63-ac15-454be132796f	2025-09-15 14:06:14.941483	2025-09-15 14:06:14.941483
+d0f4106e-800d-474e-890a-ed121b2b1dd0	5	9ab8fe00-58de-48c4-942d-b10e8d16f1c1	c57aa60c-61ea-4498-b01f-fedcafe8a32a	2025-09-15 14:06:14.941483	2025-09-15 14:06:14.941483
+35d2c143-298a-44a8-a065-2554af7b21b8	45	92d77415-1f9a-430b-ba52-0a09ec07b3a1	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-15 14:12:19.479223	2025-09-15 14:12:19.479223
+40209c86-752a-4fd8-b252-184bcd313217	25	92d77415-1f9a-430b-ba52-0a09ec07b3a1	2da3d8f2-6a28-45ff-90a2-ea3a6bb2afe8	2025-09-15 14:12:19.479223	2025-09-15 14:12:19.479223
+2a90444d-8299-4513-88ce-897affad8dee	20	92d77415-1f9a-430b-ba52-0a09ec07b3a1	0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a	2025-09-15 14:12:19.479223	2025-09-15 14:12:19.479223
+dab65346-eba4-4d91-adde-955617b5d130	5	92d77415-1f9a-430b-ba52-0a09ec07b3a1	2e0faf2b-31a5-4c63-ac15-454be132796f	2025-09-15 14:12:19.479223	2025-09-15 14:12:19.479223
+94aadeaa-052d-46ce-951f-a7d4e18122cf	5	92d77415-1f9a-430b-ba52-0a09ec07b3a1	c57aa60c-61ea-4498-b01f-fedcafe8a32a	2025-09-15 14:12:19.479223	2025-09-15 14:12:19.479223
+0f0116d4-2ed7-446c-9b13-171937e2138a	75	12221e5c-0208-48fc-8c56-62c266932f74	2da3d8f2-6a28-45ff-90a2-ea3a6bb2afe8	2025-09-15 14:53:04.69952	2025-09-15 14:53:04.69952
+414b6229-0743-4766-981d-96b1864ff038	10	12221e5c-0208-48fc-8c56-62c266932f74	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-15 14:53:04.69952	2025-09-15 14:53:04.69952
+a68e3876-0ccf-4ad6-8c69-46342da40196	10	12221e5c-0208-48fc-8c56-62c266932f74	2e0faf2b-31a5-4c63-ac15-454be132796f	2025-09-15 14:53:04.69952	2025-09-15 14:53:04.69952
+4983d067-26b2-4324-9552-f17c68916149	5	12221e5c-0208-48fc-8c56-62c266932f74	97136fa7-622a-49d6-9d09-403a631d253d	2025-09-15 14:53:04.69952	2025-09-15 14:53:04.69952
+4c0916df-b2a4-4f83-92a8-ef31609c5b44	85	b99df7e8-eb44-4be1-be81-701347580781	97a87b01-35e8-490a-94b9-9bdae9c2f965	2025-09-15 15:00:03.100637	2025-09-15 15:00:03.100637
+9236bbc2-b94f-4376-bdf9-cae437d2e491	10	b99df7e8-eb44-4be1-be81-701347580781	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-15 15:00:03.100637	2025-09-15 15:00:03.100637
+f8f27acc-a463-4e95-bf9e-eda198129b75	5	b99df7e8-eb44-4be1-be81-701347580781	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-15 15:00:03.100637	2025-09-15 15:00:03.100637
+73ebc048-6e12-4907-8667-20258e404ad9	85	04a13a1c-de2b-46f4-be62-3fa6b4655d0d	97a87b01-35e8-490a-94b9-9bdae9c2f965	2025-09-15 15:03:04.356088	2025-09-15 15:03:04.356088
+c147241a-95b8-4932-bcef-25f75d5f18db	10	04a13a1c-de2b-46f4-be62-3fa6b4655d0d	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-15 15:03:04.356088	2025-09-15 15:03:04.356088
+1a43aa1e-16e3-4e47-bde2-d93aa2b6dd31	5	04a13a1c-de2b-46f4-be62-3fa6b4655d0d	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-15 15:03:04.356088	2025-09-15 15:03:04.356088
+f63057bc-1976-4c2b-9ad4-0391d08e1ed7	60	101f365e-5c84-438a-84b4-c8e798bd0aff	97a87b01-35e8-490a-94b9-9bdae9c2f965	2025-09-15 15:06:15.666652	2025-09-15 15:06:15.666652
+9366a26a-70ce-4b8e-8946-82b6fec89003	35	101f365e-5c84-438a-84b4-c8e798bd0aff	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-15 15:06:15.666652	2025-09-15 15:06:15.666652
+ecf2cc82-0f1d-463a-bdab-1e40918ee5cf	5	101f365e-5c84-438a-84b4-c8e798bd0aff	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-15 15:06:15.666652	2025-09-15 15:06:15.666652
+2d61aafb-71e7-4c5d-9921-90d20e6c517b	80	4d72c2f1-2c10-45a3-9f5e-1f04012c0681	97a87b01-35e8-490a-94b9-9bdae9c2f965	2025-09-15 15:09:36.228389	2025-09-15 15:09:36.228389
+4fd1e812-156a-4b85-a3b9-29652ebfcc80	15	4d72c2f1-2c10-45a3-9f5e-1f04012c0681	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-15 15:09:36.228389	2025-09-15 15:09:36.228389
+7a762299-9fcd-4783-b972-eb9aa35174da	5	4d72c2f1-2c10-45a3-9f5e-1f04012c0681	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-15 15:09:36.228389	2025-09-15 15:09:36.228389
+e765e290-9980-4134-b9db-1ed9223b171a	80	6d5dc164-3c35-4719-85f1-5c75558f0125	97a87b01-35e8-490a-94b9-9bdae9c2f965	2025-09-15 15:13:48.37304	2025-09-15 15:13:48.37304
+a27a19c9-725e-4e26-9636-6edd0aa505bc	15	6d5dc164-3c35-4719-85f1-5c75558f0125	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-15 15:13:48.37304	2025-09-15 15:13:48.37304
+63313f59-c9c5-4644-8701-d9ba657bf4e8	5	6d5dc164-3c35-4719-85f1-5c75558f0125	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-15 15:13:48.37304	2025-09-15 15:13:48.37304
+7026c74a-34a4-4649-bdd6-32c9b2321862	65	8508cffc-1df6-4db2-9447-3bafd74a1325	97a87b01-35e8-490a-94b9-9bdae9c2f965	2025-09-15 15:17:26.088304	2025-09-15 15:17:26.088304
+cd2ddd51-93ba-4018-9f26-4a56fe562040	30	8508cffc-1df6-4db2-9447-3bafd74a1325	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-15 15:17:26.088304	2025-09-15 15:17:26.088304
+dc0552f7-4e18-4bdd-88c9-e60e191fa244	5	8508cffc-1df6-4db2-9447-3bafd74a1325	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-15 15:17:26.088304	2025-09-15 15:17:26.088304
+1548b34d-7686-49d4-870d-238c8872e9cd	80	d7abed66-3c4a-490b-91cc-8e714336f9fa	97a87b01-35e8-490a-94b9-9bdae9c2f965	2025-09-15 15:20:08.470728	2025-09-15 15:20:08.470728
+70a2a8df-6808-4761-bce3-7398de8c8027	15	d7abed66-3c4a-490b-91cc-8e714336f9fa	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-15 15:20:08.470728	2025-09-15 15:20:08.470728
+d05efa1f-62db-4856-926d-3239ab7cb022	5	d7abed66-3c4a-490b-91cc-8e714336f9fa	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-15 15:20:08.470728	2025-09-15 15:20:08.470728
+5ed04a78-7988-4abd-aeba-e094cb47ae82	80	da809d98-950b-4ca0-a71b-c67d21fd66da	97a87b01-35e8-490a-94b9-9bdae9c2f965	2025-09-15 15:23:42.601958	2025-09-15 15:23:42.601958
+7ab9f1e3-563c-4de8-a72f-dae2ddd83e58	15	da809d98-950b-4ca0-a71b-c67d21fd66da	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-15 15:23:42.601958	2025-09-15 15:23:42.601958
+fe5434b5-b38a-4691-beda-f0a6244467ee	5	da809d98-950b-4ca0-a71b-c67d21fd66da	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-15 15:23:42.601958	2025-09-15 15:23:42.601958
+23657443-cbb9-4701-a3f1-bed63ca53031	80	908341ec-de1f-44bd-b84d-74ff8a7162a0	97a87b01-35e8-490a-94b9-9bdae9c2f965	2025-09-15 15:27:48.789435	2025-09-15 15:27:48.789435
+a78d10bb-140d-40d7-a411-524a0c03d38e	75	7e80becf-491c-4b48-a98a-a36fff26e29c	1ddbb748-37a6-4d66-a7d4-4957bdbc647f	2025-09-13 13:41:47.000536	2025-09-13 13:41:47.000536
+9a5f0921-4314-4907-9d55-9ba90153f81a	10	7e80becf-491c-4b48-a98a-a36fff26e29c	9e69205f-6c6e-44a7-8ee6-89215e28a28e	2025-09-13 13:41:47.000536	2025-09-13 13:41:47.000536
+f0a6359c-e28b-425e-860b-6f6fb0ed50fd	10	7e80becf-491c-4b48-a98a-a36fff26e29c	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-13 13:41:47.000536	2025-09-13 13:41:47.000536
+e978017d-bdea-4c4f-96bc-c87742ca0971	5	7e80becf-491c-4b48-a98a-a36fff26e29c	ab1dbd50-83a4-42c7-a3cd-da1784818ec8	2025-09-13 13:41:47.000536	2025-09-13 13:41:47.000536
+e59a6a40-d8ad-4eed-815a-097ee2790d6b	80	1fdffa53-d9cb-4aa1-9999-5c83fdb9be80	ab1dbd50-83a4-42c7-a3cd-da1784818ec8	2025-09-13 13:47:35.595819	2025-09-13 13:47:35.595819
+8088a96e-8909-4ecd-9614-dbf2bfa26e13	15	1fdffa53-d9cb-4aa1-9999-5c83fdb9be80	f6e65bfe-0746-4a8f-8210-0e9bf88d9886	2025-09-13 13:47:35.595819	2025-09-13 13:47:35.595819
+0df355f6-55a1-4acc-ae81-2d7eec8b37a3	5	1fdffa53-d9cb-4aa1-9999-5c83fdb9be80	3eeaa9fa-0847-4780-9d01-185f91252794	2025-09-13 13:47:35.595819	2025-09-13 13:47:35.595819
+8b6c7622-f10a-468d-947e-67929866eeae	75	984e5dac-f3a8-4980-bfc9-da370cf45e46	97136fa7-622a-49d6-9d09-403a631d253d	2025-09-13 13:50:16.616427	2025-09-13 13:50:16.616427
+553b393d-d5f6-4152-86ef-6533351c6a15	15	984e5dac-f3a8-4980-bfc9-da370cf45e46	af854064-078a-4f50-af1d-8744e866751e	2025-09-13 13:50:16.616427	2025-09-13 13:50:16.616427
+c0b752c3-4872-4749-a030-666173d7219e	10	984e5dac-f3a8-4980-bfc9-da370cf45e46	2e0faf2b-31a5-4c63-ac15-454be132796f	2025-09-13 13:50:16.616427	2025-09-13 13:50:16.616427
+08f77568-4852-4a76-b6ef-0bc1906ef4fe	28	1f8abb63-8024-46ca-ac1e-2574a839eed6	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-13 13:52:31.633878	2025-09-13 13:52:31.633878
+16db0d89-ce7c-438f-b2d8-32addd56c731	7	1f8abb63-8024-46ca-ac1e-2574a839eed6	2da3d8f2-6a28-45ff-90a2-ea3a6bb2afe8	2025-09-13 13:52:31.633878	2025-09-13 13:52:31.633878
+2dafcc4b-b07e-45b1-b4e4-e94ea6e8fb50	20	1f8abb63-8024-46ca-ac1e-2574a839eed6	0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a	2025-09-13 13:52:31.633878	2025-09-13 13:52:31.633878
+74649e78-0458-486c-b721-f6e5cbdbdfe2	16	1f8abb63-8024-46ca-ac1e-2574a839eed6	57559b71-b757-468a-983d-a1b3cec4acef	2025-09-13 13:52:31.633878	2025-09-13 13:52:31.633878
+85324cc7-8f1a-425f-8756-ab1964ed9732	10	1f8abb63-8024-46ca-ac1e-2574a839eed6	f6e65bfe-0746-4a8f-8210-0e9bf88d9886	2025-09-13 13:52:31.633878	2025-09-13 13:52:31.633878
+5eed48b9-2be9-402f-abd9-e37d17b9dd4c	5	1f8abb63-8024-46ca-ac1e-2574a839eed6	bba5b66d-9a9c-4b44-8dd6-9574760038ee	2025-09-13 13:52:31.633878	2025-09-13 13:52:31.633878
+a4d2bfd3-6a18-46a0-8411-15abfc0bbac5	7	1f8abb63-8024-46ca-ac1e-2574a839eed6	2e0faf2b-31a5-4c63-ac15-454be132796f	2025-09-13 13:52:31.633878	2025-09-13 13:52:31.633878
+cfac532b-a1ca-4b45-8bcd-6b5ca0219258	5	1f8abb63-8024-46ca-ac1e-2574a839eed6	c57aa60c-61ea-4498-b01f-fedcafe8a32a	2025-09-13 13:52:31.633878	2025-09-13 13:52:31.633878
+d0574d54-41c1-427b-8920-1310b0c160e2	1	1f8abb63-8024-46ca-ac1e-2574a839eed6	1ddbb748-37a6-4d66-a7d4-4957bdbc647f	2025-09-13 13:52:31.633878	2025-09-13 13:52:31.633878
+e643c8ed-a900-466c-800c-962b350b9887	1	1f8abb63-8024-46ca-ac1e-2574a839eed6	9e69205f-6c6e-44a7-8ee6-89215e28a28e	2025-09-13 13:52:31.633878	2025-09-13 13:52:31.633878
+42bdf76e-108a-42c3-bdae-60f35aed6364	75	b8fa1238-0f58-4daa-ade8-0f8c6fa2d1b1	97136fa7-622a-49d6-9d09-403a631d253d	2025-09-13 13:54:54.488751	2025-09-13 13:54:54.488751
+47abd228-eb78-4f15-becc-a2092069a72d	12	b8fa1238-0f58-4daa-ade8-0f8c6fa2d1b1	2e0faf2b-31a5-4c63-ac15-454be132796f	2025-09-13 13:54:54.488751	2025-09-13 13:54:54.488751
+d594cb52-dc75-48a4-a77c-89410a3bef11	8	b8fa1238-0f58-4daa-ade8-0f8c6fa2d1b1	af854064-078a-4f50-af1d-8744e866751e	2025-09-13 13:54:54.488751	2025-09-13 13:54:54.488751
+4f5d4336-9830-4f4c-b8ae-8a088cbf149a	5	b8fa1238-0f58-4daa-ade8-0f8c6fa2d1b1	2da3d8f2-6a28-45ff-90a2-ea3a6bb2afe8	2025-09-13 13:54:54.488751	2025-09-13 13:54:54.488751
+9da915b5-5e36-4a44-8510-3a4015d7913b	52	5ab252b3-204d-4846-80e8-a7629f2d2e25	57559b71-b757-468a-983d-a1b3cec4acef	2025-09-13 17:45:37.47417	2025-09-13 17:45:37.47417
+55c0f946-c549-4377-b33f-6d60a162ef68	22	5ab252b3-204d-4846-80e8-a7629f2d2e25	f6e65bfe-0746-4a8f-8210-0e9bf88d9886	2025-09-13 17:45:37.47417	2025-09-13 17:45:37.47417
+31970d3a-fa65-41ab-9869-05326045d812	12	5ab252b3-204d-4846-80e8-a7629f2d2e25	fa8025e6-e106-475c-8b9d-77831132fb47	2025-09-13 17:45:37.47417	2025-09-13 17:45:37.47417
+3fd0fbc0-4fd5-49b1-b7ba-63e270e420f6	5	5ab252b3-204d-4846-80e8-a7629f2d2e25	3eeaa9fa-0847-4780-9d01-185f91252794	2025-09-13 17:45:37.47417	2025-09-13 17:45:37.47417
+6060d08f-9ec8-43de-94e9-91a40488e5f6	4	5ab252b3-204d-4846-80e8-a7629f2d2e25	bba5b66d-9a9c-4b44-8dd6-9574760038ee	2025-09-13 17:45:37.47417	2025-09-13 17:45:37.47417
+cb7a3ca2-263d-436e-a282-d62e11e568a5	3	5ab252b3-204d-4846-80e8-a7629f2d2e25	9e69205f-6c6e-44a7-8ee6-89215e28a28e	2025-09-13 17:45:37.47417	2025-09-13 17:45:37.47417
+7d164aab-d70a-4c90-97b8-b3acf1edf726	2	5ab252b3-204d-4846-80e8-a7629f2d2e25	ab1dbd50-83a4-42c7-a3cd-da1784818ec8	2025-09-13 17:45:37.47417	2025-09-13 17:45:37.47417
+ce367017-fc30-4f84-9623-6d3ff31d6f9a	75	4353173b-93b2-4fb1-b462-fc8330b15ce5	2da3d8f2-6a28-45ff-90a2-ea3a6bb2afe8	2025-09-15 13:51:04.217011	2025-09-15 13:51:04.217011
+501a09df-4650-4951-bd79-e9a301827ee3	10	4353173b-93b2-4fb1-b462-fc8330b15ce5	2e0faf2b-31a5-4c63-ac15-454be132796f	2025-09-15 13:51:04.217011	2025-09-15 13:51:04.217011
+3de9fff9-6e82-44aa-8341-8487071997a1	8	4353173b-93b2-4fb1-b462-fc8330b15ce5	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-15 13:51:04.217011	2025-09-15 13:51:04.217011
+d6132dcc-ec80-4c75-8cee-5f27ee20eb8a	5	4353173b-93b2-4fb1-b462-fc8330b15ce5	97136fa7-622a-49d6-9d09-403a631d253d	2025-09-15 13:51:04.217011	2025-09-15 13:51:04.217011
+d2f94718-bff6-466a-8367-3f0b402129a0	2	4353173b-93b2-4fb1-b462-fc8330b15ce5	1ddbb748-37a6-4d66-a7d4-4957bdbc647f	2025-09-15 13:51:04.217011	2025-09-15 13:51:04.217011
+bd876b3b-461f-4339-a26c-27fcecbcc3b9	62	afd7f719-5789-48a0-a5d9-77e9cb1669bb	97136fa7-622a-49d6-9d09-403a631d253d	2025-09-15 13:57:12.653004	2025-09-15 13:57:12.653004
+0803aeed-0311-4c61-8ffc-abe3ff702f7f	23	afd7f719-5789-48a0-a5d9-77e9cb1669bb	af854064-078a-4f50-af1d-8744e866751e	2025-09-15 13:57:12.653004	2025-09-15 13:57:12.653004
+1851092f-8018-41f7-a1d1-986a688dc1fb	12	afd7f719-5789-48a0-a5d9-77e9cb1669bb	2e0faf2b-31a5-4c63-ac15-454be132796f	2025-09-15 13:57:12.653004	2025-09-15 13:57:12.653004
+92565839-b36d-485a-be09-66a68aa0702e	3	afd7f719-5789-48a0-a5d9-77e9cb1669bb	2da3d8f2-6a28-45ff-90a2-ea3a6bb2afe8	2025-09-15 13:57:12.653004	2025-09-15 13:57:12.653004
+ec5e3e50-0637-40c2-b2b7-8768a0012abb	75	77aa5752-a586-4dfe-b69d-4da16fff0b79	2da3d8f2-6a28-45ff-90a2-ea3a6bb2afe8	2025-09-15 14:02:33.373556	2025-09-15 14:02:33.373556
+29eb319a-c9b2-48d9-931d-4d6ad4b2ec06	10	77aa5752-a586-4dfe-b69d-4da16fff0b79	2e0faf2b-31a5-4c63-ac15-454be132796f	2025-09-15 14:02:33.373556	2025-09-15 14:02:33.373556
+26b8e5fc-4f5f-43c3-a193-7ec649d510b9	8	77aa5752-a586-4dfe-b69d-4da16fff0b79	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-15 14:02:33.373556	2025-09-15 14:02:33.373556
+1ca25744-c8b8-49e7-95a8-e3bec19d4d8e	5	77aa5752-a586-4dfe-b69d-4da16fff0b79	97136fa7-622a-49d6-9d09-403a631d253d	2025-09-15 14:02:33.373556	2025-09-15 14:02:33.373556
+35219f66-81cf-46ab-9d87-fc9a145f0680	2	77aa5752-a586-4dfe-b69d-4da16fff0b79	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-15 14:02:33.373556	2025-09-15 14:02:33.373556
+564c9359-1b9c-46da-a81b-2b3adf22c2ae	45	506d1cc7-529a-42af-b5bf-4c4d0a9aa409	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-15 14:08:28.313515	2025-09-15 14:08:28.313515
+5188ca28-734f-4ce5-8788-5d90e0dd389d	25	506d1cc7-529a-42af-b5bf-4c4d0a9aa409	2da3d8f2-6a28-45ff-90a2-ea3a6bb2afe8	2025-09-15 14:08:28.313515	2025-09-15 14:08:28.313515
+5112d377-3116-4290-945d-12c104b6e09b	20	506d1cc7-529a-42af-b5bf-4c4d0a9aa409	0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a	2025-09-15 14:08:28.313515	2025-09-15 14:08:28.313515
+bb7e2e0a-8d5a-432c-b3de-dda07cefacf7	5	506d1cc7-529a-42af-b5bf-4c4d0a9aa409	2e0faf2b-31a5-4c63-ac15-454be132796f	2025-09-15 14:08:28.313515	2025-09-15 14:08:28.313515
+f42c02b2-1b8e-4e2c-9ddf-76c0e1b19636	5	506d1cc7-529a-42af-b5bf-4c4d0a9aa409	c57aa60c-61ea-4498-b01f-fedcafe8a32a	2025-09-15 14:08:28.313515	2025-09-15 14:08:28.313515
+928e1272-5067-42b2-bf8d-2bbe574d2ca3	45	48191b99-06fa-4218-b61b-c9b9abd73278	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-15 14:13:58.854521	2025-09-15 14:13:58.854521
+aec5f8ab-1ebd-413d-8d62-c1c4977bd480	10	978f906a-8584-4cdf-9d7f-f96d60865e3b	fa8025e6-e106-475c-8b9d-77831132fb47	2025-09-11 16:00:42.409093	2025-09-11 16:00:42.409093
+1ad7d76c-7e0a-4ac9-9ee3-1608be05c668	5	978f906a-8584-4cdf-9d7f-f96d60865e3b	bba5b66d-9a9c-4b44-8dd6-9574760038ee	2025-09-11 16:00:42.409093	2025-09-11 16:00:42.409093
+d1a83f31-c864-4bac-9631-32c41b357bd1	90	ad76d69c-5e90-4643-b507-9e9226d8b5cd	2e0faf2b-31a5-4c63-ac15-454be132796f	2025-09-11 16:11:27.0279	2025-09-11 16:11:27.0279
+c360d3e5-8896-4d21-ab1d-fcb5ac5d1f26	5	ad76d69c-5e90-4643-b507-9e9226d8b5cd	af854064-078a-4f50-af1d-8744e866751e	2025-09-11 16:11:27.0279	2025-09-11 16:11:27.0279
+a9ff0fee-3a9a-426e-be9e-e806f688a6ce	5	ad76d69c-5e90-4643-b507-9e9226d8b5cd	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-11 16:11:27.0279	2025-09-11 16:11:27.0279
+366c94e6-9495-4a42-82a1-024150cbaa6e	92	5de5124e-8ebb-4477-b4b3-e1122cc80496	2e0faf2b-31a5-4c63-ac15-454be132796f	2025-09-11 16:18:03.659796	2025-09-11 16:18:03.659796
+2adf6aad-7cd9-441f-9aa8-bcac999239aa	8	5de5124e-8ebb-4477-b4b3-e1122cc80496	af854064-078a-4f50-af1d-8744e866751e	2025-09-11 16:18:03.659796	2025-09-11 16:18:03.659796
+089a90d2-8336-4f26-98ac-b810f00f0d64	30	8cccb149-8553-494d-bcb5-ffa9b06e7c0f	831f39bd-80a8-4d11-9964-bde1788abae1	2025-09-11 16:59:29.838433	2025-09-11 16:59:29.838433
+babde18c-9160-4fde-8424-00cc10743c76	22	8cccb149-8553-494d-bcb5-ffa9b06e7c0f	2e0faf2b-31a5-4c63-ac15-454be132796f	2025-09-11 16:59:29.838433	2025-09-11 16:59:29.838433
+421c7970-9a7b-4831-91a7-9e8fd425fcb8	20	8cccb149-8553-494d-bcb5-ffa9b06e7c0f	af854064-078a-4f50-af1d-8744e866751e	2025-09-11 16:59:29.838433	2025-09-11 16:59:29.838433
+657dcce5-566c-4700-b386-f16b178d977a	13	8cccb149-8553-494d-bcb5-ffa9b06e7c0f	97136fa7-622a-49d6-9d09-403a631d253d	2025-09-11 16:59:29.838433	2025-09-11 16:59:29.838433
+df06095c-0b19-4c7e-870a-0a82ace42edd	10	8cccb149-8553-494d-bcb5-ffa9b06e7c0f	97a87b01-35e8-490a-94b9-9bdae9c2f965	2025-09-11 16:59:29.838433	2025-09-11 16:59:29.838433
+7b0bd36e-10d6-402e-a3f9-56ab26fb5de5	5	8cccb149-8553-494d-bcb5-ffa9b06e7c0f	be38dcef-1bc8-487b-a44f-96df1ab9e68c	2025-09-11 16:59:29.838433	2025-09-11 16:59:29.838433
+8251bf78-3990-44d8-880a-0e41b9ba3ea8	40	31b8aa6a-448d-4e4c-bd1e-6386060b526e	831f39bd-80a8-4d11-9964-bde1788abae1	2025-09-11 17:08:45.360274	2025-09-11 17:08:45.360274
+41796f79-11a9-4fbe-8ce5-6335ce7b6fdc	18	31b8aa6a-448d-4e4c-bd1e-6386060b526e	af854064-078a-4f50-af1d-8744e866751e	2025-09-11 17:08:45.360274	2025-09-11 17:08:45.360274
+01d4fc0b-498d-4706-83fc-4723b213104c	15	31b8aa6a-448d-4e4c-bd1e-6386060b526e	2e0faf2b-31a5-4c63-ac15-454be132796f	2025-09-11 17:08:45.360274	2025-09-11 17:08:45.360274
+c3344b86-b458-4c9e-b729-695ab11ddcef	12	31b8aa6a-448d-4e4c-bd1e-6386060b526e	97a87b01-35e8-490a-94b9-9bdae9c2f965	2025-09-11 17:08:45.360274	2025-09-11 17:08:45.360274
+abe16b63-b9ed-49c6-8ee2-37682cb9b357	10	31b8aa6a-448d-4e4c-bd1e-6386060b526e	97136fa7-622a-49d6-9d09-403a631d253d	2025-09-11 17:08:45.360274	2025-09-11 17:08:45.360274
+56732361-edc2-45c6-806b-c0e90212c022	5	31b8aa6a-448d-4e4c-bd1e-6386060b526e	be38dcef-1bc8-487b-a44f-96df1ab9e68c	2025-09-11 17:08:45.360274	2025-09-11 17:08:45.360274
+cd29f3ea-8db9-469a-ad9b-59201f05d856	37	c1ca2c25-9148-4977-99fe-3acda0b4ad33	831f39bd-80a8-4d11-9964-bde1788abae1	2025-09-11 17:16:45.545345	2025-09-11 17:16:45.545345
+0b9ddf3f-de32-4c24-aa89-c83ddaf1d30b	20	c1ca2c25-9148-4977-99fe-3acda0b4ad33	af854064-078a-4f50-af1d-8744e866751e	2025-09-11 17:16:45.545345	2025-09-11 17:16:45.545345
+782dd544-b7d6-4c1e-8466-f1397427ba1b	17	c1ca2c25-9148-4977-99fe-3acda0b4ad33	2e0faf2b-31a5-4c63-ac15-454be132796f	2025-09-11 17:16:45.545345	2025-09-11 17:16:45.545345
+56a5ae69-edea-4355-8f51-29dba64d37f7	25	48191b99-06fa-4218-b61b-c9b9abd73278	2da3d8f2-6a28-45ff-90a2-ea3a6bb2afe8	2025-09-15 14:13:58.854521	2025-09-15 14:13:58.854521
+2cfcfa47-1e18-4af2-9f83-bd459e892a32	20	48191b99-06fa-4218-b61b-c9b9abd73278	0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a	2025-09-15 14:13:58.854521	2025-09-15 14:13:58.854521
+a43f0776-9e22-4820-a24d-59effb198737	5	48191b99-06fa-4218-b61b-c9b9abd73278	2e0faf2b-31a5-4c63-ac15-454be132796f	2025-09-15 14:13:58.854521	2025-09-15 14:13:58.854521
+63734720-617c-413d-ba36-6b3985ffac4f	5	48191b99-06fa-4218-b61b-c9b9abd73278	c57aa60c-61ea-4498-b01f-fedcafe8a32a	2025-09-15 14:13:58.854521	2025-09-15 14:13:58.854521
+a17886b7-e826-438c-9485-ff273ec29041	85	8ca7bf65-0ddb-4c64-ba64-f71f25c85d7c	97a87b01-35e8-490a-94b9-9bdae9c2f965	2025-09-15 14:54:43.629364	2025-09-15 14:54:43.629364
+060dbd18-0db2-4bba-8b68-1228afe771f7	10	8ca7bf65-0ddb-4c64-ba64-f71f25c85d7c	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-15 14:54:43.629364	2025-09-15 14:54:43.629364
+3ca9fad8-aab1-436f-8a11-3e831fe99cd7	5	8ca7bf65-0ddb-4c64-ba64-f71f25c85d7c	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-15 14:54:43.629364	2025-09-15 14:54:43.629364
+c8fc1659-87be-4cec-be8e-7ad8ad636740	85	a9545ccb-3ec7-4646-95c9-f3a708d0d968	97a87b01-35e8-490a-94b9-9bdae9c2f965	2025-09-15 15:01:20.318382	2025-09-15 15:01:20.318382
+37ff5b5e-a3fa-48cf-8473-859a70eba93c	40	22df24eb-6bb7-45bc-ab46-9d6022eec774	57559b71-b757-468a-983d-a1b3cec4acef	2025-09-11 16:03:21.690598	2025-09-11 16:03:21.690598
+c42e7fcd-71a5-4ee7-a06b-9ab576060ebe	30	22df24eb-6bb7-45bc-ab46-9d6022eec774	f6e65bfe-0746-4a8f-8210-0e9bf88d9886	2025-09-11 16:03:21.690598	2025-09-11 16:03:21.690598
+9c6e1de9-ac52-4162-9a88-3890b42d71ca	10	22df24eb-6bb7-45bc-ab46-9d6022eec774	3eeaa9fa-0847-4780-9d01-185f91252794	2025-09-11 16:03:21.690598	2025-09-11 16:03:21.690598
+cf9aca24-3b37-4e97-a159-91e9a33841d9	10	22df24eb-6bb7-45bc-ab46-9d6022eec774	fa8025e6-e106-475c-8b9d-77831132fb47	2025-09-11 16:03:21.690598	2025-09-11 16:03:21.690598
+79b6fa87-feee-4b13-8f41-d658ba271c76	5	22df24eb-6bb7-45bc-ab46-9d6022eec774	9e69205f-6c6e-44a7-8ee6-89215e28a28e	2025-09-11 16:03:21.690598	2025-09-11 16:03:21.690598
+3bbd2852-1f19-4db5-9819-7c40c9807ec5	3	22df24eb-6bb7-45bc-ab46-9d6022eec774	2e0faf2b-31a5-4c63-ac15-454be132796f	2025-09-11 16:03:21.690598	2025-09-11 16:03:21.690598
+f299361d-6339-4f5d-81c2-aa3b1a7725f9	2	22df24eb-6bb7-45bc-ab46-9d6022eec774	af854064-078a-4f50-af1d-8744e866751e	2025-09-11 16:03:21.690598	2025-09-11 16:03:21.690598
+d7e7c65d-7a8b-4a01-800b-dddf82e2c69d	90	cae7b841-a7f8-4973-baf0-4aadbbdcd0ca	2e0faf2b-31a5-4c63-ac15-454be132796f	2025-09-11 16:12:39.936546	2025-09-11 16:12:39.936546
+a3ddf599-e578-4855-9965-e1038ba43031	5	cae7b841-a7f8-4973-baf0-4aadbbdcd0ca	af854064-078a-4f50-af1d-8744e866751e	2025-09-11 16:12:39.936546	2025-09-11 16:12:39.936546
+3c2cfe65-a4b2-4e04-b648-1b4bb6fdb027	5	cae7b841-a7f8-4973-baf0-4aadbbdcd0ca	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-11 16:12:39.936546	2025-09-11 16:12:39.936546
+bba1f4b5-b391-4ba1-a3a8-00df162e6d19	45	6bb0675d-eba0-496c-bd20-5fd11a4a0282	831f39bd-80a8-4d11-9964-bde1788abae1	2025-09-11 16:20:31.521136	2025-09-11 16:20:31.521136
+18f028d8-8e0c-4ecc-a8b8-ab206e20a0ae	15	6bb0675d-eba0-496c-bd20-5fd11a4a0282	af854064-078a-4f50-af1d-8744e866751e	2025-09-11 16:20:31.521136	2025-09-11 16:20:31.521136
+3a9723a9-e415-4478-a351-01b0076fa6fd	15	6bb0675d-eba0-496c-bd20-5fd11a4a0282	2e0faf2b-31a5-4c63-ac15-454be132796f	2025-09-11 16:20:31.521136	2025-09-11 16:20:31.521136
+7f476c8a-ed31-402d-bb57-79840d5df34a	15	6bb0675d-eba0-496c-bd20-5fd11a4a0282	97a87b01-35e8-490a-94b9-9bdae9c2f965	2025-09-11 16:20:31.521136	2025-09-11 16:20:31.521136
+439e1daa-9c47-44c7-a250-b63765a7b47a	7	6bb0675d-eba0-496c-bd20-5fd11a4a0282	be38dcef-1bc8-487b-a44f-96df1ab9e68c	2025-09-11 16:20:31.521136	2025-09-11 16:20:31.521136
+1b5a8a0c-c63d-4856-b3ff-0c4078c926e6	3	6bb0675d-eba0-496c-bd20-5fd11a4a0282	97136fa7-622a-49d6-9d09-403a631d253d	2025-09-11 16:20:31.521136	2025-09-11 16:20:31.521136
+a917f3f5-4fdc-4695-9a7a-17a8ada7f545	42	0be1c49c-d742-4881-b014-360bc297af34	831f39bd-80a8-4d11-9964-bde1788abae1	2025-09-11 17:02:40.528238	2025-09-11 17:02:40.528238
+f88a9718-9e84-4afc-ae20-35dc2308ee3e	10	0be1c49c-d742-4881-b014-360bc297af34	be38dcef-1bc8-487b-a44f-96df1ab9e68c	2025-09-11 17:02:40.528238	2025-09-11 17:02:40.528238
+e77a7971-e0fe-441c-9f28-b1922fd0f41f	15	0be1c49c-d742-4881-b014-360bc297af34	af854064-078a-4f50-af1d-8744e866751e	2025-09-11 17:02:40.528238	2025-09-11 17:02:40.528238
+44477b6c-3702-4096-a538-8f2805842db2	12	0be1c49c-d742-4881-b014-360bc297af34	2e0faf2b-31a5-4c63-ac15-454be132796f	2025-09-11 17:02:40.528238	2025-09-11 17:02:40.528238
+f99159ce-a483-4a74-a9f9-4df11b8ccaa1	8	0be1c49c-d742-4881-b014-360bc297af34	97136fa7-622a-49d6-9d09-403a631d253d	2025-09-11 17:02:40.528238	2025-09-11 17:02:40.528238
+ee6e281c-7340-4943-97eb-9e86caba428a	13	0be1c49c-d742-4881-b014-360bc297af34	97a87b01-35e8-490a-94b9-9bdae9c2f965	2025-09-11 17:02:40.528238	2025-09-11 17:02:40.528238
+c23ab0ff-8f6d-4263-831c-aa7bc8f860c1	38	6389ce45-7d30-4372-8c29-e5816d893b1a	831f39bd-80a8-4d11-9964-bde1788abae1	2025-09-11 17:10:21.645332	2025-09-11 17:10:21.645332
+79ce82aa-8c3f-40ca-835e-84e1d57da4fa	20	6389ce45-7d30-4372-8c29-e5816d893b1a	af854064-078a-4f50-af1d-8744e866751e	2025-09-11 17:10:21.645332	2025-09-11 17:10:21.645332
+e092d9db-fe33-44db-bbde-9178d12203ee	18	6389ce45-7d30-4372-8c29-e5816d893b1a	2e0faf2b-31a5-4c63-ac15-454be132796f	2025-09-11 17:10:21.645332	2025-09-11 17:10:21.645332
+87dbafdb-e254-4ca0-8128-f18919b60125	12	6389ce45-7d30-4372-8c29-e5816d893b1a	97a87b01-35e8-490a-94b9-9bdae9c2f965	2025-09-11 17:10:21.645332	2025-09-11 17:10:21.645332
+4e250746-9fc0-4bcd-b7a1-21cc7ffedb0e	7	6389ce45-7d30-4372-8c29-e5816d893b1a	97136fa7-622a-49d6-9d09-403a631d253d	2025-09-11 17:10:21.645332	2025-09-11 17:10:21.645332
+e198fe60-6ae3-441f-8323-fe7774628545	5	6389ce45-7d30-4372-8c29-e5816d893b1a	be38dcef-1bc8-487b-a44f-96df1ab9e68c	2025-09-11 17:10:21.645332	2025-09-11 17:10:21.645332
+9cfa183a-240d-4829-b627-7a4dacc77cb3	8	c1ca2c25-9148-4977-99fe-3acda0b4ad33	be38dcef-1bc8-487b-a44f-96df1ab9e68c	2025-09-11 17:16:45.545345	2025-09-11 17:16:45.545345
+f5082bc7-6f08-4fb8-8e9f-82875fe83fab	6	c1ca2c25-9148-4977-99fe-3acda0b4ad33	97136fa7-622a-49d6-9d09-403a631d253d	2025-09-11 17:16:45.545345	2025-09-11 17:16:45.545345
+39be562c-8d4d-41ed-8fe3-d05ed0ae803d	10	c1ca2c25-9148-4977-99fe-3acda0b4ad33	97a87b01-35e8-490a-94b9-9bdae9c2f965	2025-09-11 17:16:45.545345	2025-09-11 17:16:45.545345
+209cafe6-706b-46e3-98bf-a9e160e95368	2	c1ca2c25-9148-4977-99fe-3acda0b4ad33	1ddbb748-37a6-4d66-a7d4-4957bdbc647f	2025-09-11 17:16:45.545345	2025-09-11 17:16:45.545345
+b4af4ed3-11cd-4a63-9f75-2de1d252c8ad	55	bd3338ee-1841-4686-a98c-3493ab9cfa7e	831f39bd-80a8-4d11-9964-bde1788abae1	2025-09-11 17:32:48.638313	2025-09-11 17:32:48.638313
+43c59f4b-0739-4dfb-954e-62f83d9247c3	20	bd3338ee-1841-4686-a98c-3493ab9cfa7e	97a87b01-35e8-490a-94b9-9bdae9c2f965	2025-09-11 17:32:48.638313	2025-09-11 17:32:48.638313
+afe11f3c-237c-49e3-a66a-23c6fc6238d4	12	bd3338ee-1841-4686-a98c-3493ab9cfa7e	be38dcef-1bc8-487b-a44f-96df1ab9e68c	2025-09-11 17:32:48.638313	2025-09-11 17:32:48.638313
+52c3de6b-a13d-4aa5-af70-18de28fdd83a	6	bd3338ee-1841-4686-a98c-3493ab9cfa7e	af854064-078a-4f50-af1d-8744e866751e	2025-09-11 17:32:48.638313	2025-09-11 17:32:48.638313
+2534f62d-8832-4a7d-8185-0a5db38f0d39	4	bd3338ee-1841-4686-a98c-3493ab9cfa7e	2e0faf2b-31a5-4c63-ac15-454be132796f	2025-09-11 17:32:48.638313	2025-09-11 17:32:48.638313
+c632b633-c62d-4f5a-8d91-90f361dbac53	2	bd3338ee-1841-4686-a98c-3493ab9cfa7e	97136fa7-622a-49d6-9d09-403a631d253d	2025-09-11 17:32:48.638313	2025-09-11 17:32:48.638313
+7fd5d526-4efc-47ff-88c9-e5e0855284a0	1	bd3338ee-1841-4686-a98c-3493ab9cfa7e	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-11 17:32:48.638313	2025-09-11 17:32:48.638313
+e636bdf8-1cae-49e0-87e2-75cba195013e	58	4a2c7160-6cf2-456d-8ef4-80040b720420	831f39bd-80a8-4d11-9964-bde1788abae1	2025-09-11 17:37:50.97794	2025-09-11 17:37:50.97794
+0abe68c6-68fb-4df2-b55a-4d6fba89c99b	12	4a2c7160-6cf2-456d-8ef4-80040b720420	be38dcef-1bc8-487b-a44f-96df1ab9e68c	2025-09-11 17:37:50.97794	2025-09-11 17:37:50.97794
+230991d0-98c9-4bec-8bf1-ac9a585ee7b4	10	4a2c7160-6cf2-456d-8ef4-80040b720420	97a87b01-35e8-490a-94b9-9bdae9c2f965	2025-09-11 17:37:50.97794	2025-09-11 17:37:50.97794
+c6f0b2da-7305-4fc7-8864-9e8812732123	8	4a2c7160-6cf2-456d-8ef4-80040b720420	af854064-078a-4f50-af1d-8744e866751e	2025-09-11 17:37:50.97794	2025-09-11 17:37:50.97794
+ed96732d-deb8-4458-9871-83bfb3ce4ea8	6	4a2c7160-6cf2-456d-8ef4-80040b720420	2e0faf2b-31a5-4c63-ac15-454be132796f	2025-09-11 17:37:50.97794	2025-09-11 17:37:50.97794
+230b1610-59f0-4094-8770-02cae1b805c6	3	4a2c7160-6cf2-456d-8ef4-80040b720420	9e69205f-6c6e-44a7-8ee6-89215e28a28e	2025-09-11 17:37:50.97794	2025-09-11 17:37:50.97794
+28a62dcd-ad3b-4ec8-921d-4bcda4717217	3	4a2c7160-6cf2-456d-8ef4-80040b720420	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-11 17:37:50.97794	2025-09-11 17:37:50.97794
+db401453-b874-4b16-b072-47d81aba5de2	48	c18b086c-b0c3-4d1c-a6a3-2653e36c5dff	3eeaa9fa-0847-4780-9d01-185f91252794	2025-09-11 17:44:31.379179	2025-09-11 17:44:31.379179
+f5ffdf86-8aa6-4d71-a208-c6e5aae3368f	25	c18b086c-b0c3-4d1c-a6a3-2653e36c5dff	f6e65bfe-0746-4a8f-8210-0e9bf88d9886	2025-09-11 17:44:31.379179	2025-09-11 17:44:31.379179
+0193707a-0382-45cb-b909-81e56745cc8a	8	c18b086c-b0c3-4d1c-a6a3-2653e36c5dff	fa8025e6-e106-475c-8b9d-77831132fb47	2025-09-11 17:44:31.379179	2025-09-11 17:44:31.379179
+339c526a-17a9-4330-b44a-f429d569e773	5	c18b086c-b0c3-4d1c-a6a3-2653e36c5dff	2e0faf2b-31a5-4c63-ac15-454be132796f	2025-09-11 17:44:31.379179	2025-09-11 17:44:31.379179
+96bcaf37-56b6-40c4-a5d6-bf448287825d	3	c18b086c-b0c3-4d1c-a6a3-2653e36c5dff	af854064-078a-4f50-af1d-8744e866751e	2025-09-11 17:44:31.379179	2025-09-11 17:44:31.379179
+e423b179-dee9-4be7-a0d4-cf0cbbef5246	4	c18b086c-b0c3-4d1c-a6a3-2653e36c5dff	831f39bd-80a8-4d11-9964-bde1788abae1	2025-09-11 17:44:31.379179	2025-09-11 17:44:31.379179
+aa63ffd6-87a5-4572-b50a-ba65b044219b	4	c18b086c-b0c3-4d1c-a6a3-2653e36c5dff	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-11 17:44:31.379179	2025-09-11 17:44:31.379179
+b79e7d60-5b6e-420c-ab42-2dd3b3c6961f	2	c18b086c-b0c3-4d1c-a6a3-2653e36c5dff	9e69205f-6c6e-44a7-8ee6-89215e28a28e	2025-09-11 17:44:31.379179	2025-09-11 17:44:31.379179
+32d34e62-997f-48c4-8f3a-c8dc674818d5	1	c18b086c-b0c3-4d1c-a6a3-2653e36c5dff	1ddbb748-37a6-4d66-a7d4-4957bdbc647f	2025-09-11 17:44:31.379179	2025-09-11 17:44:31.379179
+5adf0432-a275-44d0-b595-b29205d04ba2	4	ca38bcba-658f-4c7a-be54-b2c3f845fbe0	2e0faf2b-31a5-4c63-ac15-454be132796f	2025-09-11 17:49:21.680004	2025-09-11 17:49:21.680004
+8b78639e-93be-48d4-af0b-0b0e2e321a29	4	ca38bcba-658f-4c7a-be54-b2c3f845fbe0	9e69205f-6c6e-44a7-8ee6-89215e28a28e	2025-09-11 17:49:21.680004	2025-09-11 17:49:21.680004
+52577b19-7f41-4207-80a4-f5634fd0a7ad	2	ca38bcba-658f-4c7a-be54-b2c3f845fbe0	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-11 17:49:21.680004	2025-09-11 17:49:21.680004
+80dc2d1a-fc3d-43b6-bffe-0c11eb9bcbfe	34	04d3e242-807d-4cba-9be4-e3d11a8efbc4	f6e65bfe-0746-4a8f-8210-0e9bf88d9886	2025-09-11 17:51:16.449063	2025-09-11 17:51:16.449063
+2d6b4f72-0fb8-431c-8f4c-96deb5d1a661	30	04d3e242-807d-4cba-9be4-e3d11a8efbc4	57559b71-b757-468a-983d-a1b3cec4acef	2025-09-11 17:51:16.449063	2025-09-11 17:51:16.449063
+3f3d80e2-9666-4b3d-984c-09187aa47c79	18	04d3e242-807d-4cba-9be4-e3d11a8efbc4	3eeaa9fa-0847-4780-9d01-185f91252794	2025-09-11 17:51:16.449063	2025-09-11 17:51:16.449063
+44b0a9b4-bc41-45b9-bf43-ce2b9f8ed7ae	10	04d3e242-807d-4cba-9be4-e3d11a8efbc4	fa8025e6-e106-475c-8b9d-77831132fb47	2025-09-11 17:51:16.449063	2025-09-11 17:51:16.449063
+7b02c305-b830-43fa-8849-71467844d587	6	04d3e242-807d-4cba-9be4-e3d11a8efbc4	bba5b66d-9a9c-4b44-8dd6-9574760038ee	2025-09-11 17:51:16.449063	2025-09-11 17:51:16.449063
+0fab935e-5836-45fc-adb4-0ed3bf2a27b5	2	04d3e242-807d-4cba-9be4-e3d11a8efbc4	9e69205f-6c6e-44a7-8ee6-89215e28a28e	2025-09-11 17:51:16.449063	2025-09-11 17:51:16.449063
+ac6342d8-b43f-474e-bbd3-1a7ff417d611	35	1dcd59ab-674e-49d8-9a06-9c17c2a05730	3eeaa9fa-0847-4780-9d01-185f91252794	2025-09-11 18:07:02.429548	2025-09-11 18:07:02.429548
+6caeee67-a6fc-475c-a4ed-3481c26743f2	26	1dcd59ab-674e-49d8-9a06-9c17c2a05730	f6e65bfe-0746-4a8f-8210-0e9bf88d9886	2025-09-11 18:07:02.429548	2025-09-11 18:07:02.429548
+389670d4-6367-49d9-90f2-6e2301c1ef82	12	1dcd59ab-674e-49d8-9a06-9c17c2a05730	57559b71-b757-468a-983d-a1b3cec4acef	2025-09-11 18:07:02.429548	2025-09-11 18:07:02.429548
+7500543a-9097-42b4-b964-4b3c4a9e7124	6	1dcd59ab-674e-49d8-9a06-9c17c2a05730	fa8025e6-e106-475c-8b9d-77831132fb47	2025-09-11 18:07:02.429548	2025-09-11 18:07:02.429548
+b918a5b9-f6b3-437e-8515-a0c62c8fdf42	5	1dcd59ab-674e-49d8-9a06-9c17c2a05730	831f39bd-80a8-4d11-9964-bde1788abae1	2025-09-11 18:07:02.429548	2025-09-11 18:07:02.429548
+3f4885f1-4ec9-429f-bcbc-937b57cc42ea	4	1dcd59ab-674e-49d8-9a06-9c17c2a05730	2e0faf2b-31a5-4c63-ac15-454be132796f	2025-09-11 18:07:02.429548	2025-09-11 18:07:02.429548
+3dc1b1e7-d727-481f-bbc2-e17cf24704c1	4	1dcd59ab-674e-49d8-9a06-9c17c2a05730	af854064-078a-4f50-af1d-8744e866751e	2025-09-11 18:07:02.429548	2025-09-11 18:07:02.429548
+98567da9-390a-4861-b5e5-9c75f58b5938	3	1dcd59ab-674e-49d8-9a06-9c17c2a05730	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-11 18:07:02.429548	2025-09-11 18:07:02.429548
+69c36807-cb9b-4af4-ae33-0bf857bb52d1	3	1dcd59ab-674e-49d8-9a06-9c17c2a05730	9e69205f-6c6e-44a7-8ee6-89215e28a28e	2025-09-11 18:07:02.429548	2025-09-11 18:07:02.429548
+33b941ac-bb32-46fd-b6b0-a7b9eb696189	2	1dcd59ab-674e-49d8-9a06-9c17c2a05730	bba5b66d-9a9c-4b44-8dd6-9574760038ee	2025-09-11 18:07:02.429548	2025-09-11 18:07:02.429548
+1eba9122-a5c2-4b68-980c-69bb5bfcbc78	100	f5f03cc7-c2bc-4367-9042-107114d634ce	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-11 18:37:04.339334	2025-09-11 18:37:04.339334
+83dc8216-3875-49ac-92db-ab048208f097	100	7545289f-f7c8-456b-98e9-f7b15600254c	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-11 18:47:22.869193	2025-09-11 18:47:22.869193
+45d38a10-9e9f-4736-a667-182ff4e2db55	70	c5864272-ae27-4363-add6-7ead1b7b3379	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-11 18:57:25.854338	2025-09-11 18:57:25.854338
+21b58d71-a417-4b8e-890b-8b9bb1ee452b	30	c5864272-ae27-4363-add6-7ead1b7b3379	97a87b01-35e8-490a-94b9-9bdae9c2f965	2025-09-11 18:57:25.854338	2025-09-11 18:57:25.854338
+07696781-d1ff-4a48-9184-331b3ff2caca	60	3edb750e-4725-4338-a079-d48dc8797917	a3a8eae0-6315-4435-8974-f2c07ec3567f	2025-09-13 13:07:23.889914	2025-09-13 13:07:23.889914
+169af6b0-f185-4e4b-b856-0fcda0b84f20	25	3edb750e-4725-4338-a079-d48dc8797917	b4658891-9713-48c4-864c-8dd907da19b0	2025-09-13 13:07:23.889914	2025-09-13 13:07:23.889914
+cadc8e7b-f732-4e6b-b607-c16dc4ef6089	10	3edb750e-4725-4338-a079-d48dc8797917	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-13 13:07:23.889914	2025-09-13 13:07:23.889914
+b963c5ab-e888-4865-94e7-c7573bd84080	32	379d64cd-24bf-4a81-9b97-936c9a088e17	f6e65bfe-0746-4a8f-8210-0e9bf88d9886	2025-09-11 17:52:42.228449	2025-09-11 17:52:42.228449
+94a7ff3e-52c1-4379-8069-c62509cf4ec1	24	379d64cd-24bf-4a81-9b97-936c9a088e17	57559b71-b757-468a-983d-a1b3cec4acef	2025-09-11 17:52:42.228449	2025-09-11 17:52:42.228449
+a03dd1cc-82f9-4988-8233-15837f6528a5	20	379d64cd-24bf-4a81-9b97-936c9a088e17	3eeaa9fa-0847-4780-9d01-185f91252794	2025-09-11 17:52:42.228449	2025-09-11 17:52:42.228449
+94fb8030-c692-4835-9bf9-6f03b93c2fbf	8	379d64cd-24bf-4a81-9b97-936c9a088e17	fa8025e6-e106-475c-8b9d-77831132fb47	2025-09-11 17:52:42.228449	2025-09-11 17:52:42.228449
+08079138-53a3-447d-bc85-2ce55edbb9a7	5	379d64cd-24bf-4a81-9b97-936c9a088e17	2e0faf2b-31a5-4c63-ac15-454be132796f	2025-09-11 17:52:42.228449	2025-09-11 17:52:42.228449
+96a4ad28-d9dc-42cf-a485-cbf057f55f27	5	379d64cd-24bf-4a81-9b97-936c9a088e17	831f39bd-80a8-4d11-9964-bde1788abae1	2025-09-11 17:52:42.228449	2025-09-11 17:52:42.228449
+3638ad72-345e-47bf-a982-1ba6e1ceb2b9	4	379d64cd-24bf-4a81-9b97-936c9a088e17	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-11 17:52:42.228449	2025-09-11 17:52:42.228449
+de53deb9-72e7-4ca4-8de4-6084f101fc9c	2	379d64cd-24bf-4a81-9b97-936c9a088e17	9e69205f-6c6e-44a7-8ee6-89215e28a28e	2025-09-11 17:52:42.228449	2025-09-11 17:52:42.228449
+d412e377-41ec-4197-b48f-d9705f2c0837	50	be3c01a7-3bd0-448c-844b-583bd824c90b	3eeaa9fa-0847-4780-9d01-185f91252794	2025-09-11 18:08:42.081844	2025-09-11 18:08:42.081844
+7875c988-9d32-4e4d-9695-3883d54e1391	22	be3c01a7-3bd0-448c-844b-583bd824c90b	f6e65bfe-0746-4a8f-8210-0e9bf88d9886	2025-09-11 18:08:42.081844	2025-09-11 18:08:42.081844
+837f055f-088d-421f-98ee-a08aec7efaf4	6	be3c01a7-3bd0-448c-844b-583bd824c90b	fa8025e6-e106-475c-8b9d-77831132fb47	2025-09-11 18:08:42.081844	2025-09-11 18:08:42.081844
+fa834e2c-b7ad-47fd-af0f-4a3158087fd8	5	be3c01a7-3bd0-448c-844b-583bd824c90b	831f39bd-80a8-4d11-9964-bde1788abae1	2025-09-11 18:08:42.081844	2025-09-11 18:08:42.081844
+49451b6e-5b48-4d8d-8a64-c9c335987e50	4	be3c01a7-3bd0-448c-844b-583bd824c90b	2e0faf2b-31a5-4c63-ac15-454be132796f	2025-09-11 18:08:42.081844	2025-09-11 18:08:42.081844
+0d341878-975b-4e39-ad76-056d53236bfb	3	be3c01a7-3bd0-448c-844b-583bd824c90b	af854064-078a-4f50-af1d-8744e866751e	2025-09-11 18:08:42.081844	2025-09-11 18:08:42.081844
+3d8d0601-db4f-4656-a1f2-9d948469bb89	6	be3c01a7-3bd0-448c-844b-583bd824c90b	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-11 18:08:42.081844	2025-09-11 18:08:42.081844
+93f0a7ad-835c-49f3-9e7a-da1a80952bca	2	be3c01a7-3bd0-448c-844b-583bd824c90b	9e69205f-6c6e-44a7-8ee6-89215e28a28e	2025-09-11 18:08:42.081844	2025-09-11 18:08:42.081844
+a3df0804-6dcb-4eb1-acb1-90541f179e98	2	be3c01a7-3bd0-448c-844b-583bd824c90b	1ddbb748-37a6-4d66-a7d4-4957bdbc647f	2025-09-11 18:08:42.081844	2025-09-11 18:08:42.081844
+cba7a032-2667-4fca-94de-600ee87ffb3a	100	b515dd55-701a-45f4-938f-fdb26d2d5cba	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-11 18:39:39.091379	2025-09-11 18:39:39.091379
+7422b448-ca35-4e0a-8646-d0cf82b5072c	100	bb9c756b-0c9e-4e87-826f-bb2cbd16d86b	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-11 18:49:22.377648	2025-09-11 18:49:22.377648
+0634c2ee-e567-44a3-989b-38c0f7faf47b	100	61a31a0d-a736-48b5-b03e-44aa1ad7f3eb	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-13 13:01:06.900303	2025-09-13 13:01:06.900303
+010a449f-7207-400d-8446-93afe2b7bad2	5	3edb750e-4725-4338-a079-d48dc8797917	0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a	2025-09-13 13:07:23.889914	2025-09-13 13:07:23.889914
+d8a909ae-70a7-4db5-9559-956f8267e4d0	50	f6dd98f1-ad1d-4ea2-ba97-9939ce0fc028	c57aa60c-61ea-4498-b01f-fedcafe8a32a	2025-09-13 13:10:28.313057	2025-09-13 13:10:28.313057
+24ebf4ad-31c4-485e-bd63-d7ccb0993b6a	25	f6dd98f1-ad1d-4ea2-ba97-9939ce0fc028	b4658891-9713-48c4-864c-8dd907da19b0	2025-09-13 13:10:28.313057	2025-09-13 13:10:28.313057
+19b25e9d-cf3a-47f9-af2d-049cae27d278	15	f6dd98f1-ad1d-4ea2-ba97-9939ce0fc028	0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a	2025-09-13 13:10:28.313057	2025-09-13 13:10:28.313057
+21b2c2e0-5c14-4635-9cdd-d0a562233651	10	f6dd98f1-ad1d-4ea2-ba97-9939ce0fc028	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-13 13:10:28.313057	2025-09-13 13:10:28.313057
+d1ff41dc-e3ea-4ffc-b0bb-37cf7f9e687b	50	3d0c8e76-37a9-4f4c-84fa-47a6a07aaacc	a3a8eae0-6315-4435-8974-f2c07ec3567f	2025-09-13 13:14:28.912179	2025-09-13 13:14:28.912179
+f6224fb3-8cb2-47a4-bfed-6044b462992f	25	3d0c8e76-37a9-4f4c-84fa-47a6a07aaacc	b4658891-9713-48c4-864c-8dd907da19b0	2025-09-13 13:14:28.912179	2025-09-13 13:14:28.912179
+22344d6e-d94a-4ebf-9103-7e93b3fa88de	15	3d0c8e76-37a9-4f4c-84fa-47a6a07aaacc	0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a	2025-09-13 13:14:28.912179	2025-09-13 13:14:28.912179
+4c8b6c18-5db2-4b07-a9a1-e44856447b06	10	3d0c8e76-37a9-4f4c-84fa-47a6a07aaacc	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-13 13:14:28.912179	2025-09-13 13:14:28.912179
+302c7725-0765-49ae-967b-31fd2258cef5	55	ec09f8c7-04cf-4219-8033-3dd17ea5c1d9	c57aa60c-61ea-4498-b01f-fedcafe8a32a	2025-09-13 13:17:24.552945	2025-09-13 13:17:24.552945
+d0d22593-d5f7-4d18-8f6e-16c30b512b15	30	ec09f8c7-04cf-4219-8033-3dd17ea5c1d9	b4658891-9713-48c4-864c-8dd907da19b0	2025-09-13 13:17:24.552945	2025-09-13 13:17:24.552945
+47f3465a-063d-4ce0-99f3-33770bc8122a	12	ec09f8c7-04cf-4219-8033-3dd17ea5c1d9	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-13 13:17:24.552945	2025-09-13 13:17:24.552945
+f725bcc1-e488-4398-a8d3-e9c5ff37724f	3	ec09f8c7-04cf-4219-8033-3dd17ea5c1d9	0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a	2025-09-13 13:17:24.552945	2025-09-13 13:17:24.552945
+304d6f7b-8a15-4369-9825-3de1572ecd42	70	21370a0a-b01b-4e32-8f43-8648a54cd35c	b4658891-9713-48c4-864c-8dd907da19b0	2025-09-13 13:20:44.36002	2025-09-13 13:20:44.36002
+a3486868-f595-4ef3-8e41-60a7a7264ed6	10	21370a0a-b01b-4e32-8f43-8648a54cd35c	c57aa60c-61ea-4498-b01f-fedcafe8a32a	2025-09-13 13:20:44.36002	2025-09-13 13:20:44.36002
+d4a09282-4933-4ced-9169-50d8c07f54f9	15	21370a0a-b01b-4e32-8f43-8648a54cd35c	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-13 13:20:44.36002	2025-09-13 13:20:44.36002
+19d305be-1656-4525-b796-39278d9e7a77	5	21370a0a-b01b-4e32-8f43-8648a54cd35c	0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a	2025-09-13 13:20:44.36002	2025-09-13 13:20:44.36002
+7acfd972-46ac-4e41-8048-e0f83f94870e	45	2bc37dec-7b06-404c-af63-99bf3f60fb68	b4658891-9713-48c4-864c-8dd907da19b0	2025-09-13 13:25:25.049625	2025-09-13 13:25:25.049625
+2b899cb8-99ea-40cb-86da-cf6001ff3054	28	2bc37dec-7b06-404c-af63-99bf3f60fb68	831f39bd-80a8-4d11-9964-bde1788abae1	2025-09-13 13:25:25.049625	2025-09-13 13:25:25.049625
+2f74d82b-e1c4-4686-8fae-8abbf0a253e0	12	2bc37dec-7b06-404c-af63-99bf3f60fb68	0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a	2025-09-13 13:25:25.049625	2025-09-13 13:25:25.049625
+04883bb8-dd23-4304-ba7e-586568649210	6	2bc37dec-7b06-404c-af63-99bf3f60fb68	be38dcef-1bc8-487b-a44f-96df1ab9e68c	2025-09-13 13:25:25.049625	2025-09-13 13:25:25.049625
+32d4e7ed-ea14-4595-8a03-7ce7f4d23dd5	5	2bc37dec-7b06-404c-af63-99bf3f60fb68	97136fa7-622a-49d6-9d09-403a631d253d	2025-09-13 13:25:25.049625	2025-09-13 13:25:25.049625
+bfe4b97f-f78d-408a-94ab-de95d233b79b	2	2bc37dec-7b06-404c-af63-99bf3f60fb68	af854064-078a-4f50-af1d-8744e866751e	2025-09-13 13:25:25.049625	2025-09-13 13:25:25.049625
+7ee0cf70-bf7f-40ba-a2c0-5e2884426103	2	2bc37dec-7b06-404c-af63-99bf3f60fb68	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-13 13:25:25.049625	2025-09-13 13:25:25.049625
+481174f3-9594-4c64-b244-8e71bff0d08c	58	548b3de6-0980-4795-ab86-763c20dbc325	b4658891-9713-48c4-864c-8dd907da19b0	2025-09-13 13:27:23.06222	2025-09-13 13:27:23.06222
+a2251c23-83f7-48fa-94d4-eaa60e80bc39	10	548b3de6-0980-4795-ab86-763c20dbc325	c57aa60c-61ea-4498-b01f-fedcafe8a32a	2025-09-13 13:27:23.06222	2025-09-13 13:27:23.06222
+5233874c-849a-4f4c-8bca-125dbfa2d5be	16	548b3de6-0980-4795-ab86-763c20dbc325	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-13 13:27:23.06222	2025-09-13 13:27:23.06222
+f4ee60d1-2a2f-4e6c-bcbc-0c03d3cec41a	14	548b3de6-0980-4795-ab86-763c20dbc325	0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a	2025-09-13 13:27:23.06222	2025-09-13 13:27:23.06222
+661c0007-1d36-4413-bb8a-0d51098b5a98	2	548b3de6-0980-4795-ab86-763c20dbc325	af854064-078a-4f50-af1d-8744e866751e	2025-09-13 13:27:23.06222	2025-09-13 13:27:23.06222
+35482bdf-63d6-40d4-bd4b-70b2604d3069	95	89ffca84-73f0-4a69-871f-9d9c96521a05	bba5b66d-9a9c-4b44-8dd6-9574760038ee	2025-09-13 13:32:40.391156	2025-09-13 13:32:40.391156
+7da6fb9b-733e-42d5-9313-ddfd57af27c6	2	89ffca84-73f0-4a69-871f-9d9c96521a05	57559b71-b757-468a-983d-a1b3cec4acef	2025-09-13 13:32:40.391156	2025-09-13 13:32:40.391156
+d75f56cd-963c-4800-a4ba-84439ac3420c	50	9572d666-227a-4639-9ea3-defd67123fbc	57559b71-b757-468a-983d-a1b3cec4acef	2025-09-11 14:55:26.685085	2025-09-11 14:55:26.685085
+e85b9497-9f6c-441b-a43e-9073ab36db19	22	9572d666-227a-4639-9ea3-defd67123fbc	f6e65bfe-0746-4a8f-8210-0e9bf88d9886	2025-09-11 14:55:26.685085	2025-09-11 14:55:26.685085
+331e8e19-ce5e-4865-aecd-f1bd4b162467	12	9572d666-227a-4639-9ea3-defd67123fbc	fa8025e6-e106-475c-8b9d-77831132fb47	2025-09-11 14:55:26.685085	2025-09-11 14:55:26.685085
+99e7e78d-6f07-42ab-8a6a-42f4c97bcae7	5	9572d666-227a-4639-9ea3-defd67123fbc	3eeaa9fa-0847-4780-9d01-185f91252794	2025-09-11 14:55:26.685085	2025-09-11 14:55:26.685085
+0e5e6e3b-7699-42da-a95f-f54f284399cc	4	9572d666-227a-4639-9ea3-defd67123fbc	9e69205f-6c6e-44a7-8ee6-89215e28a28e	2025-09-11 14:55:26.685085	2025-09-11 14:55:26.685085
+a50eaf2b-5b33-47f8-be6f-04f2b1dbc942	3	9572d666-227a-4639-9ea3-defd67123fbc	1ddbb748-37a6-4d66-a7d4-4957bdbc647f	2025-09-11 14:55:26.685085	2025-09-11 14:55:26.685085
+a809551c-9d31-415d-a7a9-b75c17f9996a	2	9572d666-227a-4639-9ea3-defd67123fbc	bba5b66d-9a9c-4b44-8dd6-9574760038ee	2025-09-11 14:55:26.685085	2025-09-11 14:55:26.685085
+9fa7ed94-1469-4ce9-8ddc-78dee4bc31b0	1	9572d666-227a-4639-9ea3-defd67123fbc	97a87b01-35e8-490a-94b9-9bdae9c2f965	2025-09-11 14:55:26.685085	2025-09-11 14:55:26.685085
+3cb0d012-5f7c-496d-bb43-ec1889c594b2	1	9572d666-227a-4639-9ea3-defd67123fbc	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-11 14:55:26.685085	2025-09-11 14:55:26.685085
+19661e1d-8f50-499c-b977-4ea3f1a83c8a	53	395bb56a-d4af-4f4a-abb3-51a9ef1dc686	57559b71-b757-468a-983d-a1b3cec4acef	2025-09-11 15:02:49.206082	2025-09-11 15:02:49.206082
+91588fbf-8222-4697-a718-50f0dcdb7d67	22	395bb56a-d4af-4f4a-abb3-51a9ef1dc686	f6e65bfe-0746-4a8f-8210-0e9bf88d9886	2025-09-11 15:02:49.206082	2025-09-11 15:02:49.206082
+5cfde4c7-1e4d-4f80-b60b-b80c0541ce81	15	395bb56a-d4af-4f4a-abb3-51a9ef1dc686	fa8025e6-e106-475c-8b9d-77831132fb47	2025-09-11 15:02:49.206082	2025-09-11 15:02:49.206082
+761bc9df-0240-4c9a-84d7-0b1e808c5e59	5	395bb56a-d4af-4f4a-abb3-51a9ef1dc686	3eeaa9fa-0847-4780-9d01-185f91252794	2025-09-11 15:02:49.206082	2025-09-11 15:02:49.206082
+21e5eb58-ca3e-43ac-82bf-8a0456cfd778	5	395bb56a-d4af-4f4a-abb3-51a9ef1dc686	bba5b66d-9a9c-4b44-8dd6-9574760038ee	2025-09-11 15:02:49.206082	2025-09-11 15:02:49.206082
+c8cdb836-3200-48ef-812d-783a66647ec9	48	1e51b837-215d-4069-9d14-c9510c1b1b61	57559b71-b757-468a-983d-a1b3cec4acef	2025-09-11 15:19:59.299722	2025-09-11 15:19:59.299722
+0e43f164-9850-418c-9936-1d1f0db83542	24	1e51b837-215d-4069-9d14-c9510c1b1b61	f6e65bfe-0746-4a8f-8210-0e9bf88d9886	2025-09-11 15:19:59.299722	2025-09-11 15:19:59.299722
+5e771b26-eb35-4eb5-8f2a-de8d35688e61	10	1e51b837-215d-4069-9d14-c9510c1b1b61	fa8025e6-e106-475c-8b9d-77831132fb47	2025-09-11 15:19:59.299722	2025-09-11 15:19:59.299722
+ca1511ea-7f5d-4345-b44c-a95798b0397a	7	1e51b837-215d-4069-9d14-c9510c1b1b61	3eeaa9fa-0847-4780-9d01-185f91252794	2025-09-11 15:19:59.299722	2025-09-11 15:19:59.299722
+401c3a9a-3cb6-4d8c-ad51-8521e2547230	5	1e51b837-215d-4069-9d14-c9510c1b1b61	ab1dbd50-83a4-42c7-a3cd-da1784818ec8	2025-09-11 15:19:59.299722	2025-09-11 15:19:59.299722
+4534cc06-bda3-4d36-85b7-353eb075ee65	3	1e51b837-215d-4069-9d14-c9510c1b1b61	bba5b66d-9a9c-4b44-8dd6-9574760038ee	2025-09-11 15:19:59.299722	2025-09-11 15:19:59.299722
+008ac5b6-86ab-4e6a-ad3e-68690ea03968	2	1e51b837-215d-4069-9d14-c9510c1b1b61	9e69205f-6c6e-44a7-8ee6-89215e28a28e	2025-09-11 15:19:59.299722	2025-09-11 15:19:59.299722
+c2b31a26-b391-4c80-883a-ee9811f5079c	1	1e51b837-215d-4069-9d14-c9510c1b1b61	1ddbb748-37a6-4d66-a7d4-4957bdbc647f	2025-09-11 15:19:59.299722	2025-09-11 15:19:59.299722
+d96cf72d-64a5-4f2b-a47b-712976049248	48	24c43903-d3a7-4a39-9231-5bc7d5cec5da	57559b71-b757-468a-983d-a1b3cec4acef	2025-09-11 15:30:34.314686	2025-09-11 15:30:34.314686
+b4223f1e-d830-4f4d-8033-47b6654c6c49	22	24c43903-d3a7-4a39-9231-5bc7d5cec5da	f6e65bfe-0746-4a8f-8210-0e9bf88d9886	2025-09-11 15:30:34.314686	2025-09-11 15:30:34.314686
+8356855a-38c9-43cb-a955-9b2fa737c126	10	24c43903-d3a7-4a39-9231-5bc7d5cec5da	fa8025e6-e106-475c-8b9d-77831132fb47	2025-09-11 15:30:34.314686	2025-09-11 15:30:34.314686
+9ca69f66-4d39-4ae7-a7be-60bba41edd8e	6	24c43903-d3a7-4a39-9231-5bc7d5cec5da	ab1dbd50-83a4-42c7-a3cd-da1784818ec8	2025-09-11 15:30:34.314686	2025-09-11 15:30:34.314686
+1cc9eb05-60bf-4c66-842c-ed476e7e6a5a	6	24c43903-d3a7-4a39-9231-5bc7d5cec5da	3eeaa9fa-0847-4780-9d01-185f91252794	2025-09-11 15:30:34.314686	2025-09-11 15:30:34.314686
+7a5ae694-56f3-4545-8898-f61fe98ad1c7	4	24c43903-d3a7-4a39-9231-5bc7d5cec5da	bba5b66d-9a9c-4b44-8dd6-9574760038ee	2025-09-11 15:30:34.314686	2025-09-11 15:30:34.314686
+a54c565a-f309-47f9-a894-6c8400d69643	2	24c43903-d3a7-4a39-9231-5bc7d5cec5da	9e69205f-6c6e-44a7-8ee6-89215e28a28e	2025-09-11 15:30:34.314686	2025-09-11 15:30:34.314686
+5aa07039-a1a9-4464-8d77-a2b127009938	34	12070323-971e-421a-9eaf-bdce4f8e0464	f6e65bfe-0746-4a8f-8210-0e9bf88d9886	2025-09-11 17:54:48.017486	2025-09-11 17:54:48.017486
+79743929-f0f6-438b-bf1c-771a47542099	26	12070323-971e-421a-9eaf-bdce4f8e0464	3eeaa9fa-0847-4780-9d01-185f91252794	2025-09-11 17:54:48.017486	2025-09-11 17:54:48.017486
+822e3dcf-f5c2-4e94-9354-a53fc2c4c9f7	12	12070323-971e-421a-9eaf-bdce4f8e0464	2e0faf2b-31a5-4c63-ac15-454be132796f	2025-09-11 17:54:48.017486	2025-09-11 17:54:48.017486
+a49da63d-5504-489e-93df-3cfb7c2fd089	8	12070323-971e-421a-9eaf-bdce4f8e0464	831f39bd-80a8-4d11-9964-bde1788abae1	2025-09-11 17:54:48.017486	2025-09-11 17:54:48.017486
+b7edeff3-0918-4e42-8db6-3a848a9220ef	6	12070323-971e-421a-9eaf-bdce4f8e0464	fa8025e6-e106-475c-8b9d-77831132fb47	2025-09-11 17:54:48.017486	2025-09-11 17:54:48.017486
+263ba670-aa45-4e09-904b-9f282ea12ab7	6	12070323-971e-421a-9eaf-bdce4f8e0464	57559b71-b757-468a-983d-a1b3cec4acef	2025-09-11 17:54:48.017486	2025-09-11 17:54:48.017486
+54ed09f9-d792-4806-a0e3-d69dcf41f18d	4	12070323-971e-421a-9eaf-bdce4f8e0464	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-11 17:54:48.017486	2025-09-11 17:54:48.017486
+dd01b2b1-a409-43ca-82dd-d24cd7b89f4d	4	12070323-971e-421a-9eaf-bdce4f8e0464	9e69205f-6c6e-44a7-8ee6-89215e28a28e	2025-09-11 17:54:48.017486	2025-09-11 17:54:48.017486
+025184a7-b211-4101-98a4-ebb88ace068f	40	3a39a222-7b4d-4e0e-9e7e-034d78b5d6bf	3eeaa9fa-0847-4780-9d01-185f91252794	2025-09-11 18:27:47.321309	2025-09-11 18:27:47.321309
+ccebe9c7-f49b-4d3a-ab8f-ea68d275f34c	32	3a39a222-7b4d-4e0e-9e7e-034d78b5d6bf	f6e65bfe-0746-4a8f-8210-0e9bf88d9886	2025-09-11 18:27:47.321309	2025-09-11 18:27:47.321309
+caf793c7-bb46-42ff-8f94-440176b0916d	8	3a39a222-7b4d-4e0e-9e7e-034d78b5d6bf	fa8025e6-e106-475c-8b9d-77831132fb47	2025-09-11 18:27:47.321309	2025-09-11 18:27:47.321309
+49a571ed-eb9a-4050-b620-b87336739e4a	6	3a39a222-7b4d-4e0e-9e7e-034d78b5d6bf	831f39bd-80a8-4d11-9964-bde1788abae1	2025-09-11 18:27:47.321309	2025-09-11 18:27:47.321309
+bde24d88-edfb-4856-94f0-39c9115d5623	5	3a39a222-7b4d-4e0e-9e7e-034d78b5d6bf	2e0faf2b-31a5-4c63-ac15-454be132796f	2025-09-11 18:27:47.321309	2025-09-11 18:27:47.321309
+960fa538-b77a-4dbe-88d0-cafda394fbac	4	3a39a222-7b4d-4e0e-9e7e-034d78b5d6bf	af854064-078a-4f50-af1d-8744e866751e	2025-09-11 18:27:47.321309	2025-09-11 18:27:47.321309
+fb93ffe6-d368-4605-8fdb-ede05c5748a9	3	3a39a222-7b4d-4e0e-9e7e-034d78b5d6bf	9e69205f-6c6e-44a7-8ee6-89215e28a28e	2025-09-11 18:27:47.321309	2025-09-11 18:27:47.321309
+f4bdfc1f-3cfb-4e09-80ea-efc079462c69	2	3a39a222-7b4d-4e0e-9e7e-034d78b5d6bf	1ddbb748-37a6-4d66-a7d4-4957bdbc647f	2025-09-11 18:27:47.321309	2025-09-11 18:27:47.321309
+5f2c1321-aa77-43ae-9c87-c371d687ac25	100	a2f8dd49-606e-4d86-ae04-8af61c0b40e9	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-11 18:40:51.273838	2025-09-11 18:40:51.273838
+04c4db65-aff5-4111-8f38-2b43e9a40b3e	100	10870aab-3086-462e-a64e-14710e3fbffe	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-11 18:50:22.369158	2025-09-11 18:50:22.369158
+123f1190-567d-42b4-8311-1908a3405734	60	9a4eec3b-3f0b-4b36-a2b5-0f544376cf78	b4658891-9713-48c4-864c-8dd907da19b0	2025-09-13 13:01:53.763061	2025-09-13 13:01:53.763061
+8b942393-7a86-4c81-9df1-a7362721cac6	15	9a4eec3b-3f0b-4b36-a2b5-0f544376cf78	a3a8eae0-6315-4435-8974-f2c07ec3567f	2025-09-13 13:01:53.763061	2025-09-13 13:01:53.763061
+73167d7c-8ef1-4edb-b129-b414f807e6d8	15	9a4eec3b-3f0b-4b36-a2b5-0f544376cf78	0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a	2025-09-13 13:01:53.763061	2025-09-13 13:01:53.763061
+dfab589b-fdb9-46f8-a8a9-f53b415e9836	10	9a4eec3b-3f0b-4b36-a2b5-0f544376cf78	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-13 13:01:53.763061	2025-09-13 13:01:53.763061
+d75d20c4-a807-48e1-ac5e-12aec894d96e	60	5b7d739c-d130-466c-a5ac-9e8b318b77ad	b4658891-9713-48c4-864c-8dd907da19b0	2025-09-13 13:08:05.995663	2025-09-13 13:08:05.995663
+d650c4c8-2afc-49d4-a185-921e1542d96e	20	5b7d739c-d130-466c-a5ac-9e8b318b77ad	0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a	2025-09-13 13:08:05.995663	2025-09-13 13:08:05.995663
+a2906228-a04d-4d12-8ef2-3cd85bb4d88e	15	5b7d739c-d130-466c-a5ac-9e8b318b77ad	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-13 13:08:05.995663	2025-09-13 13:08:05.995663
+0bb6cdd7-46bc-485c-b2f7-1c256da22808	5	5b7d739c-d130-466c-a5ac-9e8b318b77ad	c57aa60c-61ea-4498-b01f-fedcafe8a32a	2025-09-13 13:08:05.995663	2025-09-13 13:08:05.995663
+959a0b95-2734-4fb5-b726-2b9329226c98	60	b720265e-a3ce-48d3-8e8e-87e05c07b8a3	c57aa60c-61ea-4498-b01f-fedcafe8a32a	2025-09-13 13:11:02.537696	2025-09-13 13:11:02.537696
+fd4c5ca7-518c-44fc-b1b4-6cd51682be35	25	b720265e-a3ce-48d3-8e8e-87e05c07b8a3	b4658891-9713-48c4-864c-8dd907da19b0	2025-09-13 13:11:02.537696	2025-09-13 13:11:02.537696
+443a6cc8-bd4e-4c61-a8ee-e670aae1d026	10	b720265e-a3ce-48d3-8e8e-87e05c07b8a3	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-13 13:11:02.537696	2025-09-13 13:11:02.537696
+6be9dc1a-adea-46a7-ac37-85336e1d0f5e	5	b720265e-a3ce-48d3-8e8e-87e05c07b8a3	0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a	2025-09-13 13:11:02.537696	2025-09-13 13:11:02.537696
+c4df9452-c643-4106-b13c-263f41bb17e6	60	13fcd794-54fb-413f-8bbf-44353cd29869	b4658891-9713-48c4-864c-8dd907da19b0	2025-09-13 13:15:03.968974	2025-09-13 13:15:03.968974
+ac7f1604-3492-41c4-ad83-774588bbe3bf	20	13fcd794-54fb-413f-8bbf-44353cd29869	c57aa60c-61ea-4498-b01f-fedcafe8a32a	2025-09-13 13:15:03.968974	2025-09-13 13:15:03.968974
+e09ca09b-a247-4c3a-9245-b925661bf5c6	15	13fcd794-54fb-413f-8bbf-44353cd29869	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-13 13:15:03.968974	2025-09-13 13:15:03.968974
+a7d156b0-94fd-42f7-898b-183b112ecf97	5	13fcd794-54fb-413f-8bbf-44353cd29869	0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a	2025-09-13 13:15:03.968974	2025-09-13 13:15:03.968974
+e65f418a-f76a-49ad-aacd-bc4d5ce50ed5	55	db9ff44c-2e27-42df-8f6a-1b64429999e1	b4658891-9713-48c4-864c-8dd907da19b0	2025-09-13 13:18:26.036856	2025-09-13 13:18:26.036856
+2e62bac9-cfa3-4177-a9c9-4e50df9725ed	15	db9ff44c-2e27-42df-8f6a-1b64429999e1	a3a8eae0-6315-4435-8974-f2c07ec3567f	2025-09-13 13:18:26.036856	2025-09-13 13:18:26.036856
+6634c249-527b-4333-b31c-f7c643278b48	20	db9ff44c-2e27-42df-8f6a-1b64429999e1	0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a	2025-09-13 13:18:26.036856	2025-09-13 13:18:26.036856
+8a49a024-14d8-48e4-bbd8-df3adfd80b99	8	db9ff44c-2e27-42df-8f6a-1b64429999e1	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-13 13:18:26.036856	2025-09-13 13:18:26.036856
+0cab4397-7f13-4619-a4fe-be44f32be61a	2	db9ff44c-2e27-42df-8f6a-1b64429999e1	9e69205f-6c6e-44a7-8ee6-89215e28a28e	2025-09-13 13:18:26.036856	2025-09-13 13:18:26.036856
+23228b02-eff9-4d8b-9f81-f17c604f7bc3	55	885918a3-5c64-4f15-982e-1b9a91cb3743	c57aa60c-61ea-4498-b01f-fedcafe8a32a	2025-09-13 13:23:05.998557	2025-09-13 13:23:05.998557
+0c8c0c0a-6945-4b29-a93c-27f1e6ece20f	50	a4bf88ee-8865-4b1f-88a3-28cf59d28739	57559b71-b757-468a-983d-a1b3cec4acef	2025-09-11 14:58:40.071449	2025-09-11 14:58:40.071449
+00f7ff90-3299-4cb9-8101-58285339e5c2	22	a4bf88ee-8865-4b1f-88a3-28cf59d28739	f6e65bfe-0746-4a8f-8210-0e9bf88d9886	2025-09-11 14:58:40.071449	2025-09-11 14:58:40.071449
+8bafe779-9024-409c-a624-f6710e59e3bd	12	a4bf88ee-8865-4b1f-88a3-28cf59d28739	fa8025e6-e106-475c-8b9d-77831132fb47	2025-09-11 14:58:40.071449	2025-09-11 14:58:40.071449
+f91b4ef8-85dc-4508-95f1-db35cd2640c5	4	a4bf88ee-8865-4b1f-88a3-28cf59d28739	3eeaa9fa-0847-4780-9d01-185f91252794	2025-09-11 14:58:40.071449	2025-09-11 14:58:40.071449
+d8d20f71-eed8-4c56-bcad-3b8ea940ac83	5	a4bf88ee-8865-4b1f-88a3-28cf59d28739	9e69205f-6c6e-44a7-8ee6-89215e28a28e	2025-09-11 14:58:40.071449	2025-09-11 14:58:40.071449
+64c08a9c-371e-4f46-9ce5-49eb7076b012	3	a4bf88ee-8865-4b1f-88a3-28cf59d28739	1ddbb748-37a6-4d66-a7d4-4957bdbc647f	2025-09-11 14:58:40.071449	2025-09-11 14:58:40.071449
+738bfd05-bdbf-40ee-bab1-38bad2b8060f	2	a4bf88ee-8865-4b1f-88a3-28cf59d28739	bba5b66d-9a9c-4b44-8dd6-9574760038ee	2025-09-11 14:58:40.071449	2025-09-11 14:58:40.071449
+dd38fc19-9efb-4d06-9222-bb51e0235f0d	1	a4bf88ee-8865-4b1f-88a3-28cf59d28739	97a87b01-35e8-490a-94b9-9bdae9c2f965	2025-09-11 14:58:40.071449	2025-09-11 14:58:40.071449
+5b95cb5f-fca6-47c4-b6a4-21c11721a7cc	1	a4bf88ee-8865-4b1f-88a3-28cf59d28739	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-11 14:58:40.071449	2025-09-11 14:58:40.071449
+f54f7673-adf1-4c86-a892-376a62f9d7ab	52	ea89fe55-c50f-4bbf-acc1-96e7df46101a	57559b71-b757-468a-983d-a1b3cec4acef	2025-09-11 15:16:32.01369	2025-09-11 15:16:32.01369
+34460c00-9335-4e5c-ad7a-c7d6b45b749b	21	ea89fe55-c50f-4bbf-acc1-96e7df46101a	f6e65bfe-0746-4a8f-8210-0e9bf88d9886	2025-09-11 15:16:32.01369	2025-09-11 15:16:32.01369
+989f86ec-3653-4731-87d1-f502787bd56a	12	ea89fe55-c50f-4bbf-acc1-96e7df46101a	fa8025e6-e106-475c-8b9d-77831132fb47	2025-09-11 15:16:32.01369	2025-09-11 15:16:32.01369
+eab5cc31-d2ee-4e6f-a64a-e3b345a3ecc5	7	ea89fe55-c50f-4bbf-acc1-96e7df46101a	ab1dbd50-83a4-42c7-a3cd-da1784818ec8	2025-09-11 15:16:32.01369	2025-09-11 15:16:32.01369
+52a28153-1b00-4328-8006-e3dbd31d1c97	4	ea89fe55-c50f-4bbf-acc1-96e7df46101a	3eeaa9fa-0847-4780-9d01-185f91252794	2025-09-11 15:16:32.01369	2025-09-11 15:16:32.01369
+8e13d409-41c0-4b87-a8c4-184bb41f9181	4	ea89fe55-c50f-4bbf-acc1-96e7df46101a	bba5b66d-9a9c-4b44-8dd6-9574760038ee	2025-09-11 15:16:32.01369	2025-09-11 15:16:32.01369
+9822ec52-7254-43d9-911a-bfa94e534ca7	50	7b006564-2c61-4661-ab8c-d4cf60fdb3ed	57559b71-b757-468a-983d-a1b3cec4acef	2025-09-11 15:22:17.079449	2025-09-11 15:22:17.079449
+a4e6cb8a-7c6e-4723-8bfc-6a07a38c1ea7	24	7b006564-2c61-4661-ab8c-d4cf60fdb3ed	f6e65bfe-0746-4a8f-8210-0e9bf88d9886	2025-09-11 15:22:17.079449	2025-09-11 15:22:17.079449
+ca3a21ba-4b72-4e3e-beb6-bad9a74f88c6	10	7b006564-2c61-4661-ab8c-d4cf60fdb3ed	fa8025e6-e106-475c-8b9d-77831132fb47	2025-09-11 15:22:17.079449	2025-09-11 15:22:17.079449
+7796fd60-0303-47c0-ba37-0d02af52a006	6	7b006564-2c61-4661-ab8c-d4cf60fdb3ed	3eeaa9fa-0847-4780-9d01-185f91252794	2025-09-11 15:22:17.079449	2025-09-11 15:22:17.079449
+ed911c49-93ae-47ee-b6bd-d1da3a40bceb	4	7b006564-2c61-4661-ab8c-d4cf60fdb3ed	bba5b66d-9a9c-4b44-8dd6-9574760038ee	2025-09-11 15:22:17.079449	2025-09-11 15:22:17.079449
+49b33029-3272-4136-a1e2-c63a6b4dda0b	4	7b006564-2c61-4661-ab8c-d4cf60fdb3ed	9e69205f-6c6e-44a7-8ee6-89215e28a28e	2025-09-11 15:22:17.079449	2025-09-11 15:22:17.079449
+3fb86f83-f906-4796-a019-fdeb1ef31dfa	2	7b006564-2c61-4661-ab8c-d4cf60fdb3ed	af854064-078a-4f50-af1d-8744e866751e	2025-09-11 15:22:17.079449	2025-09-11 15:22:17.079449
+17505400-3d35-42d6-981b-58c332d38f8f	1	24c43903-d3a7-4a39-9231-5bc7d5cec5da	1ddbb748-37a6-4d66-a7d4-4957bdbc647f	2025-09-11 15:30:34.314686	2025-09-11 15:30:34.314686
+9a481528-ee35-4520-aaf3-1884370d9c95	1	24c43903-d3a7-4a39-9231-5bc7d5cec5da	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-11 15:30:34.314686	2025-09-11 15:30:34.314686
+40a1802b-2fe1-4166-98d8-c253fc1d2fbc	42	14dbd276-30fe-4558-9cf0-104751b58f2d	57559b71-b757-468a-983d-a1b3cec4acef	2025-09-11 15:38:00.936268	2025-09-11 15:38:00.936268
+4464cf01-8937-4674-8b20-f5a8a104d866	26	14dbd276-30fe-4558-9cf0-104751b58f2d	f6e65bfe-0746-4a8f-8210-0e9bf88d9886	2025-09-11 15:38:00.936268	2025-09-11 15:38:00.936268
+226bad90-f20f-467f-a077-81ac6cafce2c	12	14dbd276-30fe-4558-9cf0-104751b58f2d	3eeaa9fa-0847-4780-9d01-185f91252794	2025-09-11 15:38:00.936268	2025-09-11 15:38:00.936268
+a183cea8-5fe8-47b4-8934-374896ada15f	7	14dbd276-30fe-4558-9cf0-104751b58f2d	fa8025e6-e106-475c-8b9d-77831132fb47	2025-09-11 15:38:00.936268	2025-09-11 15:38:00.936268
+3dd96934-d8be-457c-9470-94ff818be44b	5	14dbd276-30fe-4558-9cf0-104751b58f2d	ab1dbd50-83a4-42c7-a3cd-da1784818ec8	2025-09-11 15:38:00.936268	2025-09-11 15:38:00.936268
+e7451717-b3df-414c-b912-cd7acd22cfa1	4	14dbd276-30fe-4558-9cf0-104751b58f2d	bba5b66d-9a9c-4b44-8dd6-9574760038ee	2025-09-11 15:38:00.936268	2025-09-11 15:38:00.936268
+ca50ca14-545b-4b04-8e39-ab9758a07e88	2	14dbd276-30fe-4558-9cf0-104751b58f2d	9e69205f-6c6e-44a7-8ee6-89215e28a28e	2025-09-11 15:38:00.936268	2025-09-11 15:38:00.936268
+f6021307-fff7-44ee-84cc-c70b5c56f506	2	14dbd276-30fe-4558-9cf0-104751b58f2d	1ddbb748-37a6-4d66-a7d4-4957bdbc647f	2025-09-11 15:38:00.936268	2025-09-11 15:38:00.936268
+71fbe30e-0d88-4882-a021-62901446e176	22	885918a3-5c64-4f15-982e-1b9a91cb3743	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-13 13:23:05.998557	2025-09-13 13:23:05.998557
+8e05eb89-6c94-4975-8ba3-2a4cb786ceff	15	885918a3-5c64-4f15-982e-1b9a91cb3743	0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a	2025-09-13 13:23:05.998557	2025-09-13 13:23:05.998557
+31f59db6-fcbc-44d6-a7b8-5b8c461f1669	8	885918a3-5c64-4f15-982e-1b9a91cb3743	b4658891-9713-48c4-864c-8dd907da19b0	2025-09-13 13:23:05.998557	2025-09-13 13:23:05.998557
+968f9b30-e2a7-462a-ba6c-bf29c92e6864	40	c0a055b2-daf6-4ecc-b97b-cfedfce6a42a	b4658891-9713-48c4-864c-8dd907da19b0	2025-09-13 13:26:03.920945	2025-09-13 13:26:03.920945
+78538934-314b-4e40-8fd8-492a67aa0b5d	30	c0a055b2-daf6-4ecc-b97b-cfedfce6a42a	831f39bd-80a8-4d11-9964-bde1788abae1	2025-09-13 13:26:03.920945	2025-09-13 13:26:03.920945
+970659d6-bbb9-4da7-925a-a2dabc46ca6c	12	c0a055b2-daf6-4ecc-b97b-cfedfce6a42a	0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a	2025-09-13 13:26:03.920945	2025-09-13 13:26:03.920945
+81cac127-34eb-4300-a367-caa736016cfb	8	c0a055b2-daf6-4ecc-b97b-cfedfce6a42a	be38dcef-1bc8-487b-a44f-96df1ab9e68c	2025-09-13 13:26:03.920945	2025-09-13 13:26:03.920945
+70050175-4499-479d-9523-71f0d96d5084	6	c0a055b2-daf6-4ecc-b97b-cfedfce6a42a	97136fa7-622a-49d6-9d09-403a631d253d	2025-09-13 13:26:03.920945	2025-09-13 13:26:03.920945
+e8298417-e5e0-4119-92cd-40e74e733f11	2	c0a055b2-daf6-4ecc-b97b-cfedfce6a42a	af854064-078a-4f50-af1d-8744e866751e	2025-09-13 13:26:03.920945	2025-09-13 13:26:03.920945
+08f887d7-3f75-4c4a-bc7f-0f5e0ff75880	80	9b3f9b20-544d-49e1-880e-879e24e81581	3eeaa9fa-0847-4780-9d01-185f91252794	2025-09-11 17:56:14.324755	2025-09-11 17:56:14.324755
+bda432fa-819c-48ab-93dc-7571491f3834	15	9b3f9b20-544d-49e1-880e-879e24e81581	bba5b66d-9a9c-4b44-8dd6-9574760038ee	2025-09-11 17:56:14.324755	2025-09-11 17:56:14.324755
+705713dc-7804-482b-be05-84a01c774d27	5	9b3f9b20-544d-49e1-880e-879e24e81581	f6e65bfe-0746-4a8f-8210-0e9bf88d9886	2025-09-11 17:56:14.324755	2025-09-11 17:56:14.324755
+bc1c47e0-0b6b-4e57-9971-eb16e69abcda	60	d806b4f1-399c-4ceb-bb91-663ec0350e6d	f6e65bfe-0746-4a8f-8210-0e9bf88d9886	2025-09-11 18:29:18.948581	2025-09-11 18:29:18.948581
+99382274-f061-4eb4-bef5-8846424c3f77	30	d806b4f1-399c-4ceb-bb91-663ec0350e6d	3eeaa9fa-0847-4780-9d01-185f91252794	2025-09-11 18:29:18.948581	2025-09-11 18:29:18.948581
+a0464c24-12e1-46f9-921b-26a8e97f2040	4	d806b4f1-399c-4ceb-bb91-663ec0350e6d	fa8025e6-e106-475c-8b9d-77831132fb47	2025-09-11 18:29:18.948581	2025-09-11 18:29:18.948581
+e1675b7c-4d17-4578-9dcc-8cb6abcfb394	3	d806b4f1-399c-4ceb-bb91-663ec0350e6d	9e69205f-6c6e-44a7-8ee6-89215e28a28e	2025-09-11 18:29:18.948581	2025-09-11 18:29:18.948581
+dce4a954-cfd5-40a7-b1d3-889b766ddf4e	3	d806b4f1-399c-4ceb-bb91-663ec0350e6d	1ddbb748-37a6-4d66-a7d4-4957bdbc647f	2025-09-11 18:29:18.948581	2025-09-11 18:29:18.948581
+49865428-c210-47b8-b0e0-315eee3060ae	60	60bd8dbc-6bb8-4be0-9ee7-f4c5a295c5b4	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-11 18:42:15.415412	2025-09-11 18:42:15.415412
+34a53c0d-2b7a-4e58-8cb0-071ed7216385	40	60bd8dbc-6bb8-4be0-9ee7-f4c5a295c5b4	97a87b01-35e8-490a-94b9-9bdae9c2f965	2025-09-11 18:42:15.415412	2025-09-11 18:42:15.415412
+5a4082f9-4ff1-44af-ab5f-919a9d76da75	100	d59d340d-774d-4c81-8b3d-251175936221	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-11 18:51:48.790077	2025-09-11 18:51:48.790077
+c3eae762-b8e8-4860-a148-11a0f071c2bd	60	118eab6d-cae9-4c0b-b8e6-57f3e5541f1a	b4658891-9713-48c4-864c-8dd907da19b0	2025-09-13 13:02:37.478405	2025-09-13 13:02:37.478405
+371896b3-66a2-472e-a04a-8bb288d35099	25	118eab6d-cae9-4c0b-b8e6-57f3e5541f1a	c57aa60c-61ea-4498-b01f-fedcafe8a32a	2025-09-13 13:02:37.478405	2025-09-13 13:02:37.478405
+a95fc760-8550-4010-baa1-f0db25b2d918	10	118eab6d-cae9-4c0b-b8e6-57f3e5541f1a	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-13 13:02:37.478405	2025-09-13 13:02:37.478405
+0f38f25c-116d-4cd3-a4a9-363e6a5a9ac1	5	118eab6d-cae9-4c0b-b8e6-57f3e5541f1a	0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a	2025-09-13 13:02:37.478405	2025-09-13 13:02:37.478405
+5d3ee882-3293-44df-9dd2-a85b7005d131	50	e68781f2-7021-4907-af54-de18b80d181a	c57aa60c-61ea-4498-b01f-fedcafe8a32a	2025-09-13 13:08:51.624269	2025-09-13 13:08:51.624269
+8574405d-faa2-4255-9e3d-202a15497e97	25	e68781f2-7021-4907-af54-de18b80d181a	b4658891-9713-48c4-864c-8dd907da19b0	2025-09-13 13:08:51.624269	2025-09-13 13:08:51.624269
+400841e5-e8ae-44ea-8320-9438d1de746d	15	e68781f2-7021-4907-af54-de18b80d181a	0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a	2025-09-13 13:08:51.624269	2025-09-13 13:08:51.624269
+1e4cf2d1-8f0a-4872-8dc5-3e61a98e3324	8	e68781f2-7021-4907-af54-de18b80d181a	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-13 13:08:51.624269	2025-09-13 13:08:51.624269
+0b775a8b-8d6c-4d62-8e43-2179ed6d99f8	2	e68781f2-7021-4907-af54-de18b80d181a	9e69205f-6c6e-44a7-8ee6-89215e28a28e	2025-09-13 13:08:51.624269	2025-09-13 13:08:51.624269
+9a6943bc-0d58-459b-aab5-d75ad63e1712	45	8a73b841-1d4e-4808-8ed7-58c4931e0e96	a3a8eae0-6315-4435-8974-f2c07ec3567f	2025-09-13 13:11:43.144513	2025-09-13 13:11:43.144513
+1d59bdcd-b94a-4673-92f3-bf35007af4ad	30	8a73b841-1d4e-4808-8ed7-58c4931e0e96	b4658891-9713-48c4-864c-8dd907da19b0	2025-09-13 13:11:43.144513	2025-09-13 13:11:43.144513
+85cc7815-9df9-4ee5-9c6c-101e9fc8ed50	18	8a73b841-1d4e-4808-8ed7-58c4931e0e96	0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a	2025-09-13 13:11:43.144513	2025-09-13 13:11:43.144513
+ad650094-9c23-4b4e-b516-153d8931da64	7	8a73b841-1d4e-4808-8ed7-58c4931e0e96	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-13 13:11:43.144513	2025-09-13 13:11:43.144513
+d58c4f97-4320-4651-9dcb-9d23abe2eaf8	60	82890348-a566-4762-b9b4-f89e52534936	c57aa60c-61ea-4498-b01f-fedcafe8a32a	2025-09-13 13:15:38.783008	2025-09-13 13:15:38.783008
+55d446c4-8485-4a20-9875-8f0fa4fb8804	20	82890348-a566-4762-b9b4-f89e52534936	b4658891-9713-48c4-864c-8dd907da19b0	2025-09-13 13:15:38.783008	2025-09-13 13:15:38.783008
+7fcf63d3-3309-4ac2-8a4f-eddbad684a8f	15	82890348-a566-4762-b9b4-f89e52534936	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-13 13:15:38.783008	2025-09-13 13:15:38.783008
+806ab94e-f90d-49df-9b6c-824376ea9596	5	82890348-a566-4762-b9b4-f89e52534936	0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a	2025-09-13 13:15:38.783008	2025-09-13 13:15:38.783008
+56d0f0de-cbae-4991-bd75-afba2f0abdb3	60	fff561d6-3738-4360-a110-f93dcb3c8c10	b4658891-9713-48c4-864c-8dd907da19b0	2025-09-13 13:19:06.359624	2025-09-13 13:19:06.359624
+7ae99d9c-d3cb-40e6-b723-57c6ed7fa047	18	fff561d6-3738-4360-a110-f93dcb3c8c10	0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a	2025-09-13 13:19:06.359624	2025-09-13 13:19:06.359624
+c93656ab-f5fd-4338-9c1b-a08b396a5fc9	12	fff561d6-3738-4360-a110-f93dcb3c8c10	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-13 13:19:06.359624	2025-09-13 13:19:06.359624
+8202392d-1b4a-4eb4-aabc-083479b75c19	10	fff561d6-3738-4360-a110-f93dcb3c8c10	c57aa60c-61ea-4498-b01f-fedcafe8a32a	2025-09-13 13:19:06.359624	2025-09-13 13:19:06.359624
+b5305a7b-3681-4e1e-8074-396ecd7ed205	57	b2e39ab6-118d-46bd-ad8c-8acf9864af6c	b4658891-9713-48c4-864c-8dd907da19b0	2025-09-13 13:23:48.72269	2025-09-13 13:23:48.72269
+19eab09e-c394-4ae9-8a11-dd3808213a1f	8	b2e39ab6-118d-46bd-ad8c-8acf9864af6c	c57aa60c-61ea-4498-b01f-fedcafe8a32a	2025-09-13 13:23:48.72269	2025-09-13 13:23:48.72269
+73d130ac-0290-4f18-bb16-1670f867465f	15	b2e39ab6-118d-46bd-ad8c-8acf9864af6c	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-13 13:23:48.72269	2025-09-13 13:23:48.72269
+b48b1ea4-9830-4b4a-ac1e-90fb749b52a6	55	c21d3b0f-c8a8-4b7f-92ea-90dc567a1183	0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a	2025-09-15 16:24:04.997722	2025-09-15 16:24:04.997722
+e92197b6-f77b-4dbc-b3d0-e79990b305df	30	c21d3b0f-c8a8-4b7f-92ea-90dc567a1183	b4658891-9713-48c4-864c-8dd907da19b0	2025-09-15 16:24:04.997722	2025-09-15 16:24:04.997722
+3d104ef2-2fd8-4c63-9741-482d11e70d5c	10	c21d3b0f-c8a8-4b7f-92ea-90dc567a1183	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-15 16:24:04.997722	2025-09-15 16:24:04.997722
+d92dc074-3dbb-455a-b576-0577d27a48a2	5	c21d3b0f-c8a8-4b7f-92ea-90dc567a1183	c57aa60c-61ea-4498-b01f-fedcafe8a32a	2025-09-15 16:24:04.997722	2025-09-15 16:24:04.997722
+784e2c91-71ea-479c-b09a-5ce4d8ff6e93	85	547f1f7e-3ee1-4b39-99eb-3462b1ec13af	0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a	2025-09-15 16:34:46.207996	2025-09-15 16:34:46.207996
+cf9a3bc8-1d29-4d98-ba56-066331552977	5	547f1f7e-3ee1-4b39-99eb-3462b1ec13af	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-15 16:34:46.207996	2025-09-15 16:34:46.207996
+1d81d7ed-39f0-4ac4-968a-dc60db625014	5	547f1f7e-3ee1-4b39-99eb-3462b1ec13af	97136fa7-622a-49d6-9d09-403a631d253d	2025-09-15 16:34:46.207996	2025-09-15 16:34:46.207996
+52416787-79d9-4c02-9258-b01114fbd609	2	547f1f7e-3ee1-4b39-99eb-3462b1ec13af	831f39bd-80a8-4d11-9964-bde1788abae1	2025-09-15 16:34:46.207996	2025-09-15 16:34:46.207996
+605b6230-a215-4874-9112-7b18e57a3101	53	a40b23bf-bd6d-41d0-adbe-254bce002c2d	57559b71-b757-468a-983d-a1b3cec4acef	2025-09-11 15:00:53.699113	2025-09-11 15:00:53.699113
+8864c9a4-2a2b-4197-85cd-1483b7ed5dfa	23	a40b23bf-bd6d-41d0-adbe-254bce002c2d	f6e65bfe-0746-4a8f-8210-0e9bf88d9886	2025-09-11 15:00:53.699113	2025-09-11 15:00:53.699113
+0556a74f-1823-4386-837e-00260816b8a9	15	a40b23bf-bd6d-41d0-adbe-254bce002c2d	fa8025e6-e106-475c-8b9d-77831132fb47	2025-09-11 15:00:53.699113	2025-09-11 15:00:53.699113
+4145187a-ca87-4ccb-ac29-991c71f4b852	4	a40b23bf-bd6d-41d0-adbe-254bce002c2d	3eeaa9fa-0847-4780-9d01-185f91252794	2025-09-11 15:00:53.699113	2025-09-11 15:00:53.699113
+d9f55f4e-676c-401a-a6a3-17f35c77826f	5	a40b23bf-bd6d-41d0-adbe-254bce002c2d	bba5b66d-9a9c-4b44-8dd6-9574760038ee	2025-09-11 15:00:53.699113	2025-09-11 15:00:53.699113
+f03140bb-2a39-4bfa-97c6-b682e4139c92	52	4ef87c39-b004-4c4c-82a8-ddd0338de8c8	57559b71-b757-468a-983d-a1b3cec4acef	2025-09-11 15:18:14.484129	2025-09-11 15:18:14.484129
+602a9496-ad32-4fae-919c-d2c32b7a93a5	22	4ef87c39-b004-4c4c-82a8-ddd0338de8c8	f6e65bfe-0746-4a8f-8210-0e9bf88d9886	2025-09-11 15:18:14.484129	2025-09-11 15:18:14.484129
+8873b798-9c8c-4ea2-b591-b20749f1853e	10	4ef87c39-b004-4c4c-82a8-ddd0338de8c8	fa8025e6-e106-475c-8b9d-77831132fb47	2025-09-11 15:18:14.484129	2025-09-11 15:18:14.484129
+32bc23cf-6c42-4186-b30b-3128577a5ba0	6	4ef87c39-b004-4c4c-82a8-ddd0338de8c8	3eeaa9fa-0847-4780-9d01-185f91252794	2025-09-11 15:18:14.484129	2025-09-11 15:18:14.484129
+08f5b2bb-c50f-4fdb-a3e4-c1bde56557a9	5	4ef87c39-b004-4c4c-82a8-ddd0338de8c8	9e69205f-6c6e-44a7-8ee6-89215e28a28e	2025-09-11 15:18:14.484129	2025-09-11 15:18:14.484129
+291a89e4-33de-4b09-a439-5db111519f37	3	4ef87c39-b004-4c4c-82a8-ddd0338de8c8	bba5b66d-9a9c-4b44-8dd6-9574760038ee	2025-09-11 15:18:14.484129	2025-09-11 15:18:14.484129
+f7be5a79-7383-41e1-812b-5e62af627bcb	2	4ef87c39-b004-4c4c-82a8-ddd0338de8c8	af854064-078a-4f50-af1d-8744e866751e	2025-09-11 15:18:14.484129	2025-09-11 15:18:14.484129
+9e0b8463-a644-4c11-a0cc-b5e7937242ea	48	de763854-d06d-43e9-9973-f4ca8839201b	57559b71-b757-468a-983d-a1b3cec4acef	2025-09-11 15:28:21.125021	2025-09-11 15:28:21.125021
+9581bd1b-4800-486d-8048-9a47c2f07a1f	22	de763854-d06d-43e9-9973-f4ca8839201b	f6e65bfe-0746-4a8f-8210-0e9bf88d9886	2025-09-11 15:28:21.125021	2025-09-11 15:28:21.125021
+492ba1b9-6e58-4958-9e0d-687f20e9d660	10	de763854-d06d-43e9-9973-f4ca8839201b	fa8025e6-e106-475c-8b9d-77831132fb47	2025-09-11 15:28:21.125021	2025-09-11 15:28:21.125021
+fde90843-9992-4628-bae7-52b9a9f42aee	7	de763854-d06d-43e9-9973-f4ca8839201b	3eeaa9fa-0847-4780-9d01-185f91252794	2025-09-11 15:28:21.125021	2025-09-11 15:28:21.125021
+af941c01-9097-4439-a060-282dc4fd9abe	5	de763854-d06d-43e9-9973-f4ca8839201b	ab1dbd50-83a4-42c7-a3cd-da1784818ec8	2025-09-11 15:28:21.125021	2025-09-11 15:28:21.125021
+ab5bc800-d399-412e-802e-37706b4c79e6	4	de763854-d06d-43e9-9973-f4ca8839201b	bba5b66d-9a9c-4b44-8dd6-9574760038ee	2025-09-11 15:28:21.125021	2025-09-11 15:28:21.125021
+45651d36-ca36-4515-a7bc-e63a2b937f2e	2	de763854-d06d-43e9-9973-f4ca8839201b	9e69205f-6c6e-44a7-8ee6-89215e28a28e	2025-09-11 15:28:21.125021	2025-09-11 15:28:21.125021
+68145a3b-32af-473e-9606-adcc73ddc8c1	1	de763854-d06d-43e9-9973-f4ca8839201b	1ddbb748-37a6-4d66-a7d4-4957bdbc647f	2025-09-11 15:28:21.125021	2025-09-11 15:28:21.125021
+eb9085c8-1fba-4a5c-99d1-3c3032c1cc8b	1	de763854-d06d-43e9-9973-f4ca8839201b	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-11 15:28:21.125021	2025-09-11 15:28:21.125021
+f517840b-3265-4d4a-afd9-7634d39d3f10	51	2fd70951-2d44-407e-a7ee-daa94bf6af87	57559b71-b757-468a-983d-a1b3cec4acef	2025-09-11 15:33:44.900779	2025-09-11 15:33:44.900779
+676bf7c0-18c9-4848-b403-78bfa885559b	22	2fd70951-2d44-407e-a7ee-daa94bf6af87	f6e65bfe-0746-4a8f-8210-0e9bf88d9886	2025-09-11 15:33:44.900779	2025-09-11 15:33:44.900779
+5566441b-eda8-4838-b80e-a1b1a2da1b48	7	2fd70951-2d44-407e-a7ee-daa94bf6af87	fa8025e6-e106-475c-8b9d-77831132fb47	2025-09-11 15:33:44.900779	2025-09-11 15:33:44.900779
+766a6b50-27c5-4d53-8765-7ec67ef8fab4	5	2fd70951-2d44-407e-a7ee-daa94bf6af87	3eeaa9fa-0847-4780-9d01-185f91252794	2025-09-11 15:33:44.900779	2025-09-11 15:33:44.900779
+6399a655-ec53-4f88-a83b-e77c045b68dd	4	2fd70951-2d44-407e-a7ee-daa94bf6af87	bba5b66d-9a9c-4b44-8dd6-9574760038ee	2025-09-11 15:33:44.900779	2025-09-11 15:33:44.900779
+72df4c68-41fe-451d-82cf-0fb183ec2282	3	2fd70951-2d44-407e-a7ee-daa94bf6af87	9e69205f-6c6e-44a7-8ee6-89215e28a28e	2025-09-11 15:33:44.900779	2025-09-11 15:33:44.900779
+a59864dd-e799-46e3-b56c-83dbc406b7e8	3	2fd70951-2d44-407e-a7ee-daa94bf6af87	1ddbb748-37a6-4d66-a7d4-4957bdbc647f	2025-09-11 15:33:44.900779	2025-09-11 15:33:44.900779
+a4ec8fcf-55ac-4377-9edd-7cfb238e0473	3	2fd70951-2d44-407e-a7ee-daa94bf6af87	2e0faf2b-31a5-4c63-ac15-454be132796f	2025-09-11 15:33:44.900779	2025-09-11 15:33:44.900779
+78070dee-e754-4e6e-94c5-f5c90f681439	2	2fd70951-2d44-407e-a7ee-daa94bf6af87	af854064-078a-4f50-af1d-8744e866751e	2025-09-11 15:33:44.900779	2025-09-11 15:33:44.900779
+c3211bea-cf29-4254-a43d-adaf771495a9	18	b2e39ab6-118d-46bd-ad8c-8acf9864af6c	0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a	2025-09-13 13:23:48.72269	2025-09-13 13:23:48.72269
+ef5c46c3-ade4-4eb4-8a08-b956c1b65c0d	2	b2e39ab6-118d-46bd-ad8c-8acf9864af6c	af854064-078a-4f50-af1d-8744e866751e	2025-09-13 13:23:48.72269	2025-09-13 13:23:48.72269
+69626e0e-6f85-4c0b-87d0-55d1709ecd4b	2	c0a055b2-daf6-4ecc-b97b-cfedfce6a42a	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-13 13:26:03.920945	2025-09-13 13:26:03.920945
+b17562c8-b4a7-4259-8d75-7a087248ae59	94	9e348a26-e5d0-4ee0-b3e6-fe58563ac698	bba5b66d-9a9c-4b44-8dd6-9574760038ee	2025-09-13 13:31:21.824926	2025-09-13 13:31:21.824926
+087097b2-ac64-43c7-93f0-ddf6472bb7c4	3	9e348a26-e5d0-4ee0-b3e6-fe58563ac698	57559b71-b757-468a-983d-a1b3cec4acef	2025-09-13 13:31:21.824926	2025-09-13 13:31:21.824926
+3c81a426-f3b5-477f-b937-dc5cf6e243a0	2	9e348a26-e5d0-4ee0-b3e6-fe58563ac698	f6e65bfe-0746-4a8f-8210-0e9bf88d9886	2025-09-13 13:31:21.824926	2025-09-13 13:31:21.824926
+45a5c0db-71e5-4a0b-bf40-c9a8b7f9606f	1	9e348a26-e5d0-4ee0-b3e6-fe58563ac698	3eeaa9fa-0847-4780-9d01-185f91252794	2025-09-13 13:31:21.824926	2025-09-13 13:31:21.824926
+0b2ef4c9-1cf0-45ca-94bf-f426e430b332	2	89ffca84-73f0-4a69-871f-9d9c96521a05	f6e65bfe-0746-4a8f-8210-0e9bf88d9886	2025-09-13 13:32:40.391156	2025-09-13 13:32:40.391156
+ed68e148-4fd4-408a-bae6-7e1511bd353f	35	98791e1d-6029-4cb2-bcaf-611a337208ef	97136fa7-622a-49d6-9d09-403a631d253d	2025-09-11 16:05:43.124945	2025-09-11 16:05:43.124945
+9e7ecae5-c10f-4901-af10-c73d422047e8	30	98791e1d-6029-4cb2-bcaf-611a337208ef	2e0faf2b-31a5-4c63-ac15-454be132796f	2025-09-11 16:05:43.124945	2025-09-11 16:05:43.124945
+01fcf013-7dfa-4dda-9534-7095c3a191c6	25	98791e1d-6029-4cb2-bcaf-611a337208ef	af854064-078a-4f50-af1d-8744e866751e	2025-09-11 16:05:43.124945	2025-09-11 16:05:43.124945
+06f413e3-e638-454e-8006-88c83b30f546	5	98791e1d-6029-4cb2-bcaf-611a337208ef	831f39bd-80a8-4d11-9964-bde1788abae1	2025-09-11 16:05:43.124945	2025-09-11 16:05:43.124945
+94bf1328-8a40-4a25-9874-6e352fb9d146	5	98791e1d-6029-4cb2-bcaf-611a337208ef	97a87b01-35e8-490a-94b9-9bdae9c2f965	2025-09-11 16:05:43.124945	2025-09-11 16:05:43.124945
+f5e151ce-0da1-4e0b-90d6-e63c0379d819	90	abe543c6-ec69-49ad-b9ca-ef959ffa10f2	2e0faf2b-31a5-4c63-ac15-454be132796f	2025-09-11 16:14:07.540708	2025-09-11 16:14:07.540708
+44753b26-2bfc-4131-a067-57ba7406866e	5	abe543c6-ec69-49ad-b9ca-ef959ffa10f2	af854064-078a-4f50-af1d-8744e866751e	2025-09-11 16:14:07.540708	2025-09-11 16:14:07.540708
+1a35d888-8770-464d-b29d-d490c19f3466	5	abe543c6-ec69-49ad-b9ca-ef959ffa10f2	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-11 16:14:07.540708	2025-09-11 16:14:07.540708
+599a2ec2-112f-4787-9c93-26a6c4281ac4	35	6da53baf-d357-4392-927f-7da1bf7449dc	831f39bd-80a8-4d11-9964-bde1788abae1	2025-09-11 16:22:08.383998	2025-09-11 16:22:08.383998
+c595589a-8ba2-43f2-b3ae-79fa0a29cf21	22	6da53baf-d357-4392-927f-7da1bf7449dc	af854064-078a-4f50-af1d-8744e866751e	2025-09-11 16:22:08.383998	2025-09-11 16:22:08.383998
+4a4f8a16-4af8-4f72-b731-763d5399fbf4	18	6da53baf-d357-4392-927f-7da1bf7449dc	2e0faf2b-31a5-4c63-ac15-454be132796f	2025-09-11 16:22:08.383998	2025-09-11 16:22:08.383998
+53e65ce5-ecf9-437b-aedb-b1d683720af1	10	6da53baf-d357-4392-927f-7da1bf7449dc	97136fa7-622a-49d6-9d09-403a631d253d	2025-09-11 16:22:08.383998	2025-09-11 16:22:08.383998
+1e594cdc-4c55-4646-b8e4-48df4b89ca4a	10	6da53baf-d357-4392-927f-7da1bf7449dc	97a87b01-35e8-490a-94b9-9bdae9c2f965	2025-09-11 16:22:08.383998	2025-09-11 16:22:08.383998
+e30b4059-fbae-4e6f-a1e1-1cea12702304	5	6da53baf-d357-4392-927f-7da1bf7449dc	be38dcef-1bc8-487b-a44f-96df1ab9e68c	2025-09-11 16:22:08.383998	2025-09-11 16:22:08.383998
+0d3f5bce-bbd3-4936-adbc-58555624f84d	40	cbb152c0-ba9c-47ea-a8a3-28ad88f56eb6	831f39bd-80a8-4d11-9964-bde1788abae1	2025-09-11 17:04:05.219507	2025-09-11 17:04:05.219507
+909daf01-d2e3-404e-96ee-5c0d8b7c44d9	13	cbb152c0-ba9c-47ea-a8a3-28ad88f56eb6	af854064-078a-4f50-af1d-8744e866751e	2025-09-11 17:04:05.219507	2025-09-11 17:04:05.219507
+e1b40f70-ad34-4162-9d3e-33d2e10ad17a	22	cbb152c0-ba9c-47ea-a8a3-28ad88f56eb6	2e0faf2b-31a5-4c63-ac15-454be132796f	2025-09-11 17:04:05.219507	2025-09-11 17:04:05.219507
+610e90dc-9208-4ece-895c-d615acbc2dc3	8	cbb152c0-ba9c-47ea-a8a3-28ad88f56eb6	97136fa7-622a-49d6-9d09-403a631d253d	2025-09-11 17:04:05.219507	2025-09-11 17:04:05.219507
+2dddae8d-e075-499b-8deb-32e789ca9022	12	cbb152c0-ba9c-47ea-a8a3-28ad88f56eb6	97a87b01-35e8-490a-94b9-9bdae9c2f965	2025-09-11 17:04:05.219507	2025-09-11 17:04:05.219507
+ef4bd7f8-45e2-496c-aa5e-42c5758c8739	5	cbb152c0-ba9c-47ea-a8a3-28ad88f56eb6	be38dcef-1bc8-487b-a44f-96df1ab9e68c	2025-09-11 17:04:05.219507	2025-09-11 17:04:05.219507
+7b9b8089-1204-4b7c-a9df-0f5de7e262c4	36	baa3f656-0ad7-422b-ba8b-e5e9f5d4cd63	831f39bd-80a8-4d11-9964-bde1788abae1	2025-09-11 17:12:20.442541	2025-09-11 17:12:20.442541
+38b3684d-8507-4fe5-be40-b3363c3867d7	22	baa3f656-0ad7-422b-ba8b-e5e9f5d4cd63	af854064-078a-4f50-af1d-8744e866751e	2025-09-11 17:12:20.442541	2025-09-11 17:12:20.442541
+cf4ecde8-5bea-4cc2-9120-858052198c1d	16	baa3f656-0ad7-422b-ba8b-e5e9f5d4cd63	2e0faf2b-31a5-4c63-ac15-454be132796f	2025-09-11 17:12:20.442541	2025-09-11 17:12:20.442541
+0645f762-1b06-4d6f-be2a-03ec781fd055	10	baa3f656-0ad7-422b-ba8b-e5e9f5d4cd63	be38dcef-1bc8-487b-a44f-96df1ab9e68c	2025-09-11 17:12:20.442541	2025-09-11 17:12:20.442541
+e83417b4-5867-4bef-9206-10bbeee0a96b	12	baa3f656-0ad7-422b-ba8b-e5e9f5d4cd63	97a87b01-35e8-490a-94b9-9bdae9c2f965	2025-09-11 17:12:20.442541	2025-09-11 17:12:20.442541
+6cda5549-0605-44a4-b567-5cf94861c278	4	baa3f656-0ad7-422b-ba8b-e5e9f5d4cd63	97136fa7-622a-49d6-9d09-403a631d253d	2025-09-11 17:12:20.442541	2025-09-11 17:12:20.442541
+06dede3d-2e6f-4bb1-8d2e-acc149e2e6fa	40	85a317d2-6cf2-4155-a6ea-a271afc4a803	831f39bd-80a8-4d11-9964-bde1788abae1	2025-09-11 17:27:09.027591	2025-09-11 17:27:09.027591
+c5b6db95-a1aa-46fd-b601-67f2a11d2bf8	18	85a317d2-6cf2-4155-a6ea-a271afc4a803	af854064-078a-4f50-af1d-8744e866751e	2025-09-11 17:27:09.027591	2025-09-11 17:27:09.027591
+ecf55629-9b35-426b-b4f3-996eba57fb63	18	85a317d2-6cf2-4155-a6ea-a271afc4a803	2e0faf2b-31a5-4c63-ac15-454be132796f	2025-09-11 17:27:09.027591	2025-09-11 17:27:09.027591
+cca2f1db-da30-401b-9b67-3aaab5dd4868	8	85a317d2-6cf2-4155-a6ea-a271afc4a803	be38dcef-1bc8-487b-a44f-96df1ab9e68c	2025-09-11 17:27:09.027591	2025-09-11 17:27:09.027591
+5b8caecb-a708-4045-9309-b7162b0f63d6	6	85a317d2-6cf2-4155-a6ea-a271afc4a803	97136fa7-622a-49d6-9d09-403a631d253d	2025-09-11 17:27:09.027591	2025-09-11 17:27:09.027591
+471c40dc-a817-485b-9251-b5c76ffb0927	8	85a317d2-6cf2-4155-a6ea-a271afc4a803	97a87b01-35e8-490a-94b9-9bdae9c2f965	2025-09-11 17:27:09.027591	2025-09-11 17:27:09.027591
+e74060cc-ac96-4fb4-a5a1-fb33ce16d91e	2	85a317d2-6cf2-4155-a6ea-a271afc4a803	9e69205f-6c6e-44a7-8ee6-89215e28a28e	2025-09-11 17:27:09.027591	2025-09-11 17:27:09.027591
+9f495183-1757-46eb-863c-0d32c9688b9d	56	e84c6031-9d71-41a1-ae2c-6c9901ea1d6b	831f39bd-80a8-4d11-9964-bde1788abae1	2025-09-11 17:34:09.911409	2025-09-11 17:34:09.911409
+37b73649-a257-45c0-8406-3ffbf9695386	14	e84c6031-9d71-41a1-ae2c-6c9901ea1d6b	be38dcef-1bc8-487b-a44f-96df1ab9e68c	2025-09-11 17:34:09.911409	2025-09-11 17:34:09.911409
+cc6b1c8b-72a2-4fbd-a490-b46693050654	10	e84c6031-9d71-41a1-ae2c-6c9901ea1d6b	af854064-078a-4f50-af1d-8744e866751e	2025-09-11 17:34:09.911409	2025-09-11 17:34:09.911409
+957a61e4-cd77-47dd-aeb8-71efb0d6bfb5	8	e84c6031-9d71-41a1-ae2c-6c9901ea1d6b	2e0faf2b-31a5-4c63-ac15-454be132796f	2025-09-11 17:34:09.911409	2025-09-11 17:34:09.911409
+eefc4f7e-a6cb-4785-b896-8774c2f1100f	8	e84c6031-9d71-41a1-ae2c-6c9901ea1d6b	97a87b01-35e8-490a-94b9-9bdae9c2f965	2025-09-11 17:34:09.911409	2025-09-11 17:34:09.911409
+3be652b3-b6f3-4b50-bb63-6f1fd4f6d636	2	e84c6031-9d71-41a1-ae2c-6c9901ea1d6b	97136fa7-622a-49d6-9d09-403a631d253d	2025-09-11 17:34:09.911409	2025-09-11 17:34:09.911409
+b6d4a66c-4749-4f39-86d9-a98a7d9f2b61	2	e84c6031-9d71-41a1-ae2c-6c9901ea1d6b	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-11 17:34:09.911409	2025-09-11 17:34:09.911409
+cd00ea15-85d6-45c1-a901-6e6a7e8de515	55	8e687b8b-0142-49f7-92e9-4d5df9aa86c9	831f39bd-80a8-4d11-9964-bde1788abae1	2025-09-11 17:39:05.479762	2025-09-11 17:39:05.479762
+28097509-6952-48e2-9110-78ab407eb7b7	12	8e687b8b-0142-49f7-92e9-4d5df9aa86c9	be38dcef-1bc8-487b-a44f-96df1ab9e68c	2025-09-11 17:39:05.479762	2025-09-11 17:39:05.479762
+1601313e-83a3-42b9-8cae-fc1ca9bb62a2	8	8e687b8b-0142-49f7-92e9-4d5df9aa86c9	2e0faf2b-31a5-4c63-ac15-454be132796f	2025-09-11 17:39:05.479762	2025-09-11 17:39:05.479762
+a9982331-c10c-41b9-a41f-72fe31e38993	8	8e687b8b-0142-49f7-92e9-4d5df9aa86c9	af854064-078a-4f50-af1d-8744e866751e	2025-09-11 17:39:05.479762	2025-09-11 17:39:05.479762
+f4689524-7e1f-4088-afc3-373415cb32c4	10	8e687b8b-0142-49f7-92e9-4d5df9aa86c9	97a87b01-35e8-490a-94b9-9bdae9c2f965	2025-09-11 17:39:05.479762	2025-09-11 17:39:05.479762
+806b2b16-8be7-42de-b2c0-78e0eb67900a	4	8e687b8b-0142-49f7-92e9-4d5df9aa86c9	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-11 17:39:05.479762	2025-09-11 17:39:05.479762
+2784a158-761e-40e9-89a6-645b5518d708	3	8e687b8b-0142-49f7-92e9-4d5df9aa86c9	9e69205f-6c6e-44a7-8ee6-89215e28a28e	2025-09-11 17:39:05.479762	2025-09-11 17:39:05.479762
+5bc29540-9dbc-429e-8420-6916ab83e197	48	676f21e5-7b5a-4c11-a505-4545822673de	3eeaa9fa-0847-4780-9d01-185f91252794	2025-09-11 17:45:59.921715	2025-09-11 17:45:59.921715
+991bf098-ac6b-4006-afaa-66052022cb4a	26	676f21e5-7b5a-4c11-a505-4545822673de	f6e65bfe-0746-4a8f-8210-0e9bf88d9886	2025-09-11 17:45:59.921715	2025-09-11 17:45:59.921715
+03dad2cd-c133-41e9-942f-d50bd99a1410	6	676f21e5-7b5a-4c11-a505-4545822673de	fa8025e6-e106-475c-8b9d-77831132fb47	2025-09-11 17:45:59.921715	2025-09-11 17:45:59.921715
+bf533e72-6410-4818-b50e-fdb41a37b59c	4	676f21e5-7b5a-4c11-a505-4545822673de	2e0faf2b-31a5-4c63-ac15-454be132796f	2025-09-11 17:45:59.921715	2025-09-11 17:45:59.921715
+a80e2a2e-cd66-4d46-abef-d3b22d012fc3	3	676f21e5-7b5a-4c11-a505-4545822673de	af854064-078a-4f50-af1d-8744e866751e	2025-09-11 17:45:59.921715	2025-09-11 17:45:59.921715
+86d330e3-1eb9-4322-ac6c-d99d8e4793c6	4	676f21e5-7b5a-4c11-a505-4545822673de	831f39bd-80a8-4d11-9964-bde1788abae1	2025-09-11 17:45:59.921715	2025-09-11 17:45:59.921715
+57dbb03e-0b80-4b19-a621-7b02a53cec96	5	676f21e5-7b5a-4c11-a505-4545822673de	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-11 17:45:59.921715	2025-09-11 17:45:59.921715
+d7bc9756-68dd-4a72-852c-c5253590e8b0	2	676f21e5-7b5a-4c11-a505-4545822673de	9e69205f-6c6e-44a7-8ee6-89215e28a28e	2025-09-11 17:45:59.921715	2025-09-11 17:45:59.921715
+2bf4dd59-2f18-4c08-8347-39bdd2828aee	1	676f21e5-7b5a-4c11-a505-4545822673de	1ddbb748-37a6-4d66-a7d4-4957bdbc647f	2025-09-11 17:45:59.921715	2025-09-11 17:45:59.921715
+12779df4-e037-4b5a-8f7b-82aec2385750	1	676f21e5-7b5a-4c11-a505-4545822673de	bba5b66d-9a9c-4b44-8dd6-9574760038ee	2025-09-11 17:45:59.921715	2025-09-11 17:45:59.921715
+befae01d-84a3-44d6-adb4-2aba269e7c55	48	b5c6e6a6-6eec-422c-ad4a-8dca82287312	3eeaa9fa-0847-4780-9d01-185f91252794	2025-09-11 17:57:50.635256	2025-09-11 17:57:50.635256
+dd9d8e96-d588-4445-986c-67458f29ee3f	28	b5c6e6a6-6eec-422c-ad4a-8dca82287312	f6e65bfe-0746-4a8f-8210-0e9bf88d9886	2025-09-11 17:57:50.635256	2025-09-11 17:57:50.635256
+ce6f0937-2cba-4d09-b51a-8afaeb64a692	6	b5c6e6a6-6eec-422c-ad4a-8dca82287312	831f39bd-80a8-4d11-9964-bde1788abae1	2025-09-11 17:57:50.635256	2025-09-11 17:57:50.635256
+66090e96-dee4-41f0-96d5-114fbae8e916	6	b5c6e6a6-6eec-422c-ad4a-8dca82287312	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-11 17:57:50.635256	2025-09-11 17:57:50.635256
+98c5fcf6-66e5-4b10-ab69-2e00f5bc12ae	4	b5c6e6a6-6eec-422c-ad4a-8dca82287312	9e69205f-6c6e-44a7-8ee6-89215e28a28e	2025-09-11 17:57:50.635256	2025-09-11 17:57:50.635256
+2be33877-854e-4dfb-b37e-a07a021ec024	3	b5c6e6a6-6eec-422c-ad4a-8dca82287312	2e0faf2b-31a5-4c63-ac15-454be132796f	2025-09-11 17:57:50.635256	2025-09-11 17:57:50.635256
+7b3f36dc-e4e3-455b-b275-d285aacb942d	5	b5c6e6a6-6eec-422c-ad4a-8dca82287312	fa8025e6-e106-475c-8b9d-77831132fb47	2025-09-11 17:57:50.635256	2025-09-11 17:57:50.635256
+26095b19-73fc-47ad-9529-215a08d3125d	45	b39cc5b5-8335-4918-a504-f9cdfb85ceba	3eeaa9fa-0847-4780-9d01-185f91252794	2025-09-11 18:30:54.469882	2025-09-11 18:30:54.469882
+1ac22114-ed23-4cce-93a3-b15948a45635	35	b39cc5b5-8335-4918-a504-f9cdfb85ceba	f6e65bfe-0746-4a8f-8210-0e9bf88d9886	2025-09-11 18:30:54.469882	2025-09-11 18:30:54.469882
+c4eb806f-d81d-47b7-84c8-2ae5f8342945	6	b39cc5b5-8335-4918-a504-f9cdfb85ceba	fa8025e6-e106-475c-8b9d-77831132fb47	2025-09-11 18:30:54.469882	2025-09-11 18:30:54.469882
+fe70cf24-df21-4dab-8eb1-2f558fabb0aa	4	b39cc5b5-8335-4918-a504-f9cdfb85ceba	9e69205f-6c6e-44a7-8ee6-89215e28a28e	2025-09-11 18:30:54.469882	2025-09-11 18:30:54.469882
+d3acbdd1-2bcb-478a-9a56-75a5ee08bef2	55	385fb192-7c2c-405a-b483-f36e32e241c8	0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a	2025-09-15 16:25:39.268928	2025-09-15 16:25:39.268928
+bbaf62d8-cf7a-4f96-8709-71877d3a1a9d	30	385fb192-7c2c-405a-b483-f36e32e241c8	b4658891-9713-48c4-864c-8dd907da19b0	2025-09-15 16:25:39.268928	2025-09-15 16:25:39.268928
+0c419855-744a-4caa-9720-22247c165fa0	10	385fb192-7c2c-405a-b483-f36e32e241c8	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-15 16:25:39.268928	2025-09-15 16:25:39.268928
+712b5abc-9681-42f5-807f-268664451911	5	385fb192-7c2c-405a-b483-f36e32e241c8	c57aa60c-61ea-4498-b01f-fedcafe8a32a	2025-09-15 16:25:39.268928	2025-09-15 16:25:39.268928
+ef7b1808-4234-4a91-985e-a95b5020a44c	2	547f1f7e-3ee1-4b39-99eb-3462b1ec13af	1ddbb748-37a6-4d66-a7d4-4957bdbc647f	2025-09-15 16:34:46.207996	2025-09-15 16:34:46.207996
+0fb8d7ab-6a4f-4073-99c3-8bd5808fa153	1	547f1f7e-3ee1-4b39-99eb-3462b1ec13af	9e69205f-6c6e-44a7-8ee6-89215e28a28e	2025-09-15 16:34:46.207996	2025-09-15 16:34:46.207996
+d6be7c76-3040-4d81-8ce1-05808041a17a	4	b39cc5b5-8335-4918-a504-f9cdfb85ceba	1ddbb748-37a6-4d66-a7d4-4957bdbc647f	2025-09-11 18:30:54.469882	2025-09-11 18:30:54.469882
+a99d1802-1349-4204-a219-09bf445600cb	3	b39cc5b5-8335-4918-a504-f9cdfb85ceba	2e0faf2b-31a5-4c63-ac15-454be132796f	2025-09-11 18:30:54.469882	2025-09-11 18:30:54.469882
+baaff13f-c645-4f53-8e18-85104de550e8	3	b39cc5b5-8335-4918-a504-f9cdfb85ceba	af854064-078a-4f50-af1d-8744e866751e	2025-09-11 18:30:54.469882	2025-09-11 18:30:54.469882
+71775845-bb62-4892-a014-15c0707cf22d	100	b53daf0a-c7b6-4be8-9230-b33695eb5340	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-11 18:43:48.029958	2025-09-11 18:43:48.029958
+ab765aee-a0c7-4c62-b4f8-174d134f0213	100	414a1891-1a28-4dbe-84e3-a992c6e879bc	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-11 18:53:04.159802	2025-09-11 18:53:04.159802
+52b6a734-2b9f-43e8-84f7-dc6e1b9b2a13	60	c2059aab-d7b5-4532-a8a7-ad15a4054b33	b4658891-9713-48c4-864c-8dd907da19b0	2025-09-13 13:06:03.967447	2025-09-13 13:06:03.967447
+b70e6583-6b31-43cd-9c53-cf1f6806edce	25	c2059aab-d7b5-4532-a8a7-ad15a4054b33	a3a8eae0-6315-4435-8974-f2c07ec3567f	2025-09-13 13:06:03.967447	2025-09-13 13:06:03.967447
+f03de7f2-7b3b-4e64-9b1a-1ee54479505d	50	4da455c2-c154-4da7-b9c5-6195bd137eec	57559b71-b757-468a-983d-a1b3cec4acef	2025-09-11 16:06:55.568778	2025-09-11 16:06:55.568778
+a34b14e5-1b61-4ede-a462-34ab76246f08	25	4da455c2-c154-4da7-b9c5-6195bd137eec	f6e65bfe-0746-4a8f-8210-0e9bf88d9886	2025-09-11 16:06:55.568778	2025-09-11 16:06:55.568778
+97a8cf89-63be-4d62-ab31-b347803e9b22	10	4da455c2-c154-4da7-b9c5-6195bd137eec	3eeaa9fa-0847-4780-9d01-185f91252794	2025-09-11 16:06:55.568778	2025-09-11 16:06:55.568778
+191644c6-baf8-4d5f-8d99-b64e6b22ddb9	10	4da455c2-c154-4da7-b9c5-6195bd137eec	fa8025e6-e106-475c-8b9d-77831132fb47	2025-09-11 16:06:55.568778	2025-09-11 16:06:55.568778
+a466bc54-3234-4eac-b9ee-1d2ca5000eab	5	4da455c2-c154-4da7-b9c5-6195bd137eec	bba5b66d-9a9c-4b44-8dd6-9574760038ee	2025-09-11 16:06:55.568778	2025-09-11 16:06:55.568778
+30da4fd0-6c3e-4ed5-8ebf-3644a9748e4a	90	49ef1d62-a375-485a-84bd-289a5548e81b	2e0faf2b-31a5-4c63-ac15-454be132796f	2025-09-11 16:15:35.10143	2025-09-11 16:15:35.10143
+adfcb8cf-887e-49ee-8abe-4480f1b1e4de	5	49ef1d62-a375-485a-84bd-289a5548e81b	af854064-078a-4f50-af1d-8744e866751e	2025-09-11 16:15:35.10143	2025-09-11 16:15:35.10143
+affa91ee-7f09-46de-802f-fefca12af335	5	49ef1d62-a375-485a-84bd-289a5548e81b	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-11 16:15:35.10143	2025-09-11 16:15:35.10143
+616eed2d-8f4c-4842-8662-2411ea0f72b4	35	7976a83a-f4db-4cc5-9cac-7f16f2bc430f	831f39bd-80a8-4d11-9964-bde1788abae1	2025-09-11 16:23:52.076073	2025-09-11 16:23:52.076073
+1421793f-cae7-43cb-88ab-67f76ed15fb8	22	7976a83a-f4db-4cc5-9cac-7f16f2bc430f	af854064-078a-4f50-af1d-8744e866751e	2025-09-11 16:23:52.076073	2025-09-11 16:23:52.076073
+82d7d85c-63ef-4226-b370-8a28fb269ed1	18	7976a83a-f4db-4cc5-9cac-7f16f2bc430f	2e0faf2b-31a5-4c63-ac15-454be132796f	2025-09-11 16:23:52.076073	2025-09-11 16:23:52.076073
+3ab9a294-fa4e-49d8-8672-1a5d47aea600	10	7976a83a-f4db-4cc5-9cac-7f16f2bc430f	97136fa7-622a-49d6-9d09-403a631d253d	2025-09-11 16:23:52.076073	2025-09-11 16:23:52.076073
+b11852d6-d9dc-4202-b744-e4bc0e081b81	10	7976a83a-f4db-4cc5-9cac-7f16f2bc430f	97a87b01-35e8-490a-94b9-9bdae9c2f965	2025-09-11 16:23:52.076073	2025-09-11 16:23:52.076073
+4012f83f-4795-457b-8eec-7f923e066aa0	5	7976a83a-f4db-4cc5-9cac-7f16f2bc430f	be38dcef-1bc8-487b-a44f-96df1ab9e68c	2025-09-11 16:23:52.076073	2025-09-11 16:23:52.076073
+9a959cfa-7bdd-4eeb-8b9d-26be5139c3ce	32	91f6781b-915e-4bb4-8d8c-e345aa66e42d	831f39bd-80a8-4d11-9964-bde1788abae1	2025-09-11 17:05:51.710543	2025-09-11 17:05:51.710543
+0eff803c-de3f-4151-b888-d0c5366d19fc	22	91f6781b-915e-4bb4-8d8c-e345aa66e42d	2e0faf2b-31a5-4c63-ac15-454be132796f	2025-09-11 17:05:51.710543	2025-09-11 17:05:51.710543
+5c16d234-e8bd-404d-ad46-552520897cb2	18	91f6781b-915e-4bb4-8d8c-e345aa66e42d	af854064-078a-4f50-af1d-8744e866751e	2025-09-11 17:05:51.710543	2025-09-11 17:05:51.710543
+0cb906b5-c6a7-47c3-823a-cde2592229bb	11	91f6781b-915e-4bb4-8d8c-e345aa66e42d	97136fa7-622a-49d6-9d09-403a631d253d	2025-09-11 17:05:51.710543	2025-09-11 17:05:51.710543
+1d6f5fcd-df15-473e-a468-642b164851c7	12	91f6781b-915e-4bb4-8d8c-e345aa66e42d	97a87b01-35e8-490a-94b9-9bdae9c2f965	2025-09-11 17:05:51.710543	2025-09-11 17:05:51.710543
+036a55c9-52f7-4863-a740-8554e245ffde	5	91f6781b-915e-4bb4-8d8c-e345aa66e42d	be38dcef-1bc8-487b-a44f-96df1ab9e68c	2025-09-11 17:05:51.710543	2025-09-11 17:05:51.710543
+1bf63d6d-41e0-437b-9354-52e678e53d71	38	9c029423-aa52-4b90-97c0-f5d4b4574f12	831f39bd-80a8-4d11-9964-bde1788abae1	2025-09-11 17:13:25.292268	2025-09-11 17:13:25.292268
+600fccdc-2c84-42d5-9139-e72cbc909da9	20	9c029423-aa52-4b90-97c0-f5d4b4574f12	af854064-078a-4f50-af1d-8744e866751e	2025-09-11 17:13:25.292268	2025-09-11 17:13:25.292268
+151da7d8-db21-4ed4-a5eb-34c4925bbbee	18	9c029423-aa52-4b90-97c0-f5d4b4574f12	2e0faf2b-31a5-4c63-ac15-454be132796f	2025-09-11 17:13:25.292268	2025-09-11 17:13:25.292268
+d4e2ed49-956a-4b23-ba83-3daa9fc61412	8	9c029423-aa52-4b90-97c0-f5d4b4574f12	be38dcef-1bc8-487b-a44f-96df1ab9e68c	2025-09-11 17:13:25.292268	2025-09-11 17:13:25.292268
+a800acac-b3f9-41f0-a54d-3ca42f63752f	12	9c029423-aa52-4b90-97c0-f5d4b4574f12	97a87b01-35e8-490a-94b9-9bdae9c2f965	2025-09-11 17:13:25.292268	2025-09-11 17:13:25.292268
+6247c7d0-407e-4d1e-8f1d-b5a4b1396e2e	4	9c029423-aa52-4b90-97c0-f5d4b4574f12	97136fa7-622a-49d6-9d09-403a631d253d	2025-09-11 17:13:25.292268	2025-09-11 17:13:25.292268
+123a03ad-cf3f-42f1-89f8-882e77fdf6b8	48	c25a5f07-d65f-4ba9-9b0d-cb4d5b426455	831f39bd-80a8-4d11-9964-bde1788abae1	2025-09-11 17:28:43.201857	2025-09-11 17:28:43.201857
+71e42978-55b3-4c1c-bca0-eb39b5909954	12	c25a5f07-d65f-4ba9-9b0d-cb4d5b426455	be38dcef-1bc8-487b-a44f-96df1ab9e68c	2025-09-11 17:28:43.201857	2025-09-11 17:28:43.201857
+702b0404-0ab7-4663-a341-e27d45ccd33e	10	c25a5f07-d65f-4ba9-9b0d-cb4d5b426455	af854064-078a-4f50-af1d-8744e866751e	2025-09-11 17:28:43.201857	2025-09-11 17:28:43.201857
+b1576c9d-d805-435d-a774-b70da1d31da8	10	c25a5f07-d65f-4ba9-9b0d-cb4d5b426455	2e0faf2b-31a5-4c63-ac15-454be132796f	2025-09-11 17:28:43.201857	2025-09-11 17:28:43.201857
+ce5eacaa-b301-4182-8290-77f1210bed5d	15	c25a5f07-d65f-4ba9-9b0d-cb4d5b426455	97a87b01-35e8-490a-94b9-9bdae9c2f965	2025-09-11 17:28:43.201857	2025-09-11 17:28:43.201857
+d21bce33-8ec7-4629-b6d8-a417e4ca3b0d	3	c25a5f07-d65f-4ba9-9b0d-cb4d5b426455	97136fa7-622a-49d6-9d09-403a631d253d	2025-09-11 17:28:43.201857	2025-09-11 17:28:43.201857
+7b5c91b6-fd0c-48b0-942f-6c32f43acbe5	1	c25a5f07-d65f-4ba9-9b0d-cb4d5b426455	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-11 17:28:43.201857	2025-09-11 17:28:43.201857
+d3ffd04b-97dc-4a14-b96a-a5a28e857f1d	1	c25a5f07-d65f-4ba9-9b0d-cb4d5b426455	9e69205f-6c6e-44a7-8ee6-89215e28a28e	2025-09-11 17:28:43.201857	2025-09-11 17:28:43.201857
+2d257867-9235-48c1-aaaf-ac4cef2e15b8	46	738d7264-00af-48dd-a475-3c4d12e28188	831f39bd-80a8-4d11-9964-bde1788abae1	2025-09-11 17:35:30.583853	2025-09-11 17:35:30.583853
+8415de8b-74f2-4d10-acc4-b091e756862e	24	738d7264-00af-48dd-a475-3c4d12e28188	97a87b01-35e8-490a-94b9-9bdae9c2f965	2025-09-11 17:35:30.583853	2025-09-11 17:35:30.583853
+e595ae62-81d7-49d5-ae05-24f55ba691ab	10	738d7264-00af-48dd-a475-3c4d12e28188	be38dcef-1bc8-487b-a44f-96df1ab9e68c	2025-09-11 17:35:30.583853	2025-09-11 17:35:30.583853
+a5bf81a8-3447-4377-b457-4c3586bbb860	52	ad98534e-b2d9-4fef-9983-578ef12b28f7	3eeaa9fa-0847-4780-9d01-185f91252794	2025-09-11 18:00:08.207783	2025-09-11 18:00:08.207783
+dcfd1d87-7782-44d9-be5c-f4da1a904218	20	ad98534e-b2d9-4fef-9983-578ef12b28f7	f6e65bfe-0746-4a8f-8210-0e9bf88d9886	2025-09-11 18:00:08.207783	2025-09-11 18:00:08.207783
+063bcc9c-61d5-46a0-a8f6-6371aebcf230	8	ad98534e-b2d9-4fef-9983-578ef12b28f7	831f39bd-80a8-4d11-9964-bde1788abae1	2025-09-11 18:00:08.207783	2025-09-11 18:00:08.207783
+46b5f925-51cd-49b4-94d6-5cb22285dc5b	6	ad98534e-b2d9-4fef-9983-578ef12b28f7	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-11 18:00:08.207783	2025-09-11 18:00:08.207783
+97fe9582-5fef-44b9-b945-a50933fa0ae7	5	ad98534e-b2d9-4fef-9983-578ef12b28f7	fa8025e6-e106-475c-8b9d-77831132fb47	2025-09-11 18:00:08.207783	2025-09-11 18:00:08.207783
+9d58ee05-74f2-4f1d-9ead-c66dc391a8e1	4	ad98534e-b2d9-4fef-9983-578ef12b28f7	9e69205f-6c6e-44a7-8ee6-89215e28a28e	2025-09-11 18:00:08.207783	2025-09-11 18:00:08.207783
+b5b9a276-3732-4c0b-a5a5-7ce698987ed9	3	ad98534e-b2d9-4fef-9983-578ef12b28f7	2e0faf2b-31a5-4c63-ac15-454be132796f	2025-09-11 18:00:08.207783	2025-09-11 18:00:08.207783
+259d696d-0db2-4a05-97dd-21111aa8df74	2	ad98534e-b2d9-4fef-9983-578ef12b28f7	bba5b66d-9a9c-4b44-8dd6-9574760038ee	2025-09-11 18:00:08.207783	2025-09-11 18:00:08.207783
+f4fd67e5-0cdc-47d4-a408-df3852e70dc9	75	78b3c689-0222-46de-a7b3-9bd6c75b920c	f6e65bfe-0746-4a8f-8210-0e9bf88d9886	2025-09-11 18:32:26.414259	2025-09-11 18:32:26.414259
+2cfb611f-8045-4930-b9c5-18b505e68e57	15	78b3c689-0222-46de-a7b3-9bd6c75b920c	3eeaa9fa-0847-4780-9d01-185f91252794	2025-09-11 18:32:26.414259	2025-09-11 18:32:26.414259
+eb284a85-9943-40fa-a6a9-f9ffe5c6287a	5	78b3c689-0222-46de-a7b3-9bd6c75b920c	fa8025e6-e106-475c-8b9d-77831132fb47	2025-09-11 18:32:26.414259	2025-09-11 18:32:26.414259
+0b06b6b7-5e04-4227-91fa-c3481433b8a7	3	78b3c689-0222-46de-a7b3-9bd6c75b920c	9e69205f-6c6e-44a7-8ee6-89215e28a28e	2025-09-11 18:32:26.414259	2025-09-11 18:32:26.414259
+b67c4b38-62cb-4182-9230-78c9a12dd5cb	2	78b3c689-0222-46de-a7b3-9bd6c75b920c	1ddbb748-37a6-4d66-a7d4-4957bdbc647f	2025-09-11 18:32:26.414259	2025-09-11 18:32:26.414259
+d7bfd046-cd6a-4f5a-a84f-0fc7e4a9404e	100	d7871e0c-5e1b-4ffd-a9ab-951028246a01	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-11 18:45:00.182027	2025-09-11 18:45:00.182027
+fdbd3578-98c8-4e13-be04-dc34a5233fa3	70	d3f54e1c-6333-4a15-b09b-0264ec0b68fe	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-11 18:54:52.507562	2025-09-11 18:54:52.507562
+7e6963c9-6a99-4cca-ad63-5d02e90e99f4	30	d3f54e1c-6333-4a15-b09b-0264ec0b68fe	97a87b01-35e8-490a-94b9-9bdae9c2f965	2025-09-11 18:54:52.507562	2025-09-11 18:54:52.507562
+1a5db75c-8414-4d78-a4cb-054a8ef62e51	10	c2059aab-d7b5-4532-a8a7-ad15a4054b33	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-13 13:06:03.967447	2025-09-13 13:06:03.967447
+dd41bc48-ca69-4fb8-b049-38a47b1fc56a	5	c2059aab-d7b5-4532-a8a7-ad15a4054b33	0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a	2025-09-13 13:06:03.967447	2025-09-13 13:06:03.967447
+8322fc35-1903-4f8a-8d7a-1e5eef467142	55	2780e6d9-a86f-4038-b96f-ef59f961cb4b	b4658891-9713-48c4-864c-8dd907da19b0	2025-09-13 13:09:27.772986	2025-09-13 13:09:27.772986
+8d286d6c-0607-4803-9a0b-f3cefe150cf9	15	2780e6d9-a86f-4038-b96f-ef59f961cb4b	c57aa60c-61ea-4498-b01f-fedcafe8a32a	2025-09-13 13:09:27.772986	2025-09-13 13:09:27.772986
+3e5cfc10-5fa6-4fde-bffc-6a0f3aecf27f	20	2780e6d9-a86f-4038-b96f-ef59f961cb4b	0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a	2025-09-13 13:09:27.772986	2025-09-13 13:09:27.772986
+f46658d6-e958-4f69-ae8f-2bb6496f8422	10	2780e6d9-a86f-4038-b96f-ef59f961cb4b	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-13 13:09:27.772986	2025-09-13 13:09:27.772986
+acbe4a8c-1eac-4939-a469-68fb9f0cfe1a	45	8a39b1e7-986c-41e7-a0b9-44a4efb46360	c57aa60c-61ea-4498-b01f-fedcafe8a32a	2025-09-13 13:13:43.048346	2025-09-13 13:13:43.048346
+08b9e67f-409b-4230-aa27-6f1b96dbebe9	25	8a39b1e7-986c-41e7-a0b9-44a4efb46360	b4658891-9713-48c4-864c-8dd907da19b0	2025-09-13 13:13:43.048346	2025-09-13 13:13:43.048346
+29698661-d833-42e7-9d36-21b2ac83a9f2	18	8a39b1e7-986c-41e7-a0b9-44a4efb46360	0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a	2025-09-13 13:13:43.048346	2025-09-13 13:13:43.048346
+a7606d7c-940b-4273-8447-29dd4666888b	7	738d7264-00af-48dd-a475-3c4d12e28188	2e0faf2b-31a5-4c63-ac15-454be132796f	2025-09-11 17:35:30.583853	2025-09-11 17:35:30.583853
+9c693f11-cea6-4344-8fd0-f3d22b31168b	6	738d7264-00af-48dd-a475-3c4d12e28188	af854064-078a-4f50-af1d-8744e866751e	2025-09-11 17:35:30.583853	2025-09-11 17:35:30.583853
+1f8a47ae-16ac-4e98-ab49-b4a892752922	3	738d7264-00af-48dd-a475-3c4d12e28188	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-11 17:35:30.583853	2025-09-11 17:35:30.583853
+3111b6a4-d35b-4044-ab70-e553b618c38c	2	738d7264-00af-48dd-a475-3c4d12e28188	9e69205f-6c6e-44a7-8ee6-89215e28a28e	2025-09-11 17:35:30.583853	2025-09-11 17:35:30.583853
+d2db901a-387c-42f2-b01c-854ded0b392d	2	738d7264-00af-48dd-a475-3c4d12e28188	97136fa7-622a-49d6-9d09-403a631d253d	2025-09-11 17:35:30.583853	2025-09-11 17:35:30.583853
+beda6477-a317-4a33-94f7-8912513640fd	62	f4041256-a9ac-430d-b611-d8a957e2aeb0	831f39bd-80a8-4d11-9964-bde1788abae1	2025-09-11 17:40:45.140242	2025-09-11 17:40:45.140242
+c294b980-d0a6-4295-b8a9-7b68976ddb2c	14	f4041256-a9ac-430d-b611-d8a957e2aeb0	be38dcef-1bc8-487b-a44f-96df1ab9e68c	2025-09-11 17:40:45.140242	2025-09-11 17:40:45.140242
+c33ed306-3c01-4268-b2be-187f0871fc5e	8	f4041256-a9ac-430d-b611-d8a957e2aeb0	0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a	2025-09-11 17:40:45.140242	2025-09-11 17:40:45.140242
+c2594ed3-a220-4213-9437-1c8a2618f41a	6	f4041256-a9ac-430d-b611-d8a957e2aeb0	2e0faf2b-31a5-4c63-ac15-454be132796f	2025-09-11 17:40:45.140242	2025-09-11 17:40:45.140242
+c838dff0-6f0d-45d8-bdfd-f35c61f1958e	5	f4041256-a9ac-430d-b611-d8a957e2aeb0	97136fa7-622a-49d6-9d09-403a631d253d	2025-09-11 17:40:45.140242	2025-09-11 17:40:45.140242
+5ca9f055-6f26-4a65-b1df-c4a2e2d68ee0	2	f4041256-a9ac-430d-b611-d8a957e2aeb0	af854064-078a-4f50-af1d-8744e866751e	2025-09-11 17:40:45.140242	2025-09-11 17:40:45.140242
+f281cd0f-d8a5-4cea-a1de-46c1ce97c77c	2	f4041256-a9ac-430d-b611-d8a957e2aeb0	9e69205f-6c6e-44a7-8ee6-89215e28a28e	2025-09-11 17:40:45.140242	2025-09-11 17:40:45.140242
+60a452b0-7657-4fa2-97c8-7043012909f9	1	f4041256-a9ac-430d-b611-d8a957e2aeb0	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-11 17:40:45.140242	2025-09-11 17:40:45.140242
+40694eaf-438f-4360-a096-946f1fcaa97e	75	f11ef4dd-cc6b-42ad-844d-0e94cef691f0	3eeaa9fa-0847-4780-9d01-185f91252794	2025-09-11 17:47:29.642026	2025-09-11 17:47:29.642026
+f1a1e11c-459a-4289-b51e-81e3f945e312	12	f11ef4dd-cc6b-42ad-844d-0e94cef691f0	f6e65bfe-0746-4a8f-8210-0e9bf88d9886	2025-09-11 17:47:29.642026	2025-09-11 17:47:29.642026
+207115dd-5df8-4bb6-80a0-ffe2c2427e82	7	f11ef4dd-cc6b-42ad-844d-0e94cef691f0	bba5b66d-9a9c-4b44-8dd6-9574760038ee	2025-09-11 17:47:29.642026	2025-09-11 17:47:29.642026
+c8cb252a-b943-4c25-93f6-ff6ed357e847	3	f11ef4dd-cc6b-42ad-844d-0e94cef691f0	9e69205f-6c6e-44a7-8ee6-89215e28a28e	2025-09-11 17:47:29.642026	2025-09-11 17:47:29.642026
+8a613ca6-9bc5-4d80-a203-6d8ed4d95898	3	f11ef4dd-cc6b-42ad-844d-0e94cef691f0	1ddbb748-37a6-4d66-a7d4-4957bdbc647f	2025-09-11 17:47:29.642026	2025-09-11 17:47:29.642026
+6c059c41-b225-44f2-a6c2-6f2865287dda	88	05b3842c-2a19-484e-bae3-a12e86c2fa4c	3eeaa9fa-0847-4780-9d01-185f91252794	2025-09-11 18:01:39.046472	2025-09-11 18:01:39.046472
+81041112-871e-4de1-a860-fab1a5ac6fe2	8	05b3842c-2a19-484e-bae3-a12e86c2fa4c	bba5b66d-9a9c-4b44-8dd6-9574760038ee	2025-09-11 18:01:39.046472	2025-09-11 18:01:39.046472
+398aaad0-caf0-43fd-9fd3-72c492e715b2	4	05b3842c-2a19-484e-bae3-a12e86c2fa4c	f6e65bfe-0746-4a8f-8210-0e9bf88d9886	2025-09-11 18:01:39.046472	2025-09-11 18:01:39.046472
+6af4f9b7-ee96-43bb-8092-a42a9b0239ab	60	7d823dc8-8303-4ddd-a25d-935569c662b7	f6e65bfe-0746-4a8f-8210-0e9bf88d9886	2025-09-11 18:34:18.473928	2025-09-11 18:34:18.473928
+43fb65df-d677-410c-922a-e25bc99072ec	30	7d823dc8-8303-4ddd-a25d-935569c662b7	3eeaa9fa-0847-4780-9d01-185f91252794	2025-09-11 18:34:18.473928	2025-09-11 18:34:18.473928
+56b75622-1474-43da-b125-8e0a0832d8f7	5	7d823dc8-8303-4ddd-a25d-935569c662b7	af854064-078a-4f50-af1d-8744e866751e	2025-09-11 18:34:18.473928	2025-09-11 18:34:18.473928
+bf860ab9-15af-4a23-8c84-6e56f84163be	3	7d823dc8-8303-4ddd-a25d-935569c662b7	9e69205f-6c6e-44a7-8ee6-89215e28a28e	2025-09-11 18:34:18.473928	2025-09-11 18:34:18.473928
+66548069-f6fd-4774-9cf8-f84f2a16cb60	2	7d823dc8-8303-4ddd-a25d-935569c662b7	1ddbb748-37a6-4d66-a7d4-4957bdbc647f	2025-09-11 18:34:18.473928	2025-09-11 18:34:18.473928
+327d21ca-af11-4a46-aea2-dc54b6598f1c	70	b35c5710-3c80-4f48-8ee4-295e5a15999f	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-11 18:46:04.250275	2025-09-11 18:46:04.250275
+6717e2ba-8b67-4777-bcb4-e437a4a76f05	30	b35c5710-3c80-4f48-8ee4-295e5a15999f	97a87b01-35e8-490a-94b9-9bdae9c2f965	2025-09-11 18:46:04.250275	2025-09-11 18:46:04.250275
+8c563701-6e6e-4cb7-b05a-ac7870bb029f	100	ddaf509f-3c99-437c-b872-a4651a91601f	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-11 18:56:14.369948	2025-09-11 18:56:14.369948
+491715d0-2a03-4be8-86ab-02c4cc9c9ad3	60	ff2d84fc-ff6d-4637-8128-91c1495c98e8	c57aa60c-61ea-4498-b01f-fedcafe8a32a	2025-09-13 13:06:46.314004	2025-09-13 13:06:46.314004
+187916a7-984d-4216-bee4-212759c35c8c	25	ff2d84fc-ff6d-4637-8128-91c1495c98e8	b4658891-9713-48c4-864c-8dd907da19b0	2025-09-13 13:06:46.314004	2025-09-13 13:06:46.314004
+a2f35cf4-f5d8-47af-8bd0-520ce086dbe9	10	ff2d84fc-ff6d-4637-8128-91c1495c98e8	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-13 13:06:46.314004	2025-09-13 13:06:46.314004
+f3b94619-da4c-4efd-a1c9-de19081c08ec	5	ff2d84fc-ff6d-4637-8128-91c1495c98e8	0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a	2025-09-13 13:06:46.314004	2025-09-13 13:06:46.314004
+c578b16b-e508-42c7-9248-1583e095bd87	60	f467d244-5568-40f6-bd7a-b3bdcad82398	b4658891-9713-48c4-864c-8dd907da19b0	2025-09-13 13:09:56.50883	2025-09-13 13:09:56.50883
+7678b704-8256-4def-bd1a-93704a1554ca	25	f467d244-5568-40f6-bd7a-b3bdcad82398	a3a8eae0-6315-4435-8974-f2c07ec3567f	2025-09-13 13:09:56.50883	2025-09-13 13:09:56.50883
+d24c8b9d-02b7-4590-97bf-bd20702d3b91	10	f467d244-5568-40f6-bd7a-b3bdcad82398	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-13 13:09:56.50883	2025-09-13 13:09:56.50883
+e087a927-c63f-432b-b836-242291053a8d	5	f467d244-5568-40f6-bd7a-b3bdcad82398	0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a	2025-09-13 13:09:56.50883	2025-09-13 13:09:56.50883
+c345cdf0-ad86-41ec-a448-cad85241ce34	12	8a39b1e7-986c-41e7-a0b9-44a4efb46360	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-13 13:13:43.048346	2025-09-13 13:13:43.048346
+3facc81b-88a7-4cf4-a628-72eb3c0aaae6	50	9be8d3a0-574b-40dc-a42c-06ab42af7e66	b4658891-9713-48c4-864c-8dd907da19b0	2025-09-13 13:16:14.795399	2025-09-13 13:16:14.795399
+c9822839-9ff7-4c71-aefe-21b3d92ff00f	10	9be8d3a0-574b-40dc-a42c-06ab42af7e66	c57aa60c-61ea-4498-b01f-fedcafe8a32a	2025-09-13 13:16:14.795399	2025-09-13 13:16:14.795399
+ed08f52a-8d5d-424c-bcc6-084f343548d6	15	9be8d3a0-574b-40dc-a42c-06ab42af7e66	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-13 13:16:14.795399	2025-09-13 13:16:14.795399
+254b9130-b271-4674-ac48-aa0ff961a072	25	9be8d3a0-574b-40dc-a42c-06ab42af7e66	0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a	2025-09-13 13:16:14.795399	2025-09-13 13:16:14.795399
+bb820a79-ab00-4c65-8b8f-fcb50e6db137	70	e1511aa4-1d34-4984-aa54-88f88029a96e	b4658891-9713-48c4-864c-8dd907da19b0	2025-09-13 13:19:46.517101	2025-09-13 13:19:46.517101
+454a259b-a9a1-4b28-9817-d68464699775	15	e1511aa4-1d34-4984-aa54-88f88029a96e	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-13 13:19:46.517101	2025-09-13 13:19:46.517101
+53995b78-434d-45af-ace6-b31a3fdb0c70	10	e1511aa4-1d34-4984-aa54-88f88029a96e	c57aa60c-61ea-4498-b01f-fedcafe8a32a	2025-09-13 13:19:46.517101	2025-09-13 13:19:46.517101
+cbc403f2-ca85-4d5b-842c-c76ad6a2d0c0	5	e1511aa4-1d34-4984-aa54-88f88029a96e	0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a	2025-09-13 13:19:46.517101	2025-09-13 13:19:46.517101
+83b12614-e71f-4f8d-aa6e-c78617ad30c8	62	3488eaaa-a999-43c5-acd6-b177b8a3df8a	b4658891-9713-48c4-864c-8dd907da19b0	2025-09-13 13:24:33.512739	2025-09-13 13:24:33.512739
+09b78327-487a-4a51-8d37-4fa99c4789c4	18	3488eaaa-a999-43c5-acd6-b177b8a3df8a	c57aa60c-61ea-4498-b01f-fedcafe8a32a	2025-09-13 13:24:33.512739	2025-09-13 13:24:33.512739
+737a88d5-47ee-4822-9a63-397ebdca9c16	16	3488eaaa-a999-43c5-acd6-b177b8a3df8a	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-13 13:24:33.512739	2025-09-13 13:24:33.512739
+d8aa35d0-a9e2-4ef4-83f4-770df9c73fa5	2	3488eaaa-a999-43c5-acd6-b177b8a3df8a	97a87b01-35e8-490a-94b9-9bdae9c2f965	2025-09-13 13:24:33.512739	2025-09-13 13:24:33.512739
+81732d72-01cb-4fdb-9eee-ff2d8798b4ea	2	3488eaaa-a999-43c5-acd6-b177b8a3df8a	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-13 13:24:33.512739	2025-09-13 13:24:33.512739
+1e69f49e-6a5c-48ee-bd28-4edac79710c3	52	47f00a63-05df-4db7-b2c7-68000c72be9b	c57aa60c-61ea-4498-b01f-fedcafe8a32a	2025-09-13 13:26:41.37015	2025-09-13 13:26:41.37015
+dfb1003d-b64a-43fb-a17d-76f2dd3109ab	22	47f00a63-05df-4db7-b2c7-68000c72be9b	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-13 13:26:41.37015	2025-09-13 13:26:41.37015
+a7243912-754e-40b4-9fe1-a67775b62c84	12	47f00a63-05df-4db7-b2c7-68000c72be9b	0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a	2025-09-13 13:26:41.37015	2025-09-13 13:26:41.37015
+534b4b57-942e-44c9-8af6-f1213435efe4	12	47f00a63-05df-4db7-b2c7-68000c72be9b	b4658891-9713-48c4-864c-8dd907da19b0	2025-09-13 13:26:41.37015	2025-09-13 13:26:41.37015
+ff92f5e3-a98a-48cf-b22b-220e3527c811	2	47f00a63-05df-4db7-b2c7-68000c72be9b	af854064-078a-4f50-af1d-8744e866751e	2025-09-13 13:26:41.37015	2025-09-13 13:26:41.37015
+2772aa23-2c9d-4ef8-8fae-8e80f10f4baa	97	f11c8751-e5ca-413e-b30d-2b387ec14733	bba5b66d-9a9c-4b44-8dd6-9574760038ee	2025-09-13 13:31:58.922652	2025-09-13 13:31:58.922652
+2fef2b0e-7428-40a8-a523-73e053188983	2	f11c8751-e5ca-413e-b30d-2b387ec14733	57559b71-b757-468a-983d-a1b3cec4acef	2025-09-13 13:31:58.922652	2025-09-13 13:31:58.922652
+a1abb879-b103-4eee-8b15-2a9197010122	1	f11c8751-e5ca-413e-b30d-2b387ec14733	3eeaa9fa-0847-4780-9d01-185f91252794	2025-09-13 13:31:58.922652	2025-09-13 13:31:58.922652
+179a01aa-57fd-477b-928e-7b7ff1173da0	1	89ffca84-73f0-4a69-871f-9d9c96521a05	3eeaa9fa-0847-4780-9d01-185f91252794	2025-09-13 13:32:40.391156	2025-09-13 13:32:40.391156
+6901013b-f19d-44ed-93b2-3d1e61ebaf7c	95	46b1efa3-a4f8-4492-a81c-9e48c650dd3d	bba5b66d-9a9c-4b44-8dd6-9574760038ee	2025-09-13 13:33:22.50373	2025-09-13 13:33:22.50373
+60ba30ed-b740-469f-a5b0-8045da2d6770	2	46b1efa3-a4f8-4492-a81c-9e48c650dd3d	57559b71-b757-468a-983d-a1b3cec4acef	2025-09-13 13:33:22.50373	2025-09-13 13:33:22.50373
+2cd47b1f-31a8-45d2-9928-0b80befcb6c6	2	46b1efa3-a4f8-4492-a81c-9e48c650dd3d	f6e65bfe-0746-4a8f-8210-0e9bf88d9886	2025-09-13 13:33:22.50373	2025-09-13 13:33:22.50373
+50f4cfa7-8639-410d-997e-1065bf1f5c97	1	46b1efa3-a4f8-4492-a81c-9e48c650dd3d	3eeaa9fa-0847-4780-9d01-185f91252794	2025-09-13 13:33:22.50373	2025-09-13 13:33:22.50373
+3cebf6d7-88a7-4b73-a178-4b4a69e0891d	96	7227c8f6-cf65-4134-97de-d5e64cb5ff1b	bba5b66d-9a9c-4b44-8dd6-9574760038ee	2025-09-13 13:33:56.430597	2025-09-13 13:33:56.430597
+126c14e3-1564-4a78-9911-d3fda3d53f64	2	7227c8f6-cf65-4134-97de-d5e64cb5ff1b	57559b71-b757-468a-983d-a1b3cec4acef	2025-09-13 13:33:56.430597	2025-09-13 13:33:56.430597
+73e25c45-4fd7-4b7a-8f3e-a16b95c39e16	1	7227c8f6-cf65-4134-97de-d5e64cb5ff1b	3eeaa9fa-0847-4780-9d01-185f91252794	2025-09-13 13:33:56.430597	2025-09-13 13:33:56.430597
+04e00ccc-cf8c-4a6f-8b2e-5eac6fc56573	1	7227c8f6-cf65-4134-97de-d5e64cb5ff1b	f6e65bfe-0746-4a8f-8210-0e9bf88d9886	2025-09-13 13:33:56.430597	2025-09-13 13:33:56.430597
+9b19b7c0-3246-420e-8af1-1d3427d41fcb	97	de4e9652-b068-4558-9fd3-38d45e5aa0d9	bba5b66d-9a9c-4b44-8dd6-9574760038ee	2025-09-13 13:35:29.754767	2025-09-13 13:35:29.754767
+aa41665a-6e65-460a-a251-dd9e13e72b8c	2	de4e9652-b068-4558-9fd3-38d45e5aa0d9	57559b71-b757-468a-983d-a1b3cec4acef	2025-09-13 13:35:29.754767	2025-09-13 13:35:29.754767
+c54f75af-f5f8-439e-b0b9-e4ca0d7ab42c	1	de4e9652-b068-4558-9fd3-38d45e5aa0d9	3eeaa9fa-0847-4780-9d01-185f91252794	2025-09-13 13:35:29.754767	2025-09-13 13:35:29.754767
+58a37510-5fd3-43c8-b58e-6ade978c59a5	98	d2f28afc-e84c-467c-90d9-c6c2cb63acbc	bba5b66d-9a9c-4b44-8dd6-9574760038ee	2025-09-13 13:36:12.098965	2025-09-13 13:36:12.098965
+86cd0fca-9d34-4884-aa89-597e8a11e348	1	d2f28afc-e84c-467c-90d9-c6c2cb63acbc	57559b71-b757-468a-983d-a1b3cec4acef	2025-09-13 13:36:12.098965	2025-09-13 13:36:12.098965
+404f674f-881b-4e0d-8154-2b773b95c342	1	d2f28afc-e84c-467c-90d9-c6c2cb63acbc	3eeaa9fa-0847-4780-9d01-185f91252794	2025-09-13 13:36:12.098965	2025-09-13 13:36:12.098965
+677afbd1-4daf-4596-a228-d37bafbb7bdb	98	01dff88c-893b-4410-8d54-1e36013b9fdb	bba5b66d-9a9c-4b44-8dd6-9574760038ee	2025-09-13 13:36:58.879229	2025-09-13 13:36:58.879229
+4b24df05-1cc0-49eb-b85a-6e269c9e90f9	1	01dff88c-893b-4410-8d54-1e36013b9fdb	57559b71-b757-468a-983d-a1b3cec4acef	2025-09-13 13:36:58.879229	2025-09-13 13:36:58.879229
+d649b5b4-282c-4fba-ae80-b4140a6a8e5c	1	01dff88c-893b-4410-8d54-1e36013b9fdb	3eeaa9fa-0847-4780-9d01-185f91252794	2025-09-13 13:36:58.879229	2025-09-13 13:36:58.879229
+fbbe3508-a32c-4921-885d-1167391a1d6e	100	6e4bc8b2-33ab-46da-9b79-9fff2266cd27	bba5b66d-9a9c-4b44-8dd6-9574760038ee	2025-09-13 13:37:36.122528	2025-09-13 13:37:36.122528
+56590dda-55f5-4504-bd2f-e05f4e81c476	55	c5901a9a-580c-411b-85bd-2ec738123e14	9e69205f-6c6e-44a7-8ee6-89215e28a28e	2025-09-13 13:38:24.912018	2025-09-13 13:38:24.912018
+8ffd042e-67a6-41d8-a6c3-687caebdc279	20	c5901a9a-580c-411b-85bd-2ec738123e14	1ddbb748-37a6-4d66-a7d4-4957bdbc647f	2025-09-13 13:38:24.912018	2025-09-13 13:38:24.912018
+0835f9ca-2b69-4dd9-ac2e-723a0f447ce0	10	c5901a9a-580c-411b-85bd-2ec738123e14	57559b71-b757-468a-983d-a1b3cec4acef	2025-09-13 13:38:24.912018	2025-09-13 13:38:24.912018
+79bd5636-3c14-42d5-b1ac-e85e88f7a2bb	7	c5901a9a-580c-411b-85bd-2ec738123e14	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-13 13:38:24.912018	2025-09-13 13:38:24.912018
+de4532b5-72a8-4c6f-a6fd-ce6ac5e3476e	4	c5901a9a-580c-411b-85bd-2ec738123e14	831f39bd-80a8-4d11-9964-bde1788abae1	2025-09-13 13:38:24.912018	2025-09-13 13:38:24.912018
+b34da5e6-cdb8-41cc-8d00-dffd02673160	3	c5901a9a-580c-411b-85bd-2ec738123e14	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-13 13:38:24.912018	2025-09-13 13:38:24.912018
+62a9b90e-a1f6-43aa-ad67-be579675f362	1	c5901a9a-580c-411b-85bd-2ec738123e14	2e0faf2b-31a5-4c63-ac15-454be132796f	2025-09-13 13:38:24.912018	2025-09-13 13:38:24.912018
+b49723b3-8aa2-4921-9ea1-39ecc57c3a28	45	38af9c0d-b19f-433d-bcda-0b974b5475cf	9e69205f-6c6e-44a7-8ee6-89215e28a28e	2025-09-13 13:39:08.207483	2025-09-13 13:39:08.207483
+d55d44bd-c2ae-418e-bcd6-3fb217511c5b	35	38af9c0d-b19f-433d-bcda-0b974b5475cf	1ddbb748-37a6-4d66-a7d4-4957bdbc647f	2025-09-13 13:39:08.207483	2025-09-13 13:39:08.207483
+a0861a31-5a9c-4236-bd13-766961e35d39	8	38af9c0d-b19f-433d-bcda-0b974b5475cf	57559b71-b757-468a-983d-a1b3cec4acef	2025-09-13 13:39:08.207483	2025-09-13 13:39:08.207483
+05b1a9aa-fb56-4e8d-9d25-01988a816f9f	6	38af9c0d-b19f-433d-bcda-0b974b5475cf	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-13 13:39:08.207483	2025-09-13 13:39:08.207483
+d70e0901-58d4-4c3c-9e59-62a170b5ae3a	4	38af9c0d-b19f-433d-bcda-0b974b5475cf	831f39bd-80a8-4d11-9964-bde1788abae1	2025-09-13 13:39:08.207483	2025-09-13 13:39:08.207483
+e49214c8-2054-4c64-be51-86b785849833	1	38af9c0d-b19f-433d-bcda-0b974b5475cf	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-13 13:39:08.207483	2025-09-13 13:39:08.207483
+f3f86bc0-15ff-44b6-bc54-f3d6cf2727bf	1	38af9c0d-b19f-433d-bcda-0b974b5475cf	2e0faf2b-31a5-4c63-ac15-454be132796f	2025-09-13 13:39:08.207483	2025-09-13 13:39:08.207483
+f74efb56-fcda-4edc-8747-bb3fefd36efd	45	f2cf498f-d991-4b85-b08e-58c5f9ff563e	9e69205f-6c6e-44a7-8ee6-89215e28a28e	2025-09-13 13:42:37.487796	2025-09-13 13:42:37.487796
+8854fd77-6918-4f44-a720-98087108c628	25	f2cf498f-d991-4b85-b08e-58c5f9ff563e	57559b71-b757-468a-983d-a1b3cec4acef	2025-09-13 13:42:37.487796	2025-09-13 13:42:37.487796
+207fb2f2-40ba-4a92-9e44-ba366836937c	15	f2cf498f-d991-4b85-b08e-58c5f9ff563e	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-13 13:42:37.487796	2025-09-13 13:42:37.487796
+df0e2ea3-22ff-4690-b40d-18dd06429e8e	10	f2cf498f-d991-4b85-b08e-58c5f9ff563e	1ddbb748-37a6-4d66-a7d4-4957bdbc647f	2025-09-13 13:42:37.487796	2025-09-13 13:42:37.487796
+95436def-c0c9-4388-8328-c68e9ee60a41	5	f2cf498f-d991-4b85-b08e-58c5f9ff563e	831f39bd-80a8-4d11-9964-bde1788abae1	2025-09-13 13:42:37.487796	2025-09-13 13:42:37.487796
+8a789f4b-2c94-42fd-8087-90bef734ccd5	80	68381c41-b015-4218-93cb-2bcb64bee255	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-13 13:48:26.787748	2025-09-13 13:48:26.787748
+9398b963-d660-42c1-aa9c-828d9b8c5dc6	15	68381c41-b015-4218-93cb-2bcb64bee255	c57aa60c-61ea-4498-b01f-fedcafe8a32a	2025-09-13 13:48:26.787748	2025-09-13 13:48:26.787748
+3fd5b368-ca49-4a60-bf33-b3e9102924f8	62	4dc80274-2d3e-482e-a736-9f9399330c76	57559b71-b757-468a-983d-a1b3cec4acef	2025-09-11 15:39:26.933251	2025-09-11 15:39:26.933251
+9c5f05fb-32ce-43f1-a1fe-67dd279dfce6	20	4dc80274-2d3e-482e-a736-9f9399330c76	f6e65bfe-0746-4a8f-8210-0e9bf88d9886	2025-09-11 15:39:26.933251	2025-09-11 15:39:26.933251
+d04b09e1-8366-474f-a708-667f74ab2ecb	7	4dc80274-2d3e-482e-a736-9f9399330c76	fa8025e6-e106-475c-8b9d-77831132fb47	2025-09-11 15:39:26.933251	2025-09-11 15:39:26.933251
+0fd055ba-e594-446e-ba34-6e75ebfa1e3a	5	4dc80274-2d3e-482e-a736-9f9399330c76	3eeaa9fa-0847-4780-9d01-185f91252794	2025-09-11 15:39:26.933251	2025-09-11 15:39:26.933251
+368a7871-d6a0-4385-9c05-d9dc1108f425	4	4dc80274-2d3e-482e-a736-9f9399330c76	bba5b66d-9a9c-4b44-8dd6-9574760038ee	2025-09-11 15:39:26.933251	2025-09-11 15:39:26.933251
+39b2b014-c74d-4c16-a9d0-4b194019c250	2	4dc80274-2d3e-482e-a736-9f9399330c76	9e69205f-6c6e-44a7-8ee6-89215e28a28e	2025-09-11 15:39:26.933251	2025-09-11 15:39:26.933251
+5523cd94-3f97-4865-897c-86d394c8d890	45	88baf661-c550-4ecd-b15a-0d1ca4d41116	57559b71-b757-468a-983d-a1b3cec4acef	2025-09-11 15:42:57.06856	2025-09-11 15:42:57.06856
+64c092db-0d87-45e8-b1e7-6b157b2a5695	27	88baf661-c550-4ecd-b15a-0d1ca4d41116	f6e65bfe-0746-4a8f-8210-0e9bf88d9886	2025-09-11 15:42:57.06856	2025-09-11 15:42:57.06856
+35c4fbf5-69cf-4867-adcf-6affb1f76d03	9	88baf661-c550-4ecd-b15a-0d1ca4d41116	3eeaa9fa-0847-4780-9d01-185f91252794	2025-09-11 15:42:57.06856	2025-09-11 15:42:57.06856
+f67e8312-0119-4d0f-a431-b1d3db55b061	5	88baf661-c550-4ecd-b15a-0d1ca4d41116	fa8025e6-e106-475c-8b9d-77831132fb47	2025-09-11 15:42:57.06856	2025-09-11 15:42:57.06856
+ba3fe7f7-f7c6-43be-b992-0bc0f6413239	4	88baf661-c550-4ecd-b15a-0d1ca4d41116	ab1dbd50-83a4-42c7-a3cd-da1784818ec8	2025-09-11 15:42:57.06856	2025-09-11 15:42:57.06856
+add151ca-b570-4834-8828-7c5f03d93e16	4	88baf661-c550-4ecd-b15a-0d1ca4d41116	bba5b66d-9a9c-4b44-8dd6-9574760038ee	2025-09-11 15:42:57.06856	2025-09-11 15:42:57.06856
+4cb6cab9-108f-4f4e-b560-2769c118f9f5	3	88baf661-c550-4ecd-b15a-0d1ca4d41116	9e69205f-6c6e-44a7-8ee6-89215e28a28e	2025-09-11 15:42:57.06856	2025-09-11 15:42:57.06856
+596e0930-7a20-463b-b560-29eebf994058	3	88baf661-c550-4ecd-b15a-0d1ca4d41116	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-11 15:42:57.06856	2025-09-11 15:42:57.06856
+41025576-89c4-4987-9fe4-302f65ada106	100	10f8ff0e-38c6-465d-b99a-26c4026d22c6	57559b71-b757-468a-983d-a1b3cec4acef	2025-09-11 15:47:10.356903	2025-09-11 15:47:10.356903
+817f5e89-9cba-47c9-906b-fead3e80ada2	90	f451289a-6d35-4926-981d-8ebae71741a2	2e0faf2b-31a5-4c63-ac15-454be132796f	2025-09-11 16:09:49.878638	2025-09-11 16:09:49.878638
+fca16a3d-be47-4281-8f9c-d75a01c42728	5	f451289a-6d35-4926-981d-8ebae71741a2	af854064-078a-4f50-af1d-8744e866751e	2025-09-11 16:09:49.878638	2025-09-11 16:09:49.878638
+e1583862-a425-4eb0-be40-afb349dc876d	5	f451289a-6d35-4926-981d-8ebae71741a2	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-11 16:09:49.878638	2025-09-11 16:09:49.878638
+52044b49-e188-4296-ac90-ef38ea390ec9	40	d180a698-a12e-4731-8234-b96e8f3ca7d9	2da3d8f2-6a28-45ff-90a2-ea3a6bb2afe8	2025-09-11 16:16:44.885597	2025-09-11 16:16:44.885597
+8ba86128-abbe-4db0-ae17-162d1e5dd5b0	35	d180a698-a12e-4731-8234-b96e8f3ca7d9	2e0faf2b-31a5-4c63-ac15-454be132796f	2025-09-11 16:16:44.885597	2025-09-11 16:16:44.885597
+d010c719-acba-4b54-94a6-b4a3fc022195	55	64406a09-56a6-43da-9329-ff0fb0d83e4f	57559b71-b757-468a-983d-a1b3cec4acef	2025-09-11 15:51:35.830781	2025-09-11 15:51:35.830781
+74679103-32ac-4e38-923a-b3f55a4cb545	20	64406a09-56a6-43da-9329-ff0fb0d83e4f	f6e65bfe-0746-4a8f-8210-0e9bf88d9886	2025-09-11 15:51:35.830781	2025-09-11 15:51:35.830781
+303ff8b2-dec2-47d0-bae5-49b4ba6aacc7	15	64406a09-56a6-43da-9329-ff0fb0d83e4f	3eeaa9fa-0847-4780-9d01-185f91252794	2025-09-11 15:51:35.830781	2025-09-11 15:51:35.830781
+17cd7f13-4a20-4b66-aa73-b217f7f7e56e	5	64406a09-56a6-43da-9329-ff0fb0d83e4f	fa8025e6-e106-475c-8b9d-77831132fb47	2025-09-11 15:51:35.830781	2025-09-11 15:51:35.830781
+4b37bf61-9855-4a39-bc5d-135682cabedd	5	64406a09-56a6-43da-9329-ff0fb0d83e4f	bba5b66d-9a9c-4b44-8dd6-9574760038ee	2025-09-11 15:51:35.830781	2025-09-11 15:51:35.830781
+784e20a9-74c3-44db-818c-e34ff321dd91	50	945bdcdb-6aee-42df-a974-3fedc0b76846	57559b71-b757-468a-983d-a1b3cec4acef	2025-09-11 15:55:18.653749	2025-09-11 15:55:18.653749
+a700221f-c4e5-4a3e-9331-5f6011ff0a85	25	945bdcdb-6aee-42df-a974-3fedc0b76846	f6e65bfe-0746-4a8f-8210-0e9bf88d9886	2025-09-11 15:55:18.653749	2025-09-11 15:55:18.653749
+d0f24789-800b-4df9-95db-701808af02d3	10	945bdcdb-6aee-42df-a974-3fedc0b76846	3eeaa9fa-0847-4780-9d01-185f91252794	2025-09-11 15:55:18.653749	2025-09-11 15:55:18.653749
+0d3708a2-a12b-472d-a097-006c1541b3aa	10	945bdcdb-6aee-42df-a974-3fedc0b76846	fa8025e6-e106-475c-8b9d-77831132fb47	2025-09-11 15:55:18.653749	2025-09-11 15:55:18.653749
+bb1d06f6-fddf-4772-8a3f-84a2fcb45d5f	5	945bdcdb-6aee-42df-a974-3fedc0b76846	bba5b66d-9a9c-4b44-8dd6-9574760038ee	2025-09-11 15:55:18.653749	2025-09-11 15:55:18.653749
+a197a0a5-83e4-43d0-b3c1-1d5992e81f91	10	d180a698-a12e-4731-8234-b96e8f3ca7d9	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-11 16:16:44.885597	2025-09-11 16:16:44.885597
+1c7ad077-2cf8-4763-9b6b-9f527bc0aa37	10	d180a698-a12e-4731-8234-b96e8f3ca7d9	97a87b01-35e8-490a-94b9-9bdae9c2f965	2025-09-11 16:16:44.885597	2025-09-11 16:16:44.885597
+7220ffd9-1b5a-44df-a317-74209873f9c9	5	d180a698-a12e-4731-8234-b96e8f3ca7d9	af854064-078a-4f50-af1d-8744e866751e	2025-09-11 16:16:44.885597	2025-09-11 16:16:44.885597
+1b179f8b-0e62-4416-a815-809418faa01a	38	7470e789-9509-4e22-9078-67857074867d	831f39bd-80a8-4d11-9964-bde1788abae1	2025-09-11 16:25:51.068787	2025-09-11 16:25:51.068787
+6075516d-3d50-4e78-954f-60aed0f409c4	22	7470e789-9509-4e22-9078-67857074867d	af854064-078a-4f50-af1d-8744e866751e	2025-09-11 16:25:51.068787	2025-09-11 16:25:51.068787
+83c54486-754e-4e09-a835-a83c3aed80e8	17	7470e789-9509-4e22-9078-67857074867d	2e0faf2b-31a5-4c63-ac15-454be132796f	2025-09-11 16:25:51.068787	2025-09-11 16:25:51.068787
+d4e19e35-11b9-42c2-b44d-5c9991be71c2	10	7470e789-9509-4e22-9078-67857074867d	97136fa7-622a-49d6-9d09-403a631d253d	2025-09-11 16:25:51.068787	2025-09-11 16:25:51.068787
+cf827a0a-4837-4a8c-940f-bee8602774fb	8	7470e789-9509-4e22-9078-67857074867d	97a87b01-35e8-490a-94b9-9bdae9c2f965	2025-09-11 16:25:51.068787	2025-09-11 16:25:51.068787
+ca9b0df7-beb8-419d-8e3a-b6e7795871eb	5	7470e789-9509-4e22-9078-67857074867d	be38dcef-1bc8-487b-a44f-96df1ab9e68c	2025-09-11 16:25:51.068787	2025-09-11 16:25:51.068787
+76a5cdee-ebfa-4e42-9f17-adaab12e7612	38	13826a3e-6b12-464c-95c8-5790f0e13947	831f39bd-80a8-4d11-9964-bde1788abae1	2025-09-11 17:07:02.971532	2025-09-11 17:07:02.971532
+a3f2c8ee-f11c-4929-be36-1aa88c72d347	18	13826a3e-6b12-464c-95c8-5790f0e13947	2e0faf2b-31a5-4c63-ac15-454be132796f	2025-09-11 17:07:02.971532	2025-09-11 17:07:02.971532
+99c819a9-7997-4ee2-baa3-ff2b71224987	14	13826a3e-6b12-464c-95c8-5790f0e13947	af854064-078a-4f50-af1d-8744e866751e	2025-09-11 17:07:02.971532	2025-09-11 17:07:02.971532
+6828e27a-d78c-4a6c-86ed-8380fd2b6753	17	13826a3e-6b12-464c-95c8-5790f0e13947	97a87b01-35e8-490a-94b9-9bdae9c2f965	2025-09-11 17:07:02.971532	2025-09-11 17:07:02.971532
+8d60f407-ca11-477c-9327-7b551ecd08f4	8	13826a3e-6b12-464c-95c8-5790f0e13947	97136fa7-622a-49d6-9d09-403a631d253d	2025-09-11 17:07:02.971532	2025-09-11 17:07:02.971532
+35f425a7-fb8f-4d49-bb3c-e9f8e5806a5b	5	13826a3e-6b12-464c-95c8-5790f0e13947	be38dcef-1bc8-487b-a44f-96df1ab9e68c	2025-09-11 17:07:02.971532	2025-09-11 17:07:02.971532
+7473990a-f80e-4328-acc6-3c5b1df9ea74	33	950cd0cd-fc3b-442f-aba9-3c48bfc6cda9	831f39bd-80a8-4d11-9964-bde1788abae1	2025-09-11 17:15:00.074645	2025-09-11 17:15:00.074645
+1b249e05-bad8-48a9-9bc9-5d6a26993ec8	22	950cd0cd-fc3b-442f-aba9-3c48bfc6cda9	af854064-078a-4f50-af1d-8744e866751e	2025-09-11 17:15:00.074645	2025-09-11 17:15:00.074645
+eaf8a8b7-e91a-40eb-ae35-9268abdfc3e4	20	950cd0cd-fc3b-442f-aba9-3c48bfc6cda9	2e0faf2b-31a5-4c63-ac15-454be132796f	2025-09-11 17:15:00.074645	2025-09-11 17:15:00.074645
+12792272-8710-4b90-b8de-e18e0160a3c0	8	950cd0cd-fc3b-442f-aba9-3c48bfc6cda9	be38dcef-1bc8-487b-a44f-96df1ab9e68c	2025-09-11 17:15:00.074645	2025-09-11 17:15:00.074645
+ee49fbba-228e-49a3-8acd-9d1c8bdda256	12	950cd0cd-fc3b-442f-aba9-3c48bfc6cda9	97a87b01-35e8-490a-94b9-9bdae9c2f965	2025-09-11 17:15:00.074645	2025-09-11 17:15:00.074645
+efa9ff09-2c44-4477-b385-36fa979a45ef	5	950cd0cd-fc3b-442f-aba9-3c48bfc6cda9	97136fa7-622a-49d6-9d09-403a631d253d	2025-09-11 17:15:00.074645	2025-09-11 17:15:00.074645
+337c636e-a588-43cd-82c4-ee8bbf1d97ab	56	eaf575b3-2cb6-45a3-914f-81838c4c7e4d	831f39bd-80a8-4d11-9964-bde1788abae1	2025-09-11 17:30:44.813027	2025-09-11 17:30:44.813027
+2108d8c3-2ede-4979-85d7-db179717b70b	15	eaf575b3-2cb6-45a3-914f-81838c4c7e4d	be38dcef-1bc8-487b-a44f-96df1ab9e68c	2025-09-11 17:30:44.813027	2025-09-11 17:30:44.813027
+9a4b8be5-7850-4624-8d03-38f730180405	10	eaf575b3-2cb6-45a3-914f-81838c4c7e4d	2e0faf2b-31a5-4c63-ac15-454be132796f	2025-09-11 17:30:44.813027	2025-09-11 17:30:44.813027
+7e012d7c-57e3-4b7b-87e8-e9aa6f2be658	5	eaf575b3-2cb6-45a3-914f-81838c4c7e4d	97136fa7-622a-49d6-9d09-403a631d253d	2025-09-11 17:30:44.813027	2025-09-11 17:30:44.813027
+5d03cef6-b1b4-4f37-baa4-51c0302a5715	6	eaf575b3-2cb6-45a3-914f-81838c4c7e4d	0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a	2025-09-11 17:30:44.813027	2025-09-11 17:30:44.813027
+cf38525e-b0ad-42c0-b17c-46090a64a50b	3	eaf575b3-2cb6-45a3-914f-81838c4c7e4d	af854064-078a-4f50-af1d-8744e866751e	2025-09-11 17:30:44.813027	2025-09-11 17:30:44.813027
+d1fca9c4-10c4-4e63-9a0b-b3b8f60307b9	2	eaf575b3-2cb6-45a3-914f-81838c4c7e4d	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-11 17:30:44.813027	2025-09-11 17:30:44.813027
+6148e66e-4a54-44e2-bade-54eec296da96	2	eaf575b3-2cb6-45a3-914f-81838c4c7e4d	9e69205f-6c6e-44a7-8ee6-89215e28a28e	2025-09-11 17:30:44.813027	2025-09-11 17:30:44.813027
+16d6c147-f355-4b8a-aa33-3a69a9b77450	1	eaf575b3-2cb6-45a3-914f-81838c4c7e4d	1ddbb748-37a6-4d66-a7d4-4957bdbc647f	2025-09-11 17:30:44.813027	2025-09-11 17:30:44.813027
+6a5449dd-020d-44aa-849b-fd0859cfb0c0	58	93c687ff-68f2-44d0-9f3a-8c4c15c960e8	831f39bd-80a8-4d11-9964-bde1788abae1	2025-09-11 17:36:51.435739	2025-09-11 17:36:51.435739
+f60315aa-2163-4d5d-8efb-3a5b0afab022	12	93c687ff-68f2-44d0-9f3a-8c4c15c960e8	be38dcef-1bc8-487b-a44f-96df1ab9e68c	2025-09-11 17:36:51.435739	2025-09-11 17:36:51.435739
+68290d1e-d0ec-4318-9e02-9051065c6992	10	93c687ff-68f2-44d0-9f3a-8c4c15c960e8	97a87b01-35e8-490a-94b9-9bdae9c2f965	2025-09-11 17:36:51.435739	2025-09-11 17:36:51.435739
+eeb8ff67-5fa9-40bb-a8aa-076471832de0	8	93c687ff-68f2-44d0-9f3a-8c4c15c960e8	af854064-078a-4f50-af1d-8744e866751e	2025-09-11 17:36:51.435739	2025-09-11 17:36:51.435739
+e2444f27-9265-415c-a0a0-8f1014fe9403	6	93c687ff-68f2-44d0-9f3a-8c4c15c960e8	2e0faf2b-31a5-4c63-ac15-454be132796f	2025-09-11 17:36:51.435739	2025-09-11 17:36:51.435739
+903afb97-6d53-43cf-b9ea-6528f2c1eab8	3	93c687ff-68f2-44d0-9f3a-8c4c15c960e8	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-11 17:36:51.435739	2025-09-11 17:36:51.435739
+41e561bb-7f8a-4326-beb1-d3ad8a83b2f2	3	93c687ff-68f2-44d0-9f3a-8c4c15c960e8	9e69205f-6c6e-44a7-8ee6-89215e28a28e	2025-09-11 17:36:51.435739	2025-09-11 17:36:51.435739
+9ebb687c-208a-4ec0-a93f-5f13938c2f54	50	6115df45-ddad-4fa6-bfb0-1c0cd72de766	3eeaa9fa-0847-4780-9d01-185f91252794	2025-09-11 17:42:56.90059	2025-09-11 17:42:56.90059
+e224a5d3-f8ff-4e86-a1af-723c94c4180b	28	6115df45-ddad-4fa6-bfb0-1c0cd72de766	f6e65bfe-0746-4a8f-8210-0e9bf88d9886	2025-09-11 17:42:56.90059	2025-09-11 17:42:56.90059
+0f56d3cc-336c-4c7d-899a-5e669138331b	8	6115df45-ddad-4fa6-bfb0-1c0cd72de766	fa8025e6-e106-475c-8b9d-77831132fb47	2025-09-11 17:42:56.90059	2025-09-11 17:42:56.90059
+c8ab38aa-ada7-4c69-b889-cfbde4cabd17	5	6115df45-ddad-4fa6-bfb0-1c0cd72de766	2e0faf2b-31a5-4c63-ac15-454be132796f	2025-09-11 17:42:56.90059	2025-09-11 17:42:56.90059
+09504090-aacd-4dab-8417-d83fdc5ba472	2	6115df45-ddad-4fa6-bfb0-1c0cd72de766	af854064-078a-4f50-af1d-8744e866751e	2025-09-11 17:42:56.90059	2025-09-11 17:42:56.90059
+7c360ecd-e0dd-4079-8762-c5e7aa9f17e7	3	6115df45-ddad-4fa6-bfb0-1c0cd72de766	831f39bd-80a8-4d11-9964-bde1788abae1	2025-09-11 17:42:56.90059	2025-09-11 17:42:56.90059
+d36d5930-59d5-49fc-bc1b-c98f8d5f3c73	2	6115df45-ddad-4fa6-bfb0-1c0cd72de766	9e69205f-6c6e-44a7-8ee6-89215e28a28e	2025-09-11 17:42:56.90059	2025-09-11 17:42:56.90059
+cbda35b3-bc55-498b-b20d-19fcf9e33846	1	6115df45-ddad-4fa6-bfb0-1c0cd72de766	1ddbb748-37a6-4d66-a7d4-4957bdbc647f	2025-09-11 17:42:56.90059	2025-09-11 17:42:56.90059
+973067d0-30e1-4fad-bef5-a566daa21783	1	6115df45-ddad-4fa6-bfb0-1c0cd72de766	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-11 17:42:56.90059	2025-09-11 17:42:56.90059
+0bffee53-f7fd-43f9-a77a-d6e60386bad2	30	ca38bcba-658f-4c7a-be54-b2c3f845fbe0	f6e65bfe-0746-4a8f-8210-0e9bf88d9886	2025-09-11 17:49:21.680004	2025-09-11 17:49:21.680004
+d426880c-4e68-45f9-b248-65cf3f4fb205	24	ca38bcba-658f-4c7a-be54-b2c3f845fbe0	57559b71-b757-468a-983d-a1b3cec4acef	2025-09-11 17:49:21.680004	2025-09-11 17:49:21.680004
+595c40ee-730c-4471-9f2d-06d0fb8a9fdf	16	ca38bcba-658f-4c7a-be54-b2c3f845fbe0	fa8025e6-e106-475c-8b9d-77831132fb47	2025-09-11 17:49:21.680004	2025-09-11 17:49:21.680004
+7aac786e-ce88-4710-9fde-98b913db9c5d	12	ca38bcba-658f-4c7a-be54-b2c3f845fbe0	3eeaa9fa-0847-4780-9d01-185f91252794	2025-09-11 17:49:21.680004	2025-09-11 17:49:21.680004
+c334793b-5274-495e-a04c-2b57b15f1ace	8	ca38bcba-658f-4c7a-be54-b2c3f845fbe0	831f39bd-80a8-4d11-9964-bde1788abae1	2025-09-11 17:49:21.680004	2025-09-11 17:49:21.680004
+869af479-61e1-4338-8b9b-ee32781d0828	3	7fd82f79-1f5f-4bae-8f2d-b94ecae595d5	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-15 15:30:56.252495	2025-09-15 15:30:56.252495
+3856e5dc-fce0-496d-b964-2faa439cef2c	62	7e0566c6-eefb-4992-a673-d19902933c26	97a87b01-35e8-490a-94b9-9bdae9c2f965	2025-09-15 15:35:01.903684	2025-09-15 15:35:01.903684
+83b320fa-e820-458a-a83d-bf7a5fd53a45	35	7e0566c6-eefb-4992-a673-d19902933c26	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-15 15:35:01.903684	2025-09-15 15:35:01.903684
+f12e5a10-13bd-473c-b398-15a6292a7711	3	7e0566c6-eefb-4992-a673-d19902933c26	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-15 15:35:01.903684	2025-09-15 15:35:01.903684
+46ef5bec-2a3f-42ab-ba29-07db8071f1f3	75	e7f390fd-7435-44e1-b354-c62073934c66	97a87b01-35e8-490a-94b9-9bdae9c2f965	2025-09-15 15:37:08.441021	2025-09-15 15:37:08.441021
+4b921f9d-a68c-413f-b640-da9ec3c5f2b0	20	e7f390fd-7435-44e1-b354-c62073934c66	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-15 15:37:08.441021	2025-09-15 15:37:08.441021
+1a2c5bc9-d83c-422f-aa8e-33ecf22b4928	5	e7f390fd-7435-44e1-b354-c62073934c66	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-15 15:37:08.441021	2025-09-15 15:37:08.441021
+20d8468c-264b-4d90-8c01-03475106a5d2	60	5e3c933f-7511-463e-88b1-a139c8276e69	97a87b01-35e8-490a-94b9-9bdae9c2f965	2025-09-15 15:39:28.866495	2025-09-15 15:39:28.866495
+41b41da3-e261-4a97-9bae-b42945b43594	35	5e3c933f-7511-463e-88b1-a139c8276e69	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-15 15:39:28.866495	2025-09-15 15:39:28.866495
+93d51c05-4faa-4f43-86c9-5678e06bef9e	5	5e3c933f-7511-463e-88b1-a139c8276e69	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-15 15:39:28.866495	2025-09-15 15:39:28.866495
+ea7f9f42-1e10-4d2e-bed9-dd40435000ad	82	f2fb31f0-7f6b-42b6-9a79-c22453ac6a63	97a87b01-35e8-490a-94b9-9bdae9c2f965	2025-09-15 15:41:07.307492	2025-09-15 15:41:07.307492
+7e95c457-e013-4a6f-b43c-4ddbbdd5c3fd	16	f2fb31f0-7f6b-42b6-9a79-c22453ac6a63	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-15 15:41:07.307492	2025-09-15 15:41:07.307492
+77206812-0928-4bfa-aab1-1bf0df92c4d5	2	f2fb31f0-7f6b-42b6-9a79-c22453ac6a63	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-15 15:41:07.307492	2025-09-15 15:41:07.307492
+186b8fff-2ebb-43ff-afe2-5c3cc0e4dc8c	88	194fa2ee-7f92-4982-903e-3db80293d773	97a87b01-35e8-490a-94b9-9bdae9c2f965	2025-09-15 15:43:10.911581	2025-09-15 15:43:10.911581
+8cef4236-d6e2-4fc8-8451-089395132562	10	194fa2ee-7f92-4982-903e-3db80293d773	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-15 15:43:10.911581	2025-09-15 15:43:10.911581
+2c5af61d-cb35-4c78-bbb8-02d9f8ae1ef9	2	194fa2ee-7f92-4982-903e-3db80293d773	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-15 15:43:10.911581	2025-09-15 15:43:10.911581
+5497c985-d928-4b88-9254-d6c9a98cc691	60	89f423d0-315f-4d93-b346-dcb468a97045	97a87b01-35e8-490a-94b9-9bdae9c2f965	2025-09-15 15:44:50.458407	2025-09-15 15:44:50.458407
+55388eed-fc96-4fc1-a2ae-f86f2b4b5445	38	89f423d0-315f-4d93-b346-dcb468a97045	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-15 15:44:50.458407	2025-09-15 15:44:50.458407
+868ddcce-2d05-4526-acbe-7134fbb4ae93	2	89f423d0-315f-4d93-b346-dcb468a97045	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-15 15:44:50.458407	2025-09-15 15:44:50.458407
+e8ea04ce-f685-4272-8c27-2e175577ae60	88	9fc5ae4d-2868-4576-bb67-9c83663fc005	97a87b01-35e8-490a-94b9-9bdae9c2f965	2025-09-15 15:46:14.740268	2025-09-15 15:46:14.740268
+65f6f9b2-0f7c-4d2d-ad0a-d13b53f73b7b	10	9fc5ae4d-2868-4576-bb67-9c83663fc005	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-15 15:46:14.740268	2025-09-15 15:46:14.740268
+f638f01a-cc12-4153-a5cd-f6d651f74daf	2	9fc5ae4d-2868-4576-bb67-9c83663fc005	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-15 15:46:14.740268	2025-09-15 15:46:14.740268
+4614b633-0a10-4eb1-a53c-375085ab7914	85	2522a61a-2190-43e9-ae52-ca6bb023815e	97a87b01-35e8-490a-94b9-9bdae9c2f965	2025-09-15 15:48:55.935457	2025-09-15 15:48:55.935457
+65907007-b4b6-4c13-8b6f-bbb196c3cc07	12	2522a61a-2190-43e9-ae52-ca6bb023815e	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-15 15:48:55.935457	2025-09-15 15:48:55.935457
+40ecdbf5-807e-4440-88d9-c62a768d2f5a	3	2522a61a-2190-43e9-ae52-ca6bb023815e	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-15 15:48:55.935457	2025-09-15 15:48:55.935457
+7856e01b-e64c-4873-9adf-64c4f4396c5a	85	cfb2d83a-b3dc-44e9-ab08-53f9269752d6	97a87b01-35e8-490a-94b9-9bdae9c2f965	2025-09-15 15:50:31.263722	2025-09-15 15:50:31.263722
+473e7f44-810e-4349-8734-efb8709e9aac	12	cfb2d83a-b3dc-44e9-ab08-53f9269752d6	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-15 15:50:31.263722	2025-09-15 15:50:31.263722
+6347d087-93f1-4b11-8065-69cd57780fe8	3	cfb2d83a-b3dc-44e9-ab08-53f9269752d6	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-15 15:50:31.263722	2025-09-15 15:50:31.263722
+feeba55e-d6c3-4475-ab84-3c6a7e849b49	82	09386394-e4e1-4a6d-adce-d5f5a518485c	97a87b01-35e8-490a-94b9-9bdae9c2f965	2025-09-15 15:52:01.066085	2025-09-15 15:52:01.066085
+d47fd1fc-fe55-4dad-8c13-410109c3b77c	15	09386394-e4e1-4a6d-adce-d5f5a518485c	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-15 15:52:01.066085	2025-09-15 15:52:01.066085
+ef8da5ea-5f3f-458f-ba62-c5a79d0cd72a	3	09386394-e4e1-4a6d-adce-d5f5a518485c	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-15 15:52:01.066085	2025-09-15 15:52:01.066085
+404b2439-67c4-4fac-9ce6-adc26581c542	82	bbfbcfe2-1f56-492e-afa6-75e595b84fde	97a87b01-35e8-490a-94b9-9bdae9c2f965	2025-09-15 15:53:53.94422	2025-09-15 15:53:53.94422
+1b3a84e7-07ce-485a-9674-ca4e012e9347	15	bbfbcfe2-1f56-492e-afa6-75e595b84fde	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-15 15:53:53.94422	2025-09-15 15:53:53.94422
+14dd7b6b-0ec8-434d-8650-6863c125d35f	3	bbfbcfe2-1f56-492e-afa6-75e595b84fde	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-15 15:53:53.94422	2025-09-15 15:53:53.94422
+02d1ec5c-e283-4612-8d2a-e3864aac7c29	62	8324ae75-08e9-48de-a00b-55d229085712	97a87b01-35e8-490a-94b9-9bdae9c2f965	2025-09-15 15:55:48.445705	2025-09-15 15:55:48.445705
+0300ac36-3953-4ede-bd40-8d6786442594	35	8324ae75-08e9-48de-a00b-55d229085712	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-15 15:55:48.445705	2025-09-15 15:55:48.445705
+2748357d-f65d-4da7-950c-006df07d26b2	3	8324ae75-08e9-48de-a00b-55d229085712	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-15 15:55:48.445705	2025-09-15 15:55:48.445705
+f6b4ccdc-7d51-4798-a247-e5481131642f	78	ddc2e877-7197-42fa-ae1e-59706d209774	97a87b01-35e8-490a-94b9-9bdae9c2f965	2025-09-15 15:57:13.950676	2025-09-15 15:57:13.950676
+220f0965-9a6a-4e22-ac58-38f4e0b69959	20	ddc2e877-7197-42fa-ae1e-59706d209774	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-15 15:57:13.950676	2025-09-15 15:57:13.950676
+135f58c9-c2eb-4c04-af24-c330da3cc906	2	ddc2e877-7197-42fa-ae1e-59706d209774	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-15 15:57:13.950676	2025-09-15 15:57:13.950676
+db3b462a-c8e2-4384-b58d-aa936c43bc06	88	a90f4822-63c5-42b9-943c-ff0ceacad1eb	0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a	2025-09-15 16:02:04.859997	2025-09-15 16:02:04.859997
+dac762f7-f7a4-4c45-8eef-abbfc9c19d85	7	a90f4822-63c5-42b9-943c-ff0ceacad1eb	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-15 16:02:04.859997	2025-09-15 16:02:04.859997
+5ea64b7f-42f1-4546-bea5-fc713118336a	5	a90f4822-63c5-42b9-943c-ff0ceacad1eb	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-15 16:02:04.859997	2025-09-15 16:02:04.859997
+df4989d8-6b91-4708-9017-7653ac60c419	88	748e0a60-9429-4a9d-8a6b-3ba76a7fc4b2	0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a	2025-09-15 16:03:40.111017	2025-09-15 16:03:40.111017
+8da0cba3-4995-4f38-80f2-4b7750c1bec1	7	748e0a60-9429-4a9d-8a6b-3ba76a7fc4b2	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-15 16:03:40.111017	2025-09-15 16:03:40.111017
+863a9c76-71bc-4c3b-ba4b-199e2011e6bd	5	748e0a60-9429-4a9d-8a6b-3ba76a7fc4b2	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-15 16:03:40.111017	2025-09-15 16:03:40.111017
+b8643e3f-5dd6-48be-8096-5e90083e8d2b	89	53defdc5-bfec-4af4-bfba-60440e3493cc	0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a	2025-09-15 16:06:04.550945	2025-09-15 16:06:04.550945
+3e863893-d177-42b6-b066-c5c386a29b64	6	53defdc5-bfec-4af4-bfba-60440e3493cc	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-15 16:06:04.550945	2025-09-15 16:06:04.550945
+23ed8827-c849-4542-9ef0-9f04a5991855	5	53defdc5-bfec-4af4-bfba-60440e3493cc	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-15 16:06:04.550945	2025-09-15 16:06:04.550945
+c893ede9-4a75-4edc-b7e9-a51d76fde63a	90	855bd9e5-3546-4cfd-b048-e8017f01bfeb	0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a	2025-09-15 16:08:10.950182	2025-09-15 16:08:10.950182
+16220d78-b445-4b20-9ec0-fb6838d3184e	6	855bd9e5-3546-4cfd-b048-e8017f01bfeb	97136fa7-622a-49d6-9d09-403a631d253d	2025-09-15 16:08:10.950182	2025-09-15 16:08:10.950182
+43063fc9-330c-4992-b158-608c4fd775b5	4	855bd9e5-3546-4cfd-b048-e8017f01bfeb	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-15 16:08:10.950182	2025-09-15 16:08:10.950182
+eb5bc01f-92b9-4919-9cb6-6f64e78c7104	90	d6743870-0d5a-4180-9671-181b8f65e03e	0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a	2025-09-15 16:09:42.883863	2025-09-15 16:09:42.883863
+0d794c0d-deb2-4ef6-989c-2955725588e9	6	d6743870-0d5a-4180-9671-181b8f65e03e	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-15 16:09:42.883863	2025-09-15 16:09:42.883863
+0952ea1c-78c7-488a-8f4c-7f446c5973a1	4	d6743870-0d5a-4180-9671-181b8f65e03e	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-15 16:09:42.883863	2025-09-15 16:09:42.883863
+b0583e63-b367-4d71-812d-043128f6dca0	55	e21344ff-b825-4a99-bf8b-a778bf1964d1	0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a	2025-09-15 16:11:38.78951	2025-09-15 16:11:38.78951
+2600f5f6-6361-4741-90f5-16ceb4fd0f92	35	e21344ff-b825-4a99-bf8b-a778bf1964d1	b4658891-9713-48c4-864c-8dd907da19b0	2025-09-15 16:11:38.78951	2025-09-15 16:11:38.78951
+cf0ea12f-4e8b-4575-a39c-d0b26ded0a4b	10	e21344ff-b825-4a99-bf8b-a778bf1964d1	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-15 16:11:38.78951	2025-09-15 16:11:38.78951
+a44eb456-93a8-484d-92df-d3d04d4a0edc	92	490df80e-d34c-42cf-bfe5-c27ddd2cd734	0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a	2025-09-15 16:13:02.93229	2025-09-15 16:13:02.93229
+7d53aa34-c055-4afd-aff2-8c0289cc7ba0	5	490df80e-d34c-42cf-bfe5-c27ddd2cd734	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-15 16:13:02.93229	2025-09-15 16:13:02.93229
+29f96f71-8e26-4b29-9d0e-0714136262dd	3	490df80e-d34c-42cf-bfe5-c27ddd2cd734	b4658891-9713-48c4-864c-8dd907da19b0	2025-09-15 16:13:02.93229	2025-09-15 16:13:02.93229
+93c6f424-a6c7-4883-a7c0-0ae16f4eca94	90	ee8cc366-d33b-45a6-84b0-4ab416585ad1	0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a	2025-09-15 16:14:37.93572	2025-09-15 16:14:37.93572
+d7b715f9-b9f0-49d3-8545-eabed8e14b7a	7	ee8cc366-d33b-45a6-84b0-4ab416585ad1	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-15 16:14:37.93572	2025-09-15 16:14:37.93572
+502b2f65-16c3-4108-87c2-0bf17dbdd532	3	ee8cc366-d33b-45a6-84b0-4ab416585ad1	c57aa60c-61ea-4498-b01f-fedcafe8a32a	2025-09-15 16:14:37.93572	2025-09-15 16:14:37.93572
+2a7ee9b1-2c4b-4595-964c-c5d7dcbb0f02	90	21e7460d-aa00-448b-8c82-994a73e0164c	0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a	2025-09-15 16:16:08.770401	2025-09-15 16:16:08.770401
+bccd5746-fce9-47ec-aea6-8a5524a7f681	7	21e7460d-aa00-448b-8c82-994a73e0164c	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-15 16:16:08.770401	2025-09-15 16:16:08.770401
+768aa9b8-ecea-40e6-95b8-747fcec93957	3	21e7460d-aa00-448b-8c82-994a73e0164c	c57aa60c-61ea-4498-b01f-fedcafe8a32a	2025-09-15 16:16:08.770401	2025-09-15 16:16:08.770401
+a5e81621-778a-45ad-b0d2-e130803bc526	88	6a312bde-cc33-450b-8f1d-6091ccffe9cc	0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a	2025-09-15 16:18:28.988991	2025-09-15 16:18:28.988991
+b360455c-2aa3-497a-8e0a-cc2fe6422413	6	6a312bde-cc33-450b-8f1d-6091ccffe9cc	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-15 16:18:28.988991	2025-09-15 16:18:28.988991
+c72b89ca-9923-47d4-8a8e-21487e62dc90	4	6a312bde-cc33-450b-8f1d-6091ccffe9cc	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-15 16:18:28.988991	2025-09-15 16:18:28.988991
+83d5d350-65de-4697-80b2-d92725d552dd	2	6a312bde-cc33-450b-8f1d-6091ccffe9cc	9e69205f-6c6e-44a7-8ee6-89215e28a28e	2025-09-15 16:18:28.988991	2025-09-15 16:18:28.988991
+bf1851d5-dc90-40bc-bf1f-48766bf13057	70	50774526-c91f-4d71-82a8-456526b0fbd0	0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a	2025-09-15 16:27:44.417862	2025-09-15 16:27:44.417862
+dcd65c8a-8641-48b1-83df-5f40342f4e3b	10	50774526-c91f-4d71-82a8-456526b0fbd0	831f39bd-80a8-4d11-9964-bde1788abae1	2025-09-15 16:27:44.417862	2025-09-15 16:27:44.417862
+bb1e853a-2f34-42ed-a165-050853708765	7	50774526-c91f-4d71-82a8-456526b0fbd0	97136fa7-622a-49d6-9d09-403a631d253d	2025-09-15 16:27:44.417862	2025-09-15 16:27:44.417862
+deb10e22-a0ae-45bc-b463-74034ac08832	5	50774526-c91f-4d71-82a8-456526b0fbd0	be38dcef-1bc8-487b-a44f-96df1ab9e68c	2025-09-15 16:27:44.417862	2025-09-15 16:27:44.417862
+d46e945c-7b0b-4028-a991-87a01d754245	8	50774526-c91f-4d71-82a8-456526b0fbd0	b4658891-9713-48c4-864c-8dd907da19b0	2025-09-15 16:27:44.417862	2025-09-15 16:27:44.417862
+2daa55b4-8f7f-4ba7-979b-0f2c234c9228	75	9f0c8916-a08b-4fe5-9f24-e1680ef627a8	0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a	2025-09-15 16:36:37.883984	2025-09-15 16:36:37.883984
+16bcc291-92ae-4b57-9bd5-f07c9a5b90ab	10	9f0c8916-a08b-4fe5-9f24-e1680ef627a8	d736a513-9d73-47a3-bffc-c14911662ea2	2025-09-15 16:36:37.883984	2025-09-15 16:36:37.883984
+98571798-fa65-46e5-8d68-ea2d501db15f	8	9f0c8916-a08b-4fe5-9f24-e1680ef627a8	b4658891-9713-48c4-864c-8dd907da19b0	2025-09-15 16:36:37.883984	2025-09-15 16:36:37.883984
+7f595281-f19d-4bb3-bcdb-793ccb69e8db	2	9f0c8916-a08b-4fe5-9f24-e1680ef627a8	c57aa60c-61ea-4498-b01f-fedcafe8a32a	2025-09-15 16:36:37.883984	2025-09-15 16:36:37.883984
+e5cf74ac-164a-4caa-9c14-87fb5707f3cc	3	9f0c8916-a08b-4fe5-9f24-e1680ef627a8	9a8024fe-c721-4bea-969c-db88674b5ece	2025-09-15 16:36:37.883984	2025-09-15 16:36:37.883984
+\.
 
 
 --
 -- Data for Name: exercise_examples; Type: TABLE DATA; Schema: public; Owner: -
 --
 
-INSERT INTO public.exercise_examples
-VALUES ('650e9725-d36c-4688-bcab-adf93dfe9e5d', 'EZ Bar Skullcrusher', '2024-08-23 15:44:41.300424',
-        '2024-08-23 15:44:41.300424',
-        'https://www.mensjournal.com/.image/t_share/MTk2OTg4MTk1NjA1MzI1NDUy/barbellskullcrusher.jpg', 'Select your desired weight and sit on the edge of a flat bench.
-
-
-To get into position, lay back and keep the bar close to your chest. Once you are supine, press the weight to lockout.
-
-
-Lower the weights towards your head by unlocking the elbows and allowing the ez bar to drop toward your forehead or just above.
-
-
-Once your forearms reach parallel or just below, reverse the movement by extending the elbows while flexing the triceps to lockout the weight.
-
-
-Repeat for the desired number of repetitions.', 'isolation', 'free', 'push', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('3b828d2f-797f-4a45-9d1d-1d3efe38fb54', 'Weighted Tricep Dips', '2024-08-23 15:50:27.637943',
-        '2024-08-23 15:50:27.637943',
-        'https://steelsupplements.com/cdn/shop/articles/shutterstock_566901937_2000x.jpg?v=1599047555', 'Step up onto the dip station (if possible) and position your hands with a neutral grip.
-
-
-Initiate the dip by unlocking the elbows and slowly lowering the body until the forearms are almost parallel with the floor.
-
-
-Control the descent to parallel and then drive back to the starting position by pushing through the palms.
-
-
-Repeat for the desired number of repetitions.', 'compound', 'free', 'push', 'advanced');
-INSERT INTO public.exercise_examples
-VALUES ('b790c6a6-ecd1-4b3a-afbc-22cd82e55658', 'Lying Dumbbell Extension', '2024-08-23 14:29:51.253789',
-        '2024-08-23 14:29:51.253789',
-        'https://weighttrainingexercises4you.com/wp-content/uploads/Lying-Dumbbell-Triceps-Extension.jpg', 'Grab a pair of dumbbells and sit on the end of a flat bench with the dumbbells resting on your thighs.
-
-
-Lie back on the bench and extend the dumbbells above your head. The dumbbells should not be touching and you should be using a neutral grip (palms facing each other).
-
-
-Bending at the elbows only, keeping your elbows fixed and pointing at your hips, slowly lower the dumbbells down beside your head until they are about level with your ears.
-
-
-Pause and squeeze the triceps. Then raise the dumbbells back to the starting position.
-
-
-Do not lock the elbows out, and then repeat for desired reps.', 'isolation', 'free', 'push', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('6cb225d2-be00-461d-9bf0-7f0c87cfea0b', 'Straight Bar Tricep Extension', '2024-08-23 13:51:17.085276',
-        '2024-08-23 13:51:17.085276', 'https://miro.medium.com/v2/resize:fit:683/0*WTHf_Xa35BeFOEAl.jpg', 'Attach a straight bar to a cable stack as high as possible and assume a standing position.
-
-
-Grasp the straight bar with a pronated grip (palms facing down) and lean forward slightly by hinging at the hips.
-
-
-Initiate the movement by extending the elbows and flexing the triceps.
-
-
-Pull the handle downward until the elbows are almost locked out and then slowly lower under control back to the starting position.
-
-
-Repeat for the desired number of repetitions.', 'isolation', 'fixed', 'push', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('0e2fe1e8-f8f1-48e6-b360-8c9d4d9991a6', 'Rope Tricep Extension', '2024-08-23 14:53:43.902288',
-        '2024-08-23 14:53:43.902288',
-        'https://www.dmoose.com/cdn/shop/articles/1_6a24d912-5f74-43d4-bc20-578944bd99f7.jpg?v=1648734107', 'Attach a rope to a cable stack as high as possible and assume a standing position.
-
-
-Grasp the rope with a neutral grip (palms facing in) and lean forward slightly by hinging at the hips.
-
-
-Initiate the movement by extending the elbows and flexing the triceps.
-
-
-Pull the rope downward until the elbows are almost locked out and then slowly lower under control back to the starting position.
-
-
-Repeat for the desired number of repetitions.', 'isolation', 'fixed', 'push', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('ab0d7384-444e-446a-911d-f64ac31db8ef', 'Close Grip Bench Press', '2024-08-23 15:30:18.860564',
-        '2024-08-23 15:30:18.860564',
-        'https://steelsupplements.com/cdn/shop/articles/shutterstock_69079681_2000x.jpg?v=1599316230', 'Lie flat on a bench and set your hands at shoulder width.
-
-
-Set your shoulder blades by pinching them together and driving them into the bench.
-
-
-Take a deep breath and allow your spotter to help you with the lift off in order to maintain tightness through your upper back.
-
-
-Let the weight settle and ensure your upper back remains tight after lift off.
-
-
-Inhale and allow the bar to descend slowly by unlocking the elbows.
-
-
-Lower the bar in a straight line to the base of the sternum (breastbone) and touch the chest.
-
-
-Push the bar back up in a straight line by pressing yourself into the bench, driving your feet into the floor for leg drive, and extending the elbows.
-
-
-Repeat for the desired number of repetitions.', 'compound', 'free', 'push', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('7517ae2f-c198-4a33-8a1d-1dc7327d1430', '45 Degree Lying Tricep Extension (EZ Bar)',
-        '2024-08-23 20:29:25.181737', '2024-08-23 20:29:25.181737',
-        'https://i0.wp.com/www.muscleandfitness.com/wp-content/uploads/2015/10/triceps-article-social.jpg?quality=86&strip=all', 'Sit on the end of a flat bench width a barbell on your thighs.
-
-
-Grip the EZ-bar on the inner grips. Bring the bar up to your chest and lay down on your back.
-
-
-Extend your arms straight up above your chest.
-
-
-Keeping your arms straight move the bar back so it is angled out past your head.
-
-
-Keeping your elbows fixed in place and not pointing out, slowly lower the bar until it is almost touching the top of your head or bench behind your head.
-
-
-Pause, and then slowly extend your arms back to the starting position.
-
-
-Do not lock your elbows out, and then repeat for desired reps.', 'isolation', 'free', 'push', 'intermediate');
-INSERT INTO public.exercise_examples
-VALUES ('4aafe702-f2fc-4fa2-a7fb-c31c279adeda', '45 Degree Lying Tricep Extension', '2024-08-23 20:36:43.346849',
-        '2024-08-23 20:36:43.346849',
-        'https://www.bodybuilding.com/fun/images/2015/your-complete-guide-to-skullcrushers-graphics-45-degree-skullcrusher-700xh.jpg', 'Sit on the end of a flat bench with a barbell on your thighs.
-
-
-Grip the barbell with an overhand (palms facing down) with your hands about shoulder width apart.
-
-
-Bring the bar up to your chest and lay down on your back.
-
-
-Extend your arms straight up above your chest.
-
-
-Keeping your arms straight, move the bar back to the position shown in the video above.
-
-
-Keeping your elbows fixed in place and not pointing out, slowly lower the bar until it is almost touching the top of your head or bench behind your head.
-
-
-Pause, and then slowly extend your arms back to the starting position.
-
-
-Do not lock your elbows out, and then repeat for desired reps.', 'isolation', 'free', 'push', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('faf6674c-2a2a-4b03-ab8b-7a033052b572', 'Alternating Bent-Over Dumbbell Kickback ', '2024-08-24 13:49:36.23273',
-        '2024-08-24 13:49:36.23273',
-        'https://hips.hearstapps.com/hmg-prod/images/young-man-working-out-with-dumbbell-at-gym-royalty-free-image-1667582833.jpg?crop=1xw:0.84415xh;center,top', 'Select the appropriate dumbbells and place them on the floor in front of you.
-
-
-Bending at the knees and keeping your back straight, squat down and pick up the dumbbells with a neutral grip (palms facing inward). Your feet should be around shoulder-width apart.
-
-
-Get into the starting position by keeping your back straight, bending slightly at the knees, and bending over at the waist. Your torso should almost be parallel to the floor.
-
-
-Tuck your upper arms close to your torso and bend at the elbows, forming a 90-degree angle with your upper arms and forearms. This is the starting position.
-
-
-Beginning with your left arm and moving only at the elbow, raise the dumbbell behind you until your arm is fully extended.
-
-
-Pause, and then lower the dumbbell back to the starting position.
-
-
-Repeat this movement with your right arm and then repeat for desired reps.', 'isolation', 'free', 'push', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('c21d3b0f-c8a8-4b7f-92ea-90dc567a1183', 'Close Grip EZ Bar Press', '2024-08-26 14:36:25.633347',
-        '2024-08-26 14:36:25.633347', 'https://s3assets.skimble.com/assets/1141234/image_iphone.jpg', 'Select your desired weight and sit on the edge of a flat bench.
-
-
-To get into position, lay back and keep the bar close to your chest using a neutral grip. Once you are supine, press the weight to lockout.
-
-
-Unlock the elbows and extend the shoulders to lower the weight to your chest.
-
-
-Once the bar touches your chest, reverse the movement by extending the elbows while flexing the triceps to lockout the weight.
-
-
-Repeat for the desired number of repetitions.', 'isolation', 'free', 'push', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('93e6b1c4-0510-41d4-983c-a1fde003881f', 'Alternating Dumbbell Floor Press', '2024-08-24 13:55:14.325068',
-        '2024-08-24 13:55:14.325068',
-        'https://cdn.shopify.com/s/files/1/2623/4904/files/Dumbbell_Floor_Press_b2da358c-6c1e-4ab5-98a6-98e24bfa6d52_600x600.png?v=1659337818', 'Begin sitting on the floor in an upright position with your legs straight and the dumbbells vertically balanced on the floor.
-
-
-Pick up each dumbbell and set it high in your hip crease while maintaining a tight grip.
-
-
-Slowly lay back while keeping the dumbbells close to your chest and bend your knees to roughly 45 degrees and move your feet up slightly.
-
-
-Press the weights to full extension by contracting your triceps and chest.
-
-
-Slowly lower one dumbbell under control as far as comfortably possible (the handle should be about level with your chest) while keeping the other locked out at the top.
-
-
-Contract the chest and triceps to push the dumbbell back to the starting position.
-
-
-Slowly lower the other dumbbell under control until your elbow touches the floor while keeping the other locked out at the top.
-
-
-To complete the exercise, simply lower the weights to the ground in “controlled drop” fashion. It should be a smooth motion but not one requiring excessive effort or one that puts the shoulder under unnecessary risk.',
-        'compound', 'free', 'push', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('0eaa8980-e29e-4f33-88b0-915db5cf309a', 'Alternating Lying Dumbbell Extension', '2024-08-24 15:00:28.238965',
-        '2024-08-24 15:00:28.238965',
-        'https://weighttrainingexercises4you.com/wp-content/uploads/Alternating-Lying-Dumbbell-Triceps-Extension.jpg', 'Set up for the exercise by setting a pair of dumbbells at the end of a flat bench.
-
-
-Pick up the dumbbells off the floor using a neutral grip (palms facing in), position the ends of the dumbbells on your thighs, and sit down on the bench.
-
-
-To get in position you need to rock back pushing the dumbbells back with your thighs and only slightly bending at the elbows.
-
-
-Now you should be in a position to start the set, laying back on the bench and holding the dumbbells straight up above your chest with a neutral grip.
-
-
-Slowly lower the left dumbbell down by bending only at the elbow. You will be moving in a semi-circular motion until the dumbbell is about even with your left ear. Continue to hold the right dumbbell in place.
-
-
-Pause, and then raise the dumbbell back to the starting position.
-
-
-Repeat the movement with your right arm and then repeat for desired reps.', 'isolation', 'free', 'push',
-        'intermediate');
-INSERT INTO public.exercise_examples
-VALUES ('9f0c8916-a08b-4fe5-9f24-e1680ef627a8', 'Bench Dip', '2024-08-24 15:05:24.055319', '2024-08-24 15:05:24.055319',
-        'https://steelsupplements.com/cdn/shop/articles/shutterstock_1526664821_1000x.jpg?v=1644523346', 'Set up for the bench dip by placing 2 flat benches parallel to one another to around 4-5 feet apart (you may need to adjust the width to suit your height).
-
-
-Put your heels on the edge of one bench around shoulder-width apart.
-
-
-Place your hands on the edge of the other bench. This is the starting position for the exercise.
-
-
-Keeping your body close to the bench, slowly dip down until your elbows are at the same height as your shoulders.
-
-
-Slowly push back up, squeezing through the triceps.
-
-
-Do not lock the elbows out at the top of the exercise, and repeat.', 'compound', 'free', 'push', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('547f1f7e-3ee1-4b39-99eb-3462b1ec13af', 'Bent Over Dumbbell Tricep Kickback', '2024-08-24 15:14:04.484126',
-        '2024-08-24 15:14:04.484126', 'https://hips.hearstapps.com/hmg-prod/images/triceps-kickback-1551296273.jpg', 'Select the desired weight from the rack and stand in an open area.
-
-
-Hinge forward, row the dumbbells into position, then extend the elbows while flexing the triceps.
-
-
-Slowly lower the dumbbells back to the starting position and repeat for the desired number of repetitions.',
-        'isolation', 'free', 'push', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('275097d4-3c8d-4040-9b2e-5f294919df04', 'Cable Concentration Tricep Extension', '2024-08-24 15:21:25.308798',
-        '2024-08-24 15:21:25.308798',
-        'https://www.bodybuilding.com/images/2016/june/7-best-triceps-exercises-youre-not-doing-v2-7-700xh.jpg', 'Set up for the exercise by attaching a single grip handle to a high pulley cable machine and selecting the weight you want to use on the stack.
-
-
-Grab the handle with an underhand grip (palm facing up) with your right hand.
-
-
-Turn so your left side is facing the cable machine and drop your left knee to the floor.
-
-
-Your right thigh should be parallel to the floor, as it will be used as a support during the exercise.
-
-
-Position the back of your elbow (bottom of the tricep) against your inner right thigh. This is the starting position for the exercise.
-
-
-Keeping your body fixed, slowly extend the arm as far as possible.
-
-
-Squeeze the tricep, and then slowly lower the weight back to the starting position.
-
-
-Repeat for desired reps.', 'isolation', 'fixed', 'push', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('5985d847-0473-444e-8fe0-9da5341ef986', 'Cable Tricep Extension With V-Bar', '2024-08-26 14:10:38.408306',
-        '2024-08-26 14:10:38.408306', 'https://atletiq.com/content/exercises/243/male_1.jpg', 'Attach a v-bar to a cable stack as high as possible and assume a standing position.
-
-
-Grasp the v-bar with a semi pronated grip (palms slightly facing) and lean forward slightly by hinging at the hips.
-
-
-Initiate the movement by extending the elbows and flexing the triceps.
-
-
-Pull the handle downward until the elbows are almost locked out and then slowly lower under control back to the starting position.
-
-
-Repeat for the desired number of repetitions.', 'isolation', 'fixed', 'push', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('11644e17-247a-46b0-a391-b3b2a2a6bba8', 'Cable Tricep Kickback', '2024-08-26 14:15:00.627444',
-        '2024-08-26 14:15:00.627444',
-        'https://bodybuilding-wizard.com/wp-content/uploads/2015/02/cable-tricep-kickback-2.jpg', 'Set up for the cable tricep kickback by attaching a single grip handle to a low pulley cable machine and selecting the weight you want to use.
-
-
-Grab the handle using your left hand with an overhand grip and take a step back from the cable machine.
-
-
-Keeping your feet together and knees slightly bent, bend down until your body is around parallel to the floor.
-
-
-Use your free right hand to stabilize yourself.
-
-
-Bring the elbow up as far as possible and keep it tight by your side. This is the starting position for the exercise.
-
-
-Keeping your elbow in place and your body fixed, extend your arm out as far as possible.
-
-
-Squeeze the tricep, and then slowly lower the weight back to the starting position.
-
-
-Repeat for desired reps.', 'isolation', 'fixed', 'push', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('50774526-c91f-4d71-82a8-456526b0fbd0', 'California Skullcrusher', '2024-08-26 14:21:24.510891',
-        '2024-08-26 14:21:24.510891',
-        'https://www.bodybuilding.com/fun/images/2015/your-complete-guide-to-skullcrushers-desktop-2-960x540.jpg', 'Select your desired weight and sit on the edge of a flat bench.
-
-
-To get into position, lay back and keep the bar close to your chest using a neutral grip. Once you are supine, press the weight to lockout.
-
-
-Unlock the elbows and allow the ez bar to drop toward your forehead or just above.
-
-
-Once your forearms reach parallel or just below, allow the upper arms to extend overhead (similar to a pullover).
-
-
-As the arms reach full extension, pull the elbows back to the starting position and then extend the elbows while flexing the triceps to lockout the weight.
-
-
-Repeat for the desired number of repetitions.', 'isolation', 'free', 'push', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('385fb192-7c2c-405a-b483-f36e32e241c8', 'Close Grip Chest Press', '2024-08-26 14:31:15.917591',
-        '2024-08-26 14:31:15.917591',
-        'https://www.dmoose.com/cdn/shop/articles/1_155d781f-a698-40e7-bdb6-f0de019f9b89.jpg?v=1648738774', 'Set up for the close grip chest press by adjusting the rack height (if adjustable) and loading the weight you want to use on the barbell.
-
-
-Lay back on the bench with your feet firmly on the floor.
-
-
-Grab the bar with an overhand grip (palms facing your feet) with your hands around 12 inches apart.
-
-
-Take the barbell off the rack and hold it straight above your chest. Bend the elbows slightly to take the weight onto your chest/triceps.
-
-
-Slowly lower the bar to your middle chest.
-
-
-Pause, then slowly push the bar back to the starting position. Don''t lock your elbows out!
-
-
-Repeat for desired reps.', 'compound', 'free', 'push', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('04d275d8-71df-4695-ace9-899ce6e41b29', 'Seated Dumbbell Tricep Extension', '2024-08-26 14:39:55.622736',
-        '2024-08-26 14:39:55.622736',
-        'https://www.dmoose.com/cdn/shop/articles/1_f16231a6-e9e2-4ff0-b3f1-b1ccdfbac2dc.jpg?v=1658323250', 'Select the desired weight from the rack and position an adjustable bench at 90 degrees.
-
-
-To get into position, sit in an upright position and lift the dumbbell to the top of your shoulder. Take a deep breath, overlap your hands around the dumbbell, then press it into position overhead.
-
-
-Maintain an overlapping grip and slowly lower the dumbbell behind your head by unlocking your elbows.
-
-
-Once your forearms reach parallel or just below, drive the dumbbell back to the starting point by extending the elbows and flexing the triceps.
-
-
-Repeat for the desired number of repetitions.', 'isolation', 'free', 'push', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('1b4402c2-2459-45c1-8d24-356322c71d20', 'Two Arm Standing Dumbbell Extension', '2024-08-26 14:46:34.072768',
-        '2024-08-26 14:46:34.072768',
-        'https://media.post.rvohealth.io/wp-content/uploads/2021/10/overhead-tricep-extension-dumbbell-732x549-thumbnail.jpg', 'Select the desired weight from the rack and stand in an open area.
-
-
-To get into position, lift the dumbbell to the top of your shoulder, take a deep breath, overlap your hands around the dumbbell, then press it into position overhead.
-
-
-Maintain an overlapped grip and slowly lower the dumbbell behind your head by unlocking your elbows.
-
-
-Once your forearms reach parallel or just below, drive the dumbbell back to the starting point by extending the elbows and flexing the triceps.
-
-
-Repeat for the desired number of repetitions.', 'isolation', 'free', 'push', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('4f9bdd10-28bc-447e-8cf5-fbf47cd9af79', 'French Press', '2024-08-26 14:52:11.233011',
-        '2024-08-26 14:52:11.233011',
-        'https://www.guinnessworldrecords.com/world-records/images/619083-most-weight-lifted-by-ez-bar-french-press-french-curl-in-one-minute-header.jpg', 'Set up for the french press by loading a barbell or EZ-bar with the appropriate amount of weight and placing it on the floor in front of you.
-
-
-Bend only at the knees and grasp the barbell with an overhand grip (palms facing down) with your hands about 8-12 inches apart.
-
-
-Stand up straight with the bar with your feet around shoulder-width apart and a slight bend in your knees.
-
-
-Lift the bar above your head and bend at your elbows slightly to take the tension onto your triceps. Your palms are now facing upward. This is the starting position for the exercise.
-
-
-Keeping your elbows fixed and pointing straight up toward the ceiling, slowly lower the bar down behind your head as far as comfortably possible.
-
-
-Pause, and then slowly raise the bar back to the starting position.
-
-
-Don''t lock your elbows out, and then repeat the movement. ', 'isolation', 'free', 'push', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('6a312bde-cc33-450b-8f1d-6091ccffe9cc', 'Reverse Grip Cable Tricep Extension', '2024-08-26 15:16:20.191397',
-        '2024-08-26 15:16:20.191397',
-        'https://ignorelimits.com/wp-content/uploads/2017/08/how-to-reverse-grip-cable-triceps-pushdown-Copy.jpg', 'Attach a straight bar to a cable stack as high as possible and assume a standing position.
-
-
-Grasp the straight bar with a supinated grip (palms facing up) and lean forward slightly by hinging at the hips.
-
-
-Initiate the movement by extending the elbows and flexing the triceps.
-
-
-Pull the handle downward until the elbows are almost locked out and then slowly lower under control back to the starting position.
-
-
-Repeat for the desired number of repetitions.', 'isolation', 'fixed', 'push', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('21e7460d-aa00-448b-8c82-994a73e0164c', 'Dumbbell Tate Press', '2024-08-26 15:20:51.07074',
-        '2024-08-26 15:20:51.07074',
-        'https://i0.wp.com/www.muscleandfitness.com/wp-content/uploads/2017/06/600-tate-press.jpg?quality=86&strip=all', 'Select the desired weight from the rack and sit down on a flat bench.
-
-
-To get into position, lay back and keep the weights close to your chest. Once you are in position, take a deep breath, then press the dumbbells to lockout at the top.
-
-
-Maintain a pronated grip (thumbs pointing towards each other) and allow the elbows to bend while lowering the inner portion of the dumbbells to the chest.
-
-
-Once the ends of the dumbbells touch your chest, reverse the movement and flex the triceps to lockout the elbows.
-
-
-Repeat for the desired number of repetitions.', 'isolation', 'free', 'push', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('ee8cc366-d33b-45a6-84b0-4ab416585ad1', 'Close Grip Press Behind-The-Neck', '2024-08-27 16:05:54.962719',
-        '2024-08-27 16:05:54.962719',
-        'https://assets.myworkouts.io/exercises-media/b6KbXDksgkfbm3TtY/close_grip_press_behind_neck_male_v5_thumb100Poster_capoff.jpg', 'Set up for the close grip behind the neck press by loading the appropriate weight onto an EZ bar or barbell and sitting on the end of a flat bench or a bench with a back rest.
-
-
-Grasp the bar with a close grip (just inside shoulder width) using an overhand grip (palms facing forward).
-
-
-Raise the bar straight above your head until your arms are nearly fully extended (keep a slight bend in your elbows). This is the starting position.
-
-
-Slowly lower the bar down behind your neck by bending at the elbows. The bar should come down as far as comfortably possible or when your forearms are around parallel to the floor.
-
-
-Slowly raise the bar back to the starting position. This is one rep.
-
-
-Repeat for desired reps.', 'isolation', 'free', 'push', 'intermediate');
-INSERT INTO public.exercise_examples
-VALUES ('490df80e-d34c-42cf-bfe5-c27ddd2cd734', 'Decline Lying Dumbbell Extension', '2024-08-27 17:08:58.772907',
-        '2024-08-27 17:08:58.772907', '', 'Select the desired weight from the rack and position an adjustable bench on a slight decline of 15-30 degrees.
-
-
-Lay back keeping the weights close to your chest. Once your back is flat against the pad, press the weights to lockout using a neutral grip.
-
-
-Lower the weights towards your shoulders by unlocking the elbows while maintaining a neutral grip.
-
-
-Once your forearms reach parallel or just below, drive the dumbbell back to the starting point by extending the elbows and flexing the triceps.
-
-
-Repeat for the desired number of repetitions.', 'isolation', 'free', 'push', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('e21344ff-b825-4a99-bf8b-a778bf1964d1', 'Decline Close Grip Bench Press', '2024-08-27 17:14:24.425351',
-        '2024-08-27 17:14:24.425351', '', 'Lie flat on an decline bench, set your hands at shoulder width, and hook your feet underneath the pad.
-
-
-Set your shoulder blades by pinching them together and driving them into the bench.
-
-
-Take a deep breath and allow your spotter to help you with the lift off in order to maintain tightness through your upper back.
-
-
-Let the weight settle and ensure your upper back remains tight after lift off.
-
-
-Inhale and allow the bar to descend slowly by unlocking the elbows.
-
-
-Lower the bar in a straight line to just below your sternum (breastbone) and touch the chest.
-
-
-Push the bar back up in a straight line by pressing yourself into the bench and extending the elbows.
-
-
-Repeat for the desired number of repetitions.', 'compound', 'free', 'push', 'intermediate');
-INSERT INTO public.exercise_examples
-VALUES ('d6743870-0d5a-4180-9671-181b8f65e03e', 'Decline Lying Tricep Extension (Skullcrusher)',
-        '2024-08-27 17:17:13.831319', '2024-08-27 17:17:13.831319', '', 'Select your desired weight and sit on the edge of an decline bench at roughly 20-30 degrees.
-
-
-To get into position, lay back and keep the bar close to your chest. Once you are supine, press the weight to lockout.
-
-
-Unlock the elbows and allow the ez bar to drop toward your forehead or just above.
-
-
-Once your forearms reach parallel or just below, reverse the movement by extending the elbows while flexing the triceps to lockout the weight.
-
-
-Repeat for the desired number of repetitions.', 'isolation', 'free', 'push', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('855bd9e5-3546-4cfd-b048-e8017f01bfeb', 'Dumbbell Tricep Kickback', '2024-08-27 17:37:27.234715',
-        '2024-08-27 17:37:27.234715', '', 'Set up for the dumbbell tricep kickback by grabbing a flat bench and sitting a dumbbell on the left-hand side at one end.
-
-
-Position yourself on the left side of the bench with your right knee and right hand resting on the bench.
-
-
-Using a neutral grip, pick up the dumbbell with your left hand. Keep your back straight and look forward.
-
-
-Tuck your left upper arm close to your torso and bend at the elbow, forming a 90-degree angle with your upper arm and forearm. This is the starting position.
-
-
-Moving only at the elbow, raise the dumbbell behind you until your arm is fully extended.
-
-
-Pause, and then lower the dumbbell back to the starting position.
-
-
-Repeat this movement for desired reps and then repeat using your right arm.', 'isolation', 'free', 'push', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('53defdc5-bfec-4af4-bfba-60440e3493cc', 'EZ Bar Incline Skullcrusher', '2024-08-27 17:40:04.03333',
-        '2024-08-27 17:40:04.03333', '', 'Select your desired weight and sit on the edge of an adjustable bench set at 20-30 degrees.
-
-
-To get into position, lay back and keep the bar close to your chest. Once you are supine, press the weight to lockout.
-
-
-Unlock the elbows and allow the ez bar to drop toward your forehead or just above.
-
-
-Once your forearms reach parallel or just below, reverse the movement by extending the elbows while flexing the triceps to lockout the weight.
-
-
-Repeat for the desired number of repetitions.', 'isolation', 'free', 'push', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('748e0a60-9429-4a9d-8a6b-3ba76a7fc4b2', 'High Pulley Overhead Tricep Extension (Rope Extension)',
-        '2024-08-27 17:41:21.141757', '2024-08-27 17:41:21.141757', '', 'Attach a rope to a cable stack as high as possible and assume a standing position.
-
-
-Utilize a split stance, grasp the rope overhead with a neutral grip (palms facing), and lean forward by hinging at the hips.
-
-
-Initiate the movement by extending the elbows and flexing the triceps.
-
-
-Pull the rope downward until the elbows are almost locked out and then slowly lower under control back to the starting position.
-
-
-Repeat for the desired number of repetitions.', 'isolation', 'fixed', 'push', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('a90f4822-63c5-42b9-943c-ff0ceacad1eb', 'High Pulley Overhead Tricep Extension', '2024-08-27 17:44:25.490434',
-        '2024-08-27 17:44:25.490434', '', 'Set up for the high pulley tricep extension by attaching a straight bar to a high pulley and selecting the weight you want to use on the stack.
-
-
-Facing away from the pulley, grab the bar behind your neck with an overhand grip at shoulder width apart.
-
-
-Bend over at the waist until your torso is almost parallel to the floor. This will lift the weight slightly from the stack.
-
-
-You can stagger your feet and bend slightly at the knees to help with balance.
-
-
-Your upper arms should be parallel to the floor at this point and you should be grabbing the bar behind your head. You are now in the starting position.
-
-
-Moving only at your elbow joints, slowly push the bar out in from of your body until your arms are fully extended.
-
-
-Pause, and then slowly bring the bar back to the starting position.
-
-
-Repeat this movement for desired reps.', 'isolation', 'fixed', 'push', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('bbfbcfe2-1f56-492e-afa6-75e595b84fde', 'Standing Barbell Curl', '2024-08-27 20:04:23.470927',
-        '2024-08-27 20:04:23.470927', '', 'The standing barbell curl is the cornerstone of many bicep building routines. Grasp a barbell or Olympic bar at around shoulder width apart using an underhand grip (palms facing up).
-Stand straight up, feet together (you may be more comfortable putting one foot back for stability), back straight, and with your arms fully extended.
-The bar should not be touching your body.
-Keeping your eyes facing forwards, elbows tucked in at your sides, and your body completely still, slowly curl the bar up.
-Squeeze your biceps hard at the top of the movement, and then slowly lower it back to the starting position.
-Repeat for desired reps.', 'isolation', 'free', 'pull', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('ddc2e877-7197-42fa-ae1e-59706d209774', 'Standing Dumbbell Curl', '2024-08-27 19:58:20.484787',
-        '2024-08-27 19:58:20.484787', '', 'Assume the starting position for the standing dumbbell curl by grasping a pair of dumbbells and standing straight up, feet together, and dumbbells by your side. The dumbbells should not be touching your body.
-Your palms should face upwards.
-Take up the slack by bending the elbows slightly. Tension should be on the biceps.
-Slowly curl the dumbbells up as far as possible.
-Squeeze the biceps hard, and then slowly lower the dumbbells back down to the starting position.
-Repeat for desired reps.', 'isolation', 'free', 'pull', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('8324ae75-08e9-48de-a00b-55d229085712', 'Standing Hammer Curl', '2024-08-27 20:02:25.685377',
-        '2024-08-27 20:02:25.685377', '', 'Grab a pair of dumbbells and stand up with the dumbbells by your sides.
-With a neutral grip, bend your arms slightly to keep the tension on the biceps.
-With your palms still facing your body, slowly curl the dumbbells up as far as possible.
-Squeeze the biceps at the top of the movement, and then slowly lower the weight back to the starting position.
-Repeat for desired reps.', 'isolation', 'free', 'pull', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('09386394-e4e1-4a6d-adce-d5f5a518485c', 'Incline Dumbbell Curl', '2024-08-27 20:09:12.651079',
-        '2024-08-27 20:09:12.651079', '',
-        'Position an incline bench at roughly 55-65 degrees, select the desired weight from the rack, and sit upright with your back flat against the pad. Using a supinated (palms up) grip, take a deep breath and curl both dumbbells towards your shoulders. Once the biceps are fully shortened, slowly lower the weights back to the starting position. Repeat for the desired number of repetitions.',
-        'isolation', 'free', 'pull', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('cfb2d83a-b3dc-44e9-ab08-53f9269752d6', 'Concentration Curl', '2024-08-27 20:11:42.117375',
-        '2024-08-27 20:11:42.117375', '',
-        'Select the desired weight from the rack, and sit in an upright position on a flat bench. Hinge forward and position your elbow near the base of your knee. Place your free hand on the other knee to stabilize yourself. Using a supinated (palms facing up) grip, take a deep breath and curl the dumbbell towards your shoulder. Once the bicep is fully shortened, slowly lower the weight back to the starting position. Repeat for the desired number of repetitions on both sides.',
-        'isolation', 'free', 'pull', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('2522a61a-2190-43e9-ae52-ca6bb023815e', 'Cable Curl', '2024-08-27 20:13:52.504713',
-        '2024-08-27 20:13:52.504713', '',
-        'Set up for this type of cable curl by attaching a straight bar to the low pulley cable and selecting the weight you want to use on the stack. Stand facing the cable machine with your legs shoulder-width apart. Grasp the rope extension with a neutral grip (thumbs facing the body). With your elbows tucked in by your sides, slowly curl the rope up as far as possible. Squeeze the biceps at the top of the movement, and then slowly lower the weight back to the starting position. This is one rep. Repeat for desired reps.',
-        'isolation', 'fixed', 'pull', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('9fc5ae4d-2868-4576-bb67-9c83663fc005', 'EZ Bar Preacher Curl', '2024-08-27 20:15:21.110573',
-        '2024-08-27 20:15:21.110573', '',
-        'The EZ bar preacher curl is a great exercise to isolate the biceps while minimizing the strain on your wrists. Adjust the seat on the preacher bench so that your upper arms sit comfortably on the padding when seated. Load the desired weight on the barbell. Sit on the preacher bench and grip the EZ bar with your hands shoulder-width apart using an underhand (palms facing up) grip. (note: You can use a wide or narrow grip on this exercise) Keeping your back straight and eyes facing forward, take the weight off the rack to support it with your arms slightly bent. This is the starting position. Slowly bring the weight up until your forearms are at a right angle to the floor. Squeeze the bicep at the top of the movement and slowly lower it back to the starting position. Repeat for desired reps.',
-        'isolation', 'free', 'pull', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('89f423d0-315f-4d93-b346-dcb468a97045', 'Zottman Curl', '2024-08-27 20:17:28.409294',
-        '2024-08-27 20:17:28.409294', '',
-        'Select the desired weight from the rack and assume a shoulder width stance. Using a supinated grip, take a deep breath and curl the dumbbells towards your shoulders. Once the biceps are fully shortened, rotate the forearms to a pronated position (palms down) and slowly lower the weight back to the starting position. Repeat for the desired number of repetitions.',
-        'isolation', 'free', 'pull', 'intermediate');
-INSERT INTO public.exercise_examples
-VALUES ('194fa2ee-7f92-4982-903e-3db80293d773', 'Barbell Preacher Curl', '2024-08-27 20:20:16.517741',
-        '2024-08-27 20:20:16.517741', '',
-        'Load the desired weight on the barbell, and sit in an upright position with your chest flat against the preacher bench. Keep your upper arm pressed into the pad and use a supinated grip (palms facing up). Extend your arms until your biceps are fully lengthened. This is the starting position. Take a deep breath and curl the weight by bending at the elbows until the bar is at shoulder height. Squeeze the biceps at the top of the movement and slowly lower the bar back to the starting position. Repeat for the desired number of repetitions.',
-        'isolation', 'free', 'pull', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('16ba69dc-e99d-4a71-bbcb-0f3ce096a9d9', 'Machine Shoulder Press', '2024-08-29 20:17:41.629601',
-        '2024-08-29 20:17:41.629601', '',
-        'Assume a seated position in the machine with the handles set at roughly shoulder height. Grab the handles with a pronated or neutral grip. Inhale and press directly overhead. Slowly lower the handles back to the starting position. Repeat for the desired number of repetitions.',
-        'compound', 'fixed', 'push', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('f2fb31f0-7f6b-42b6-9a79-c22453ac6a63', 'Alternating Seated Dumbbell Curl', '2024-08-27 20:24:43.747305',
-        '2024-08-27 20:24:43.747305', '',
-        'Set up for the alternating seated dumbbell curl by grabbing a flat bench and placing a set of dumbbells at one end. Sit on the end of the bench with your feet out in front of you and your knees together. Pick up the dumbbells from the floor and let them hang by your sides with your palms facing up. Bend the arms slightly to take the tension into the biceps. This is the starting position for the exercise. With your back straight and your elbows tucked in at your sides, slowly curl the dumbbell up with one arm. Squeeze the bicep hard, then slowly lower the weight back to the starting position. Repeat for the other arm, and then repeat for desired reps.',
-        'isolation', 'free', 'pull', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('5e3c933f-7511-463e-88b1-a139c8276e69', 'Cross Body Hammer Curl (Pinwheel Curls)', '2024-08-27 20:27:54.259424',
-        '2024-08-27 20:27:54.259424', '',
-        'Set up for the cross body hammer curl by grasping a pair of dumbbells and holding them at your sides. You should be using a neutral grip (palms facing the body) and have a slight bend in your arms. This is the starting position for the exercise. Beginning with one arm, slowly curl the dumbbell up across the front of your body. Squeeze the bicep at the top of the movement, and then slowly lower the weight back to the starting position. Repeat this movement for your other arm. This is one rep. Now repeat to complete your set.',
-        'isolation', 'free', 'pull', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('e7f390fd-7435-44e1-b354-c62073934c66', 'Alternating Standing Dumbbell Curl', '2024-08-27 20:29:12.662559',
-        '2024-08-27 20:29:12.662559', '',
-        'The standing dumbbell curl is a good way to correct any strength and size imbalances in the biceps as it works each muscle individually. Set up for the exercise by grasping a set of dumbbells and standing straight up with the dumbbells by your side. Your palms should be facing up, and the dumbbells should not touch your body. Before starting the set, take up the slack by lifting the weight slightly so the tension is on your bicep muscles. Starting with your weakest arm (usually the left), curl the dumbbell up as far as possible. Squeeze the bicep at the top of the exercise, and then slowly lower the weight down without it touching your body or taking the tension off your bicep. Repeat for the other arm. That''s one rep. Now repeat for the desired amount of reps to complete the set.',
-        'isolation', 'free', 'pull', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('7e0566c6-eefb-4992-a673-d19902933c26', 'Cable Curl (Rope Extension)', '2024-08-28 20:36:41.142025',
-        '2024-08-28 20:36:41.142025', '',
-        'Set up for this type of cable curl by attaching a rope extension to the low pulley cable and selecting the weight you want to use on the stack. Stand facing the cable machine with your legs shoulder-width apart. Grasp the rope extension with a neutral grip (thumbs facing the body). With your elbows tucked in by your sides, slowly curl the rope up as far as possible. Squeeze the biceps at the top of the movement, and then slowly lower the weight back to the starting position. This is one rep. Repeat for desired reps.',
-        'isolation', 'fixed', 'pull', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('7fd82f79-1f5f-4bae-8f2d-b94ecae595d5', 'Machine Bicep Curl', '2024-08-28 20:38:26.215597',
-        '2024-08-28 20:38:26.215597', '',
-        'Set up for the machine bicep curl by setting the seat height and selecting the weight you want to use on the stack. Adjust the seat height so your upper arms rest comfortably on the padding. Grasp the bar with an underhand grip around shoulder width apart. Bend the elbows slightly to take the weight up and place tension on the biceps. Slowly curl the weight up as far as possible, squeezing the biceps at the top of the movement. Pause, and then slowly lower the weight. Repeat for desired reps.',
-        'isolation', 'fixed', 'pull', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('908341ec-de1f-44bd-b84d-74ff8a7162a0', 'Alternating Standing Dumbbell Curl', '2024-08-28 20:40:22.148816',
-        '2024-08-28 20:40:22.148816', '',
-        'Set up for the exercise by grasping a set of dumbbells and standing straight up with the dumbbells by your side. Your palms should be facing up, and the dumbbells should not touch your body. Before starting the set, take up the slack by lifting the weight slightly so the tension is on your bicep muscles. Starting with your weakest arm (usually the left), curl the dumbbell up as far as possible. Squeeze the bicep at the top of the exercise, and then slowly lower the weight down without it touching your body or taking the tension off your bicep. Repeat for the other arm. That''s one rep. Now repeat for the desired amount of reps to complete the set.',
-        'isolation', 'free', 'pull', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('a2736a56-04b3-4437-835e-1e2dc8029c9e', 'Spider Curl', '2024-08-28 20:42:25.582502',
-        '2024-08-28 20:42:25.582502', '',
-        'To set up for the spider curl you need to either turn the arm padding around 180 degrees or position yourself at the front of the bench facing the seat. Grab an EZ Bar and hold it with an underhand grip around shoulder width apart. Position yourself with your stomach on the padding and arms hanging off the high side. Keep your eyes facing forward and slowly curl the weight up as far as possible. Squeeze the biceps, pause, and then slowly lower the weight back to the bottom. Repeat for desired reps.',
-        'isolation', 'free', 'pull', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('da809d98-950b-4ca0-a71b-c67d21fd66da', 'Seated Dumbbell Curl', '2024-08-28 20:44:17.593336',
-        '2024-08-28 20:44:17.593336', '',
-        'Set up for the seated dumbbell curl by grabbing a flat bench and placing a set of dumbbells at one end. Sit on the end of the bench with your feet out in front of you and your knees together. Pick the dumbbells up off the floor and let them hang by your sides with your palms facing up. Bend the arms slightly to take up the tension in the biceps. This is the starting position for the exercise. With your back straight and your elbows tucked in at your sides, slowly curl both dumbbells up as far as possible. Squeeze the biceps hard, and then slowly lower the weight back to the starting position. Repeat for desired reps.',
-        'isolation', 'free', 'pull', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('4de0744d-0a78-4052-aa1b-e5340959d9fe', 'Standing Dumbbell Reverse Curl', '2024-08-28 20:45:27.508894',
-        '2024-08-28 20:45:27.508894', '',
-        'Select the desired weight from the rack and assume a shoulder width stance. Using a pronated (palms down) grip, take a deep breath and curl the dumbbells towards your shoulders. Once the biceps are fully shortened, slowly lower the weight back to the starting position. Repeat for the desired number of repetitions.',
-        'isolation', 'free', 'pull', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('d7abed66-3c4a-490b-91cc-8e714336f9fa', 'Dumbbell Preacher Curl', '2024-08-28 20:47:16.396698',
-        '2024-08-28 20:47:16.396698', '',
-        'Select the desired weight from the rack, and sit in an upright position with your chest flat against the preacher bench. Keep your upper arm pressed into the pad and use a supinated (palms facing up) grip. Take a deep breath and slowly lower the dumbbell away from your shoulder. Once the bicep is fully lengthened, curl the weight back to the starting position. Repeat for the desired number of repetitions on both sides.',
-        'isolation', 'free', 'pull', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('cfd086be-f452-4f1d-b0cc-3988d677a8b4', 'Dumbbell Hammer Preacher Curl', '2024-08-28 20:48:17.207982',
-        '2024-08-28 20:48:17.207982', '',
-        'Select the desired weight from the rack, and sit in an upright position with your chest flat against the preacher bench. Keep your upper arm pressed into the pad and use a neutral (palms facing up) grip. Take a deep breath and slowly lower the dumbbell away from your shoulder. Once the bicep is fully lengthened, curl the weight back to the starting position. Repeat for the desired number of repetitions on both sides.',
-        'isolation', 'free', 'pull', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('8508cffc-1df6-4db2-9447-3bafd74a1325', 'Seated Hammer Curl', '2024-08-28 20:50:28.789635',
-        '2024-08-28 20:50:28.789635', '',
-        'Set up for the seated hammer curl by grabbing a flat bench and placing a set of dumbbells at one end. Sit on the end of the bench with your feet out in front of you and your knees together. Pick the dumbbells up off the floor and let them hang by your sides with a neutral grip. Bend the arms slightly to keep tension on the biceps. This is the starting position for the exercise. With your back straight and your elbows tucked in at your sides, slowly curl up the dumbbells up as far as possible. Squeeze the biceps and slowly lower the dumbbells back to the starting position. Repeat for desired reps.',
-        'isolation', 'free', 'pull', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('4f1c3655-21e7-4225-a39e-944774f59f76', 'Wide Grip Standing Barbell Curl', '2024-08-28 20:51:35.44937',
-        '2024-08-28 20:51:35.44937', '',
-        'Grasp a barbell with your hands at a wider than shoulder width, using an underhand grip (palms facing up). Your feet should be firmly on the floor, about shoulder width apart. If you prefer, you can place one foot back. This is the starting position. Keeping your body fixed (do not swing!), slowly curl the weight up as far as possible. Squeeze the biceps, and then slowly lower the weight back to the starting position. Repeat for desired reps.',
-        'isolation', 'free', 'pull', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('6d5dc164-3c35-4719-85f1-5c75558f0125', 'Wide Grip Cable Curl', '2024-08-28 20:53:42.332689',
-        '2024-08-28 20:53:42.332689', '',
-        'Set up for this type of cable curl by attaching a straight bar to the low pulley cable and selecting the weight you want to use on the stack. Stand facing the cable machine with your legs shoulder-width apart. Grasp the rope extension with a neutral grip (thumbs facing the body), and hands wider than shoulder width apart. With your elbows tucked in by your sides, slowly curl the rope up as far as possible. Squeeze the biceps at the top of the movement, and then slowly lower the weight back to the starting position. This is one rep. Repeat for desired reps.',
-        'isolation', 'fixed', 'pull', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('cebf4622-c0a9-4759-a070-48c7556da67d', 'Squatting Cable Curl', '2024-08-28 20:55:59.966001',
-        '2024-08-28 20:55:59.966001', '',
-        'The squatting cable curl is a great exercise that allows you to isolate the biceps. Set up for the exercise by attaching a straight bar to the low pulley cable and selecting the weight you want to use on the stack. Stand facing the cable machine and grasp the bar using an underhand grip (palms facing up) with your hands around shoulder width apart. Squat down and rest the back of your arms (just behind the elbows) on your knees. Your knees will act as padding to isolate the biceps. Slowly curl the bar up towards your body as far as possible. Squeeze the biceps, and then slowly lower the weight back to the starting position. Repeat for desired reps.',
-        'isolation', 'fixed', 'pull', 'intermediate');
-INSERT INTO public.exercise_examples
-VALUES ('4d72c2f1-2c10-45a3-9f5e-1f04012c0681', 'Alternating Incline Dumbbell Curl', '2024-08-28 20:59:16.602427',
-        '2024-08-28 20:59:16.602427', '',
-        'Set up for the alternating incline dumbbell curl by setting the bench at a 30-45 degree incline and sitting a pair of dumbbells at the end. The lower the incline, the more challenging the exercise will be so 30 degrees is preferred. Sit on the bench, pick up the dumbbells, and lay back with your back flat on the padding. You should be holding the dumbbells with an underhand grip, palms facing up. Take up the slack in your arms by slightly bending them. This will put tension on the biceps. This is the starting position for the exercise. Keeping your elbows fixed, slowly curl up the dumbbell in your weakest arm. Squeeze the bicep at the top of the movement, then slowly lower back to the starting position. Repeat for your other arm, and then repeat for desired reps.',
-        'isolation', 'free', 'pull', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('af39600b-6fc5-435a-a5f8-a1d0a9994030', 'Incline Bench Dumbbell Curl', '2024-08-28 21:00:57.784199',
-        '2024-08-28 21:00:57.784199', '',
-        'The incline bench dumbbell curl is a good exercise to isolate the bicep muscle. Set an adjustable bench to an angle of around 45 degrees. Grab a dumbbell and position yourself at the highest end of the bench. Rest the back of your upper arm on the bench padding and allow your arm to fully extend until the dumbbell is almost touching the bench. You should be holding the dumbbell using an underhand grip, palm facing up. Use your other arm for support by holding the bench. Contract your bicep and slowly curl it up as far as possible. Squeeze the muscle, and then slowly lower back to the starting position. Repeat for desired reps, and then repeat for the other arm.',
-        'isolation', 'free', 'pull', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('101f365e-5c84-438a-84b4-c8e798bd0aff', 'Incline Bench Hammer Curl', '2024-08-28 21:02:48.198286',
-        '2024-08-28 21:02:48.198286', '',
-        'The incline bench dumbbell hammer curl is a good exercise to isolate the bicep muscle while also hitting the forearms. Set an adjustable bench to an angle of around 45 degrees. Grab a dumbbell and position yourself at the highest end of the bench. Rest the back of your upper arm on the bench padding and allow your arm to fully extend until the dumbbell is almost touching the bench. You should be holding the dumbbell using a neutral grip, thumb facing towards you. Use your other arm for support by holding the bench. Tense your bicep and slowly curl it up as far as possible. Squeeze the muscle, and then slowly lower the weight back to the starting position. Repeat for desired reps, and then repeat for the other arm.',
-        'isolation', 'free', 'pull', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('1f28edb2-29ae-467c-ad11-310c3f656fe2', 'Alternating Seated Hammer Curl', '2024-08-28 21:04:44.306578',
-        '2024-08-28 21:04:44.306578', '',
-        'Set up for the alternating seated hammer curl by grabbing a flat bench and placing a set of dumbbells at one end. Sit on the end of the bench with your feet out in front of you and your knees together. Pick the dumbbells up off the floor and let them hang by your sides with a neutral grip. Bend the arms slightly to keep tension on the biceps. This is the starting position for the exercise. With your back straight and your elbows tucked in at your sides, slowly curl the dumbbell up with one arm. Squeeze the bicep hard, and then slowly lower the dumbbell back to the starting position. Repeat this for your other arm, and then repeat for desired reps.',
-        'isolation', 'free', 'pull', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('04a13a1c-de2b-46f4-be62-3fa6b4655d0d', 'Barbell Concentration Curl', '2024-08-28 21:07:18.63992',
-        '2024-08-28 21:07:18.63992', '',
-        'The barbell concentration curl is a great exercise for isolating the biceps. Grab a flat bench and sit the barbell you want to use at one end. Sit on the end of the bench with your feet slightly wider than shoulder width apart. Grasp the barbell with an underhand grip (palms facing up), with your hands about 6-8 inches apart. Lean forward until your upper arms are touching the inside of your thighs. Use your thighs to hold your arms in position throughout the exercise. Keeping your head up, eyes facing forward, slowly curl the barbell up as far as possible. Squeeze the biceps and then slowly lower the bar back to the starting position. Repeat for desired reps.',
-        'isolation', 'free', 'pull', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('a9545ccb-3ec7-4646-95c9-f3a708d0d968', 'Two-Arm Low Pulley Cable Curl', '2024-08-28 21:08:56.485198',
-        '2024-08-28 21:08:56.485198', '',
-        'For this exercise, you will need a cable machine with two low pulley extensions. Set up by attaching a single handle to each of the two low pulley cables and selecting the weight you want to use. Grab each handle with an underhand grip. Standing in the center of the two pulleys, take a step forward. Your arms should be fully extended and slightly behind your body. With your elbows fixed in position, slowly curl your arms up as far as possible. Squeeze the biceps at the top of the movement, and then slowly lower the weight back to the starting position. Repeat for desired reps.',
-        'isolation', 'fixed', 'pull', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('b99df7e8-eb44-4be1-be81-701347580781', 'Lying Incline Bench Barbell Curl', '2024-08-28 21:11:35.028903',
-        '2024-08-28 21:11:35.028903', '',
-        'Set an incline bench at a 30-degree angle (If you do not have access to an incline bench you can prop up a straight bench). Grab an EZ bar and place it at the end of the incline bench. Lay on the bench with your chest against the padding. Your chest should be at the end of the bench. Grasp the EZ bar with an underhand grip (palms facing up), with your hands about shoulder-width apart. Keeping your eyes up and bending at the elbows, slowly curl the bar up as far as possible. Squeeze the biceps at the top of the movement, and then slowly lower the weight back to the starting position. Repeat for desired reps.',
-        'isolation', 'free', 'pull', 'intermediate');
-INSERT INTO public.exercise_examples
-VALUES ('afd7f719-5789-48a0-a5d9-77e9cb1669bb', 'Standing Cable Reverse Fly', '2024-08-29 20:16:07.188606',
-        '2024-08-29 20:16:07.188606', '',
-        'Position two cables at chest height and attach a handle. Reach across your body and grab one handle with a neutral grip. Repeat for the opposite arm. Position the arms straight ahead holding onto each handle and keep a soft bend in the knees. Keep the elbows slightly bent and pull the handles laterally without squeezing the shoulder blades together excessively. Slowly lower the handles back to the starting position under control. Repeat for the desired number of repetitions.',
-        'isolation', 'fixed', 'pull', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('8d2a9df4-af32-4943-b74b-ae901e866b32', 'Close Grip EZ Bar Curl', '2024-08-28 21:12:39.501074',
-        '2024-08-28 21:12:39.501074', '',
-        'Using a close grip on the EZ Bar works the outer parts of the biceps more. Grasp an EZ Bar with an underhand grip (palms facing up). Your hands should be about 6-8 inches apart. Stand straight up, with your feet firmly on the floor at around shoulder width apart. You may find it more comfortable to take one foot back. Keeping your body completely still and eyes facing forward, slowly curl the bar up as far as possible. Squeeze your biceps at the top of the movement, and then slowly lower the weight back down. Repeat for desired reps.',
-        'isolation', 'free', 'pull', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('8ca7bf65-0ddb-4c64-ba64-f71f25c85d7c', 'Wide Grip EZ Bar Curl', '2024-08-28 21:13:34.072785',
-        '2024-08-28 21:13:34.072785', '',
-        'The wide-grip EZ Bar curl is a good exercise for training the inner part of the biceps. Grasp an EZ Bar with your hands at a wider than shoulder width using an underhand grip (palms facing up). Your feet should be firmly on the floor, about shoulder-width apart. If you prefer, you can place one foot back. This is the starting position. Keeping your body fixed (do not swing!), slowly curl the weight up as far as possible. Squeeze the biceps, and then slowly lower the weight back to the starting position. Repeat for desired reps.',
-        'isolation', 'free', 'pull', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('12221e5c-0208-48fc-8c56-62c266932f74', 'Dumbbell Lateral Raise', '2024-08-29 15:15:51.70192',
-        '2024-08-29 15:15:51.70192', '',
-        'Select the desired weight from the rack, then take a few steps back into an open area. Take a deep breath and raise the dumbbells to shoulder height using a neutral grip (palms facing in) while keeping the elbows slightly bent. Slowly lower the dumbbells back to the starting position under control. Repeat for the desired number of repetitions.',
-        'isolation', 'free', 'pull', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('1959abd3-4ab1-42d4-b7e2-45693b899d51', 'Military Press (AKA Overhead Press)', '2024-08-29 15:18:06.528089',
-        '2024-08-29 15:18:06.528089', '',
-        'Adjust the barbell to just below shoulder height then load the desired weight onto the bar. Assume a shoulder width stance and place your hands at (or just outside of) shoulder width with a pronated grip on the bar. Step underneath the bar and unrack it while keeping the spine in a neutral position. Take two steps back, inhale, brace, tuck the chin, then press the bar to lockout overhead. Exhale once the bar gets to lockout and reverse the movement slowly while controlling the bar back to your chest. Repeat for the desired number of repetitions.',
-        'compound', 'free', 'push', 'intermediate');
-INSERT INTO public.exercise_examples
-VALUES ('48191b99-06fa-4218-b61b-c9b9abd73278', 'Seated Dumbbell Press', '2024-08-29 15:20:32.329274',
-        '2024-08-29 15:20:32.329274', '',
-        'Set up an adjustable angle bench to 90 degrees and select the desired weight from the rack. Pick up the dumbbells from the floor using a neutral grip (palms facing in). Position the end of the dumbbells on your knees and sit down on the bench. Using a safe and controlled motion, kick your knees up one at a time in order to get each dumbbell into place. Once the dumbbells are in place, rotate your palms so they are facing forward. Take a deep breath then press the dumbbells overhead by extending the elbows and contracting the deltoids. Slowly lower the dumbbells back to the starting position (the arms should be roughly 90 degrees or slightly lower depending upon limb lengths). Repeat for the desired number of repetitions.',
-        'compound', 'free', 'push', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('92d77415-1f9a-430b-ba52-0a09ec07b3a1', 'Standing Dumbbell Shoulder Press', '2024-08-29 15:21:42.152136',
-        '2024-08-29 15:21:42.152136', '',
-        'Set up for the exercise by grabbing a pair of dumbbells and standing up with your feet around shoulder width apart. Raise the dumbbells to shoulder height on each side, and rotate your palms so they are facing forward. This is the starting position for the exercise. Take a deep breath then press the dumbbells overhead by extending the elbows and contracting the deltoids. Slowly lower the dumbbells back to the starting position (the arms should be roughly 90 degrees or slightly lower depending upon limb lengths). Repeat for the desired number of repetitions.',
-        'compound', 'free', 'push', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('816440ad-f8f2-4ef7-a11f-b6a2bd63fcef', 'Bent Over Dumbbell Reverse Fly', '2024-08-29 15:23:10.33151',
-        '2024-08-29 15:23:10.33151', '',
-        'Select the desired weight from the rack then take a few steps back into an open area. Hinge from the hips until your body is almost parallel to the floor and allow the arms to hang straight down from the shoulders with a neutral grip. Take a deep breath and pull the dumbbells towards the ceiling using the rear deltoids. Slowly lower the dumbbells back to the starting position under control. Repeat for the desired number of repetitions.',
-        'isolation', 'free', 'pull', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('506d1cc7-529a-42af-b5bf-4c4d0a9aa409', 'Smith Machine Shoulder Press', '2024-08-29 15:24:22.323538',
-        '2024-08-29 15:24:22.323538', '',
-        'Place an adjustable bench in the Smith machine and adjust the back to a 90-degree angle. Adjust the bar to around eye level and load the desired weight on the bar. Position your hands around shoulder-width apart and unrack the bar using a pronated grip. This is the starting position for the movement. Press the bar overhead by extending the elbows and contracting the deltoids. Slowly lower the bar back to the starting position (the arms should be roughly 90 degrees or slightly lower depending on limb lengths). Repeat for the desired number of repetitions.',
-        'compound', 'fixed', 'push', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('9ab8fe00-58de-48c4-942d-b10e8d16f1c1', 'Seated Arnold Press', '2024-08-29 15:26:45.175874',
-        '2024-08-29 15:26:45.175874', '',
-        'Set up an adjustable angle bench to 90 degrees and select the desired weight from the rack. Pick up the dumbbells from the floor using a neutral grip (palms facing in). Position the end of the dumbbells on your knees and sit down on the bench. Using a safe and controlled motion, kick your knees up one at a time in order to get each dumbbell into place. Once the dumbbells are in place, rotate your palms so they are facing you. Take a deep breath then press the dumbbells overhead by extending the elbows and contracting the deltoids. As you press, rotate the dumbbells until your palms are facing forward. Slowly lower the dumbbells back to the starting position (the arms should be roughly 90 degrees or slightly lower depending upon limb lengths). Repeat for the desired number of repetitions.',
-        'compound', 'free', 'push', 'intermediate');
-INSERT INTO public.exercise_examples
-VALUES ('3d6e76b5-b409-4f5b-bba4-c22cb10cfbd4', 'Seated Bent Over Dumbbell Reverse Fly', '2024-08-29 15:28:20.973087',
-        '2024-08-29 15:28:20.973087', '',
-        'Secure a flat bench and select the desired weight from the rack. Sit in an upright position and then hinge forward from the hips. Allow the arms to hang straight down from the shoulders with a neutral grip and dumbbells behind your calves. Take a deep breath and pull the dumbbells towards the ceiling using the rear deltoids. Slowly lower the dumbbells back to the starting position under control. Repeat for the desired number of repetitions.',
-        'isolation', 'free', 'pull', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('77aa5752-a586-4dfe-b69d-4da16fff0b79', 'Seated Dumbbell Lateral Raise', '2024-08-29 15:30:57.598844',
-        '2024-08-29 15:30:57.598844', '',
-        'Grab a pair of dumbbells with a neutral grip and sit on the edge of a flat bench with your feet around shoulder width apart. This is the starting position for the exercise. Slowly raise the dumbbells to around shoulder height. Pause and slowly lower the dumbbell back to the starting position. Repeat for desired reps.',
-        'isolation', 'free', 'pull', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('4035dfef-3cc6-4a15-a97f-c167bd274d02', 'Seated Barbell Shoulder Press', '2024-08-29 15:34:32.562958',
-        '2024-08-29 15:34:32.562958', '',
-        'Adjust the barbell to just below shoulder height while standing then load the desired weight onto the bar. Place an adjustable bench beneath the bar in an upright position. Sit down on the bench and unrack the bar using a pronated grip. Inhale, brace, tuck the chin, then lower the bar to the top of your chest. Exhale and press the bar back to lockout. Repeat for the desired number of repetitions.',
-        'compound', 'free', 'push', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('aada0f37-1f30-4d61-a284-8003027bc871', 'Cable Face Pull', '2024-08-29 20:14:43.135772',
-        '2024-08-29 20:14:43.135772', '',
-        'Assume a split stance with the arms straight out in front of you utilizing a pronated grip. Inhale and pull the rope towards your face with the elbows high. Slowly lower the rope back to the starting position and repeat for the desired number of repetitions on both sides.',
-        'compound', 'fixed', 'pull', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('3a70ce9c-b1f0-43a7-8775-7d3e7c109c5d', 'Machine Reverse Fly', '2024-08-29 20:18:52.12644',
-        '2024-08-29 20:18:52.12644', '',
-        'Face the fly machine while seated with your chest against the pad and the handles positioned in front of your torso. Reach forward and grasp each handle with a pronated or neutral grip. Contract the rear delts while keeping the elbows bent and open the arms in a reverse fly motion. Slowly lower the handles back to the starting position and repeat for the desired number of repetitions.',
-        'isolation', 'fixed', 'pull', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('4353173b-93b2-4fb1-b462-fc8330b15ce5', 'Cable Lateral Raise', '2024-08-29 20:20:58.523546',
-        '2024-08-29 20:20:58.523546', '',
-        'Set the pulleys of a dual cable machine to the low setting and select the weight you wish to use. Stand facing away from the machine and grasp opposite handles with opposite hands. Stand straight up with your arms in front of you (crossed over). The weight should be slightly off the stack. This is the starting position for the movement. Keeping your elbows high, extend your arms out in a semi-circle motion. Once your hands get to around shoulder height, pause and slowly lower the weight back to the starting position. Repeat for desired reps.',
-        'isolation', 'fixed', 'pull', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('1b8fe6fc-9ede-4f28-b4a0-30504db61fed', 'Single Arm Cable Lateral Raise (Crossbody)',
-        '2024-08-29 20:26:45.591795', '2024-08-29 20:26:45.591795', '',
-        'Position a cable at the lowest position possible and attach a single handle. Reach across your body and grab the handle with a neutral grip. Keep the elbow slightly bent and pull the handle across your body and raise laterally. Slowly lower the handle back to the starting position under control. Repeat for the desired number of repetitions.',
-        'isolation', 'fixed', 'pull', 'intermediate');
-INSERT INTO public.exercise_examples
-VALUES ('90b8d661-a9ef-47e5-8c98-b0599874a972', 'Seated Behind the Neck Shoulder Press', '2024-08-29 20:28:36.062554',
-        '2024-08-29 20:28:36.062554', '',
-        'Adjust the barbell to just below shoulder height while standing then load the desired weight onto the bar. Place an adjustable bench beneath the bar in an upright position. Sit down on the bench and unrack the bar using a pronated grip. Inhale, brace, tuck the chin, then lower the bar to the back of your neck. Exhale and press the bar back to lockout. Repeat for the desired number of repetitions.',
-        'compound', 'fixed', 'push', 'intermediate');
-INSERT INTO public.exercise_examples
-VALUES ('ac45c513-55f3-437f-a10f-ba3c0763a746', 'Standing Dumbbell Front Raise', '2024-08-29 20:31:23.01677',
-        '2024-08-29 20:31:23.01677', '',
-        'Choose a pair of dumbbells with a pronated grip and assume a shoulder-width stance. Inhale, brace your abs and raise your arms vertically while keeping a slight bend in your elbow. Once your arms are parallel with the floor, slowly lower the dumbbells back to the starting position. Repeat for the desired number of repetitions.',
-        'isolation', 'free', 'pull', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('3a41edcb-2c19-4d06-9585-8fe745aba723', 'Machine Lateral Raise', '2024-08-29 20:34:53.7379',
-        '2024-08-29 20:34:53.7379', '',
-        'Begin by selecting the weight you wish to use on the stack of a lateral raise machine. Adjust the seat height and sit facing the machine with your feet flat on the floor around shoulder width apart. Secure your arms in the padding and grip the handles. Look straight ahead. You are now ready to begin the exercise. With a bend in the elbows and moving only at the shoulders, begin pushing the weight up until your forearms are just above parallel. Contract your shoulders at the height of the movement and begin slowly lowering the weight using the same semicircle motion you used raise it. Repeat this movement for desired reps.',
-        'isolation', 'fixed', 'push', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('b8fa1238-0f58-4daa-ade8-0f8c6fa2d1b1', 'Bent Over Rear Delt Fly (Head on Bench)', '2024-08-29 20:37:21.051883',
-        '2024-08-29 20:37:21.051883', '',
-        'Position an incline bench at roughly 70-80 degrees and select the desired weight from the rack. Hinge from the hips until your head is resting comfortably on the incline bench and allow the arms to hang straight down from the shoulders with a neutral grip. Take a deep breath and pull the dumbbells towards the ceiling using the rear deltoids. Slowly lower the dumbbells back to the starting position under control. Repeat for the desired number of repetitions.',
-        'isolation', 'free', 'pull', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('ed5db0ac-4343-4e68-a884-d5f84e4020c1', 'Bent Over Low Pulley Rear Delt Fly', '2024-08-29 20:46:11.377576',
-        '2024-08-29 20:46:11.377576', '',
-        'Position two cables at the bottom of the cable pulley machine and attach a handle. Hinge forward, reach across your body, and grab the handle with a neutral grip. Repeat for the opposite arm. Allow the arms to hang straight down and keep a soft bend in the knees. Keep the elbows slightly bent and pull the handles laterally without squeezing the shoulder blades together excessively. Slowly lower the handle back to the starting position under control. Repeat for the desired number of repetitions.',
-        'isolation', 'fixed', 'pull', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('d20646b6-efd1-49fc-8ffa-180461aea5ab', 'Smith Machine Upright Row', '2024-08-29 20:48:13.145019',
-        '2024-08-29 20:48:13.145019', '',
-        'Select the desired weight and load it onto a barbell. Unrack the bar by rotating the safety latches off the j-hooks. Inhale, brace your abs, and then lead the movement by driving the elbows high as you pull the bar to chest height. When the bar has reached its peak, reverse the movement slowly while controlling the bar back to the starting position. Repeat for the desired number of repetitions.',
-        'compound', 'fixed', 'pull', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('1f8abb63-8024-46ca-ac1e-2574a839eed6', 'Push Press', '2024-08-29 20:49:40.170706',
-        '2024-08-29 20:49:40.170706', '',
-        'Adjust the barbell to just below shoulder height then load the desired weight onto the bar. Assume a shoulder width stance and place your hands at (or just outside of) shoulder width with a pronated grip on the bar. Step underneath the bar and unrack it while keeping the spine in a neutral position. Take two steps back, inhale, brace, and tuck the chin to prepare to go overhead. Dip slightly at the knees and hips, then press the bar to lockout overhead by extending your legs and arms simultaneously. Exhale once the bar gets to lockout and reverse the movement slowly while controlling the bar back to your chest. Repeat for the desired number of repetitions.',
-        'compound', 'free', 'push', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('b22e5ada-86c1-4104-828b-b7e06a7f5d16', 'Seated Neutral Grip Dumbbell Shoulder Press',
-        '2024-08-29 20:52:10.197207', '2024-08-29 20:52:10.197207', '',
-        'Set up an adjustable angle bench to 90 degrees and select the desired weight from the rack. Pick up the dumbbells from the floor using a neutral grip (palms facing in). Position the end of the dumbbells on your knees and sit down on the bench. Using a safe and controlled motion, kick your knees up one at a time in order to get each dumbbell into place. Take a deep breath then press the dumbbells overhead by extending the elbows and contracting the deltoids. Slowly lower the dumbbells back to the starting position (the arms should be roughly 90 degrees or slightly lower depending upon limb lengths). Maintain a neutral grip throughout the duration of the exercise and repeat for the desired number of repetitions.',
-        'compound', 'free', 'push', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('7a933584-128c-4b82-8e5b-5e7312cadfdf', 'One-Arm Cable Front Raise', '2024-08-29 20:55:27.345366',
-        '2024-08-29 20:55:27.345366', '',
-        'Set up for the exercise by attaching a single grip handle to a low pulley cable machine and selecting the weight you want to use. Stand facing away from the machine and grip the handle with one hand using an overhand grip (palm facing down). Stand up and hold the handle just off your thighs pulling weight off the stack. This is the starting position. To execute, slowly raise the handle to around shoulder height while keeping your arm straight and your body fixed. Pause, and then slowly lower the weight to the starting position. Do not allow the stack to drop or the handle to touch your body. Repeat for desired reps and then repeat using your right arm.',
-        'isolation', 'fixed', 'pull', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('984e5dac-f3a8-4980-bfc9-da370cf45e46', 'Incline Rear Delt Fly', '2024-08-29 20:58:25.061062',
-        '2024-08-29 20:58:25.061062', '',
-        'Set up for the exercise by setting an adjustable back bench to an angle of around 30-40 degrees. Grab a set of dumbbells and position yourself with your chest on the back of the bench (prone position). Plant your feet on the floor for stability and hold the dumbbells with a neutral grip. Take a deep breath and pull the dumbbells towards the ceiling using the rear deltoids. Slowly lower the dumbbells back to the starting position under control. Repeat for the desired number of repetitions.',
-        'isolation', 'free', 'pull', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('ff188494-a871-4721-9d1e-26742539080c', 'Cable Front Raise (Bilateral)', '2024-08-29 21:01:10.936876',
-        '2024-08-29 21:01:10.936876', '',
-        'Assume a shoulder width stance with the cable running between your legs and grasp the handle with both hands using a pronated grip. Inhale, brace your abs, and raise the arms vertically while keeping the elbows slightly bent. Once the arms are parallel with the floor, slowly lower the handle back to the starting position. Repeat for the desired number of repetitions.',
-        'compound', 'fixed', 'pull', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('68381c41-b015-4218-93cb-2bcb64bee255', 'One-Arm Standing Dumbbell Front Raise', '2024-08-29 21:09:08.306005',
-        '2024-08-29 21:09:08.306005', '', 'Grab a dumbbell with a pronated grip and assume a shoulder-width stance. This is the starting position.
-Inhale, brace your core and raise your arm vertically while keeping a slight bend in your elbow.
-Moving only at the shoulder, continue raising the dumbbell until your arm is just above parallel to the floor.
-Pause for a brief moment at the top of the movement, and slowly lower the dumbbell back to the starting position.
-Repeat for desired reps, and then repeat the movement with your other arm.', 'isolation', 'free', 'pull', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('1fdffa53-d9cb-4aa1-9999-5c83fdb9be80', 'Hip Abduction Machine', '2024-08-31 21:55:50.613451',
-        '2024-08-31 21:55:50.613451', '',
-        'Setup in an upright position with your back against the pad and your spine neutral. Exhale and push the legs apart as you open the pads. Once your hips are fully externally rotated, slowly return to the starting position. Repeat for the desired number of repetitions.',
-        'isolation', 'fixed', 'push', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('a8f9abc7-4515-4f5e-a4f5-095b1b17b9e1', 'Hip Adduction Machine', '2024-08-31 22:01:53.328901',
-        '2024-08-31 22:01:53.328901', '',
-        'Setup in an upright position with your back against the pad and your spine neutral. Exhale and pull the legs together as you squeeze the pads inward. Once the pads touch, slowly return to the starting position. Repeat for the desired number of repetitions.',
-        'isolation', 'fixed', 'push', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('e1361643-e92a-419b-8eb8-fe2a188016e0', 'Cable Crunch', '2024-09-01 09:37:56.256671',
-        '2024-09-01 09:37:56.256671', '', 'Attach the rope attachment to a high pulley cable and set the appropriate weight on the stack.
-Stand directly in front of the cable machine, facing away from it.
-Grasp the rope from behind your head with your palms facing inward and drop to your knees.
-Your buttocks should be resting on top of your feet. Keeping your elbows bent and hands at either head height or shoulder height, crunch down as far as possible.
-Pause, then slowly lower yourself back to the starting position.
-Cable Crunch Tips:
-This exercise works best when done slowly with perfect form.
-Your buttocks should stay touching your heels at all times.
-Focus on crunching the abs in, not pivoting at the hips.
-As you increase weight it may be more comfortable to rest the rope on your shoulders.
-Don''t choose a weight so heavy that your lower back handles most of the resistance.', 'isolation', 'fixed', 'pull',
-        'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('7e80becf-491c-4b48-a98a-a36fff26e29c', 'Dumbbell Side Bends', '2024-09-01 12:13:55.734978',
-        '2024-09-01 12:13:55.734978', '', 'This exercise works the obliques. Grasp a set of dumbbells. Stand straight up with one dumbbell in each hand, palms facing in.
-Keep your feet firmly on the floor with a shoulder width stance.
-Keeping your back straight and your eyes facing forwards, bend down to the right as far as you can, then back up again.
-Without pausing at the top, bend down to the left.
-Repeat for desired reps.
-Side Bend Tips:
-Always keep your back straight, eyes facing forwards, and bend at the torso only.
-Concentrate on the stretch and contraction of the oblique muscles (down the side of your body).
-Keep the dumbbells close to your body.
-This exercise can also be performed while seated on the end of a bench.', 'isolation', 'free', 'pull', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('6e4bc8b2-33ab-46da-9b79-9fff2266cd27', 'Seated Calf Raise', '2024-09-01 12:41:05.640161',
-        '2024-09-01 12:41:05.640161', '', 'Take a seat on the machine and place the balls of your feet on the platform with your toes pointed forward - your heels will naturally hang off. Position the base of your quads under the knee pad and allow your hands to rest on top. Extend your ankles and release the safety bar. Lower the heels by dorsiflexing the ankles until the calves are fully stretched. Extend the ankles and exhale as you flex the calves. Repeat for the assigned number of repetitions.
-
-Tips:
-- Keep the repetitions slow and controlled. Limit momentum and pause at the top to emphasize the contraction.
-- Limit the depth of the heels if you feel any sort of stretch through the bottom of the foot during the exercise.
-- Try to move through the ball of the foot rather than the base of the toes.', 'isolation', 'fixed', 'push',
-        'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('01dff88c-893b-4410-8d54-1e36013b9fdb', 'Seated Dumbbell Calf Raise', '2024-09-01 12:43:01.520267',
-        '2024-09-01 12:43:01.520267', '', 'Set up by placing a step or block at the end of a flat bench. Next, grasp a pair of dumbbells and sit on the end of the bench. Put the balls of your feet on the edge of the step/block and rest the ends of the dumbbells on your thighs close to your knees. Let your heels drop as far as possible without hitting the floor. Slowly raise your heels off the floor as far as possible. Squeeze the calves and pause, and then slowly lower your heels back to the starting position. Repeat for desired reps.
-
-Tips:
-- Don''t let your heels touch the floor at any time throughout the exercise.
-- Pause and squeeze the calves for a count of 1-2 at the top of the movement to add intensity.', 'isolation', 'fixed',
-        'push', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('d2f28afc-e84c-467c-90d9-c6c2cb63acbc', '45 Degree Leg Press Calf Raise', '2024-09-01 12:47:02.01513',
-        '2024-09-01 12:47:02.01513', '', 'Load the machine with the desired weight and take a seat.
-Sit down and position your feet on the sled with a shoulder width stance.
-Take a deep breath, extend your legs, but keep the safeties locked (if possible).
-Position your feet at the base of the platform and allow the heels to hang off.
-Lower the heels by dorsiflexing the ankles until the calves are fully stretched.
-Drive the weight back to the starting position by extending the ankles and flexing the calves.
-Repeat for the desired number of repetitions.
-SAFETY NOTE: Be extremely careful when re-positioning the feet at the base of the platform. If the safeties are not in place and you lose control of the platform, this could result in very serious injury.
-Keep the repetitions slow and controlled. Limit momentum and pause at the top to emphasize the contraction.
-If you experience any sort of pain or pressure in the back of the knee joint, keep a slight bend in the knee and avoid complete lockout.
-If the knee isn’t entirely locked out then ensure the position doesn’t change during the duration of the repetition.
-Limit depth of the heels if you feel any sort of stretch through the bottom of the foot during the exercise.
-Try to move through the ball of the foot rather than the base of the toes.', 'isolation', 'fixed', 'push', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('de4e9652-b068-4558-9fd3-38d45e5aa0d9', 'Toes In Seated Calf Raise', '2024-09-01 12:49:37.135904',
-        '2024-09-01 12:49:37.135904', '', 'Take a seat on the machine and place the balls of your feet on the platform with your toes pointed in - your heels will naturally hang off. Position the base of quads under the knee pad and allow your hands to rest on top.
-Extend your ankles and release the safety bar.
-Lower the heels by dorsiflexing the ankles until the calves are fully stretched.
-Extend the ankles and exhale as you flex the calves.
-Repeat for the assigned number of repetitions.
-Keep the repetitions slow and controlled. Limit momentum and pause at the top to emphasize the contraction.
-Limit depth of the heels if you feel any sort of stretch through the bottom of the foot during the exercise.
-Try to move through the ball of the foot rather than the base of the toes.', 'isolation', 'fixed', 'push', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('7227c8f6-cf65-4134-97de-d5e64cb5ff1b', 'Toes Out 45 Degree Calf Raise', '2024-09-01 12:51:11.813368',
-        '2024-09-01 12:51:11.813368', '', 'Load the desired weight on a 45-degree leg press and sit down on the seat.
-Place the balls of your feet on the bottom edge of the foot plate and twist your ankles so that your heels come together and your toes point out.
-Push the weight up and disengage the weight platform from the safety using the handles by your sides.
-Slowly allow your toes to come back as far as possible. This is the starting position for the exercise.
-Keeping your legs straight, slowly push your toes up as far as possible.
-Squeeze the calf muscles, and then slowly lower the weight back to the starting position.
-Repeat for desired reps.
-The reason you point your toes out for this exercise is to emphasize the inner calf. Whether this technique is effective for inner calf training is still being debated amongst lifters.
-Make sure the balls of your feet are right on the edge of the footplate. If you position them further in, the exercise becomes easier.
-Use a full range of motion by allowing your toes to come right back and then raising them as far as possible.
-Keep the rep timing slow and control the weight - don''t bounce!', 'isolation', 'fixed', 'push', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('46b1efa3-a4f8-4492-a81c-9e48c650dd3d', 'Toes In Smith Machine Calf Raise', '2024-09-01 12:52:29.675',
-        '2024-09-01 12:52:29.675', '', 'Set the bar on the smith machine to around shoulder height and rack up the weight you want to use.
-Grab a step, calf block, or weight plate and put it below the bar.
-Step up on the block and position the balls of your feet on the edge.
-Twist your feet so that your toes are pointing in at each other.
-Grasp the smith bar with a wide grip and position it across the top of your back muscles (not across the back of your neck).
-Push up to take the weight off the rack and slowly let your heels drop down as far as possible. This is the starting position.
-Slowly raise your heels as far as you can off the floor.
-Squeeze the calf muscles, and then slowly lower your heels back to the starting position.
-Repeat for desired reps.
-The idea behind pointing your toes in for the smith machine calf raise is to emphasize the outer part of the calf muscle. This theory is still debated amongst lifters.
-Don''t let your heels touch the floor throughout the set.
-The balls of your feet should be right on the edge of the block. Do not allow them to come forward as it makes the exercise less challenging.
-Use the maximum range of motion by allowing your heels to drop as far as possible and then raising them as high as possible.
-Focus on not allowing your knees to bend.', 'isolation', 'fixed', 'push', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('89ffca84-73f0-4a69-871f-9d9c96521a05', 'Toes Out Smith Machine Calf Raise', '2024-09-01 12:54:31.257041',
-        '2024-09-01 12:54:31.257041', '', 'Set the bar on the smith machine to around shoulder height and rack up the weight you want to use.
-Grab a step, calf block, or weight plate and put it below the bar.
-Step up on the block and position the balls of your feet on the edge.
-Twist your feet so that your toes are pointing away from each other. Your heels should be almost touching, in a ''V'' format.
-Grasp the smith bar with a wide grip and position it across the top of your back muscles (not across the back of your neck).
-Push up to take the weight off the rack and slowly let your heels drop down as far as possible. This is the starting position.
-Slowly raise your heels as far as you can off the floor.
-Squeeze the calf muscles, and then slowly lower your heels back to the starting position.
-Repeat for desired reps.
-The idea behind pointing your toes out for the smith machine calf raise is to emphasize the inner part of the calf muscle. This theory is still debated amongst lifters.
-Don''t let your heels touch the floor throughout the set.
-The balls of your feet should be right on the edge of the block. Do not allow them to come forward as it makes the exercise less challenging.
-Use the maximum range of motion by allowing your heels to drop as far as possible and then raising them as high as possible.
-Focus on not allowing your knees to bend.', 'isolation', 'fixed', 'push', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('f11c8751-e5ca-413e-b30d-2b387ec14733', 'Toes Out Seated Calf Raise', '2024-09-01 12:56:50.688111',
-        '2024-09-01 12:56:50.688111', '', 'Take a seat on the machine and place the balls of your feet on the platform with your toes pointed out - your heels will naturally hang off. Position the base of quads under the knee pad and allow your hands to rest on top.
-Extend your ankles and release the safety bar.
-Lower the heels by dorsiflexing the ankles until the calves are fully stretched.
-Extend the ankles and exhale as you flex the calves.
-Repeat for the assigned number of repetitions.
-Keep the repetitions slow and controlled. Limit momentum and pause at the top to emphasize the contraction.
-Limit depth of the heels if you feel any sort of stretch through the bottom of the foot during the exercise.
-Try to move through the ball of the foot rather than the base of the toes.', 'isolation', 'fixed', 'push', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('9e348a26-e5d0-4ee0-b3e6-fe58563ac698', 'Hack Squat Calf Raise', '2024-09-01 13:30:53.56497',
-        '2024-09-01 13:30:53.56497', '', 'Load the weight you want to use on a hack squat machine.
-Stand on the foot plate facing the machine with your chest on the back pad and shoulders under the shoulder pads.
-If you have a block available, put it on the foot plate and use it to stand on for extra range of motion.
-Push up and take the weight off the rack by releasing the safety.
-Keeping your legs straight, slowly raise your heels off the floor as far as possible.
-Pause, and then slowly lower back to the starting position without letting your heels fully rest on the foot plate.
-Squeeze the calf muscles and hold for a count of two at the top of the movement for added intensity.
-Don''t let your heels fully rest on the footplate at the bottom of the movement.
-Keep your back straight, and chest against the padding throughout the set.', 'isolation', 'fixed', 'push', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('548b3de6-0980-4795-ab86-763c20dbc325', 'Dumbbell Bench Press', '2024-09-02 14:01:43.604308',
-        '2024-09-02 14:01:43.604308', '',
-        'The dumbbell bench press is a variation of the barbell bench press and an exercise used to build the muscles of the chest. It is recommended after reaching a certain point of strength on the barbell bench press to avoid pec and shoulder injuries. The exercise requires maintaining shoulder stability throughout, making it a great test of strength and control.',
-        'compound', 'free', 'push', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('47f00a63-05df-4db7-b2c7-68000c72be9b', 'Incline Dumbbell Bench Press', '2024-09-02 14:03:25.447382',
-        '2024-09-02 14:03:25.447382', '',
-        'The incline dumbbell bench press is a variation of the incline bench press and an exercise used to build the muscles of the chest, with a focus on the upper chest. The shoulders and triceps are also engaged, making it a great compound movement for upper body strength. The use of dumbbells ensures balanced strength and can help prevent injuries.',
-        'compound', 'free', 'push', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('c0a055b2-daf6-4ecc-b97b-cfedfce6a42a', 'Dumbbell Pullover', '2024-09-02 14:05:57.412015',
-        '2024-09-02 14:05:57.412015', '',
-        'The dumbbell pullover is a compound exercise that primarily targets the chest, with significant involvement of the lats, shoulders, and triceps. This movement helps build upper body strength and can be incorporated into chest, upper body, and full-body workouts. Maintaining proper form is crucial to maximize benefits and avoid injury.',
-        'compound', 'free', 'push', 'intermediate');
-INSERT INTO public.exercise_examples
-VALUES ('2bc37dec-7b06-404c-af63-99bf3f60fb68', 'Dumbbell Pullover', '2024-09-02 14:06:48.380733',
-        '2024-09-02 14:06:48.380733', '',
-        'The dumbbell pullover is a compound exercise that primarily targets the chest, with significant involvement of the lats, shoulders, and triceps. This movement helps build upper body strength and can be incorporated into chest, upper body, and full-body workouts. Maintaining proper form is crucial to maximize benefits and avoid injury.',
-        'compound', 'free', 'push', 'intermediate');
-INSERT INTO public.exercise_examples
-VALUES ('3488eaaa-a999-43c5-acd6-b177b8a3df8a', 'Dumbbell Flys', '2024-09-02 14:08:08.34696',
-        '2024-09-02 14:08:08.34696', '',
-        'The dumbbell fly is a classic bodybuilding movement designed to isolate the chest muscles, promoting growth and strength. This exercise is ideal for aesthetic-focused chest workouts, often used to build a stronger bench press. Maintaining proper form is key to effectively targeting the chest and avoiding unnecessary strain on the shoulders.',
-        'isolation', 'free', 'push', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('b2e39ab6-118d-46bd-ad8c-8acf9864af6c', 'Barbell Bench Press', '2024-09-02 14:57:19.319304',
-        '2024-09-02 14:57:19.319304', '',
-        'The barbell bench press is a fundamental compound exercise that primarily targets the chest, with significant involvement of the shoulders and triceps. As a key lift in powerlifting, bodybuilding, and athletic training, it is essential for upper body strength development. Proper technique is crucial to maximize effectiveness and prevent injury.',
-        'compound', 'free', 'push', 'intermediate');
-INSERT INTO public.exercise_examples
-VALUES ('885918a3-5c64-4f15-982e-1b9a91cb3743', 'Incline Bench Press', '2024-09-02 14:58:44.028336',
-        '2024-09-02 14:58:44.028336', '',
-        'The incline bench press is a variation of the bench press designed to target the upper chest, with additional engagement of the shoulders and triceps. This compound exercise is essential for building upper body strength and is commonly included in chest, upper body, and full-body workouts.',
-        'compound', 'free', 'push', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('21370a0a-b01b-4e32-8f43-8648a54cd35c', 'Pec Dec (Butterfly)', '2024-09-02 15:01:10.954626',
-        '2024-09-02 15:01:10.954626', '',
-        'The Pec Dec (Butterfly) machine is an excellent tool for isolating the chest muscles, making it ideal for beginners and those looking to focus on chest development. The exercise primarily targets the pectoralis muscles while also engaging the shoulders. Proper form is essential to maximize the benefits of this isolation movement.',
-        'isolation', 'fixed', 'push', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('e1511aa4-1d34-4984-aa54-88f88029a96e', 'Cable Crossovers (Mid Chest)', '2024-09-02 15:03:16.600447',
-        '2024-09-02 15:03:16.600447', '',
-        'Cable crossovers (mid chest) are a variation of the chest fly that target the chest, shoulders, and triceps. This isolation exercise is ideal for those looking to increase chest muscle mass and can be included in chest, push, upper body, or full-body workouts.',
-        'isolation', 'fixed', 'push', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('fff561d6-3738-4360-a110-f93dcb3c8c10', 'Hammer Strength Bench Press', '2024-09-02 15:21:42.987341',
-        '2024-09-02 15:21:42.987341', '',
-        'The Hammer Strength Bench Press is a machine-based variation of the traditional bench press that targets the chest, shoulders, and triceps. The fixed movement pattern allows for greater isolation of the chest muscles, making it an ideal exercise for hypertrophy-focused workouts. It''s best used towards the end of your chest workout after more compound variations.',
-        'compound', 'fixed', 'push', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('db9ff44c-2e27-42df-8f6a-1b64429999e1', 'Chest Dip', '2024-09-02 15:26:06.627831', '2024-09-02 15:26:06.627831',
-        '',
-        'The chest dip is a powerful exercise for targeting the lower region of the chest, with additional engagement of the triceps, shoulders, and abs. This compound movement is particularly effective for building chest strength and size, providing a unique vertical pressing pattern. It''s best mastered with bodyweight before progressing to weighted variations.',
-        'compound', 'body_weight', 'push', 'intermediate');
-INSERT INTO public.exercise_examples
-VALUES ('4d3a89ab-70ae-4311-8b40-a058b2f3057b', 'Seated Dumbbell Tricep Extension', '2024-08-23 14:41:48.900488',
-        '2024-08-23 14:41:48.900488',
-        'https://www.dmoose.com/cdn/shop/articles/1_f16231a6-e9e2-4ff0-b3f1-b1ccdfbac2dc.jpg?v=1658323250', 'Select the desired weight from the rack and position an adjustable bench at 90 degrees.
-To get into position, sit in an upright position and lift the dumbbell to the top of your shoulder. Take a deep breath, overlap your hands around the dumbbell, then press it into position overhead.
-Maintain an overlapping grip and slowly lower the dumbbell behind your head by unlocking your elbows.
-Once your forearms reach parallel or just below, drive the dumbbell back to the starting point by extending the elbows and flexing the triceps.
-Repeat for the desired number of repetitions.', 'isolation', 'free', 'push', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('c5901a9a-580c-411b-85bd-2ec738123e14', 'Hanging Knee Raise', '2024-09-01 12:26:49.231068',
-        '2024-09-01 12:26:49.231068', '', 'The hanging knee raise hits your lower abs. You can hang from literally anything to do this exercise, but the most popular method is hanging from a pull up bar.
-Grip the bar with hands around shoulder width apart. Increase the width if you''re tall and your feet touch the floor.
-Once you''re hanging with your feet slightly off the floor, slowly pull your knees up keeping your legs together.
-Pause for a second, and slowly lower your knees back to the starting position.
-Repeat for desired reps.
-Knee Raise Tips:
-You must do this exercise slowly. If you want to get the most benefit out of the hanging knee raise, slow it down.
-As you become more advanced, you can place a dumbbell between your feet.
-Avoid swinging your body, keeping your torso as still as possible.', 'compound', 'body_weight', 'pull', 'intermediate');
-INSERT INTO public.exercise_examples
-VALUES ('f2cf498f-d991-4b85-b08e-58c5f9ff563e', 'Hanging Leg Raise', '2024-09-01 12:11:44.128319',
-        '2024-09-01 12:11:44.128319', '', 'The hanging leg raise is an awesome exercise for building the lower abs. All you need for this exercise is somewhere to hang from. It could be a chinup bar or it could be a tree.
-Once you''re hanging, tense up the midsection. While keeping your legs straight, raise them up slowly. You should raise your legs as high as possible.
-Pause for a second, and slowly lower your legs back to the starting position.
-Repeat for desired reps.
-Leg Raise Tips:
-Speed is so important with the hanging leg raise. If you swing your legs, you''re using momentum and your abs will not benefit much from the exercise.
-Do not allow your body to swing. Keep your torso as still and controlled as possible.
-Advanced lifters can add weight by holding a dumbbell between the feet.', 'isolation', 'body_weight', 'pull',
-        'advanced');
-INSERT INTO public.exercise_examples
-VALUES ('2f49a8e8-6f42-422c-aa6f-c23e215620e2', 'Decline Sit-Up', '2024-09-01 12:14:59.677632',
-        '2024-09-01 12:14:59.677632', '', 'Set the decline bench to an angle of between 30 and 45 degrees (the more the angle, the harder the sit-ups will be).
-Sit on the bench with your legs resting through the pads.
-Cross your arms across your chest and lean back until your back almost touches the bench.
-Raise yourself back up until your upper body is vertical, then lower again.
-Sit Up Tips:
-Don''t go too far down or up. Your back should never touch the bench and you only need to pull up until your upper body is vertical.
-You can add a twist to work your obliques harder if you like.
-Hold a weight plate or dumbbell in your arms for added resistance and intensity.', 'isolation', 'body_weight', 'pull',
-        'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('f2868e11-6e1d-4ce4-a1a8-eb0384a60b71', 'Floor Crunch (Legs on Bench)', '2024-09-01 12:24:23.199368',
-        '2024-09-01 12:24:23.199368', '', 'Set up for the floor crunch by laying a mat down on the floor and positioning a flat bench at the end of the mat to form a T shape.
-Lay down on the mat and put your legs up on the bench. Your calves should be resting on the top of the bench and your legs should be bent at right angles.
-Touch the side of your head with your fingertips (do not put your arms behind your neck!).
-Lift your shoulder blades slightly off the mat to start the exercise, then crunch your abs bringing your elbows in towards your waist.
-Pause for 1 second at the top, and slowly lower back down to the start position.
-Crunch Tips:
-Keep your shoulder blades just off the mat for the entire set.
-Pause for longer at the top of the movement to add extra intensity.', 'isolation', 'body_weight', 'pull', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('38af9c0d-b19f-433d-bcda-0b974b5475cf', 'Twisting Hanging Knee Raise', '2024-09-01 12:25:43.155571',
-        '2024-09-01 12:25:43.155571', '', 'The twisting hanging knee raise hits the lower abs and obliques. You can hang off literally anything that will hold your weight for this exercise. Most people will hang from a pull up bar. Hang off the bar with a slightly wider than shoulder width grip.
-Once you''re hanging with your feet slightly off the floor, pull your knees up and across to the left side of your body.
-Pause, then slowly lower them back down.
-Now raise your knees up and across to the right side of your body.
-Lower back to start position. This is one rep.
-Repeat for desired reps.
-Exercise Tips:
-Hold at the top of the movement (with your knees up) to increase the intensity of the twisting knee raise.
-Advanced athletes can add weight by holding a dumbbell between the feet.', 'compound', 'body_weight', 'pull',
-        'intermediate');
-INSERT INTO public.exercise_examples
-VALUES ('ec09f8c7-04cf-4219-8033-3dd17ea5c1d9', 'Incline Dumbbell Flys', '2024-09-02 20:16:40.175747',
-        '2024-09-02 20:16:40.175747', '',
-        'Incline dumbbell flys are an isolation exercise used to target the upper chest. This exercise is ideal for lifters focusing on aesthetics and can be included in hypertrophy-focused chest or upper body workouts. The incline angle places extra emphasis on the upper portion of the chest, making it a valuable addition to any chest routine.',
-        'isolation', 'free', 'push', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('9be8d3a0-574b-40dc-a42c-06ab42af7e66', 'Close Grip Dumbbell Press (Crush Press)', '2024-09-02 20:18:44.729356',
-        '2024-09-02 20:18:44.729356', '',
-        'The Close Grip Dumbbell Press, also known as the Crush Press, is a variation of the dumbbell bench press that focuses on the chest and triceps. By pressing the dumbbells together throughout the movement, this exercise maximizes chest activation and increases tricep involvement, making it ideal for those looking to build a stronger chest and triceps.',
-        'compound', 'free', 'push', 'intermediate');
-INSERT INTO public.exercise_examples
-VALUES ('82890348-a566-4762-b9b4-f89e52534936', 'Cable Crossovers (Upper Chest)', '2024-09-02 20:20:26.742528',
-        '2024-09-02 20:20:26.742528', '',
-        'Cable Crossovers (Upper Chest) are an isolation exercise focused on targeting the upper chest. This movement is particularly effective for emphasizing the clavicular head of the pectoralis major, making it a valuable addition to upper chest and push workouts.',
-        'isolation', 'fixed', 'push', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('13fcd794-54fb-413f-8bbf-44353cd29869', 'Cable Iron Cross', '2024-09-02 20:22:38.703372',
-        '2024-09-02 20:22:38.703372', '',
-        'The Cable Iron Cross is an isolation exercise that targets the chest, with significant activation of the shoulders and triceps. This movement is effective for building chest muscle mass and is commonly included in chest, push, upper body, or full-body workouts.',
-        'isolation', 'fixed', 'push', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('3d0c8e76-37a9-4f4c-84fa-47a6a07aaacc', 'Decline Bench Press', '2024-09-02 20:26:26.267059',
-        '2024-09-02 20:26:26.267059', '',
-        'The Decline Bench Press is a variation of the bench press that primarily targets the lower chest, with additional activation of the shoulders and triceps. This compound exercise is effective for developing overall chest strength, with a particular emphasis on the lower pectoral region. It is commonly included in chest, push, upper body, and full-body workouts.',
-        'compound', 'free', 'push', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('8a39b1e7-986c-41e7-a0b9-44a4efb46360', 'Reverse Grip Dumbbell Bench Press', '2024-09-02 20:27:53.772919',
-        '2024-09-02 20:27:53.772919', '',
-        'The Reverse Grip Dumbbell Bench Press is a variation of the traditional dumbbell bench press that targets the upper chest, shoulders, and triceps. By using a reverse grip, this exercise places a greater emphasis on the upper portion of the chest, making it an effective movement for developing upper body strength and definition.',
-        'compound', 'free', 'push', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('ff20bd08-57ae-465f-aa54-d1ba0f7862a9', 'Push Up', '2024-09-02 20:29:17.383422', '2024-09-02 20:29:17.383422',
-        '',
-        'The push up is a classic bodyweight exercise that targets the chest, with significant engagement of the shoulders, triceps, and core. This movement is fundamental for building upper body strength and promoting shoulder stability, making it a staple in various workout routines.',
-        'compound', 'body_weight', 'push', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('8a73b841-1d4e-4808-8ed7-58c4931e0e96', 'Decline Dumbbell Bench Press', '2024-09-02 20:31:29.272118',
-        '2024-09-02 20:31:29.272118', '',
-        'The Decline Dumbbell Bench Press is a variation of the decline bench press that uses dumbbells, allowing for a greater range of motion and increased shoulder stability. This exercise primarily targets the lower chest while also engaging the shoulders, triceps, and core, making it a highly effective movement for developing the lower pectoral muscles.',
-        'compound', 'free', 'push', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('b720265e-a3ce-48d3-8e8e-87e05c07b8a3', 'Standing Low to High Cable Fly', '2024-09-02 20:35:21.719463',
-        '2024-09-02 20:35:21.719463', '',
-        'The Standing Low to High Cable Fly is an isolation exercise targeting the lower chest. This movement is ideal for those looking to increase chest muscle mass and is typically included in chest, push, upper body, or full-body workouts.',
-        'isolation', 'fixed', 'push', 'intermediate');
-INSERT INTO public.exercise_examples
-VALUES ('f6dd98f1-ad1d-4ea2-ba97-9939ce0fc028', 'Smith Machine Incline Bench Press', '2024-09-02 20:38:34.922216',
-        '2024-09-02 20:38:34.922216', '',
-        'The Smith Machine Incline Bench Press is a compound exercise that targets the upper chest, with additional involvement of the shoulders and triceps. The Smith machine provides a safe and controlled environment for pressing movements, making it a great option for beginners or those lifting heavier weights without a spotter.',
-        'compound', 'fixed', 'push', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('f467d244-5568-40f6-bd7a-b3bdcad82398', 'Standing High to Low Cable Fly', '2024-09-02 20:40:09.521144',
-        '2024-09-02 20:40:09.521144', '',
-        'The Standing High to Low Cable Fly is an isolation exercise that targets the lower chest, with additional activation of the middle chest, shoulders, and triceps. This exercise is ideal for those looking to increase muscle mass and is commonly included in chest, push, upper body, or full-body workouts.',
-        'isolation', 'fixed', 'push', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('2780e6d9-a86f-4038-b96f-ef59f961cb4b', 'Cable Chest Press', '2024-09-02 20:42:00.04352',
-        '2024-09-02 20:42:00.04352', '',
-        'The Cable Chest Press is a compound exercise that targets the chest, with significant involvement of the shoulders and triceps. This movement is ideal for those looking to increase muscle mass and can be included in chest, push, upper body, or full-body workouts. It requires core stability and is best used as an accessory exercise to build the pushing muscles of the body.',
-        'compound', 'fixed', 'push', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('e68781f2-7021-4907-af54-de18b80d181a', 'Decline Push Up', '2024-09-02 20:59:37.517802',
-        '2024-09-02 20:59:37.517802', '',
-        'The Decline Push Up is a bodyweight exercise that targets the upper chest, mimicking the movement pattern of an incline bench press. This exercise also engages the shoulders, triceps, and core, making it an excellent progression for those looking to increase the challenge of their push up routine.',
-        'compound', 'body_weight', 'push', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('5b7d739c-d130-466c-a5ac-9e8b318b77ad', 'Smith Machine Bench Press', '2024-09-02 21:01:10.551319',
-        '2024-09-02 21:01:10.551319', '',
-        'The Smith Machine Bench Press is a compound exercise that primarily targets the chest, with additional activation of the shoulders and triceps. This exercise offers a safer and more controlled alternative to the traditional bench press, making it an excellent choice for beginners or those lifting heavier weights without a spotter.',
-        'compound', 'fixed', 'push', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('3edb750e-4725-4338-a079-d48dc8797917', 'Decline Dumbbell Flys', '2024-09-02 21:02:37.703332',
-        '2024-09-02 21:02:37.703332', '',
-        'The Decline Dumbbell Flys are an isolation exercise that targets the lower chest. This exercise is particularly effective for isolating the lower pectoral muscles due to the decline angle, making it an excellent addition to chest-focused workout routines.',
-        'isolation', 'free', 'push', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('ff2d84fc-ff6d-4637-8128-91c1495c98e8', 'Incline Cable Flys', '2024-09-02 21:04:38.427162',
-        '2024-09-02 21:04:38.427162', '',
-        'The Incline Cable Flys are an isolation exercise that primarily targets the upper chest. This exercise is especially effective for targeting the upper portion of the pec muscles, making it a valuable accessory movement in chest-focused workouts.',
-        'isolation', 'fixed', 'push', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('c2059aab-d7b5-4532-a8a7-ad15a4054b33', 'Standing High to Low Cable Fly', '2024-09-02 21:07:15.394991',
-        '2024-09-02 21:07:15.394991', '',
-        'The Standing High to Low Cable Fly is an isolation exercise that primarily targets the lower chest, while also engaging the middle chest, shoulders, and triceps. This exercise is effective for building muscle mass and is commonly included in chest, push, upper body, or full-body workouts.',
-        'isolation', 'fixed', 'push', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('118eab6d-cae9-4c0b-b8e6-57f3e5541f1a', 'Flat Bench Cable Flys', '2024-09-02 21:09:41.728008',
-        '2024-09-02 21:09:41.728008', '',
-        'The Flat Bench Cable Flys are an isolation exercise that primarily targets the chest, with additional engagement of the shoulders and triceps. This movement is effective for building chest muscle mass and is commonly included in chest, push, upper body, or full-body workouts.',
-        'isolation', 'fixed', 'push', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('9a4eec3b-3f0b-4b36-a2b5-0f544376cf78', 'Decline Cable Chest Press', '2024-09-02 21:11:10.373493',
-        '2024-09-02 21:11:10.373493', '',
-        'The Decline Cable Chest Press is an isolation exercise that targets the lower chest, with additional activation of the shoulders and triceps. Using cables allows for constant tension on the muscle groups, making it an effective movement for building chest muscle mass.',
-        'isolation', 'fixed', 'push', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('61a31a0d-a736-48b5-b03e-44aa1ad7f3eb', 'Seated Barbell Wrist Curl', '2024-09-03 08:30:59.451731',
-        '2024-09-03 08:30:59.451731', '',
-        'The Seated Barbell Wrist Curl is an isolation exercise that targets the forearm muscles. This movement is particularly effective for strengthening grip and improving forearm size, making it a valuable addition to any strength training routine.',
-        'isolation', 'fixed', 'pull', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('c5864272-ae27-4363-add6-7ead1b7b3379', 'Reverse Grip Barbell Curl', '2024-09-03 08:32:01.580419',
-        '2024-09-03 08:32:01.580419', '',
-        'The Reverse Grip Barbell Curl is an isolation exercise that targets the forearms and biceps. The pronated grip emphasizes the forearm muscles, making this a great addition to bicep or upper body workouts.',
-        'isolation', 'fixed', 'pull', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('ddaf509f-3c99-437c-b872-a4651a91601f', 'Behind-The-Back Barbell Wrist Curl', '2024-09-03 08:33:21.446664',
-        '2024-09-03 08:33:21.446664', '',
-        'The Behind-The-Back Barbell Wrist Curl is an isolation exercise that specifically targets the forearm muscles. It is a highly effective movement for building grip strength and increasing forearm size. Focus on controlled movements and a full range of motion for the best results.',
-        'isolation', 'fixed', 'pull', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('d3f54e1c-6333-4a15-b09b-0264ec0b68fe', 'Reverse Grip Barbell Curl (EZ Bar)', '2024-09-03 08:35:16.704123',
-        '2024-09-03 08:35:16.704123', '',
-        'The Reverse Grip Barbell Curl with an EZ Bar is an isolation exercise that targets the forearms and biceps. The pronated grip emphasizes the forearm muscles, making this a great addition to bicep or upper body workouts.',
-        'isolation', 'fixed', 'pull', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('414a1891-1a28-4dbe-84e3-a992c6e879bc', 'Seated Neutral Grip Dumbbell Wrist Curl', '2024-09-03 08:56:48.824003',
-        '2024-09-03 08:56:48.824003', '',
-        'The Seated Neutral Grip Dumbbell Wrist Curl is an isolation exercise that targets the forearm muscles. This movement is highly effective for building grip strength and increasing forearm size. It can be included in various upper body or forearm-specific workout routines.',
-        'isolation', 'free', 'pull', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('d59d340d-774d-4c81-8b3d-251175936221', 'Reverse Grip Barbell Wrist Curl (Over Bench)',
-        '2024-09-03 09:26:50.08384', '2024-09-03 09:26:50.08384', '',
-        'The Reverse Grip Barbell Wrist Curl (Over Bench) is an isolation exercise that targets the forearm muscles. Utilizing a bench provides extra stability, allowing for focused movement and greater muscle engagement, making it an effective exercise for building forearm strength and size.',
-        'isolation', 'fixed', 'pull', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('10870aab-3086-462e-a64e-14710e3fbffe', 'One-Arm Seated Dumbbell Wrist Curl', '2024-09-03 09:28:24.986138',
-        '2024-09-03 09:28:24.986138', '',
-        'The One-Arm Seated Dumbbell Wrist Curl is an isolation exercise that targets the forearm muscles. This unilateral movement is effective for correcting imbalances and enhancing grip strength, making it a valuable addition to any strength training routine.',
-        'isolation', 'free', 'pull', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('bb9c756b-0c9e-4e87-826f-bb2cbd16d86b', 'Dumbbell Wrist Curl (Over Bench)', '2024-09-03 09:30:01.935018',
-        '2024-09-03 09:30:01.935018', '',
-        'The Dumbbell Wrist Curl (Over Bench) is an isolation exercise that targets the forearm muscles. Using a bench for support allows for focused movement and greater muscle engagement, making it an effective exercise for building forearm strength and size.',
-        'isolation', 'free', 'pull', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('7545289f-f7c8-456b-98e9-f7b15600254c', 'Seated Reverse Dumbbell Wrist Curl', '2024-09-03 09:32:06.540342',
-        '2024-09-03 09:32:06.540342', '',
-        'The Seated Reverse Dumbbell Wrist Curl is an isolation exercise that targets the forearm muscles, particularly focusing on improving grip strength and forearm size. This exercise is ideal for building strong forearms and can be incorporated into upper body or forearm-specific workouts.',
-        'isolation', 'free', 'pull', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('b35c5710-3c80-4f48-8ee4-295e5a15999f', 'Reverse Grip Cable Curl', '2024-09-03 09:34:29.268873',
-        '2024-09-03 09:34:29.268873', '',
-        'The Reverse Grip Cable Curl is an isolation exercise that targets the forearms and biceps. This movement is ideal for building forearm strength while also engaging the biceps, making it a great addition to upper body or arm-specific workouts.',
-        'isolation', 'fixed', 'pull', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('d7871e0c-5e1b-4ffd-a9ab-951028246a01', 'Behind-The-Back Cable Wrist Curl', '2024-09-03 09:37:05.548408',
-        '2024-09-03 09:37:05.548408', '',
-        'The Behind-The-Back Cable Wrist Curl is an isolation exercise that targets the forearm muscles. Using a cable machine allows for continuous tension, making it a highly effective exercise for building forearm strength and size.',
-        'isolation', 'fixed', 'pull', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('b53daf0a-c7b6-4be8-9230-b33695eb5340', 'Seated Reverse Barbell Wrist Curl', '2024-09-03 09:38:26.916652',
-        '2024-09-03 09:38:26.916652', '',
-        'The Seated Reverse Barbell Wrist Curl is an isolation exercise that targets the forearm muscles. This movement is particularly effective for building forearm strength and improving grip, making it a great addition to upper body or forearm-specific workouts.',
-        'isolation', 'fixed', 'pull', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('60bd8dbc-6bb8-4be0-9ee7-f4c5a295c5b4', 'Reverse Grip Preacher Curl (EZ Bar)', '2024-09-03 09:39:30.846405',
-        '2024-09-03 09:39:30.846405', '',
-        'The Reverse Grip Preacher Curl with an EZ Bar is an isolation exercise that targets the forearms and biceps. The preacher bench provides a focused angle that emphasizes the biceps while the reverse grip ensures the forearms are heavily engaged.',
-        'isolation', 'fixed', 'pull', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('a2f8dd49-606e-4d86-ae04-8af61c0b40e9', 'Seated Reverse Grip Cable Wrist Curl', '2024-09-03 09:42:04.632581',
-        '2024-09-03 09:42:04.632581', '',
-        'The Seated Reverse Grip Cable Wrist Curl is an isolation exercise that targets the forearm muscles. Using a cable machine with a reverse grip allows for continuous tension, making it an effective movement for building forearm strength and size.',
-        'isolation', 'fixed', 'pull', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('b515dd55-701a-45f4-938f-fdb26d2d5cba', 'Seated Cable Wrist Curl', '2024-09-03 09:43:17.728797',
-        '2024-09-03 09:43:17.728797', '',
-        'The Seated Cable Wrist Curl is an isolation exercise that targets the forearm muscles. Utilizing a cable machine with a straight bar, this exercise provides continuous tension, making it effective for building forearm strength and improving grip.',
-        'isolation', 'fixed', 'pull', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('f5f03cc7-c2bc-4367-9042-107114d634ce', 'Barbell Wrist Curl (Over Bench)', '2024-09-03 09:44:32.006932',
-        '2024-09-03 09:44:32.006932', '',
-        'The Barbell Wrist Curl (Over Bench) is an isolation exercise that targets the forearm muscles. Using a bench for support enhances stability and focus, making it effective for building forearm strength and improving grip.',
-        'isolation', 'fixed', 'pull', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('78b3c689-0222-46de-a7b3-9bd6c75b920c', 'Barbell Hip Thrust', '2024-09-03 11:07:53.745619',
-        '2024-09-03 11:07:53.745619', '',
-        'The Barbell Hip Thrust is an isolation exercise targeting the glutes, with secondary emphasis on the hamstrings. It is highly effective for building glute strength and size, with carryover benefits to other lower body exercises like squats and deadlifts.',
-        'isolation', 'fixed', 'push', 'intermediate');
-INSERT INTO public.exercise_examples
-VALUES ('7d823dc8-8303-4ddd-a25d-935569c662b7', 'Hyperextension', '2024-09-03 11:04:13.299536',
-        '2024-09-03 11:04:13.299536', '',
-        'The Hyperextension is an isolation exercise targeting the glutes, with secondary emphasis on the hamstrings and rhomboids. This exercise is effective for enhancing gluteal strength and can be integrated into leg workouts or full body routines.',
-        'isolation', 'body_weight', 'hinge', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('b39cc5b5-8335-4918-a504-f9cdfb85ceba', 'Good Mornings', '2024-09-03 11:13:27.408276',
-        '2024-09-03 11:13:27.408276', '',
-        'Good Mornings are a compound exercise targeting the glutes, with significant engagement of the hamstrings, lower back, and upper back. This exercise can be highly effective for strengthening the posterior chain and improving hip hinge mechanics.',
-        'compound', 'fixed', 'hinge', 'intermediate');
-INSERT INTO public.exercise_examples
-VALUES ('d806b4f1-399c-4ceb-bb91-663ec0350e6d', 'Reverse Hyperextension', '2024-09-03 11:21:01.336163',
-        '2024-09-03 11:21:01.336163', '',
-        'The Reverse Hyperextension is an isolation exercise targeting the glutes, with secondary emphasis on the hamstrings and rhomboids. It helps improve glute strength and can enhance performance in deadlifts and squats.',
-        'isolation', 'body_weight', 'hinge', 'intermediate');
-INSERT INTO public.exercise_examples
-VALUES ('3a39a222-7b4d-4e0e-9e7e-034d78b5d6bf', 'Good Mornings Off Pins', '2024-09-05 12:48:41.905041',
-        '2024-09-05 12:48:41.905041', '',
-        'Good Mornings Off Pins are a variation of the good morning exercise, primarily targeting the glutes, hamstrings, lower back, and upper back. This version forces the lifter to reset form after every rep, eliminating momentum and ensuring full engagement of the target muscles.',
-        'compound', 'fixed', 'hinge', 'intermediate');
-INSERT INTO public.exercise_examples
-VALUES ('be3c01a7-3bd0-448c-844b-583bd824c90b', 'Dumbbell Stiff Leg Deadlift', '2024-09-05 12:54:46.778198',
-        '2024-09-05 12:54:46.778198', '',
-        'The Dumbbell Stiff Leg Deadlift primarily targets the hamstrings, with secondary emphasis on the glutes and rhomboids. It is a compound exercise performed by hinging at the hips while keeping the back straight, focusing on stretching the hamstrings and contracting them during the ascent.',
-        'compound', 'free', 'pull', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('1dcd59ab-674e-49d8-9a06-9c17c2a05730', 'Conventional Deadlift', '2024-09-05 12:56:19.187681',
-        '2024-09-05 12:56:19.187681', '',
-        'The deadlift primarily targets the hamstrings but also requires muscle activation from the back, glutes, arms, and core. It’s a hip-hinge movement where the weight is lifted from the ground to hip level, engaging multiple muscle groups.',
-        'compound', 'free', 'hinge', 'intermediate');
-INSERT INTO public.exercise_examples
-VALUES ('05b3842c-2a19-484e-bae3-a12e86c2fa4c', 'Leg Curl', '2024-09-05 12:59:02.097116', '2024-09-05 12:59:02.097116',
-        '',
-        'The leg curl isolates the hamstrings. Set up the machine, adjust the padding to your leg length, and curl the weight up by contracting the hamstrings. Lower it slowly for a full range of motion.',
-        'isolation', 'fixed', 'pull', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('ad98534e-b2d9-4fef-9983-578ef12b28f7', 'Stiff Leg Deadlift', '2024-09-05 13:05:01.285262',
-        '2024-09-05 13:05:01.285262', '',
-        'Position the bar over the top of your shoelaces and assume a hip width stance. Push your hips back and hinge forward until your torso is nearly parallel with the floor. Reach down and grasp the bar using a shoulder width, double overhand grip. Ensure your spine is neutral, shin is vertical, and your hips are roughly the same height as your shoulders. Drive through the whole foot and focus on pushing the floor away. Ensure the bar tracks in a straight line as you extend the knees and hips. Once you have locked out the hips, reverse the movement by pushing the hips back and hinging forward. Return the bar to the floor, reset, and repeat for the desired number of repetitions.',
-        'compound', 'free', 'hinge', 'intermediate');
-INSERT INTO public.exercise_examples
-VALUES ('b5c6e6a6-6eec-422c-ad4a-8dca82287312', 'Romanian Deadlift (RDL)', '2024-09-05 13:06:37.160782',
-        '2024-09-05 13:06:37.160782', '',
-        'Position the bar over the top of your shoelaces and assume a hip width stance. Assume a double overhand grip just outside of hip width and deadlift the weight into position at the top with the hips and knees locked out. Begin the RDL by pushing your hips back and hinging forward until the bar is just below knee height. Drive through the whole foot and focus on pushing the floor away. Return to the starting position and repeat for the desired number of repetitions.',
-        'compound', 'free', 'hinge', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('9b3f9b20-544d-49e1-880e-879e24e81581', 'Dumbbell Hamstring Curl', '2024-09-05 13:08:00.578297',
-        '2024-09-05 13:08:00.578297', '',
-        'Set up for the dumbbell hamstring curl by elevating a flat bench on a block or step. You can use a grounded flat bench, but elevating it gives you a better range of motion and more efficiently recruits the hamstrings. Lie face down on the bench and position yourself so that your knees are at the edge of the bench. Pick up the dumbbell from the floor with your feet, securing it between the arches of your two feet. Bend at the knees only, slowly curl the dumbbell up towards your buttocks, then lower it in a controlled manner back to the starting position.',
-        'isolation', 'free', 'pull', 'intermediate');
-INSERT INTO public.exercise_examples
-VALUES ('12070323-971e-421a-9eaf-bdce4f8e0464', 'Trap Bar Rack Pull', '2024-09-05 13:10:41.470821',
-        '2024-09-05 13:10:41.470821', '',
-        'Set up the bar at just below knee height on the safety pins in a rack. Stand inside of the trap bar with a hip width stance. Push your hips back and hinge forward. Reach down and grasp the handles using a neutral grip outside of shoulder width. Inhale and pull up slightly on the bar while allowing your hips to drop in a seesaw fashion. Drive through the whole foot and focus on pushing the floor away. Ensure the bar tracks in a straight line as you extend the knees and hips.',
-        'compound', 'free', 'hinge', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('379d64cd-24bf-4a81-9b97-936c9a088e17', 'Trap Bar Deadlift', '2024-09-05 13:12:38.899013',
-        '2024-09-05 13:12:38.899013', '',
-        'Stand inside of the trap bar with a hip width stance. Push your hips back and hinge forward until your torso is nearly parallel with the floor. Reach down and grasp the handles using a neutral grip outside of shoulder width. Inhale and pull up slightly on the bar while allowing your hips to drop in a seesaw fashion. Drive through the whole foot and focus on pushing the floor away. Ensure the bar tracks in a straight line as you extend the knees and hips. Reverse the movement and repeat for desired reps.',
-        'compound', 'free', 'hinge', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('04d3e242-807d-4cba-9be4-e3d11a8efbc4', 'Reverse Hack Squat', '2024-09-05 13:33:56.320983',
-        '2024-09-05 13:33:56.320983', '',
-        'Set up the reverse hack machine by loading the weight you want to use. Position yourself with your chest flat on the pad and shoulders up against the shoulder pads. Position your feet at around shoulder width apart on the bottom of the platform. Push up to take the weight off the stack, place your arms on the side handles of the machine and disengage the safety bars. Slowly lower the weight down until your thighs are at approximately right angles with your calves. Push the weight back up without locking your knees at the top.',
-        'compound', 'fixed', 'push', 'intermediate');
-INSERT INTO public.exercise_examples
-VALUES ('ca38bcba-658f-4c7a-be54-b2c3f845fbe0', 'Sumo Deadlift', '2024-09-05 13:37:08.596231',
-        '2024-09-05 13:37:08.596231', '',
-        'Position the bar over the top of your shoelaces and assume a wide stance. Push your hips back and hinge forward until your torso is nearly parallel with the floor. Reach down and grasp the bar using a shoulder width, double overhand grip. Inhale and pull up on the bar while allowing your hips to drop. Drive through the whole foot and focus on pushing the floor away. Ensure the bar tracks in a straight line as you extend the knees and hips.',
-        'compound', 'free', 'hinge', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('f11ef4dd-cc6b-42ad-844d-0e94cef691f0', 'Glute Ham Raise', '2024-09-05 13:38:49.26673',
-        '2024-09-05 13:38:49.26673', '',
-        'Set up in a GHD with your knees bent, hips extended, and torso upright. Straighten your legs while keeping your hips extended. Continue until your body is in a straight line and parallel to the floor. Pull yourself back to the starting position using your hamstrings. Repeat for the desired number of repetitions.',
-        'isolation', 'body_weight', 'pull', 'intermediate');
-INSERT INTO public.exercise_examples
-VALUES ('676f21e5-7b5a-4c11-a505-4545822673de', 'Trap Bar Romanian Deadlift', '2024-09-05 13:42:24.371375',
-        '2024-09-05 13:42:24.371375', '',
-        'Stand inside of the trap bar with a hip width stance. Assume a neutral grip on the handles and deadlift the weight into position at the top with the hips and knees locked out. Begin the RDL by pushing your hips back and hinging forward until the bar is just below knee height. Drive through the whole foot and focus on pushing the floor away. Return to the starting position and repeat for the desired reps.',
-        'compound', 'free', 'hinge', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('c18b086c-b0c3-4d1c-a6a3-2653e36c5dff', 'Straight Leg Deadlift', '2024-09-05 13:44:20.952287',
-        '2024-09-05 13:44:20.952287', '',
-        'Set a bar at just below hip height and load your desired weight. Hinge forward slightly and grasp the bar with a double overhand, shoulder width grip. Stand up by extending your hips and knees and take two steps back from the rack. Keeping the knees extended, push your hips back and hinge forward until the bar is just below your knee cap. Drive through the whole foot and focus on pushing the floor away. Finish the movement by squeezing the glutes and tilting the pelvis.',
-        'compound', 'free', 'hinge', 'intermediate');
-INSERT INTO public.exercise_examples
-VALUES ('6115df45-ddad-4fa6-bfb0-1c0cd72de766', 'Smith Machine Stiff Leg Deadlift', '2024-09-05 13:49:52.421936',
-        '2024-09-05 13:49:52.421936', '',
-        'Set up for the exercise by loading a smith machine with the weight you want to use. Stand with your feet shoulder-width apart and grasp the bar with an overhand grip. Keeping your back straight, lower the bar while bending at the hips, stretching your hamstrings. Engage the hamstrings and glutes to raise the bar back up while keeping it close to your body.',
-        'compound', 'fixed', 'pull', 'intermediate');
-INSERT INTO public.exercise_examples
-VALUES ('f4041256-a9ac-430d-b611-d8a957e2aeb0', 'Straight Arm Lat Pulldown', '2024-09-06 11:10:17.447399',
-        '2024-09-06 11:10:17.447399', '',
-        'Attach a straight bar to a cable stack and assume a standing position. Grasp the bar with a pronated grip (double overhand) at roughly shoulder width and lean forward slightly by hinging at the hips. Keep the elbow slightly flexed and initiate the movement by depressing the shoulder blades and extending the shoulders. Pull the bar to your thigh until the lats are fully contracted and then slowly lower under control.',
-        'compound', 'fixed', 'pull', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('8e687b8b-0142-49f7-92e9-4d5df9aa86c9', 'Wide Grip Pull Up', '2024-09-06 11:15:01.132837',
-        '2024-09-06 11:15:01.132837', '',
-        'Using a pronated grip, grasp the pull bar with a wider than shoulder width grip. Take a deep breath, squeeze your glutes and brace your abs. Depress the shoulder blades and drive the elbows straight down to the floor while activating the lats. Pull your chin towards the bar until the lats are fully contracted, then slowly lower yourself back to the start position.',
-        'compound', 'body_weight', 'pull', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('4a2c7160-6cf2-456d-8ef4-80040b720420', 'Lat Pulldown', '2024-09-06 11:18:17.192491',
-        '2024-09-06 11:18:17.192491', '',
-        'Attach a wide grip handle to the lat pulldown machine and assume a seated position. Grasp the handle with a pronated grip (double overhand) and initiate the movement by depressing the shoulder blade and then flexing the elbow while extending the shoulder. Pull the handle towards your body until the elbows are in line with your torso and then slowly lower the handle back to the starting position under control.',
-        'compound', 'fixed', 'pull', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('93c687ff-68f2-44d0-9f3a-8c4c15c960e8', 'Wide Grip Lat Pulldown', '2024-09-06 11:21:03.156284',
-        '2024-09-06 11:21:03.156284', '',
-        'Attach a wide grip handle to the lat pulldown machine and assume a seated position. Grasp the handle with a pronated grip (double overhand) at shoulder width. Depress the shoulder blades, flex the elbows, and extend the shoulder to pull the handle towards your body. Lower the handle back to the starting position under control.',
-        'compound', 'fixed', 'pull', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('738d7264-00af-48dd-a475-3c4d12e28188', 'Chin Up', '2024-09-06 21:19:43.22155', '2024-09-06 21:19:43.22155', '',
-        'Using a supinated grip, grasp the bar with a shoulder width grip. Take a deep breath, squeeze your glutes and brace your abs. Depress the shoulder blades and drive the elbows straight down while activating the lats. Pull your chin towards the bar until the lats are fully contracted, then slowly lower yourself back to the start position.',
-        'compound', 'body_weight', 'pull', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('e84c6031-9d71-41a1-ae2c-6c9901ea1d6b', 'Wide Grip Lat Pulldown', '2024-09-06 21:22:25.300036',
-        '2024-09-06 21:22:25.300036', '',
-        'Attach a wide grip handle to the lat pulldown machine and assume a seated position. Grasp the handle with a pronated grip (double overhand) as wide as possible. Depress the shoulder blades, flex the elbows, and extend the shoulder to pull the handle towards your body. Lower the handle back to the starting position under control.',
-        'compound', 'fixed', 'pull', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('bd3338ee-1841-4686-a98c-3493ab9cfa7e', 'Reverse Grip Lat Pulldown', '2024-09-06 21:26:46.655349',
-        '2024-09-06 21:26:46.655349', '',
-        'Attach a wide grip handle to the lat pulldown machine and assume a seated position. Grasp the handle with a supinated grip (double underhand) just inside of shoulder width. Depress the shoulder blades, flex the elbows, and extend the shoulder to pull the handle towards your body. Lower the handle back to the starting position under control.',
-        'compound', 'fixed', 'pull', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('eaf575b3-2cb6-45a3-914f-81838c4c7e4d', 'Rope Straight Arm Pulldown', '2024-09-06 21:28:12.837801',
-        '2024-09-06 21:28:12.837801', '',
-        'Attach a rope to a cable stack and assume a standing position. Grasp the rope with a neutral grip (palms facing) and lean forward slightly by hinging at the hips. Depress the shoulder blades and extend the shoulders to pull the rope towards your thighs. Lower the rope back to the starting position under control.',
-        'compound', 'fixed', 'pull', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('c25a5f07-d65f-4ba9-9b0d-cb4d5b426455', 'V-Bar Pulldown', '2024-09-06 21:31:44.423014',
-        '2024-09-06 21:31:44.423014', '',
-        'Attach a V-bar to the lat pulldown machine and assume a seated position. Grasp the handle with a neutral grip and initiate the movement by depressing the shoulder blades and flexing the elbows. Pull the handle towards your body until your elbows are in line with your torso, then slowly lower the handle back to the starting position.',
-        'compound', 'fixed', 'pull', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('85a317d2-6cf2-4155-a6ea-a271afc4a803', 'Behind Neck Lat Pulldown', '2024-09-06 21:35:46.021334',
-        '2024-09-06 21:35:46.021334', '',
-        'Attach a wide grip handle to the lat pulldown machine and assume a seated position. Grasp the handle with a pronated grip (double overhand). Depress the shoulder blades, flex the elbows, and pull the handle behind your neck until it nearly touches the base of your traps. Slowly lower the handle back to the starting position under control.',
-        'compound', 'fixed', 'pull', 'intermediate');
-INSERT INTO public.exercise_examples
-VALUES ('c1ca2c25-9148-4977-99fe-3acda0b4ad33', 'One Arm Dumbbell Row', '2024-09-07 14:58:48.633749',
-        '2024-09-07 14:58:48.633749', '',
-        'Assume a standing position while holding a dumbbell in one hand with a neutral grip. Hinge forward until your torso is roughly parallel with the floor and drive the elbow behind the body while retracting the shoulder blade. Pull the dumbbell towards your body and then slowly lower the dumbbell back to the starting position under control. Repeat for the desired number of repetitions on both sides.',
-        'compound', 'free', 'pull', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('950cd0cd-fc3b-442f-aba9-3c48bfc6cda9', 'Bent Over Barbell Row', '2024-09-07 15:00:25.3268',
-        '2024-09-07 15:00:25.3268', '',
-        'Assume a standing position while holding the bar using a double overhand grip. Hinge forward until your torso is roughly parallel with the floor and drive the elbows behind the body while retracting the shoulder blades. Pull the bar towards your belly button and then slowly lower it back to the starting position under control. Repeat for the desired number of repetitions.',
-        'compound', 'free', 'pull', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('9c029423-aa52-4b90-97c0-f5d4b4574f12', 'Bent Over Dumbbell Row', '2024-09-07 15:02:05.982322',
-        '2024-09-07 15:02:05.982322', '',
-        'Assume a standing position while holding a dumbbell in each hand with a neutral grip. Hinge forward until your torso is roughly parallel with the floor and drive the elbows behind the body while retracting the shoulder blades. Pull the dumbbells towards your body and then slowly lower them back to the starting position under control. Repeat for the desired number of repetitions.',
-        'compound', 'free', 'pull', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('baa3f656-0ad7-422b-ba8b-e5e9f5d4cd63', 'Seated Cable Row', '2024-09-07 15:06:50.255195',
-        '2024-09-07 15:06:50.255195', '',
-        'Set the appropriate weight on the stack and attach a close-grip handle. Grasp the bar with a neutral grip. Sit upright with your back straight, slightly bent legs, and pull the handle into your stomach. Retract your shoulder blades, squeeze, and return to the starting position under control. Repeat for the desired reps.',
-        'compound', 'fixed', 'pull', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('6389ce45-7d30-4372-8c29-e5816d893b1a', 'Chest Supported Dumbbell Row', '2024-09-07 15:09:04.672927',
-        '2024-09-07 15:09:04.672927', '',
-        'Position an adjustable incline bench at 45 degrees and lie prone on the bench. Grab a dumbbell in each hand utilizing a neutral grip and begin the movement by driving the elbows behind the body while retracting the shoulder blades. Pull the dumbbells towards your body until the elbows are at (or just past) the midline and then slowly lower the dumbbells back to the starting position under control. Repeat for the desired number of repetitions.',
-        'compound', 'free', 'pull', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('ad76d69c-5e90-4643-b507-9e9226d8b5cd', 'Trap Bar Shrug', '2024-09-07 20:21:09.839764',
-        '2024-09-07 20:21:09.839764', '',
-        'The trap bar shrug is a variation of the barbell shrug that targets the traps with a neutral hand placement, allowing better posture and reducing shoulder impingement risks. Stand inside the trap bar, grip the handles, and elevate your shoulders by contracting the traps. Lower slowly for controlled reps.',
-        'isolation', 'free', 'pull', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('31b8aa6a-448d-4e4c-bd1e-6386060b526e', 'Tripod Dumbbell Row', '2024-09-07 15:12:48.559544',
-        '2024-09-07 15:12:48.559544', '',
-        'Assume a kneeling position on the bench with your ipsilateral hand braced against the bench. Hold a dumbbell in the opposite hand with a neutral grip. Begin the movement by driving the elbow behind the body while retracting the shoulder blade. Pull the dumbbell towards your body until the elbow is at (or just past) the midline and then slowly lower the dumbbell back to the starting position under control. Repeat for the desired number of repetitions on both sides.',
-        'compound', 'free', 'pull', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('13826a3e-6b12-464c-95c8-5790f0e13947', 'Reverse Grip Bent-Over Dumbbell Row', '2024-09-07 15:16:24.597402',
-        '2024-09-07 15:16:24.597402', '',
-        'Select the appropriate dumbbells and place them on the floor in front of you. Bending at the knees and keeping your back straight, squat down and pick up the dumbbells with an underhand grip (palms facing up). Get into the starting position by keeping your back straight and bending at the knees. Let the dumbbells slide down your thighs until they''re just below knee height. Execute by pulling the dumbbells up under your chest as far as possible. Pause, and then slowly lower the dumbbells back to the starting position. Repeat for desired reps.',
-        'compound', 'free', 'pull', 'intermediate');
-INSERT INTO public.exercise_examples
-VALUES ('91f6781b-915e-4bb4-8d8c-e345aa66e42d', 'Incline Bench Two Arm Dumbbell Row', '2024-09-07 15:18:31.425724',
-        '2024-09-07 15:18:31.425724', '',
-        'Position an adjustable incline bench at 45 degrees and lie prone on the bench. Grab a dumbbell in each hand utilizing a pronated grip and begin the movement by driving the elbows behind the body while retracting the shoulder blades. Pull the dumbbells towards your body until the elbows are at (or just past) the midline, and then slowly lower the dumbbells back to the starting position under control. Repeat for the desired number of repetitions.',
-        'compound', 'free', 'pull', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('cbb152c0-ba9c-47ea-a8a3-28ad88f56eb6', 'Smith Machine Bent-Over Row', '2024-09-07 15:29:18.453486',
-        '2024-09-07 15:29:18.453486', '',
-        'Set up for the smith machine bent-over row by lowering the bar on the smith machine all the way and adding the weight you want to use. Stand facing the bar and grip the bar with an overhand grip, with your hands wider than shoulder-width apart. Stand straight up to take the weight off the machine. Straighten your back, bend at the knees slightly, and slowly let the weight down until it''s just below your knees. Keeping your body fixed, pull the weight up until it almost hits your body. Pause, and then slowly lower the bar back to the starting position. Repeat for desired reps.',
-        'compound', 'fixed', 'pull', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('0be1c49c-d742-4881-b014-360bc297af34', 'Reverse Grip Bent Over Row', '2024-09-07 19:52:35.860933',
-        '2024-09-07 19:52:35.860933', '',
-        'Grab a barbell, load some weight on, and place the barbell down in front of you. Stand with your feet at around shoulder width, bend at the knees, squat down to grip the bar with a reverse grip and your hands wider than shoulder width apart. Keeping your back straight, stand straight up so you''re holding the bar in front of you against your waist. To get into the starting position bend your knees slightly, and while keeping your back straight, let the barbell slide down your thighs until it drops just below knee level. Now pull the bar up to just below your chest, squeeze your shoulder blades together at the top of the movement, and slowly lower the bar back to the starting position.',
-        'compound', 'free', 'pull', 'intermediate');
-INSERT INTO public.exercise_examples
-VALUES ('8cccb149-8553-494d-bcb5-ffa9b06e7c0f', 'Pendlay Row', '2024-09-07 19:54:36.108775',
-        '2024-09-07 19:54:36.108775', '',
-        'The Pendlay row is a variation of the bent over row and an exercise used to build strength in the muscles of the upper back. The main difference between a Pendlay row and other rowing variations is the Pendlay row involves coming to a complete dead stop during the movement. This dead stop allows the lifter to train power and explosiveness as s/he contracts the back to bring the weight to their body. Grasp the bar with a double overhand grip, drive the elbows explosively behind the body while retracting the shoulder blades, and pull the bar towards your belly button.',
-        'compound', 'free', 'pull', 'intermediate');
-INSERT INTO public.exercise_examples
-VALUES ('7470e789-9509-4e22-9078-67857074867d', 'One-Arm Seated Cable Row', '2024-09-07 19:56:54.223291',
-        '2024-09-07 19:56:54.223291', '',
-        'The one-arm seated cable row is a great way to bring up a lagging side of the body and create symmetry. Attach a single handle to the low pulley cable machine and set the amount of weight you want to use. Sit down facing the cable with your knees slightly bent. Grab the handle using an overhand grip and take the weight off the stack. Keep your back straight and shoulders back. Pull the weight as far as possible, and squeeze your shoulder blade at the top of the movement. Pause, and then slowly lower the weight back to the starting position.',
-        'compound', 'fixed', 'pull', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('7976a83a-f4db-4cc5-9cac-7f16f2bc430f', 'Seated Row (Rope Extension)', '2024-09-07 19:58:28.333853',
-        '2024-09-07 19:58:28.333853', '',
-        'Attach the rope extension to the low pulley cable. Adjust the weight. Sit down in front of the cable machine facing the cable with your legs shoulder-width apart and knees slightly bent. Grasp the rope from the bottom with your thumbs in. Lean back, keeping your back straight to take the weight off the stack. Pull the rope in towards your stomach while squeezing your shoulder blades together at the top of the movement. Pause, and then slowly lower the weight back to the starting position.',
-        'compound', 'fixed', 'pull', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('6da53baf-d357-4392-927f-7da1bf7449dc', 'Incline Bench Barbell Row', '2024-09-07 20:02:52.933304',
-        '2024-09-07 20:02:52.933304', '',
-        'Set up an incline bench at around a 30-degree angle. Grab a barbell and place it at the end of the incline bench. Lay down in a prone position with legs at the lower end of the bench. Grip the barbell with a wide overhand grip, keeping your head up and eyes forward. Slowly raise the bar up towards your chest, squeeze your shoulder blades together at the top, and lower it back down.',
-        'compound', 'fixed', 'pull', 'intermediate');
-INSERT INTO public.exercise_examples
-VALUES ('6bb0675d-eba0-496c-bd20-5fd11a4a0282', 'Reverse Grip Incline Bench Barbell Row', '2024-09-07 20:04:30.711798',
-        '2024-09-07 20:04:30.711798', '',
-        'Set up an incline bench at around a 30-degree angle. Grab a barbell with an underhand grip and place it at the end of the incline bench. Lay down in a prone position with legs at the lower end of the bench. Slowly raise the bar towards your chest, keeping your elbows tucked in, and lower it back down.',
-        'compound', 'fixed', 'pull', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('5de5124e-8ebb-4477-b4b3-e1122cc80496', 'Dumbbell Shrugs', '2024-09-07 20:10:41.915207',
-        '2024-09-07 20:10:41.915207', '',
-        'Assume a standing position with the dumbbells on both sides of your body. Contract the traps to elevate the shoulders. Squeeze hard at the top and slowly lower the dumbbells back to the starting position. Repeat for desired reps.',
-        'isolation', 'free', 'pull', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('d180a698-a12e-4731-8234-b96e8f3ca7d9', 'Barbell Upright Row', '2024-09-07 20:15:00.934798',
-        '2024-09-07 20:15:00.934798', '',
-        'The barbell upright row is an effective exercise targeting the upper traps and shoulders. To perform, load a barbell with an overhand grip, hands slightly closer than shoulder-width apart, and stand with feet at shoulder width. Keep your back straight as you lift the bar, pulling it close to your body, up to chest height. Pause and slowly lower the bar, keeping the motion controlled.',
-        'compound', 'free', 'pull', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('49ef1d62-a375-485a-84bd-289a5548e81b', 'Barbell Shrug', '2024-09-07 20:17:27.639092',
-        '2024-09-07 20:17:27.639092', '',
-        'The barbell shrug targets the trapezius muscles. Stand with the bar in front, grab it with a double overhand grip, and lift by shrugging the shoulders. Squeeze at the top, then lower back down slowly.',
-        'isolation', 'free', 'pull', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('abe543c6-ec69-49ad-b9ca-ef959ffa10f2', 'Seated Dumbbell Shrug', '2024-09-07 20:18:56.606676',
-        '2024-09-07 20:18:56.606676', '',
-        'The seated dumbbell shrug is an isolation exercise focused on building the traps. Sit on a flat bench with dumbbells at your sides, and shrug your shoulders up as far as possible, then slowly lower them back to the starting position.',
-        'isolation', 'free', 'pull', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('cae7b841-a7f8-4973-baf0-4aadbbdcd0ca', 'Smith Machine Shrug', '2024-09-07 20:20:03.750749',
-        '2024-09-07 20:20:03.750749', '',
-        'The Smith Machine Shrug is an isolation exercise focusing on the trapezius muscles. Stand facing the bar, grasp it with an overhand grip, lift the bar by shrugging your shoulders, then slowly lower it back down. Pause at the top for increased difficulty.',
-        'isolation', 'fixed', 'pull', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('f451289a-6d35-4926-981d-8ebae71741a2', 'Cable Shrug', '2024-09-07 20:22:58.464988',
-        '2024-09-07 20:22:58.464988', '',
-        'The cable shrug is a variation that focuses on constant tension during the movement. Set the cable handles low, stand with one handle in each hand, and elevate your shoulders by contracting the traps. Slowly lower the handles back to the starting position, maintaining tension throughout the exercise.',
-        'isolation', 'fixed', 'pull', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('98791e1d-6029-4cb2-bcaf-611a337208ef', 'Cable Row to Neck', '2024-09-07 20:24:09.667421',
-        '2024-09-07 20:24:09.667421', '',
-        'The Cable Row to Neck is a compound movement that targets the traps, lats, and shoulders. Using a rope attachment, pull the rope towards your neck, spreading the handles apart as you near your neck. Pause, squeeze, and then return to the starting position.',
-        'compound', 'fixed', 'pull', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('22df24eb-6bb7-45bc-ab46-9d6022eec774', 'Barbell Back Squat', '2024-09-07 20:34:58.039052',
-        '2024-09-07 20:34:58.039052', '',
-        'Set up for the exercise by setting the barbell to just below shoulder height and loading the weight you want to use. Stand under the bar with your feet at about shoulder width apart. Position the bar so that it is resting on the muscles on the top of your back, not on the back of your neck. The bar should feel comfortable. If it doesn''t, try adding some padding to the bar. Now take your hands over the back and grip the bar with a wide grip for stability. Keeping your eyes facing forward slowly lower your body down until your thighs are parallel with the floor, and then slowly raise your body back up by pushing through your heels.',
-        'compound', 'free', 'push', 'intermediate');
-INSERT INTO public.exercise_examples
-VALUES ('978f906a-8584-4cdf-9d7f-f96d60865e3b', 'Dumbbell Squat', '2024-09-07 20:36:12.342466',
-        '2024-09-07 20:36:12.342466', '',
-        'Set up for the dumbbell squat by choosing a pair of dumbbells and holding them down by your sides. Stand with a slight bend in your knees and your feet around shoulder width apart. Keeping your eyes facing forward, slowly lower your body down until your thighs are parallel with the floor, and then push back up through your heels.',
-        'compound', 'free', 'push', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('4da455c2-c154-4da7-b9c5-6195bd137eec', 'Dumbbell Goblet Squat', '2024-09-07 20:38:40.685439',
-        '2024-09-07 20:38:40.685439', '',
-        'Select a dumbbell and position it at chest height with one hand under each edge of the dumbbell. Take a deep breath and descend by simultaneously pushing the hips back and bending the knees. Once your thighs reach parallel with the floor, begin to reverse the movement while keeping your abs braced and driving your feet through the floor.',
-        'compound', 'free', 'push', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('945bdcdb-6aee-42df-a974-3fedc0b76846', 'Dumbbell Goblet Squat', '2024-09-07 20:40:09.742885',
-        '2024-09-07 20:40:09.742885', '',
-        'Select a dumbbell and position it at chest height with one hand under each edge of the dumbbell. Take a deep breath and descend by simultaneously pushing the hips back and bending the knees. Once your thighs reach parallel with the floor, begin to reverse the movement while keeping your abs braced and driving your feet through the floor.',
-        'compound', 'free', 'push', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('64406a09-56a6-43da-9329-ff0fb0d83e4f', '45-Degree Leg Press', '2024-09-07 20:41:37.047377',
-        '2024-09-07 20:41:37.047377', '',
-        'Sit down and position your feet on the sled with a shoulder-width stance. Take a deep breath, extend your legs, and unlock the safeties. Lower the weight under control until your legs reach roughly 45 degrees or slightly below. Drive the weight back up by extending your knees but avoid forceful lockout.',
-        'compound', 'fixed', 'push', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('10f8ff0e-38c6-465d-b99a-26c4026d22c6', 'Leg Extension', '2024-09-07 20:42:37.44943',
-        '2024-09-07 20:42:37.44943', '',
-        'Select the desired resistance on the weight stack and insert the pin. Adjust the seat so that the knees are directly in line with the axis of the machine. Sit down and position your shins behind the pad at the base of the machine. Take a deep breath and extend your legs as you flex your quadriceps. Slowly lower your feet back to the starting position.',
-        'isolation', 'fixed', 'push', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('88baf661-c550-4ecd-b15a-0d1ca4d41116', 'One Leg Dumbbell Squat (AKA Dumbbell Bulgarian Split Squat)',
-        '2024-09-07 20:44:02.278455', '2024-09-07 20:44:02.278455', '',
-        'Set up in a split stance while holding dumbbells at your side with a neutral grip. Place the back foot on a bench or pad to increase the range of motion. Descend by flexing the front knee until the back knee touches the ground, then drive through the front foot to extend the knee and return to the starting position.',
-        'compound', 'free', 'push', 'intermediate');
-INSERT INTO public.exercise_examples
-VALUES ('4dc80274-2d3e-482e-a736-9f9399330c76', 'Machine Hack Squat', '2024-09-07 20:50:37.219599',
-        '2024-09-07 20:50:37.219599', '',
-        'The machine hack squat is a leg exercise primarily targeting the quads, with secondary emphasis on hamstrings, glutes, calves, and stabilizing muscles like abs and lower back. It’s ideal for leg or full-body workouts, helping build strength and leg mass.',
-        'compound', 'fixed', 'push', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('14dbd276-30fe-4558-9cf0-104751b58f2d', 'Dumbbell Rear Lunge', '2024-09-07 20:51:46.750556',
-        '2024-09-07 20:51:46.750556', '',
-        'The dumbbell rear lunge is a lunge variation that primarily targets the quads with secondary emphasis on the hamstrings, glutes, and calves. This unilateral leg exercise is beneficial for building leg strength and stability.',
-        'compound', 'free', 'push', 'intermediate');
-INSERT INTO public.exercise_examples
-VALUES ('2fd70951-2d44-407e-a7ee-daa94bf6af87', 'Front Squat', '2024-09-07 20:53:13.256272',
-        '2024-09-07 20:53:13.256272', '',
-        'The front squat is a compound exercise that focuses primarily on the quads, with secondary emphasis on hamstrings, glutes, calves, hip flexors, abs, upper back, and adductors. It is an essential movement for leg strength and stability, suitable for intermediate lifters.',
-        'compound', 'free', 'push', 'intermediate');
-INSERT INTO public.exercise_examples
-VALUES ('24c43903-d3a7-4a39-9231-5bc7d5cec5da', 'Dumbbell Split Squat', '2024-09-07 20:54:24.859554',
-        '2024-09-07 20:54:24.859554', '',
-        'The dumbbell split squat is a compound exercise primarily targeting the quads, with secondary emphasis on hamstrings, glutes, calves, abs, and adductors. It is ideal for beginners looking to improve leg strength and balance.',
-        'compound', 'free', 'push', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('de763854-d06d-43e9-9973-f4ca8839201b', 'Dumbbell Walking Lunge', '2024-09-07 20:55:27.29392',
-        '2024-09-07 20:55:27.29392', '',
-        'The dumbbell walking lunge is an advanced compound leg exercise focusing on the quads, with secondary involvement from hamstrings, glutes, calves, abs, and upper body muscles like traps and upper back. It is effective for building leg strength and balance.',
-        'compound', 'free', 'push', 'advanced');
-INSERT INTO public.exercise_examples
-VALUES ('5ab252b3-204d-4846-80e8-a7629f2d2e25', 'Frog Squat', '2024-09-07 20:56:42.175068',
-        '2024-09-07 20:56:42.175068', '',
-        'The frog squat is a beginner-level leg exercise focusing primarily on the quads, with secondary involvement from the glutes, hamstrings, calves, and abs. It emphasizes form and control, ideal for building leg strength and stability.',
-        'compound', 'free', 'push', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('7b006564-2c61-4661-ab8c-d4cf60fdb3ed', 'Smith Machine Squat', '2024-09-07 21:00:33.453044',
-        '2024-09-07 21:00:33.453044', '',
-        'The Smith machine squat is a compound leg exercise that primarily targets the quads with secondary involvement from the hamstrings, glutes, calves, abs, adductors, and rhomboids. It is a great beginner exercise for learning squat form and building leg strength.',
-        'compound', 'fixed', 'push', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('1e51b837-215d-4069-9d14-c9510c1b1b61', 'Smith Machine Lunge', '2024-09-07 21:02:58.920827',
-        '2024-09-07 21:02:58.920827', '',
-        'The Smith machine lunge is a compound leg exercise primarily targeting the quads, with secondary involvement from the hamstrings, glutes, calves, abs, and adductors. It is a good variation for isolating leg muscles in a controlled environment using a machine.',
-        'compound', 'fixed', 'push', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('4ef87c39-b004-4c4c-82a8-ddd0338de8c8', 'Smith Machine Front Squat', '2024-09-08 11:38:55.940763',
-        '2024-09-08 11:38:55.940763', '',
-        'The Smith machine front squat is a compound leg exercise primarily targeting the quads, with secondary involvement from the hamstrings, glutes, calves, abs, adductors, and rhomboids. It is ideal for learning front squat mechanics in a controlled environment.',
-        'compound', 'fixed', 'push', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('ea89fe55-c50f-4bbf-acc1-96e7df46101a', 'One Leg 45 Degree Leg Press', '2024-09-08 11:42:23.510138',
-        '2024-09-08 11:42:23.510138', '',
-        'The one leg 45-degree leg press is a compound leg exercise primarily targeting the quads, with secondary involvement from the hamstrings, glutes, and calves. It helps improve unilateral leg strength and symmetry.',
-        'compound', 'fixed', 'push', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('395bb56a-d4af-4f4a-abb3-51a9ef1dc686', 'Wide Stance 45 Degree Leg Press', '2024-09-08 11:47:42.803848',
-        '2024-09-08 11:47:42.803848', '',
-        'The wide stance 45-degree leg press is a compound leg exercise primarily targeting the quads, with secondary involvement from the hamstrings, glutes, and calves. It places additional tension on the inner legs due to the wide stance.',
-        'compound', 'fixed', 'push', 'beginner');
-INSERT INTO public.exercise_examples
-VALUES ('a40b23bf-bd6d-41d0-adbe-254bce002c2d', 'Wide Hack Squat', '2024-09-08 11:48:44.494903',
-        '2024-09-08 11:48:44.494903', '',
-        'The wide stance machine hack squat is a compound leg exercise that primarily targets the quads, with secondary involvement from the hamstrings, glutes, and calves. The wide stance increases tension in the inner quads, hamstrings, and glutes.',
-        'compound', 'fixed', 'push', 'intermediate');
-INSERT INTO public.exercise_examples
-VALUES ('a4bf88ee-8865-4b1f-88a3-28cf59d28739', 'Zercher Squat', '2024-09-08 11:51:56.624377',
-        '2024-09-08 11:51:56.624377', '',
-        'The Zercher squat is a compound leg exercise primarily targeting the quads, with secondary involvement from the hamstrings, glutes, calves, abs, biceps, forearms, and adductors. It requires holding the barbell in the crook of your elbows and is useful for improving leg and upper body strength.',
-        'compound', 'free', 'push', 'advanced');
-INSERT INTO public.exercise_examples
-VALUES ('9572d666-227a-4639-9ea3-defd67123fbc', 'Smith Machine Zercher Squat', '2024-09-08 11:54:36.16859',
-        '2024-09-08 11:54:36.16859', '',
-        'The Smith machine Zercher squat is a compound leg exercise primarily targeting the quads, with secondary involvement from the hamstrings, glutes, calves, and forearms. It allows for controlled leg development with less need for stabilization.',
-        'compound', 'fixed', 'push', 'intermediate');
-INSERT INTO public.exercise_examples
-VALUES ('21d5ce50-6ffa-44d9-869f-abcfeb518018', 'Dumbbell Goblet Split Squat', '2024-09-08 11:56:12.840633',
-        '2024-09-08 11:56:12.840633', '',
-        'The dumbbell goblet split squat is a compound leg exercise primarily targeting the quads, with secondary involvement from the hamstrings, glutes, calves, abs, adductors, and upper body stabilizers such as the shoulders and traps. It helps improve leg strength and stability while maintaining an upright posture.',
-        'compound', 'free', 'push', 'beginner');
+COPY public.exercise_examples (id, name, created_at, updated_at, image_url, description, category, weight_type, force_type, experience) FROM stdin;
+faf6674c-2a2a-4b03-ab8b-7a033052b572	Alternating Bent-Over Dumbbell Kickback	2024-08-24 13:49:36.23273	2025-09-15 16:41:34.105112	https://hips.hearstapps.com/hmg-prod/images/young-man-working-out-with-dumbbell-at-gym-royalty-free-image-1667582833.jpg?crop=1xw:0.84415xh;center,top	Select appropriate dumbbells. Hinge at the hips until your torso is nearly parallel to the floor, soft knees, neutral spine, shoulder blades lightly retracted.\n\nTuck upper arms close to the torso with elbows bent ~90°. Keep wrists neutral.\n\nExtend one elbow to straighten the arm without swinging the shoulder; keep the elbow high and upper arm fixed. Squeeze the triceps briefly, then lower under control. Alternate arms rep to rep while keeping the torso still and a pain-free range.	isolation	free	push	beginner
+4aafe702-f2fc-4fa2-a7fb-c31c279adeda	45 Degree Lying Tricep Extension	2024-08-23 20:36:43.346849	2025-09-15 16:43:20.063503	https://www.bodybuilding.com/fun/images/2015/your-complete-guide-to-skullcrushers-graphics-45-degree-skullcrusher-700xh.jpg	Sit on the end of a flat bench with a barbell on your thighs.\n\nGrip the barbell overhand about shoulder-width. Bring it to your chest, lie back, and press to arms straight above the chest.\n\nShift the arms slightly back so they form roughly a 45° angle toward the head; keep elbows tucked and upper arms fixed.\n\nBend the elbows to lower the bar behind the head until just above the bench/forehead, wrists neutral. Pause, then extend the elbows back to the 45° line without locking out. Repeat for reps.	isolation	free	push	beginner
+7517ae2f-c198-4a33-8a1d-1dc7327d1430	45 Degree Lying Tricep Extension (EZ Bar)	2024-08-23 20:29:25.181737	2025-09-15 16:44:27.403264	https://i0.wp.com/www.muscleandfitness.com/wp-content/uploads/2015/10/triceps-article-social.jpg?quality=86&strip=all	Sit on the end of a flat bench with an EZ-bar resting on your thighs.\n\nGrip the EZ-bar on the inner (narrow) grips. Bring it to your chest, lie back, and press to arms straight above the chest.\n\nShift the arms slightly back so they point ~45° toward the head; keep upper arms fixed and elbows tucked.\n\nBend the elbows to lower the bar behind the head until just above the bench/forehead, wrists neutral. Pause, then extend the elbows back to the 45° line without locking out. Repeat for reps.	isolation	free	push	intermediate
+3b828d2f-797f-4a45-9d1d-1d3efe38fb54	Weighted Tricep Dips	2024-08-23 15:50:27.637943	2025-09-15 16:46:53.694388	https://steelsupplements.com/cdn/shop/articles/shutterstock_566901937_2000x.jpg?v=1599047555	Step up onto the dip bars and take a neutral grip. Add external load as needed (dip belt or a dumbbell held between the feet).\n\nSet the shoulders down and back, brace, and keep a tall/vertical torso to emphasize the triceps.\n\nUnlock the elbows and lower under control until the elbows reach about 90° of flexion (or slightly below if comfortable), keeping the elbows tracking back—not flaring out.\n\nPress through the palms by extending the elbows to return to the top without shrugging. Repeat for the desired number of repetitions.	compound	free	push	advanced
+650e9725-d36c-4688-bcab-adf93dfe9e5d	EZ Bar Skullcrusher	2024-08-23 15:44:41.300424	2025-09-15 16:47:55.713775	https://www.mensjournal.com/.image/t_share/MTk2OTg4MTk1NjA1MzI1NDUy/barbellskullcrusher.jpg	Select your desired weight and sit on the edge of a flat bench.\n\nTo get into position, lie back keeping the EZ-bar close to your chest, then press to elbow lockout above the chest.\n\nSet the upper arms at a slight backward angle (~30–45°) and keep the elbows fixed—do not let them flare.\n\nLower the bar toward the forehead or slightly behind the head by unlocking only the elbows.\n\nReverse by extending the elbows, squeezing the triceps to return to the top without forcefully locking out. Repeat for the desired reps.	isolation	free	push	beginner
+ab0d7384-444e-446a-911d-f64ac31db8ef	Close Grip Bench Press	2024-08-23 15:30:18.860564	2025-09-15 16:48:48.571747	https://steelsupplements.com/cdn/shop/articles/shutterstock_69079681_2000x.jpg?v=1599316230	Lie flat on a bench and set your hands just inside shoulder width.\n\nSet your shoulder blades by pinching them together and driving them into the bench; keep feet planted for leg drive.\n\nTake a deep breath and use a controlled liftoff to maintain upper-back tightness. Let the weight settle with wrists stacked over elbows.\n\nInhale and descend by unlocking the elbows, keeping them tucked (not flared). Lower the bar to the lower chest/base of the sternum with forearms vertical.\n\nPress the bar back up by driving the feet into the floor, maintaining scapular retraction, and extending the elbows. Exhale near lockout. Repeat for the desired reps.	compound	free	push	beginner
+0e2fe1e8-f8f1-48e6-b360-8c9d4d9991a6	Rope Tricep Extension	2024-08-23 14:53:43.902288	2025-09-15 16:50:09.879898	https://www.dmoose.com/cdn/shop/articles/1_6a24d912-5f74-43d4-bc20-578944bd99f7.jpg?v=1648734107	Attach a rope to a high cable stack and assume a standing position with a slight hip hinge and neutral spine.\n\nGrasp the rope with a neutral grip and pin your elbows close to your sides (just in front of the ribs). Keep wrists neutral.\n\nInitiate by extending the elbows to move the rope down; at the bottom, spread the rope ends apart for full triceps contraction without hyperextending the elbows.\n\nControl the return by bending the elbows while keeping the upper arms fixed. Exhale as you extend, inhale on the way up. Repeat for the desired reps.	isolation	fixed	push	beginner
+b790c6a6-ecd1-4b3a-afbc-22cd82e55658	Lying Dumbbell Extension	2024-08-23 14:29:51.253789	2025-09-15 16:52:31.821814	https://weighttrainingexercises4you.com/wp-content/uploads/Lying-Dumbbell-Triceps-Extension.jpg	Sit on the end of a flat bench with dumbbells on your thighs. Lie back and press the dumbbells to arm’s length over the shoulders using a neutral grip (palms facing each other). Keep wrists neutral, shoulders packed, and upper arms angled slightly back with elbows pointing toward the hips.\nBend only at the elbows to lower the dumbbells beside the head until they reach about ear level. Pause while keeping elbows tucked, then extend the elbows to return to the start without hyperextending. Maintain a steady tempo and avoid letting the dumbbells drift toward the chest.\nRepeat for the desired reps.	isolation	free	push	beginner
+6cb225d2-be00-461d-9bf0-7f0c87cfea0b	Straight Bar Tricep Extension	2024-08-23 13:51:17.085276	2025-09-15 16:54:29.58636	https://miro.medium.com/v2/resize:fit:683/0*WTHf_Xa35BeFOEAl.jpg	Attach a straight bar to a high cable and assume a standing position with a slight hip hinge. Grasp the bar with a pronated grip (palms down), pull the shoulders down and back, and keep the elbows tucked by your sides.\nInitiate by bending only at the elbows while keeping the upper arms fixed and wrists neutral. Extend the elbows to press the bar down until nearly locked out (avoid hyperextension), squeezing the triceps.\nControl the return, allowing the bar to rise until the forearms are near horizontal or elbows ~90°, maintaining elbow position under the shoulders. Repeat for the desired reps.	isolation	fixed	push	beginner
+50774526-c91f-4d71-82a8-456526b0fbd0	California Skullcrusher	2024-08-26 14:21:24.510891	2025-09-15 16:27:44.417862	https://www.bodybuilding.com/fun/images/2015/your-complete-guide-to-skullcrushers-desktop-2-960x540.jpg	Select an appropriate load and lie on a flat bench with an EZ bar held with a neutral/semineutral grip and elbows tucked. Press to lockout over the mid-chest and set the shoulder blades.\nLower by unlocking the elbows toward the forehead. When forearms reach ~parallel, let the upper arms drift overhead (pullover-like) under control. Reverse by pulling the upper arms back to the start position, then finish by extending the elbows to lockout. Keep wrists neutral, upper arms close to the torso, and avoid excessive shoulder motion or elbow flare. Repeat for reps.	isolation	free	push	beginner
+11644e17-247a-46b0-a391-b3b2a2a6bba8	Cable Tricep Kickback	2024-08-26 14:15:00.627444	2025-09-15 16:29:39.931143	https://bodybuilding-wizard.com/wp-content/uploads/2015/02/cable-tricep-kickback-2.jpg	Attach a single-grip handle to a low pulley. Stand staggered, hinge at the hips until your torso is near parallel to the floor, and brace the core. Hold the handle in one hand, use the other hand for support on the machine or bench. Lift the working upper arm so the elbow is beside the torso and stays fixed there.\nFrom this position, extend the elbow until the arm is straight, squeeze the triceps, then slowly flex the elbow to return without letting the upper arm swing. Keep wrists neutral and shoulders packed. Perform reps, then switch sides.	isolation	fixed	push	beginner
+5985d847-0473-444e-8fe0-9da5341ef986	Cable Tricep Extension With V-Bar	2024-08-26 14:10:38.408306	2025-09-15 16:31:08.300805	https://atletiq.com/content/exercises/243/male_1.jpg	Attach a V-bar to a high cable. Stand tall with a slight hip hinge and soft knees. Grip the V-bar with a semi-pronated grip, tuck your elbows to your sides, keep the upper arms fixed, shoulders down and back, and brace the core.\nExtend the elbows to press the bar down until the arms are straight without hyperextending; squeeze the triceps. Control the return to about 90° at the elbows. Keep wrists neutral and avoid shrugging, leaning, or swinging. Repeat for the desired reps.	isolation	fixed	push	beginner
+275097d4-3c8d-4040-9b2e-5f294919df04	Cable Concentration Tricep Extension	2024-08-24 15:21:25.308798	2025-09-15 16:32:48.61278	https://www.bodybuilding.com/images/2016/june/7-best-triceps-exercises-youre-not-doing-v2-7-700xh.jpg	Attach a single handle to a high cable. Set up in a half-kneeling stance (inside knee down) with the working elbow braced against the inside of the front thigh. Grip the handle supinated (palm up). Keep the upper arm fixed, shoulder packed, wrist neutral, and core braced.\nExtend the elbow until the arm is straight without moving the upper arm; squeeze the triceps. Control the return to about 90° of elbow flexion. Avoid swinging or shrugging. Repeat for the desired reps.	isolation	fixed	push	beginner
+547f1f7e-3ee1-4b39-99eb-3462b1ec13af	Bent Over Dumbbell Tricep Kickback	2024-08-24 15:14:04.484126	2025-09-15 16:34:46.207996	https://hips.hearstapps.com/hmg-prod/images/triceps-kickback-1551296273.jpg	Select the desired weight from the rack and stand in an open area.\n\nHinge at the hips to ~45° with a neutral spine and soft knees. Row the dumbbells so the upper arms are alongside the torso with elbows ~90°. Keep the shoulders packed, upper arms fixed (no swing), and wrists neutral.\n\nExtend the elbows until the arms are straight, briefly squeeze the triceps, then lower under control until the forearms are perpendicular to the floor (or slightly beyond) without letting the upper arms drop.\n\nRepeat for the desired reps.	isolation	free	push	beginner
+9f0c8916-a08b-4fe5-9f24-e1680ef627a8	Bench Dip	2024-08-24 15:05:24.055319	2025-09-15 16:36:37.883984	https://steelsupplements.com/cdn/shop/articles/shutterstock_1526664821_1000x.jpg?v=1644523346	Place two flat benches parallel, ~4–5 ft apart (adjust to your leg length). Put your heels on one bench and hands on the edge of the other, fingers forward, arms straight but not locked. Keep your torso close to the bench, shoulders down and back, and core braced.\n\nLower by bending the elbows to ~90° (or to a comfortable shoulder range) without letting the shoulders roll forward. Pause briefly, then press back up by extending the elbows, finishing with soft (not locked) elbows.\n\nMove in a controlled tempo and maintain contact with both benches throughout.	compound	body_weight	push	beginner
+0eaa8980-e29e-4f33-88b0-915db5cf309a	Alternating Lying Dumbbell Extension	2024-08-24 15:00:28.238965	2025-09-15 16:38:05.025098	https://weighttrainingexercises4you.com/wp-content/uploads/Alternating-Lying-Dumbbell-Triceps-Extension.jpg	Set two dumbbells at the end of a flat bench. Pick them up with a neutral grip and sit with the ends on your thighs. Rock back to lie on the bench and press the dumbbells above your chest, wrists straight, elbows stacked under the bells.\n\nKeep the upper arms fixed (minimal shoulder movement). Lower the left dumbbell in a controlled, semi-circular path until it’s near the left ear by bending only the elbow. Pause briefly, then extend the elbow to return to the start while the right arm remains locked in place. Alternate sides rep-to-rep.\n\nMaintain a neutral spine, shoulder blades lightly retracted, and elbows close—no flaring. Use a smooth tempo and full, pain-free range.	isolation	free	push	intermediate
+93e6b1c4-0510-41d4-983c-a1fde003881f	Alternating Dumbbell Floor Press	2024-08-24 13:55:14.325068	2025-09-15 16:39:47.341847	https://cdn.shopify.com/s/files/1/2623/4904/files/Dumbbell_Floor_Press_b2da358c-6c1e-4ab5-98a6-98e24bfa6d52_600x600.png?v=1659337818	Sit on the floor with the dumbbells upright beside you. Pick each up, set them high in the hip crease, then lie back keeping them close to the torso. Plant feet and lightly retract the shoulder blades.\n\nPress both dumbbells to full extension. Keep one arm locked out while you lower the other until the upper arm lightly touches the floor; forearm stays vertical and elbow tracks ~45° from the torso. Press back to lockout, then alternate sides rep-to-rep. Maintain a smooth tempo and a pain-free range.	compound	free	push	beginner
+d6743870-0d5a-4180-9671-181b8f65e03e	Decline Lying Tricep Extension (Skullcrusher)	2024-08-27 17:17:13.831319	2025-09-15 16:09:42.883863		Set a decline bench to ~20–30°. Select the desired weight and lie back, keeping the bar close to your chest; press to lockout over the shoulders. Use a narrow overhand grip on the EZ bar, wrists neutral, elbows slightly tucked and fixed. From a stable upper-arm position, unlock the elbows and lower the bar toward the forehead or just behind the head. When the forearms reach parallel or slightly below, extend the elbows to lockout by contracting the triceps. Avoid shoulder movement, pause briefly, then repeat for reps.	isolation	free	push	beginner
+e21344ff-b825-4a99-bf8b-a778bf1964d1	Decline Close Grip Bench Press	2024-08-27 17:14:24.425351	2025-09-15 16:11:38.78951		Lie on a decline bench and set your hands at shoulder-width or slightly closer. Hook your feet under the pads and set your shoulder blades by pinching them together into the bench. Take a deep breath and get a handoff to maintain upper-back tightness. Let the weight settle. Inhale, unlock the elbows, and lower the bar under control to just below the sternum. Keep elbows tucked (≈30–45°), wrists neutral, and forearms stacked under the bar. Press the bar back up in a straight line by driving yourself into the bench and extending the elbows. Repeat for the desired reps.	compound	free	push	intermediate
+490df80e-d34c-42cf-bfe5-c27ddd2cd734	Decline Lying Dumbbell Extension	2024-08-27 17:08:58.772907	2025-09-15 16:13:02.93229		Set an adjustable bench to a slight decline (15–30°) and select the desired dumbbells.\n\nLie back keeping the weights close to your chest, then press to lockout with a neutral grip. Keep your upper arms fixed and elbows slightly tucked.\n\nLower the dumbbells toward your temples/shoulders by unlocking the elbows until your forearms reach parallel or just below.\n\nExtend the elbows to return to lockout while keeping the upper arms still. Repeat for the desired number of repetitions.	isolation	free	push	beginner
+ee8cc366-d33b-45a6-84b0-4ab416585ad1	Close Grip Press Behind-The-Neck	2024-08-27 16:05:54.962719	2025-09-15 16:14:37.93572	https://assets.myworkouts.io/exercises-media/b6KbXDksgkfbm3TtY/close_grip_press_behind_neck_male_v5_thumb100Poster_capoff.jpg	Sit on a flat bench (back support preferred) and load an EZ bar or barbell. Grasp just inside shoulder width with an overhand grip.\nPress the bar overhead to near lockout with a slight elbow bend; keep ribs down and upper arms slightly forward of the ears.\nLower the bar behind the head by bending only at the elbows until a comfortable depth (forearms ~parallel to floor), keeping shoulders packed.\nExtend the elbows to return to the start. Maintain a controlled tempo and pain-free range. Repeat for desired reps.	isolation	free	push	intermediate
+21e7460d-aa00-448b-8c82-994a73e0164c	Dumbbell Tate Press	2024-08-26 15:20:51.07074	2025-09-15 16:16:08.770401	https://i0.wp.com/www.muscleandfitness.com/wp-content/uploads/2017/06/600-tate-press.jpg?quality=86&strip=all	Sit on a flat bench with a pair of dumbbells. Lie back keeping the weights close to your chest, then press them to near lockout.\nUse a pronated grip (thumbs pointing toward each other). Keep upper arms fixed and slightly tucked; bend only at the elbows to lower the inner plates of the dumbbells toward the chest.\nWhen the dumbbell ends lightly touch the chest, extend the elbows to return to the start. Maintain a neutral wrist, controlled tempo, and pain-free range. Repeat for reps.	isolation	free	push	beginner
+6a312bde-cc33-450b-8f1d-6091ccffe9cc	Reverse Grip Cable Tricep Extension	2024-08-26 15:16:20.191397	2025-09-15 16:18:28.988991	https://ignorelimits.com/wp-content/uploads/2017/08/how-to-reverse-grip-cable-triceps-pushdown-Copy.jpg	Attach a straight bar to a high cable and stand facing the stack. Grasp the bar shoulder-width with a supinated grip (palms up), hinge slightly forward, brace, and pin your elbows to your sides.\nExtend only at the elbows to press the bar down until the arms are straight without shrugging; keep wrists neutral. Control the return until forearms are ~90° without letting the upper arms drift. Avoid swinging the torso. Repeat for reps.	isolation	fixed	push	beginner
+4f9bdd10-28bc-447e-8cf5-fbf47cd9af79	French Press	2024-08-26 14:52:11.233011	2025-09-15 16:20:19.368067	https://www.guinnessworldrecords.com/world-records/images/619083-most-weight-lifted-by-ez-bar-french-press-french-curl-in-one-minute-header.jpg	Load a barbell or EZ bar and stand with feet shoulder-width. Hinge to pick the bar safely, then press it overhead. Grip about 8–12 inches (just inside shoulder width), brace your core and glutes, keep ribs down, wrists neutral, and elbows pointing up close to your head.\nFrom the overhead start, lower the bar behind your head by bending only at the elbows while keeping the upper arms as vertical as possible. Pause in a comfortable stretch, then extend the elbows to return without aggressive lockout. Avoid leaning back or letting the elbows flare. Repeat for reps.	isolation	free	push	beginner
+1b4402c2-2459-45c1-8d24-356322c71d20	Two Arm Standing Dumbbell Extension	2024-08-26 14:46:34.072768	2025-09-15 16:21:37.396914	https://media.post.rvohealth.io/wp-content/uploads/2021/10/overhead-tricep-extension-dumbbell-732x549-thumbnail.jpg	Select the desired weight and stand tall with feet shoulder-width. Clean the dumbbell to the shoulder, overlap the hands around one end, then press it overhead. Brace your core and glutes, keep ribs down, wrists neutral, and elbows pointing up close to the ears.\nFrom the overhead position, lower the dumbbell behind your head by bending only at the elbows while keeping the upper arms as vertical as possible. Pause in a comfortable stretch, then extend the elbows to return without aggressive lockout. Avoid leaning back or letting the elbows flare. Repeat for reps.	isolation	free	push	beginner
+04d275d8-71df-4695-ace9-899ce6e41b29	Seated Dumbbell Tricep Extension	2024-08-26 14:39:55.622736	2025-09-15 16:22:46.742312	https://www.dmoose.com/cdn/shop/articles/1_f16231a6-e9e2-4ff0-b3f1-b1ccdfbac2dc.jpg?v=1658323250	Select the desired weight and set an adjustable bench to 90°. Sit tall with your back on the pad and feet planted. Clean the dumbbell to the shoulder, overlap your hands around one head, then press it overhead. Brace your core, keep ribs down, wrists neutral, and elbows pointing up close to the ears.\nLower the dumbbell behind your head by bending only at the elbows while keeping the upper arms as vertical as possible. Pause in a comfortable stretch, then extend the elbows to return without aggressive lockout. Avoid flaring the elbows or arching the lower back. Repeat for reps.	isolation	free	push	beginner
+89f423d0-315f-4d93-b346-dcb468a97045	Zottman Curl	2024-08-27 20:17:28.409294	2025-09-15 15:44:50.458407		Stand with feet shoulder-width apart holding dumbbells at your sides. Using a supinated (palms up) grip, keep elbows tucked and curl the dumbbells toward your shoulders without swinging. At the top, rotate to a pronated (palms down) position and lower the weights slowly under control. Re-supinate at the bottom and repeat for the desired reps.	isolation	free	pull	intermediate
+9fc5ae4d-2868-4576-bb67-9c83663fc005	EZ Bar Preacher Curl	2024-08-27 20:15:21.110573	2025-09-15 15:46:14.740268		Adjust the preacher bench so your upper arms rest firmly on the pad. Load the EZ bar and grip shoulder-width with an underhand (palms up) grip. Set your shoulders down and back, keep elbows pinned to the pad, and wrists neutral. Lift the bar off the rests with a slight elbow bend. Curl until your forearms are near vertical without letting the shoulders roll forward; pause and squeeze the biceps. Lower the bar slowly to a near-straight elbow without locking out. Maintain a still torso and avoid bouncing. Repeat for the desired reps.	isolation	free	pull	beginner
+2522a61a-2190-43e9-ae52-ca6bb023815e	Cable Curl	2024-08-27 20:13:52.504713	2025-09-15 15:48:55.935457		Attach a straight bar to the low pulley and select the load. Stand facing the stack, feet shoulder-width. Grip the bar shoulder-width with a supinated (palms up) grip. Set shoulders down and back, keep elbows tucked to your sides and wrists neutral. Curl the bar up until forearms are near vertical; pause and squeeze the biceps. Lower under control to near-full elbow extension without letting the shoulders roll forward. Repeat for desired reps.	isolation	fixed	pull	beginner
+cfb2d83a-b3dc-44e9-ab08-53f9269752d6	Concentration Curl	2024-08-27 20:11:42.117375	2025-09-15 15:50:31.263722		Sit tall on a flat bench and hinge forward slightly. Plant feet, then wedge the working elbow against the inside of the same-side thigh near the knee. Hold a dumbbell with a supinated grip, wrist neutral. Keep torso still, shoulder packed, and elbow pinned. Curl the dumbbell toward the shoulder, squeeze the biceps at the top, then lower under control to a near-full stretch without letting the elbow slide. Repeat for both sides.	isolation	free	pull	beginner
+09386394-e4e1-4a6d-adce-d5f5a518485c	Incline Dumbbell Curl	2024-08-27 20:09:12.651079	2025-09-15 15:52:01.066085		Set an incline bench to ~55–65°. Sit back with your head, upper back, and glutes on the pad; arms hang straight down. Grip the dumbbells supinated, shoulders set, elbows slightly behind the torso. Without swinging or letting the shoulders roll forward, curl the bells toward the shoulders, squeeze the biceps, then lower under control to a near-full stretch. Repeat for reps.	isolation	free	pull	beginner
+bbfbcfe2-1f56-492e-afa6-75e595b84fde	Standing Barbell Curl	2024-08-27 20:04:23.470927	2025-09-15 15:53:53.94422		Stand tall with feet hip-width, ribs down, glutes and abs braced. Grip a barbell shoulder-width with a supinated grip, arms fully extended, elbows tucked to sides. Without leaning back or swinging, curl the bar by flexing the elbows until forearms are near vertical; squeeze the biceps, then lower under control to full extension while keeping wrists neutral and the bar off the body. Repeat for reps.	isolation	free	pull	beginner
+8324ae75-08e9-48de-a00b-55d229085712	Standing Hammer Curl	2024-08-27 20:02:25.685377	2025-09-15 15:55:48.445705		Stand tall with feet hip-width, core braced. Hold dumbbells at your sides with a neutral grip (palms facing in), shoulders down and elbows tucked. Without swinging or leaning back, curl by flexing the elbows until forearms are near vertical; keep wrists neutral throughout. Squeeze briefly at the top, then lower under control to full extension while maintaining tension. Repeat for reps.	isolation	free	pull	beginner
+ddc2e877-7197-42fa-ae1e-59706d209774	Standing Dumbbell Curl	2024-08-27 19:58:20.484787	2025-09-15 15:57:13.950676		Stand tall with feet hip-width and core braced. Hold dumbbells at your sides with a supinated grip (palms up), shoulders down and elbows tucked. Without swinging or leaning back, curl by flexing the elbows until forearms are near vertical; keep wrists neutral. Squeeze briefly at the top, then lower under control to full elbow extension while maintaining tension. Repeat for reps.	isolation	free	pull	beginner
+a90f4822-63c5-42b9-943c-ff0ceacad1eb	High Pulley Overhead Tricep Extension	2024-08-27 17:44:25.490434	2025-09-15 16:02:04.859997		Attach a straight bar to a high pulley and select the load. Stand facing away from the stack with a small forward lean, feet staggered for balance. Grip the bar overhand at shoulder width and bring it behind your head with elbows close to your ears; upper arms stay roughly parallel to the floor. Extend only at the elbows to press the bar forward until the arms are straight. Pause, then return under control to the start, keeping the torso and shoulders stable. Repeat for reps.	isolation	fixed	push	beginner
+748e0a60-9429-4a9d-8a6b-3ba76a7fc4b2	High Pulley Overhead Tricep Extension (Rope Extension)	2024-08-27 17:41:21.141757	2025-09-15 16:03:40.111017		Attach a rope to a high pulley and select the load. Stand with a split stance, hinge slightly forward, and grasp the rope overhead with a neutral grip. Keep elbows close to your ears and upper arms fixed. Extend only at the elbows, driving the rope forward/down and separating the ends at lockout. Pause under control, then return to the start without letting the shoulders or torso move. Repeat for reps.	isolation	fixed	push	beginner
+53defdc5-bfec-4af4-bfba-60440e3493cc	EZ Bar Incline Skullcrusher	2024-08-27 17:40:04.03333	2025-09-15 16:06:04.550945		Set an adjustable bench to 20–30°. Sit, lie back with the EZ bar close to your chest, then press to lockout over the shoulders. Keep upper arms fixed and elbows tucked. Unlock the elbows and lower the bar toward the forehead (or just behind the head) until forearms are slightly below parallel. Extend the elbows to return to lockout, keeping wrists neutral and torso still. Repeat for reps.	isolation	free	push	beginner
+cfd086be-f452-4f1d-b0cc-3988d677a8b4	Dumbbell Hammer Preacher Curl	2024-08-28 20:48:17.207982	2025-09-15 15:18:53.490871		Select a dumbbell and sit with your chest supported against the preacher bench. Pin your upper arm to the pad and use a neutral (thumbs-up, palms facing each other) grip. From full elbow extension, lower the weight under control, keeping the wrist straight and the shoulder still. When the biceps/brachialis are fully lengthened, curl back up without letting the elbow lift off the pad; pause and squeeze, then lower to the start. Repeat for both sides.	isolation	free	pull	beginner
+d7abed66-3c4a-490b-91cc-8e714336f9fa	Dumbbell Preacher Curl	2024-08-28 20:47:16.396698	2025-09-15 15:20:08.470728		Select the desired dumbbell and sit upright with your chest supported on the preacher bench. Pin your upper arm to the pad and use a supinated (palms up) grip. From full elbow extension, lower the weight under control without letting the shoulder move or the wrist bend. When the biceps are fully lengthened, curl back to the start, briefly squeeze at the top, then lower again. Repeat for both sides.	isolation	free	pull	beginner
+4de0744d-0a78-4052-aa1b-e5340959d9fe	Standing Dumbbell Reverse Curl	2024-08-28 20:45:27.508894	2025-09-15 15:21:42.982047		Select the desired weight from the rack and take a shoulder-width stance. Using a pronated (palms down) grip, keep your elbows pinned to your sides and your wrists straight. Curl the dumbbells toward your shoulders by flexing only at the elbows—avoid swinging or letting the shoulders roll forward. Briefly squeeze at the top, then lower under control for 2–3 seconds to full elbow extension. Repeat for the desired reps.	isolation	free	pull	beginner
+da809d98-950b-4ca0-a71b-c67d21fd66da	Seated Dumbbell Curl	2024-08-28 20:44:17.593336	2025-09-15 15:23:42.601958		Sit tall on a flat bench with feet planted and a dumbbell in each hand, palms facing up (supinated). Keep elbows tucked to your sides, chest up, and wrists neutral. Curl both dumbbells by flexing only at the elbows—avoid swinging or letting the shoulders roll forward. Squeeze at the top, then lower under control for 2–3 seconds to full elbow extension. Repeat for the desired reps.	isolation	free	pull	beginner
+a2736a56-04b3-4437-835e-1e2dc8029c9e	Spider Curl	2024-08-28 20:42:25.582502	2025-09-15 15:26:02.180732		Set up facing the preacher bench with your chest against the pad and arms hanging vertically over the top edge. Grip an EZ bar shoulder-width with an underhand (supinated) grip. Keep upper arms perpendicular to the floor, elbows fixed, and wrists neutral. Curl the bar by flexing only the elbows—no swinging or shrugging. Squeeze at the top, pause, then lower under control (2–3 s) to a full stretch. Repeat for the desired reps.	isolation	free	pull	beginner
+908341ec-de1f-44bd-b84d-74ff8a7162a0	Alternating Standing Dumbbell Curl	2024-08-28 20:40:22.148816	2025-09-15 15:27:48.789435		Stand tall holding dumbbells at your sides with a supinated grip (palms up), wrists neutral, and elbows pinned to your torso. Create light pre-tension in the biceps. Curl one dumbbell up without swinging or letting the elbow drift forward; squeeze briefly at the top, then lower under control (2–3 s). Alternate sides each rep while keeping the non-working arm still and shoulders relaxed. Repeat for the desired reps.	isolation	free	pull	beginner
+7fd82f79-1f5f-4bae-8f2d-b94ecae595d5	Machine Bicep Curl	2024-08-28 20:38:26.215597	2025-09-15 15:30:56.252495		Adjust the seat so your elbows align with the machine’s pivot and your upper arms rest fully on the pad. Select a load, grasp the handle with a shoulder-width underhand grip, set your shoulders down/back, and keep wrists neutral. Create light pre-tension, then curl without letting the elbows lift or torso shift. Squeeze briefly at the top, and lower under control (2–3 s) to a full stretch without locking out. Repeat for the desired reps.	isolation	fixed	pull	beginner
+7e0566c6-eefb-4992-a673-d19902933c26	Cable Curl (Rope Extension)	2024-08-28 20:36:41.142025	2025-09-15 15:35:01.903684		Attach a rope to a low pulley and select the load. Stand tall, feet shoulder-width, core braced. Grasp the rope with a neutral grip (thumbs up), elbows pinned to your sides. Create light pre-tension and curl without letting the upper arms move; at the top, optionally separate the rope ends to intensify the squeeze. Lower under control to a full stretch without letting the stack slam. Repeat for the desired reps.	isolation	fixed	pull	beginner
+e7f390fd-7435-44e1-b354-c62073934c66	Alternating Standing Dumbbell Curl	2024-08-27 20:29:12.662559	2025-09-15 15:37:08.441021		Stand tall with dumbbells at your sides, palms up. Brace your core, pin your elbows to your ribs, and keep your wrists neutral. Create light pre-tension, then curl one dumbbell without swinging or moving the upper arm; pause and squeeze at the top. Lower under control to a full stretch while maintaining tension. Alternate sides rep by rep and keep the non-working arm still.	isolation	free	pull	beginner
+5e3c933f-7511-463e-88b1-a139c8276e69	Cross Body Hammer Curl (Pinwheel Curls)	2024-08-27 20:27:54.259424	2025-09-15 15:39:28.866495		Stand tall with dumbbells at your sides in a neutral grip (palms facing in). Brace your core, keep shoulders down, and pin your upper arm to your torso. Curl one dumbbell across the body toward the opposite shoulder/pec with the thumb leading; avoid swinging or rotating the torso. Pause and squeeze at the top, then lower under control to a full stretch. Keep the wrist neutral and the non-working arm still. Alternate sides rep by rep.	isolation	free	pull	beginner
+f2fb31f0-7f6b-42b6-9a79-c22453ac6a63	Alternating Seated Dumbbell Curl	2024-08-27 20:24:43.747305	2025-09-15 15:41:07.307492		Sit tall on a flat bench with dumbbells at your sides, palms facing up. Brace your core, keep your back straight, shoulders down, and elbows pinned to your sides. Curl one dumbbell without swinging or letting the elbow drift forward until you reach a strong biceps contraction; pause, then lower under control to a full stretch. Alternate arms each rep while keeping the non-working arm still and wrists neutral.	isolation	free	pull	beginner
+b99df7e8-eb44-4be1-be81-701347580781	Lying Incline Bench Barbell Curl	2024-08-28 21:11:35.028903	2025-09-15 15:00:03.100637		Set an adjustable bench to ~30° and lie prone with your chest supported at the end of the bench. Grasp an EZ bar with a shoulder-width supinated grip, wrists neutral, elbows hanging under the shoulders. Brace, keep the torso still (no shrugging or swinging), and curl the bar under control. Squeeze the biceps near the top without letting the elbows drift forward, then lower slowly to full elbow extension. Repeat for the desired reps.	isolation	free	pull	intermediate
+a9545ccb-3ec7-4646-95c9-f3a708d0d968	Two-Arm Low Pulley Cable Curl	2024-08-28 21:08:56.485198	2025-09-15 15:01:20.318382		Use a cable machine with two low pulleys and single handles. Stand centered between the stacks and take a small step forward to pre-tension the cables; arms extended slightly behind the body with a supinated grip. Brace, keep elbows pinned by your sides and shoulders still, then curl the handles toward your shoulders. Squeeze at the top without letting the elbows drift forward, and lower under control to full extension. Repeat for the desired reps.	isolation	fixed	pull	beginner
+04a13a1c-de2b-46f4-be62-3fa6b4655d0d	Barbell Concentration Curl	2024-08-28 21:07:18.63992	2025-09-15 15:03:04.356088		Sit on the end of a flat bench with feet slightly wider than shoulder width. Grasp a barbell underhand with a close grip (about 6–8 in / 15–20 cm). Hinge forward and pin your upper arms against the inner thighs to immobilize the shoulders; wrists neutral and spine long. Inhale, keep elbows fixed, and curl the bar toward your shoulders without swinging or letting the elbows drift. Squeeze briefly at the top, then lower under control to full extension. Repeat for the desired reps.	isolation	free	pull	beginner
+1f28edb2-29ae-467c-ad11-310c3f656fe2	Alternating Seated Hammer Curl	2024-08-28 21:04:44.306578	2025-09-15 15:04:48.59729		Sit on a flat bench with feet planted and torso tall. Hold two dumbbells at your sides with a neutral (hammer) grip; keep elbows tucked and still. Maintain slight elbow flexion to keep tension. Curl one dumbbell toward the shoulder without rotating the forearm or swinging the torso; squeeze briefly, then lower under control to full extension. Alternate arms rep to rep while the opposite arm stays braced. Keep wrists neutral and breathe steadily.	isolation	free	pull	beginner
+101f365e-5c84-438a-84b4-c8e798bd0aff	Incline Bench Hammer Curl	2024-08-28 21:02:48.198286	2025-09-15 15:06:15.666652		Set an adjustable bench to ~45°. Sit at the top end and hold a dumbbell with a neutral (hammer) grip. Brace the back of your upper arm on the pad and let the arm fully extend without letting the shoulder drift. Keep the wrist neutral and the elbow pinned to the pad. Curl the dumbbell by flexing the elbow only; do not supinate or swing. Squeeze briefly at the top, then lower under control to full extension. Repeat for reps, then switch arms.	isolation	free	pull	beginner
+af39600b-6fc5-435a-a5f8-a1d0a9994030	Incline Bench Dumbbell Curl	2024-08-28 21:00:57.784199	2025-09-15 15:08:22.510033		Set an adjustable bench to ~45°. Sit at the top end and brace the back of your upper arm on the pad. Hold a dumbbell with an underhand (supinated) grip, arm fully extended without letting the shoulder roll forward. Keep the elbow pinned and the wrist neutral. Curl by flexing the elbow only until the forearm is near vertical, squeeze briefly, then lower under control to full extension. Maintain steady torso contact with the bench and avoid shrugging or swinging. Repeat for reps, then switch arms.	isolation	free	pull	beginner
+4d72c2f1-2c10-45a3-9f5e-1f04012c0681	Alternating Incline Dumbbell Curl	2024-08-28 20:59:16.602427	2025-09-15 15:09:36.228389		Set an adjustable bench to a 30–45° incline (lower = harder). Sit, pick up two dumbbells, and lie back with your head/upper back supported. Hold with an underhand (supinated) grip, arms hanging and elbows slightly bent to keep tension. Keep shoulders back and elbows pinned—no swinging. Curl one dumbbell by flexing the elbow only until the forearm is near vertical; squeeze briefly, then lower under control to full extension without letting the shoulder roll forward. Alternate arms and repeat for reps.	isolation	free	pull	beginner
+cebf4622-c0a9-4759-a070-48c7556da67d	Squatting Cable Curl	2024-08-28 20:55:59.966001	2025-09-15 15:11:48.918655		Attach a straight bar to a low pulley. Face the machine and grasp the bar with a shoulder-width underhand grip. Squat down with a neutral spine and chest up, placing the backs of your upper arms (just behind the elbows) on your knees to fix the elbows in place. Keep wrists neutral and curl the bar toward your shoulders until full elbow flexion; squeeze briefly, then lower under control to full extension without letting the arms slide off your knees. Inhale before the curl, exhale near the top. Repeat for reps.	isolation	fixed	pull	intermediate
+6d5dc164-3c35-4719-85f1-5c75558f0125	Wide Grip Cable Curl	2024-08-28 20:53:42.332689	2025-09-15 15:13:48.37304		Attach a straight bar to a low pulley and select the load. Stand tall facing the stack with feet shoulder-width apart. Grasp the straight bar with a supinated grip slightly wider than shoulder width; keep elbows tucked to your sides, wrists neutral, and torso still. Curl the bar toward your shoulders until full elbow flexion, squeeze briefly, then lower under control to full extension without letting the shoulders roll forward. Breathe in before the curl and exhale near the top. Repeat for reps.	isolation	fixed	pull	beginner
+4f1c3655-21e7-4225-a39e-944774f59f76	Wide Grip Standing Barbell Curl	2024-08-28 20:51:35.44937	2025-09-15 15:15:38.059272		Stand tall with feet shoulder-width apart. Grasp a barbell with a wide underhand (supinated) grip slightly wider than shoulder width. Pin your elbows to your sides, keep wrists neutral, shoulders down and back, and torso braced. Curl the bar toward your shoulders until full elbow flexion without letting the elbows drift forward or the body sway; pause briefly, then lower under control to full extension. Inhale before initiating the curl and exhale near the top. Repeat for reps.	isolation	free	pull	beginner
+77aa5752-a586-4dfe-b69d-4da16fff0b79	Seated Dumbbell Lateral Raise	2024-08-29 15:30:57.598844	2025-09-15 14:02:33.373556		Sit on the edge of a flat bench with feet planted and a neutral grip on each dumbbell. Keep a soft bend in the elbows, wrists neutral, and torso still. Lead with the elbows to raise the bells out to the sides in the scapular plane until arms are about parallel to the floor without shrugging. Pause briefly, then lower under control to the start and repeat.	isolation	free	pull	beginner
+3d6e76b5-b409-4f5b-bba4-c22cb10cfbd4	Seated Bent Over Dumbbell Reverse Fly	2024-08-29 15:28:20.973087	2025-09-15 14:04:18.701842		Sit on the edge of a flat bench with feet planted, hinge forward from the hips keeping a neutral spine until the torso is close to the thighs. Let the arms hang under the shoulders with a neutral grip and a soft elbow bend. Lead with the elbows to raise the dumbbells out to the sides (horizontal abduction in the scapular plane) until upper arms reach about shoulder level without shrugging or over-retracting the shoulder blades. Pause briefly, then lower under control while keeping the torso still.	isolation	free	pull	beginner
+9ab8fe00-58de-48c4-942d-b10e8d16f1c1	Seated Arnold Press	2024-08-29 15:26:45.175874	2025-09-15 14:06:14.941483		Set an adjustable bench to 85–90°. Sit tall with your back supported and feet planted. Clean the dumbbells to shoulder level, starting with palms facing you and elbows slightly forward. Brace, keep ribs down and wrists stacked. Press overhead while rotating the dumbbells to palms-forward; finish with biceps near the ears without shrugging. Lower under control, reversing the rotation to ~90° elbow angle, and repeat.	compound	free	push	intermediate
+506d1cc7-529a-42af-b5bf-4c4d0a9aa409	Smith Machine Shoulder Press	2024-08-29 15:24:22.323538	2025-09-15 14:08:28.313515		Set an adjustable bench to upright (≈90°) inside the Smith machine and position the bar around eye level. Sit with your back supported, feet planted, and take a pronated grip slightly wider than shoulder-width. Brace, keep ribs down and wrists stacked. Press overhead in the scapular plane without shrugging; finish with elbows extended but not locked. Lower under control to about chin–upper-chest level, touch softly, and repeat.	compound	fixed	push	beginner
+816440ad-f8f2-4ef7-a11f-b6a2bd63fcef	Bent Over Dumbbell Reverse Fly	2024-08-29 15:23:10.33151	2025-09-15 14:10:46.364761		Stand with feet hip-width and hinge from the hips until the torso is nearly parallel to the floor, keeping a neutral spine. Hold dumbbells with a neutral grip and a soft bend in the elbows; let arms hang under the shoulders. Brace, avoid shrugging, and lead with the elbows to raise the bells out to the sides (horizontal abduction) until upper arms reach about shoulder level. Pause, then lower under control without swinging and repeat.	isolation	free	pull	beginner
+92d77415-1f9a-430b-ba52-0a09ec07b3a1	Standing Dumbbell Shoulder Press	2024-08-29 15:21:42.152136	2025-09-15 14:12:19.479223		Stand with feet shoulder-width, brace your trunk, and keep ribs down and glutes lightly engaged. Raise the dumbbells to shoulder level with a pronated grip; wrists stacked over elbows. Press overhead in the scapular plane until biceps are near the ears without shrugging or overextending the lower back. Lower under control to about chin/upper-chest level and repeat.	compound	free	push	beginner
+48191b99-06fa-4218-b61b-c9b9abd73278	Seated Dumbbell Press	2024-08-29 15:20:32.329274	2025-09-15 14:13:58.854521		Set an adjustable bench to upright (80–90°). Sit tall with feet planted and back supported. Clean the dumbbells to shoulder level and rotate to a pronated grip with wrists stacked over elbows. Inhale and brace, then press overhead in the scapular plane until biceps are near the ears without shrugging or arching the lower back. Lower under control to about chin/upper-chest level and repeat.	compound	free	push	beginner
+1959abd3-4ab1-42d4-b7e2-45693b899d51	Military Press (AKA Overhead Press)	2024-08-29 15:18:06.528089	2025-09-15 14:16:02.076244		Set the bar in a rack at upper-chest height. Take a shoulder-width stance and grip just outside shoulder width with a pronated grip. Unrack, brace abs and glutes, ribs down. Inhale, tuck the chin and press the bar overhead in a straight path by moving the head slightly back, then bring the head through under the bar at midline. Lock out without excessive shrugging, then lower to the upper chest under control and repeat.	compound	free	push	intermediate
+12221e5c-0208-48fc-8c56-62c266932f74	Dumbbell Lateral Raise	2024-08-29 15:15:51.70192	2025-09-15 14:53:04.69952		Select a pair of dumbbells and stand tall with feet shoulder-width. With a neutral grip and a slight bend in the elbows, raise the dumbbells out to your sides in the scapular plane (15–30° forward) until your hands reach shoulder height—lead with the elbows, wrists neutral. Avoid shrugging and keep the torso still. Pause briefly, then lower under control to the start and repeat.	isolation	free	pull	beginner
+8ca7bf65-0ddb-4c64-ba64-f71f25c85d7c	Wide Grip EZ Bar Curl	2024-08-28 21:13:34.072785	2025-09-15 14:54:43.629364		Grasp an EZ bar with a wider-than-shoulder underhand grip. Stand tall, ribs down, glutes/abs braced, elbows close to your sides and wrists neutral. Curl the bar under control until the forearms are near vertical—squeeze the biceps—then lower slowly to full elbow extension without swinging or leaning. Keep shoulders down (don’t shrug) and repeat for the desired reps.	isolation	free	pull	beginner
+8d2a9df4-af32-4943-b74b-ae901e866b32	Close Grip EZ Bar Curl	2024-08-28 21:12:39.501074	2025-09-15 14:57:51.105804		Grasp an EZ bar with a close underhand grip (hands ~15–20 cm apart). Stand tall, ribs down, glutes and abs braced; elbows stay near the torso and wrists neutral. Curl the bar under control without swinging or shrugging, squeeze the biceps near the top, then lower slowly to full elbow extension. Keep shoulders quiet and repeat for the desired reps.	isolation	free	pull	beginner
+7a933584-128c-4b82-8e5b-5e7312cadfdf	One-Arm Cable Front Raise	2024-08-29 20:55:27.345366	2025-09-13 13:51:08.071676		Attach a single-grip handle to a low pulley and select a moderate load. Stand facing away from the stack and grasp the handle with an overhand grip. Step forward to keep tension; feet shoulder-width, ribs down, wrist neutral, slight bend in the elbow. Raise the arm in the sagittal plane to shoulder height without swinging or leaning and avoid shrugging. Pause briefly, then lower under control without letting the stack touch. Repeat for reps and then switch arms.	isolation	fixed	pull	beginner
+b22e5ada-86c1-4104-828b-b7e06a7f5d16	Seated Neutral Grip Dumbbell Shoulder Press	2024-08-29 20:52:10.197207	2025-09-13 13:51:47.574343		Set an adjustable bench to 90°. Pick up dumbbells with a neutral grip (palms facing in), sit, and knee-kick them to shoulder height. Start with forearms vertical, wrists stacked over elbows, ribs down, and back against the pad. Inhale and press overhead without shrugging, finishing with biceps near ears and elbows extended but not hyperextended. Control the descent to ~90° elbow angle (or slightly below based on comfort), maintain the neutral grip, and repeat for reps.	compound	free	push	beginner
+1f8abb63-8024-46ca-ac1e-2574a839eed6	Push Press	2024-08-29 20:49:40.170706	2025-09-13 13:52:31.633878		Set the bar in a rack at just below shoulder height and load plates. Take a shoulder-width stance, grip the bar just outside shoulder width (pronated), elbows slightly in front of the bar, and unrack with a neutral spine. Take two steps back, inhale and brace (ribs down, glutes tight). Dip 5–10% at knees and hips with a vertical torso and heels down, then drive hard through the legs and press the bar in a straight line to lockout overhead. Finish with biceps near ears and no lower-back overextension. Control the bar back to the shoulders, re-brace, and repeat for reps.	compound	free	push	intermediate
+d20646b6-efd1-49fc-8ffa-180461aea5ab	Smith Machine Upright Row	2024-08-29 20:48:13.145019	2025-09-13 13:53:26.008642		Set the Smith machine bar at mid-thigh height and load plates. Stand tall with a shoulder-width stance and take a grip just outside shoulder width. Unrack by rotating the bar off the hooks. Inhale, brace, and lead with the elbows high and wide as you pull the bar up along the body to about upper-chest/shoulder height (stop if shoulder comfort dictates). Keep wrists neutral and torso steady. Pause briefly, then lower the bar under control to full elbow extension and re-rack as needed. Use a slightly wider grip and moderate range to reduce shoulder impingement risk.	compound	fixed	pull	intermediate
+ed5db0ac-4343-4e68-a884-d5f84e4020c1	Bent Over Low Pulley Rear Delt Fly	2024-08-29 20:46:11.377576	2025-09-13 13:54:14.75226		Set both pulleys to the lowest position and attach single-grip handles. Hinge at the hips (~45°) with a neutral spine, feet hip-width, arms hanging under shoulders. Reach across to grab each opposite handle with a neutral grip. With a slight elbow bend, raise the arms out to the sides in line with the rear delts; lead with the upper arm, not the hands. Avoid excessive scapular retraction or shrugging—keep the torso steady and tension on the cables. Pause at shoulder height, then lower under control to maintain constant tension. Repeat for the desired reps.	isolation	fixed	pull	beginner
+b8fa1238-0f58-4daa-ade8-0f8c6fa2d1b1	Bent Over Rear Delt Fly (Head on Bench)	2024-08-29 20:37:21.051883	2025-09-13 13:54:54.488751		Set an adjustable bench to ~70–80°. Hinge at the hips until your forehead rests lightly on the top of the bench; keep a neutral spine and feet hip-width. Hold dumbbells with a neutral grip, arms hanging under the shoulders with a slight elbow bend. Lead with the upper arm and raise the dumbbells out to the sides until roughly shoulder height—avoid shrugging and excessive scapular retraction to keep the load on the rear delts. Pause briefly, then lower under control to maintain tension. Repeat for the desired reps.	isolation	free	pull	beginner
+3a41edcb-2c19-4d06-9585-8fe745aba723	Machine Lateral Raise	2024-08-29 20:34:53.7379	2025-09-13 13:55:46.237594		Select the desired weight on the lateral raise machine. Adjust the seat so the pads line up with mid-forearm/elbow height. Sit tall with feet flat, eyes forward. Secure your arms against the pads and set a slight bend in the elbows. Keeping the torso still and shoulders down, raise the arms out to the sides in a smooth arc until the forearms are just above parallel. Pause and contract the delts, then lower under control along the same path. Avoid shrugging or swinging; move only at the shoulders.	isolation	fixed	pull	beginner
+ac45c513-55f3-437f-a10f-ba3c0763a746	Standing Dumbbell Front Raise	2024-08-29 20:31:23.01677	2025-09-13 18:58:21.752864		Choose a pair of dumbbells with a pronated (overhand) grip and stand shoulder-width. Brace your abs, keep a slight bend in the elbows, and raise the arms straight in front until they reach shoulder height (avoid leaning back or swinging). Pause briefly, then lower under control to the start. Keep ribs down, shoulders relaxed (allow natural upward rotation), and move only at the shoulder. Repeat for the desired reps.	isolation	free	pull	beginner
+90b8d661-a9ef-47e5-8c98-b0599874a972	Seated Behind the Neck Shoulder Press	2024-08-29 20:28:36.062554	2025-09-13 18:59:24.368676		Set the barbell on a rack just below shoulder height and load plates. Place an adjustable bench upright under the bar. Sit, take a pronated grip slightly wider than shoulder width, and unrack with a neutral spine. Inhale, brace, tuck the chin, and lower the bar to the upper traps/back of the neck (only within your available shoulder mobility). Press to lockout while keeping the ribs down and elbows under the bar. Control the descent and repeat for the desired reps.	compound	free	push	intermediate
+1b8fe6fc-9ede-4f28-b4a0-30504db61fed	Single Arm Cable Lateral Raise (Crossbody)	2024-08-29 20:26:45.591795	2025-09-15 13:49:07.426149		Set the pulley to the lowest setting and attach a single handle. Stand side-on to the stack and reach across with the far hand (neutral grip).\nBrace your core; keep a soft elbow and neutral wrist. Lead with the elbow to raise the handle out to your side in the scapular plane until the arm is ~parallel to the floor without shrugging. Pause briefly and lower under control, keeping the torso still and avoiding rotation/lean.	isolation	fixed	pull	intermediate
+4353173b-93b2-4fb1-b462-fc8330b15ce5	Cable Lateral Raise	2024-08-29 20:20:58.523546	2025-09-15 13:51:04.217011		Set both pulleys to a low position and attach single handles. Stand facing away from the machine, grasp the opposite handle with each hand so the cables cross in front of you. Stand tall, brace the core, and keep a slight bend in the elbows. Lead with the elbows to raise the arms out to the sides in the scapular plane until about shoulder height without shrugging; pause, then lower under control to the start.	isolation	fixed	pull	beginner
+3a70ce9c-b1f0-43a7-8775-7d3e7c109c5d	Machine Reverse Fly	2024-08-29 20:18:52.12644	2025-09-15 13:52:46.027223		Adjust the seat so the handles align with your mid-delts (about shoulder height). Sit facing the pad with chest supported and feet flat. Grasp the handles with a neutral or pronated grip, keep a slight bend in the elbows, wrists neutral, and avoid shrugging. Initiate by leading with the elbows, moving the upper arms in a wide arc (horizontal abduction) until hands are roughly in line with the shoulders; pause briefly, then return under control without letting the shoulders roll forward.	isolation	fixed	pull	beginner
+d2f28afc-e84c-467c-90d9-c6c2cb63acbc	45 Degree Leg Press Calf Raise	2024-09-01 12:47:02.01513	2025-09-13 13:36:12.098965		Calf raise on a 45° leg press. Sit with hips/back supported and feet shoulder-width on the lower edge of the footplate so the heels hang off. Extend the legs to set the start position (keep knees locked or with a slight, constant bend). Lower the heels under control into dorsiflexion to a comfortable stretch, then plantarflex hard to the top; pause 1–2 s and avoid bouncing. Keep motion at the ankles only, brace the trunk, and maintain foot pressure through the ball of the foot. Safety: set/keep safeties engaged whenever adjusting foot placement; if you feel knee joint pressure, keep a slight bend and do not change knee angle during reps.	isolation	fixed	push	beginner
+01dff88c-893b-4410-8d54-1e36013b9fdb	Seated Dumbbell Calf Raise	2024-09-01 12:43:01.520267	2025-09-13 13:36:58.879229		Sit on the end of a flat bench with a step/block under the forefoot and heels hanging off. Place the ends of two dumbbells on the thighs close to the knees (use a towel for comfort). Keep knees bent ~90° and still. Lower the heels under control into a comfortable stretch, then drive up by plantarflexing through the ball of the foot; pause 1–2 s at the top and avoid bouncing. Do not let the heels touch down between reps; keep the torso braced and the motion at the ankles only.	isolation	free	push	beginner
+6e4bc8b2-33ab-46da-9b79-9fff2266cd27	Seated Calf Raise	2024-09-01 12:41:05.640161	2025-09-13 13:37:36.122528		Sit on the seated calf raise machine with the balls of your feet on the platform (toes forward) and heels hanging off. Position the knee pad on the lower thighs just above the knees. Brace your torso, keep the knees bent ~90° and still. Extend the ankles to release the safety, then lower the heels under control to a comfortable stretch. Drive up by plantarflexing through the ball of the foot; pause 1–2 s at the top and avoid bouncing. Keep reps slow and controlled; do not let the heels rest on the platform between reps. If you feel pressure in the bottom of the foot or behind the knee, reduce the depth.	isolation	fixed	push	beginner
+7e80becf-491c-4b48-a98a-a36fff26e29c	Dumbbell Side Bends	2024-09-01 12:13:55.734978	2025-09-13 13:41:47.000536		This exercise targets the obliques. Stand tall with a shoulder-width stance. Hold one dumbbell in the working hand (or two lighter dumbbells if preferred), palms facing in. Brace your core, keep your ribs down and spine neutral. Without leaning forward/back or rotating, slowly side-bend the torso toward the dumbbell until you feel a stretch on the opposite side. Exhale as you return to upright by contracting the obliques; avoid hiking the hip. Move through the torso only and keep the dumbbell close to your body. Alternate sides or complete all reps on one side. You may also perform this seated on a bench for more stability.	isolation	free	pull	beginner
+e1361643-e92a-419b-8eb8-fe2a188016e0	Cable Crunch	2024-09-01 09:37:56.256671	2025-09-13 13:43:22.630852		Attach a rope to a high pulley and set an appropriate weight. Kneel facing the stack with shins on the floor and hips resting on your heels. Grip each end of the rope beside your head (elbows tucked). Brace, draw ribs down, and initiate a posterior pelvic tilt (tuck the tailbone). Curl the trunk to bring the sternum toward the pelvis, keeping the hips fixed (don’t hinge). Pause briefly, then return under control without letting the rope pull you up. Breathe out as you crunch; keep the neck neutral and avoid pulling with the arms.\nTips:\n• Move slowly with full control and keep your glutes on your heels.\n• Focus on spinal flexion of the abs, not hip flexion.\n• If heavy loads irritate the neck, rest the rope on the shoulders.\n• Choose a load that lets the abs—not the lower back—do the work.	isolation	fixed	pull	beginner
+a8f9abc7-4515-4f5e-a4f5-095b1b17b9e1	Hip Adduction Machine	2024-08-31 22:01:53.328901	2025-09-13 13:46:43.114324		Set up seated upright with your back against the pad, spine neutral, and pads resting on the inner thighs just above the knees. Grip the handles and brace your core. Exhale and adduct the hips by squeezing the pads together without leaning back or rocking the pelvis. Pause briefly when the pads meet, then return under control to a comfortable stretch. Keep knees tracking with toes and avoid bouncing. Repeat for the desired reps.	isolation	fixed	pull	beginner
+1fdffa53-d9cb-4aa1-9999-5c83fdb9be80	Hip Abduction Machine	2024-08-31 21:55:50.613451	2025-09-13 13:47:35.595819		Set up seated upright with your back against the pad, spine neutral, and pads on the outer thighs just above the knees. Grip the handles and brace your core. Exhale and abduct the hips by driving the knees outward to open the pads without leaning back or arching the lower back. Pause briefly at end range, then return under control to a comfortable stretch. Keep knees tracking with toes and avoid bouncing. Repeat for the desired reps.	isolation	fixed	push	beginner
+68381c41-b015-4218-93cb-2bcb64bee255	One-Arm Standing Dumbbell Front Raise	2024-08-29 21:09:08.306005	2025-09-13 13:48:26.787748		Grab a dumbbell with a pronated grip and stand with a shoulder-width stance. Brace your core, keep a slight bend in the elbow and the wrist neutral. Inhale and raise your arm straight in front by moving only at the shoulder until it’s just above parallel to the floor. Avoid swinging or shrugging the shoulder. Pause briefly at the top, then lower the dumbbell under control to the start without letting it rest on the thigh. Repeat for desired reps and switch arms.	isolation	free	pull	beginner
+ff188494-a871-4721-9d1e-26742539080c	Cable Front Raise (Bilateral)	2024-08-29 21:01:10.936876	2025-09-13 13:49:25.881441		Stand shoulder-width with the low cable running between your legs. Attach a straight bar and grasp it with both hands using a pronated grip. Brace your core, keep a slight bend in the elbows and wrists neutral. Raise the bar straight in front by moving only at the shoulders until arms are at or just above parallel. Avoid leaning back or shrugging. Pause briefly, then lower under control to the start. Repeat for the desired reps.	isolation	fixed	pull	beginner
+c0a055b2-daf6-4ecc-b97b-cfedfce6a42a	Dumbbell Pullover	2024-09-02 14:05:57.412015	2025-09-13 13:26:03.920945		Compound move bridging chest and back. Lie on a flat bench, hold one dumbbell with both hands over the chest, elbows softly bent (~15–30°). Inhale as you lower behind the head in a controlled arc without flaring the ribs; exhale to return via shoulder extension. Chest bias: elbows slightly wider, ribcage down; Lat bias: elbows tucked, drive upper arms toward hips. Keep scapulae depressed/retracted and avoid excessive lumbar arch.	compound	free	pull	intermediate
+47f00a63-05df-4db7-b2c7-68000c72be9b	Incline Dumbbell Bench Press	2024-09-02 14:03:25.447382	2025-09-13 13:26:41.37015		Incline dumbbell press emphasizing the upper chest. Set bench at ~30–45°, retract/depress scapulae, feet planted, neutral wrists. Lower dumbbells in a slight arc until forearms are vertical near the bottom without losing shoulder position; press up and back over the shoulders. Keep elbows ~45–60° to the torso. Dumbbells improve ROM and side-to-side balance versus a barbell.	compound	free	push	beginner
+548b3de6-0980-4795-ab86-763c20dbc325	Dumbbell Bench Press	2024-09-02 14:01:43.604308	2025-09-13 13:27:23.06222		Flat dumbbell press emphasizing the pectorals with higher stabilizer demand than a barbell. 5-point setup (feet, glutes, upper back, head), scapulae retracted/depressed, neutral wrists. Lower to around mid-sternum with elbows ~45–70°; press in a slight arc up and back over the shoulders. Control tempo; avoid bouncing or excessive elbow flare.	compound	free	push	beginner
+9e348a26-e5d0-4ee0-b3e6-fe58563ac698	Hack Squat Calf Raise	2024-09-01 13:30:53.56497	2025-09-13 13:31:21.824926		Machine calf raise performed on a hack squat. Setup: stand on the foot plate (toes on edge or a block for more ROM), chest against the pad, shoulders under pads, feet hip-width, neutral pelvis. Unlock the safety, keep knees softly extended (no hyperextension). Raise heels by plantarflexing only at the ankles; pause 1–2 s at peak, then lower under control without letting heels fully rest. Maintain straight line from hips to shoulders and steady tempo throughout the set.	isolation	fixed	push	beginner
+f11c8751-e5ca-413e-b30d-2b387ec14733	Toes Out Seated Calf Raise	2024-09-01 12:56:50.688111	2025-09-13 13:31:58.922652		Seated machine calf raise with toes externally rotated (~15–30°). Place the balls of the feet on the platform (use a block for more ROM), knees ~90° under the pad, spine neutral. Unlock safety, keep knees softly extended (no knee pumping). Plantarflex the ankles to lift the pad; pause 1–2 s at the top, then dorsiflex under control without letting heels fully rest. Move through the ball of the foot, keep tempo steady. Toes-out biases the medial gastrocnemius; the seated position emphasizes the soleus.	isolation	fixed	push	beginner
+89ffca84-73f0-4a69-871f-9d9c96521a05	Toes Out Smith Machine Calf Raise	2024-09-01 12:54:31.257041	2025-09-13 13:32:40.391156		Smith machine standing calf raise with toes externally rotated (~15–30°). Place a step/block under the bar for more ROM; set the bar across the upper traps, balls of the feet on the edge, heels hanging. Unlock the hooks, keep knees softly extended and hips stacked over ankles. Plantarflex to rise; pause 1–2 s at the top; lower under control to a comfortable stretch without letting heels rest. Move at the ankles only (no knee bend), maintain steady tempo, avoid bouncing. Toes-out may bias the medial gastrocnemius, though this is debated and individual.	isolation	fixed	push	beginner
+46b1efa3-a4f8-4492-a81c-9e48c650dd3d	Toes In Smith Machine Calf Raise	2024-09-01 12:52:29.675	2025-09-13 13:33:22.50373		Smith machine standing calf raise with toes internally rotated (~15–30°). Place a step/block under the bar for more ROM; set the bar across the upper traps, balls of the feet on the edge, heels hanging. Unlock the hooks, keep knees softly extended and hips stacked over ankles. Plantarflex at the ankles to rise; pause 1–2 s at the top; lower under control to a comfortable stretch without letting heels rest. Move only at the ankles (no knee bend), maintain steady tempo, avoid bouncing. Toes-in may bias the lateral gastrocnemius, but evidence is mixed.	isolation	fixed	push	beginner
+7227c8f6-cf65-4134-97de-d5e64cb5ff1b	Toes Out 45 Degree Calf Raise	2024-09-01 12:51:11.813368	2025-09-13 13:33:56.430597		45° leg press calf raise with toes externally rotated (~15–30°). Sit securely, place the balls of the feet on the bottom edge of the footplate (heels hanging). Extend the sled to unlock, keep knees softly extended (no hyperextension), pelvis neutral. Move only at the ankles: lower to a comfortable stretch, then plantarflex to the highest point; pause 1–2 s at the top and control the eccentric. Keep the balls of the feet on the edge (don’t roll toward the toes), avoid bouncing. Toes-out may bias the medial gastrocnemius, but evidence is mixed.	isolation	fixed	push	beginner
+ec09f8c7-04cf-4219-8033-3dd17ea5c1d9	Incline Dumbbell Flys	2024-09-02 20:16:40.175747	2025-09-13 13:17:24.552945		Set an adjustable bench to ~30–45°. With dumbbells held above the shoulders and a soft elbow bend, retract/depress the scapulae and lower in a wide arc until you feel a chest stretch (avoid overstretching the shoulder). Hug the arms back together on the same arc, squeezing the upper chest at the top. Keep wrists neutral, elbows slightly flexed throughout, and don’t let the shoulders roll forward.	isolation	free	push	beginner
+fff561d6-3738-4360-a110-f93dcb3c8c10	Hammer Strength Bench Press	2024-09-02 15:21:42.987341	2025-09-13 13:19:06.359624		Set the seat so the handles align with mid-chest. Retract and depress the scapulae, keep a slight arch, wrists neutral. Press the independent arms to full elbow extension without shrugging; lower under control to a comfortable chest stretch. Use a steady tempo (e.g., 2–3 s down), maintain feet planted and ribcage up to bias the pecs. Best used after barbell/dumbbell presses for higher-rep hypertrophy work.	compound	fixed	push	beginner
+e1511aa4-1d34-4984-aa54-88f88029a96e	Cable Crossovers (Mid Chest)	2024-09-02 15:03:16.600447	2025-09-13 13:19:46.517101		Set pulleys at roughly shoulder/mid-chest height. Step forward (split stance), depress/retract the scapulae, keep a soft elbow bend, and sweep the hands on a wide arc to meet slightly in front of the sternum. Avoid elbow flexion/extension to minimize triceps; control the eccentric to a comfortable chest stretch. This fly variation emphasizes the mid (sternocostal) pec fibers with some clavicular and anterior deltoid assistance.	isolation	fixed	push	beginner
+21370a0a-b01b-4e32-8f43-8648a54cd35c	Pec Dec (Butterfly)	2024-09-02 15:01:10.954626	2025-09-13 13:20:44.36002		Adjust the seat so the handles align with mid-chest. Retract/depress the scapulae, keep a slight bend in the elbows, and bring the forearms together on a wide arc to meet just in front of the sternum. Pause and squeeze the chest, then control the eccentric to a comfortable stretch. Avoid elbow flexion/extension and shrugging to keep the load on the pecs. Primarily targets the sternocostal pec fibers with assistance from the clavicular head and anterior deltoid.	isolation	fixed	push	beginner
+885918a3-5c64-4f15-982e-1b9a91cb3743	Incline Bench Press	2024-09-02 14:58:44.028336	2025-09-13 13:23:05.998557		Incline bench press targets the upper chest (clavicular head) with strong assistance from the anterior deltoids and triceps. Use a 30–45° bench angle, retract/scapulae, keep wrists stacked over elbows, and press the bar in a slight arc up and back toward the shoulders. Moderate grip (just outside shoulder width) helps emphasize the upper chest and shoulder stability.	compound	free	push	beginner
+38af9c0d-b19f-433d-bcda-0b974b5475cf	Twisting Hanging Knee Raise	2024-09-01 12:25:43.155571	2025-09-13 13:39:08.207483		Hang from a pull-up bar with a slightly-wider-than-shoulder grip. Depress the scapulae (“pack” the shoulders), brace, and keep the legs together. Raise the knees by flexing the hips and posteriorly tilting the pelvis while rotating the knees up and across to one side; avoid swinging. Pause 1–2 s, then lower under control and repeat to the opposite side—left and right equals one rep. Keep the torso quiet and the tempo slow. Progression: hold a dumbbell between the feet when strong enough.	compound	body_weight	pull	intermediate
+f2868e11-6e1d-4ce4-a1a8-eb0384a60b71	Floor Crunch (Legs on Bench)	2024-09-01 12:24:23.199368	2025-09-13 13:40:01.24719		Place a mat on the floor and position a flat bench at the end to form a T. Lie supine with calves resting on the bench so hips and knees are ~90°. Lightly touch your temples with your fingertips (do not pull on the neck). Posteriorly tilt the pelvis, lift the shoulder blades slightly off the mat, and brace. Exhale as you curl the ribcage toward the pelvis; keep elbows open and the low back gently flattened. Pause 1–2 s at the top, then lower under control until the shoulder blades hover above the mat. Keep reps slow and avoid using momentum.	isolation	body_weight	pull	beginner
+2f49a8e8-6f42-422c-aa6f-c23e215620e2	Decline Sit-Up	2024-09-01 12:14:59.677632	2025-09-13 13:40:48.036075		Set the decline bench to ~30–45°. Secure your legs under the pads and lie back. Cross your arms over your chest (or lightly touch your temples—do not pull on the neck). Start with a slight posterior pelvic tilt so the low back is gently flattened and shoulder blades hover off the pad. Exhale as you curl the ribcage toward the pelvis until the torso is vertical; avoid yanking with the hip flexors. Pause 1–2 s at the top, then lower under control without letting your back touch the bench. Keep the tempo slow and the range of motion pain-free. Optional: add a small twist for more oblique emphasis or hug a plate/dumbbell for added load.	compound	body_weight	pull	intermediate
+f2cf498f-d991-4b85-b08e-58c5f9ff563e	Hanging Leg Raise	2024-09-01 12:11:44.128319	2025-09-13 13:42:37.487796		The hanging leg raise builds the anterior core. Hang from a pull-up bar with a shoulder-width grip, depress the shoulders, and brace the midsection. With legs straight, posteriorly tilt the pelvis (tuck the tailbone) and raise the legs as one unit until they reach at least hip height—higher if control allows. Pause briefly, then lower under control without swinging. Keep the torso still, ribs down, and avoid using momentum. Advanced lifters can add load by holding a dumbbell between the feet.	compound	body_weight	pull	advanced
+4d3a89ab-70ae-4311-8b40-a058b2f3057b	Seated Dumbbell Tricep Extension	2024-08-23 14:41:48.900488	2025-09-15 16:51:31.482535	https://www.dmoose.com/cdn/shop/articles/1_f16231a6-e9e2-4ff0-b3f1-b1ccdfbac2dc.jpg?v=1658323250	Set an adjustable bench to 90° and select the desired dumbbell.\nSit upright, lift the dumbbell to your shoulder, overlap your hands around the top plate (palms on the underside), and press it overhead to lock your elbows without hyperextending. Keep ribs down, wrists neutral, and elbows pointing forward close to your head.\nOnly the forearms move: slowly lower the dumbbell behind the head by unlocking the elbows until the forearms reach parallel or slightly below, then extend the elbows to return to the start. Avoid flaring the elbows or arching the low back. Exhale on the way up, inhale on the way down. Repeat for the desired reps.	isolation	free	push	beginner
+c5864272-ae27-4363-add6-7ead1b7b3379	Reverse Grip Barbell Curl	2024-09-03 08:32:01.580419	2025-09-11 18:57:25.854338		Stand with a shoulder-width pronated (overhand) grip on a barbell. Keep elbows tight to your sides, upper arms still, and wrists neutral (no wrist curling). Flex the elbows to raise the bar until forearms are near vertical, pause, then lower under control to full extension. Avoid swinging, shrugging, or leaning back.	isolation	free	pull	beginner
+9a4eec3b-3f0b-4b36-a2b5-0f544376cf78	Decline Cable Chest Press	2024-09-02 21:11:10.373493	2025-09-13 13:01:53.763061		Set a decline bench between dual adjustable pulleys, attach D-handles, and set pulleys slightly below shoulder height. Press down and forward in an arcing path to bias the lower fibers of the chest. Keep shoulder blades depressed/retracted, elbows slightly tucked, and control the return to maintain constant cable tension.	compound	fixed	push	beginner
+118eab6d-cae9-4c0b-b8e6-57f3e5541f1a	Flat Bench Cable Flys	2024-09-02 21:09:41.728008	2025-09-13 13:02:37.478405		Set a flat bench between dual adjustable pulleys, attach D-handles, and lie supine. With slight elbow bend fixed, sweep the arms in an arc to bring the handles together over the chest, then return under control. Keep shoulder blades retracted/depressed and avoid turning it into a press to maintain chest isolation and constant cable tension.	isolation	fixed	push	beginner
+c2059aab-d7b5-4532-a8a7-ad15a4054b33	Standing High to Low Cable Fly	2024-09-02 21:07:15.394991	2025-09-13 13:06:03.967447		Set pulleys high on a dual-cable station, attach D-handles, and take a stable split stance. With a slight fixed elbow bend and scapulae retracted/depressed, sweep the arms down and in toward the hips to bias the lower chest; return under control to keep constant cable tension. Avoid turning it into a press (no elbow extension).	isolation	fixed	push	beginner
+ff2d84fc-ff6d-4637-8128-91c1495c98e8	Incline Cable Flys	2024-09-02 21:04:38.427162	2025-09-13 13:06:46.314004		Set an adjustable bench to an incline between dual adjustable pulleys. Attach D-handles, lie supine, keep a slight fixed elbow bend, and sweep the arms up/in over the upper chest; return under control to maintain constant cable tension. Keep scapulae retracted/depressed to bias the upper pecs and avoid turning the movement into a press.	isolation	fixed	push	beginner
+3edb750e-4725-4338-a079-d48dc8797917	Decline Dumbbell Flys	2024-09-02 21:02:37.703332	2025-09-13 13:07:23.889914		Set a decline bench (≈15–30°). With a slight fixed elbow bend, lower the dumbbells in a wide arc until a stretch in the lower chest, then bring them together over the chest without turning it into a press. Keep scapulae retracted/depressed and control the eccentric; stop range if shoulder discomfort occurs.	isolation	free	push	beginner
+e68781f2-7021-4907-af54-de18b80d181a	Decline Push Up	2024-09-02 20:59:37.517802	2025-09-13 13:08:51.624269		Place your feet on a flat bench or box (body angled downward), hands slightly wider than shoulder width. Brace the core, keep a straight line from head to heels, retract/depress the scapulae, and lower the chest between the hands with elbows ~45°. Press back up, finishing with gentle scapular protraction. Maintain controlled tempo and neutral neck.	compound	body_weight	push	intermediate
+2780e6d9-a86f-4038-b96f-ef59f961cb4b	Cable Chest Press	2024-09-02 20:42:00.04352	2025-09-13 13:09:27.772986		Stand between dual pulleys set at mid-chest height, attach D-handles, and take a stable split stance. Retract/depress the scapulae, tuck elbows ~45–60°, and press the handles forward on a horizontal path; finish with slight scapular protraction, then return under control to keep constant cable tension. Keep ribs down and torso still to avoid turning it into a dip or fly.	compound	fixed	push	beginner
+f467d244-5568-40f6-bd7a-b3bdcad82398	Standing High to Low Cable Fly	2024-09-02 20:40:09.521144	2025-09-13 13:09:56.50883		Set the pulleys high on a dual-cable station and attach D-handles. Take a stable split stance, brace, and keep a slight fixed elbow bend with the scapulae retracted/depressed. Sweep the arms down and in toward the hips to bias the lower chest; pause, then return along the same arc under control. Avoid elbow extension so it stays a fly, not a press.	isolation	fixed	push	beginner
+f6dd98f1-ad1d-4ea2-ba97-9939ce0fc028	Smith Machine Incline Bench Press	2024-09-02 20:38:34.922216	2025-09-13 13:10:28.313057		Set an adjustable bench to a 15–30° incline under the Smith bar so the bar tracks over the upper chest. Retract/depress the scapulae, plant feet, and grip slightly wider than shoulder width. Unrack, lower to the upper chest with elbows tucked ~45–60° and forearms vertical, then press to full elbow extension under control. Set safeties just below chest depth.	compound	fixed	push	beginner
+b720265e-a3ce-48d3-8e8e-87e05c07b8a3	Standing Low to High Cable Fly	2024-09-02 20:35:21.719463	2025-09-13 13:11:02.537696		Set the pulleys at the lowest setting on a dual-cable station and attach D-handles. Take a stable split stance, brace the core, keep a slight fixed elbow bend, and sweep the arms up and in toward upper-chest level; pause, then return along the same arc under control. Maintain scapular retraction/depression and avoid elbow extension so it remains a fly, not a press.	isolation	fixed	push	intermediate
+8a73b841-1d4e-4808-8ed7-58c4931e0e96	Decline Dumbbell Bench Press	2024-09-02 20:31:29.272118	2025-09-13 13:11:43.144513		Set a decline bench to ~15–30°. Lie back with dumbbells over the lower chest, wrists neutral, and scapulae retracted/depressed. Lower the bells to the lower-pec line with elbows tucked ~45°, slight flare acceptable at the bottom. Press back up on a slight arc keeping ribs down and shoulder blades stable. Control the eccentric; avoid excessive shoulder protraction.	compound	free	push	intermediate
+8a39b1e7-986c-41e7-a0b9-44a4efb46360	Reverse Grip Dumbbell Bench Press	2024-09-02 20:27:53.772919	2025-09-13 13:13:43.048346		Lie on a flat bench with a supinated (reverse) grip on dumbbells, wrists straight and forearms vertical. Set scapular retraction and slight depression, feet planted. Lower the bells toward the upper chest/clavicles with elbows tucked ~30–45°, keeping forearms under the handles. Press to full elbow extension without losing rib cage position; control the tempo and range.	compound	free	push	beginner
+3d0c8e76-37a9-4f4c-84fa-47a6a07aaacc	Decline Bench Press	2024-09-02 20:26:26.267059	2025-09-13 13:14:28.912179		Set up on a decline bench with a secure foot hold. Retract and depress the scapulae, take a medium grip, and lower the bar toward the lower chest/upper abdomen with elbows at ~45°. Touch lightly and press to full elbow extension while keeping the ribcage stacked and glutes in contact with the bench.	compound	free	push	beginner
+82890348-a566-4762-b9b4-f89e52534936	Cable Crossovers (Upper Chest)	2024-09-02 20:20:26.742528	2025-09-13 13:15:38.783008		Set the pulleys low on a cable crossover and attach D-handles. Take a staggered stance, brace the core, and keep a slight bend in the elbows (15–30°). Retract/depress the scapulae, then sweep the arms on a low-to-high arc to meet around upper-chest/eye level without changing elbow angle; pause and return under control to a stretch. Keep it a fly (not a press), avoid shrugging or overextending the low back.	isolation	fixed	push	beginner
+ff20bd08-57ae-465f-aa54-d1ba0f7862a9	Push Up	2024-09-02 20:29:17.383422	2025-09-13 17:44:07.113635		Set up in a straight-line plank (wrists under shoulders, ribs down, glutes/braced). Lower the chest between the hands keeping elbows ~30–45° from the torso and forearms vertical. Maintain neutral neck and packed shoulders; avoid sagging hips. Press the floor away to full lockout with slight protraction at the top. Breathe behind the brace; move in control.	compound	body_weight	push	beginner
+05b3842c-2a19-484e-bae3-a12e86c2fa4c	Leg Curl	2024-09-05 12:59:02.097116	2025-09-11 18:01:39.046472		Adjust the machine so your knee joint aligns with the machine’s pivot and the ankle pad rests just above the heel/Achilles. Set the hip/chest pad snug to prevent the hips from lifting. Brace, keep a neutral pelvis and ribs down. Flex the knees to curl the pad toward the glutes without swinging; squeeze briefly, then lower under control (2–3 s) to near full extension without locking out. Keep the movement at the knee—minimal hip motion. Dorsiflex the ankles to bias the hamstrings (plantarflexion increases calf involvement).	isolation	fixed	pull	beginner
+be3c01a7-3bd0-448c-844b-583bd824c90b	Dumbbell Stiff Leg Deadlift	2024-09-05 12:54:46.778198	2025-09-11 18:08:42.081844		Stand with a hip-width stance holding dumbbells in front of the thighs. Brace, keep a neutral spine and soft knees (about 10–15°). Hinge by pushing the hips back, keeping shins nearly vertical and the dumbbells close to your legs. Lower until you feel a strong hamstring stretch (typically to mid-shin) without rounding. Keep lats tight and shoulders packed. Drive the hips forward to stand tall by contracting hamstrings and glutes; avoid hyperextending the lower back. Control the descent and repeat.	compound	free	hinge	beginner
+d806b4f1-399c-4ceb-bb91-663ec0350e6d	Reverse Hyperextension	2024-09-03 11:21:01.336163	2025-09-11 18:29:18.948581		Set up prone on a reverse hyper or GHD with your hips at the front edge of the pad and legs hanging freely. Grip the handles, brace (ribs down), keep a neutral spine with a slight posterior pelvic tilt. Initiate by squeezing the glutes to extend the hips, raising the legs until your body is roughly in line; avoid lumbar hyperextension and swinging. Pause briefly, then lower under control, allowing a gentle stretch below hip line. Keep knees soft, torso quiet, and breathe/brace each rep. Add ankle straps or a light load only if you can maintain perfect control.	isolation	body_weight	hinge	intermediate
+78b3c689-0222-46de-a7b3-9bd6c75b920c	Barbell Hip Thrust	2024-09-03 11:07:53.745619	2025-09-11 18:32:26.414259		Set your upper back on a flat bench and place a padded barbell across the crease of the hips. Plant the feet about shoulder-width with shins vertical at the top. Brace (ribs down, neutral spine), keep the chin tucked, and drive through the heels to extend the hips until the torso is parallel to the floor. Finish by squeezing the glutes with a slight posterior pelvic tilt—avoid lumbar hyperextension. Lower under control by hinging at the hips and maintaining knee angle; pause lightly and repeat. Use smooth tempo and full hip extension without letting the knees cave in.	isolation	free	hinge	intermediate
+7d823dc8-8303-4ddd-a25d-935569c662b7	Hyperextension	2024-09-03 11:04:13.299536	2025-09-11 18:34:18.473928		Set the pad so the top edge sits at your hip crease and lock your heels into the footplate. Keep a soft knee bend, brace (ribs down, neutral spine), and hinge at the hips to lower the torso under control without rounding the low back. Drive the hips into the pad and extend until your body forms a straight line; squeeze the glutes and avoid lumbar hyperextension. Pause briefly, then descend with a smooth tempo and repeat.	isolation	body_weight	hinge	beginner
+b515dd55-701a-45f4-938f-fdb26d2d5cba	Seated Cable Wrist Curl	2024-09-03 09:43:17.728797	2025-09-11 18:39:39.091379		Set a low pulley and attach a straight bar. Sit on a flat bench facing the stack with your forearms resting on your thighs or the bench and wrists hanging past the edge, palms up. Grip shoulder-width with thumbs wrapped. Keep elbows and forearms fixed, shoulders relaxed. Lower by allowing controlled wrist extension, then curl the bar by flexing the wrists until it nears the forearms. Pause, avoid shoulder/hip motion and ulnar–radial deviation, and use a smooth full range of motion.	isolation	fixed	pull	beginner
+60bd8dbc-6bb8-4be0-9ee7-f4c5a295c5b4	Reverse Grip Preacher Curl (EZ Bar)	2024-09-03 09:39:30.846405	2025-09-11 18:42:15.415412		Set the preacher bench so your upper arm is fully supported and the armpit meets the top of the pad. Grip an EZ bar with a shoulder-width reverse (pronated) grip on the angled segments. Lock the upper arm to the pad, brace the core, and keep wrists neutral. From full elbow extension, flex the elbows to raise the bar without letting the shoulders roll forward; pause near the top, then lower under control to full extension without bouncing. Avoid wrist curling and torso sway to keep tension on the elbow flexors and forearms.	isolation	free	pull	beginner
+b53daf0a-c7b6-4be8-9230-b33695eb5340	Seated Reverse Barbell Wrist Curl	2024-09-03 09:38:26.916652	2025-09-11 18:43:48.029958		Sit on a flat bench with your forearms resting on your thighs or the bench, wrists just past the edge so they can move freely. Grip a barbell shoulder-width with a pronated (palms-down) grip. Fix the elbows and forearms; only the wrists move. Start with the wrists flexed (bar lowered), then extend the wrists to raise the bar; pause, and lower under control to a full stretch without letting the bar roll from your hands. Keep shoulders relaxed and avoid elbow lift or torso sway.	isolation	free	pull	beginner
+b35c5710-3c80-4f48-8ee4-295e5a15999f	Reverse Grip Cable Curl	2024-09-03 09:34:29.268873	2025-09-11 18:46:04.250275		Attach a straight bar to a low pulley. Stand tall, take a shoulder-width reverse (pronated) grip, lock elbows to your sides, keep shoulders down and wrists neutral. Curl by flexing the elbows until the bar reaches mid-chest, squeeze briefly, then lower under control to full elbow extension. Avoid swinging, shrugging, or flexing/overextending the wrists to keep tension on the elbow flexors and forearms.	isolation	fixed	pull	beginner
+7545289f-f7c8-456b-98e9-f7b15600254c	Seated Reverse Dumbbell Wrist Curl	2024-09-03 09:32:06.540342	2025-09-11 18:47:22.869193		Sit on a flat bench with forearms supported on your thighs/bench, palms down (pronated) and wrists just past the edge. Hold dumbbells lightly, keep elbows still and shoulders relaxed. Extend at the wrists to lift the backs of your hands, pause, then lower under control to a full stretch. Avoid elbow flexion, swinging, or supination to keep tension on the forearm extensors.	isolation	free	pull	beginner
+10870aab-3086-462e-a64e-14710e3fbffe	One-Arm Seated Dumbbell Wrist Curl	2024-09-03 09:28:24.986138	2025-09-11 18:50:22.369158		Sit on a flat bench and work one arm at a time. Rest the forearm on the bench or thigh with the palm up (supinated) and the wrist just beyond the edge. Hold a dumbbell, keep the elbow fixed and shoulder relaxed. Lower into wrist extension under control, then flex the wrist to curl the weight, pausing briefly at peak. Avoid elbow flexion, forearm rotation, or swinging to keep tension on the wrist flexors. Unilateral execution helps address side-to-side imbalances.	isolation	free	pull	beginner
+d59d340d-774d-4c81-8b3d-251175936221	Reverse Grip Barbell Wrist Curl (Over Bench)	2024-09-03 09:26:50.08384	2025-09-11 18:51:48.790077		Sit on a flat bench and rest your forearms on the bench or thighs with a pronated (reverse) grip. Let the wrists hang just beyond the edge. Keeping elbows fixed and shoulders relaxed, extend the wrists to raise the back of the hands, then lower under control through full range. Avoid elbow flexion or swinging to keep tension on the wrist extensors. The bench support increases stability and focus on the forearm muscles.	isolation	free	pull	beginner
+414a1891-1a28-4dbe-84e3-a992c6e879bc	Seated Neutral Grip Dumbbell Wrist Curl	2024-09-03 08:56:48.824003	2025-09-11 18:53:04.159802		Sit on a bench and hold a dumbbell in a neutral (thumbs-up) grip. Rest your forearm on the bench or thigh with the wrist hanging off the edge. Without moving the elbow or shoulder, flex and extend the wrist through a comfortable range, controlling the lowering phase. Keep the forearm planted to keep tension on the forearm muscles.	isolation	free	pull	beginner
+4a2c7160-6cf2-456d-8ef4-80040b720420	Lat Pulldown	2024-09-06 11:18:17.192491	2025-09-11 17:37:50.97794		Attach a wide-grip bar to the lat pulldown and sit tall with feet flat. Grasp the bar with a pronated grip just outside shoulder width. Brace your core, initiate by depressing and slightly retracting the shoulder blades, then drive the elbows down to pull the bar toward the upper chest. Pause briefly, keep ribs down and wrists neutral, then return to a full overhead stretch under control without shrugging or leaning back.	compound	fixed	pull	beginner
+8e687b8b-0142-49f7-92e9-4d5df9aa86c9	Wide Grip Pull Up	2024-09-06 11:15:01.132837	2025-09-11 17:39:05.479762		Using a pronated grip, grasp the pull-up bar wider than shoulder width. Take a deep breath, squeeze your glutes, and brace your abs. Initiate by depressing and slightly retracting the shoulder blades, then drive the elbows straight down to lift your chin over the bar while keeping ribs down and neck neutral. Pause briefly and lower to a full hang under control without swinging or kicking.	compound	body_weight	pull	beginner
+f4041256-a9ac-430d-b611-d8a957e2aeb0	Straight Arm Lat Pulldown	2024-09-06 11:10:17.447399	2025-09-11 17:40:45.140242		Attach a straight bar to a high cable and stand tall with a slight hip hinge. Grip the bar pronated at shoulder width. Keep the elbows softly bent and fixed (no elbow flexion). Initiate by depressing the shoulder blades, then extend the shoulders to sweep the bar in an arc down to your thighs. Pause, keep ribs down, and return overhead under control without shrugging or extending the lower back.	isolation	fixed	pull	beginner
+676f21e5-7b5a-4c11-a505-4545822673de	Trap Bar Romanian Deadlift	2024-09-05 13:42:24.371375	2025-09-11 17:45:59.921715		Stand inside the trap bar with a hip-width stance and neutral grip. Deadlift to the top (hips/knees locked). Brace, keep a neutral spine and soft knees, then push the hips back to hinge while keeping the handles close and shins nearly vertical. Lower to just below knee height or until strong hamstring tension—no lumbar rounding. Keep lats tight, drive through the whole foot, extend the hips by squeezing the glutes to return to the start without hyperextending. Control the descent and repeat.	compound	free	hinge	beginner
+f11ef4dd-cc6b-42ad-844d-0e94cef691f0	Glute Ham Raise	2024-09-05 13:38:49.26673	2025-09-11 17:47:29.642026		Set up on a GHR/GHD with knees bent, hips extended, and torso upright. Brace, keep a neutral spine, and maintain hip extension throughout. Extend the knees until the body is straight and parallel to the floor; pause. Return by flexing the knees while keeping the hips open (no lumbar hyperextension). Move under control; avoid swinging.	isolation	body_weight	pull	intermediate
+ca38bcba-658f-4c7a-be54-b2c3f845fbe0	Sumo Deadlift	2024-09-05 13:37:08.596231	2025-09-11 17:49:21.680004		Set a wide (sumo) stance with toes turned out and the bar over mid-foot. Grip the bar shoulder-width with a double overhand inside the knees. Brace, keep a neutral spine, push the knees out, and wedge the hips toward the bar with lats tight. Drive the floor away as you extend the knees and hips, keeping the bar close on a near-vertical path. Stand tall to lock out by squeezing the glutes (no lumbar hyperextension), then hinge back to lower under control.	compound	free	hinge	beginner
+04d3e242-807d-4cba-9be4-e3d11a8efbc4	Reverse Hack Squat	2024-09-05 13:33:56.320983	2025-09-11 17:51:16.449063		Load the reverse hack squat machine. Face the pads with your chest on the chest pad and shoulders under the shoulder pads. Place your feet about shoulder-width on the lower platform with toes slightly turned out. Brace, keep a neutral spine and pelvis, press up to take the weight, and disengage the safeties. Descend under control by bending knees and hips, letting the knees track over the toes with heels planted until thighs are roughly parallel to the platform. Drive the platform away by extending knees and hips, squeeze the glutes at the top without locking the knees. Re-engage the safeties when finished.	compound	fixed	push	intermediate
+379d64cd-24bf-4a81-9b97-936c9a088e17	Trap Bar Deadlift	2024-09-05 13:12:38.899013	2025-09-11 17:52:42.228449		Stand inside the trap bar with a hip-width stance and grab the neutral handles. Brace your core, set a neutral spine and pelvis, and pull the slack out of the bar. Find mid-foot pressure with chest up and lats tight. Drive the floor away by extending knees and hips together, keeping the load centered over the foot. Stand tall without overextending the lower back, then return the bar under control by hinging at the hips and bending the knees. Reset your brace and repeat.	compound	free	hinge	beginner
+12070323-971e-421a-9eaf-bdce4f8e0464	Trap Bar Rack Pull	2024-09-05 13:10:41.470821	2025-09-11 17:54:48.017486		Set the trap bar on safety pins just below knee height in a rack. Stand inside with a hip-width stance and grab the neutral handles. Brace, set a neutral spine, pull the slack out, and engage the lats. Drive the floor away by extending knees and hips together, keeping the load centered over the mid-foot. Stand tall without overextending, then hinge at the hips and return the bar to a dead-stop on the pins under control. Reset your brace and repeat.	compound	free	hinge	beginner
+9b3f9b20-544d-49e1-880e-879e24e81581	Dumbbell Hamstring Curl	2024-09-05 13:08:00.578297	2025-09-11 17:56:14.324755		Optionally elevate a flat bench to increase range of motion. Lie face down with hips extended and knees at the bench edge. Secure a dumbbell between the arches of your feet and squeeze to hold it. Brace your core, keep the pelvis neutral, and keep hips down on the pad.\nFlex the knees only to curl the dumbbell toward the glutes; pause, then lower under control to near full extension without anterior pelvic tilt. Keep ankles slightly dorsiflexed to bias the hamstrings (plantarflexion increases calf contribution). Maintain a slow, even tempo throughout.	isolation	free	pull	intermediate
+b5c6e6a6-6eec-422c-ad4a-8dca82287312	Romanian Deadlift (RDL)	2024-09-05 13:06:37.160782	2025-09-11 17:57:50.635256		Position the bar over mid-foot (shoelaces) and take a hip-width stance. Grip double-overhand just outside hip width and deadlift the bar to the start with hips and knees locked. Soften the knees slightly, brace, keep a neutral spine, and push the hips back to hinge while keeping the bar close (slides along thighs) and shins nearly vertical. Lower until you feel strong hamstring tension or the bar is just below the knees—no lumbar rounding. Drive through the whole foot to extend the hips, stand tall without hyperextending, briefly pause, then repeat. Control the descent and re-brace each rep.	compound	free	hinge	beginner
+93c687ff-68f2-44d0-9f3a-8c4c15c960e8	Wide Grip Lat Pulldown	2024-09-06 11:21:03.156284	2025-09-11 17:36:51.435739		Attach a wide-grip bar to the lat pulldown. Sit tall with feet flat and take a pronated grip just outside shoulder width. Brace the core, initiate by depressing and slightly retracting the shoulder blades, then drive the elbows down to pull the bar to the upper chest. Pause and squeeze the back; keep ribs down and wrists neutral. Return to a controlled overhead stretch without shrugging or leaning back.	compound	fixed	pull	beginner
+91f6781b-915e-4bb4-8d8c-e345aa66e42d	Incline Bench Two Arm Dumbbell Row	2024-09-07 15:18:31.425724	2025-09-11 17:05:51.710543		Prone, chest-supported dumbbell row that reduces lower-back demand while targeting the upper/mid-back. Set an adjustable bench to ~30–45°, lie face down with a dumbbell in each hand (pronated grip), and keep a neutral spine and braced core. Drive the elbows back at ~30–60° to the torso, pulling toward the lower ribs while retracting/depressing the shoulder blades. Pause briefly, then lower under control—allowing a gentle scapular protraction—without shrugging or using hip/leg drive.	compound	free	pull	beginner
+13826a3e-6b12-464c-95c8-5790f0e13947	Reverse Grip Bent-Over Dumbbell Row	2024-09-07 15:16:24.597402	2025-09-11 17:07:02.971532		A free-weight pulling row with a supinated (underhand) grip that biases the lower lats while recruiting the mid/upper back and biceps. Select dumbbells, hinge at the hips with a neutral spine and slight knee bend, and let the weights hang just below knee height. Keep elbows close to the torso and pull toward the lower ribs/upper stomach while retracting and depressing the shoulder blades. Pause briefly, then lower under control without shrugging or using leg/hip drive.	compound	free	pull	intermediate
+6389ce45-7d30-4372-8c29-e5816d893b1a	Chest Supported Dumbbell Row	2024-09-07 15:09:04.672927	2025-09-11 17:10:21.645332		The chest-supported dumbbell row is a free-weight compound pulling exercise that targets the lats, rhomboids, and mid–lower traps while minimizing lower-back load.\n\nSet an adjustable bench to ~45° and lie prone with your chest supported and feet grounded. Hold a dumbbell in each hand with a neutral grip. Brace, keep a neutral spine and neck, and initiate by depressing/retracting the scapulae while driving the elbows toward the hips (avoid shrugging or torso rotation). Pull until the elbows pass the torso, pause briefly, then lower under control to a full stretch.	compound	free	pull	beginner
+baa3f656-0ad7-422b-ba8b-e5e9f5d4cd63	Seated Cable Row	2024-09-07 15:06:50.255195	2025-09-11 17:12:20.442541		The seated cable row is a compound back exercise performed on a cable row station.\n\nSet the weight stack and attach a close-grip handle. Sit tall with a neutral spine, feet braced, and knees slightly bent. Grab the handle with a neutral grip, initiate by depressing/retracting the shoulder blades, then pull the handle toward your midsection while keeping the torso stable (avoid excessive leaning). Squeeze briefly, then return the arms to a full stretch under control.	compound	fixed	pull	beginner
+9c029423-aa52-4b90-97c0-f5d4b4574f12	Bent Over Dumbbell Row	2024-09-07 15:02:05.982322	2025-09-11 17:13:25.292268		The bent over dumbbell row is a compound back exercise performed in a hinged position.\n\nHold a dumbbell in each hand with a neutral grip. Hinge at the hips until your torso is close to parallel with the floor, keep a neutral spine and braced core, and let the shoulders protract slightly. Initiate by depressing/retracting the shoulder blades, then drive the elbows back to pull the dumbbells toward the sides of your torso without shrugging. Pause briefly, and lower the weights to a full stretch under control, avoiding torso swing or rotation.	compound	free	pull	beginner
+950cd0cd-fc3b-442f-aba9-3c48bfc6cda9	Bent Over Barbell Row	2024-09-07 15:00:25.3268	2025-09-11 17:15:00.074645		Stand with a barbell using a double overhand (pronated) grip. Hinge forward until your torso is nearly parallel to the floor, keep a neutral spine and braced core, and let the shoulders protract slightly. Initiate by depressing/retracting the shoulder blades, then drive the elbows behind the body to pull the bar toward the lower ribs/belly button without shrugging. Pause and squeeze, then lower under control to a full stretch. Avoid torso swing or lumbar extension; keep the bar close throughout.	compound	free	pull	beginner
+c1ca2c25-9148-4977-99fe-3acda0b4ad33	One Arm Dumbbell Row	2024-09-07 14:58:48.633749	2025-09-11 17:16:45.545345		Stand holding one dumbbell with a neutral grip. Hinge until your torso is near parallel to the floor, keep a neutral spine, square the hips/shoulders, and brace the core. Initiate by depressing/retracting the working-side shoulder blade, then drive the elbow behind the body to pull the dumbbell toward the lower ribs/hip without shrugging or rotating. Pause and squeeze, then lower under control to a full stretch. Optionally brace the free hand on a flat bench or rack for stability.	compound	free	pull	beginner
+85a317d2-6cf2-4155-a6ea-a271afc4a803	Behind Neck Lat Pulldown	2024-09-06 21:35:46.021334	2025-09-11 17:27:09.027591		Attach a wide-grip lat bar to the pulldown. Sit with thighs locked, torso tall with a slight forward lean, and take a pronated grip wider than shoulders. Initiate by depressing and retracting the shoulder blades, then pull the bar behind the head toward the upper traps without craning the neck or flaring the ribs. Pause and squeeze, then return the bar overhead under control. Use a pain-free range and adequate shoulder external-rotation mobility; stop short of any discomfort.	compound	fixed	pull	intermediate
+c25a5f07-d65f-4ba9-9b0d-cb4d5b426455	V-Bar Pulldown	2024-09-06 21:31:44.423014	2025-09-11 17:28:43.201857		Attach a V-bar to the lat pulldown and sit with thighs secured. Take a neutral grip, keep the torso tall with a slight forward lean, and initiate by depressing/retracting the shoulder blades before bending the elbows. Pull the handle to the upper chest until elbows align with the torso, pause, then return overhead under control without shrugging or leaning back. Keep ribs down and avoid using momentum.	compound	fixed	pull	beginner
+e84c6031-9d71-41a1-ae2c-6c9901ea1d6b	Wide Grip Lat Pulldown	2024-09-06 21:22:25.300036	2025-09-11 17:34:09.911409		Attach a wide-grip bar to the lat pulldown machine and sit tall with feet planted. Grasp the bar with a pronated (overhand) grip wider than shoulder width. Brace, hinge slightly at the hips without leaning back, depress the shoulder blades, then drive the elbows down and out to pull the bar to the upper chest (not behind the neck). Pause and squeeze, then return overhead under control without shrugging or swinging.	compound	fixed	pull	beginner
+eaf575b3-2cb6-45a3-914f-81838c4c7e4d	Rope Straight Arm Pulldown	2024-09-06 21:28:12.837801	2025-09-11 09:45:56.593939		Attach a rope to a high cable stack and stand a half-step back. Take a neutral grip, set a slight hip hinge with soft knees, and brace your core. Keep elbows straight or slightly flexed (fixed). Initiate by depressing the shoulder blades, then extend the shoulders to sweep the rope down in an arc to the thighs/hip crease. Pause, then return overhead under control without shrugging, bending the elbows, or extending the lower back.	isolation	fixed	pull	beginner
+cbb152c0-ba9c-47ea-a8a3-28ad88f56eb6	Smith Machine Bent-Over Row	2024-09-07 15:29:18.453486	2025-09-11 17:04:05.219507		A compound pulling row on a fixed bar path that targets the lats, rhomboids, and mid–lower traps with added machine stability. Stand facing the bar, grip overhand slightly wider than shoulder-width, unlock, and hinge to ~30–45° with a neutral spine and braced core. Keep shins vertical, bar over midfoot, and torso angle fixed. Drive elbows back to pull the bar toward the lower chest/upper stomach, squeeze the shoulder blades, pause briefly, then lower under control without shrugging or using hip drive.	compound	fixed	pull	beginner
+98791e1d-6029-4cb2-bcaf-611a337208ef	Cable Row to Neck	2024-09-07 20:24:09.667421	2025-09-11 16:05:43.124945		Attach a rope to a cable stack at chest height. Sit or stand tall with a neutral spine and thumbs-up grip. Initiate by depressing/retracting the scapulae, then pull the rope toward the upper chest/neck line while spreading the ends apart and letting the elbows travel high and wide. Squeeze the mid–upper back and rear delts briefly, then return under control with the shoulders protracting slightly. Keep the ribs down, avoid shrugging or cranking the neck, and maintain neutral wrists.	compound	fixed	pull	beginner
+f451289a-6d35-4926-981d-8ebae71741a2	Cable Shrug	2024-09-07 20:22:58.464988	2025-09-11 16:09:49.878638		Set the cable to the lowest pulley and attach single handles. Stand tall with arms straight, wrists neutral, and the ribcage stacked over the pelvis. Raise the shoulders straight up toward the ears by contracting the upper traps (no elbow bend, no shoulder roll), pause 1–2 s at the top, then lower under control to a full stretch while keeping the head neutral and core braced. Use a load that allows smooth, vertical scapular elevation through the full range.	isolation	fixed	pull	beginner
+cae7b841-a7f8-4973-baf0-4aadbbdcd0ca	Smith Machine Shrug	2024-09-07 20:20:03.750749	2025-09-11 16:12:39.936546		Set the safeties, stand with feet shoulder-width, and grasp the Smith bar with an overhand grip. Brace the core, keep arms straight, and elevate the shoulders straight up toward the ears (no rolling). Pause 1–2 s at the top, then lower under control to a full stretch while keeping the neck neutral and elbows extended.	isolation	fixed	pull	beginner
+abe543c6-ec69-49ad-b9ca-ef959ffa10f2	Seated Dumbbell Shrug	2024-09-07 20:18:56.606676	2025-09-11 16:14:07.540708		Sit tall on a flat bench holding a dumbbell in each hand at your sides. Brace the core, keep arms straight and neck neutral, then elevate the shoulders straight up toward the ears (no rolling). Pause 1–2 s at the top and lower slowly to a full stretch, avoiding elbow bend or leaning back.\n\nThe seated position minimizes leg drive and helps isolate the traps.	isolation	free	pull	beginner
+49ef1d62-a375-485a-84bd-289a5548e81b	Barbell Shrug	2024-09-07 20:17:27.639092	2025-09-11 16:15:35.10143		Stand tall with a barbell in front of the thighs and a double overhand grip. Brace the core, keep arms straight and neck neutral, then raise the shoulders straight up toward the ears (no rolling). Pause 1–2 s at the top and lower slowly to a full stretch, avoiding elbow bend or torso sway.\n\nThis isolates the upper traps while forearms and scapular retractors assist isometrically.	isolation	free	pull	beginner
+5de5124e-8ebb-4477-b4b3-e1122cc80496	Dumbbell Shrugs	2024-09-07 20:10:41.915207	2025-09-11 16:18:03.659796		Stand tall with a dumbbell in each hand at your sides. Keep arms straight, neck neutral, and raise your shoulders straight up toward your ears by contracting the traps. Pause briefly at the top, then lower slowly under control. Avoid rolling the shoulders or using momentum to maintain trap emphasis.	isolation	free	pull	beginner
+6bb0675d-eba0-496c-bd20-5fd11a4a0282	Reverse Grip Incline Bench Barbell Row	2024-09-07 20:04:30.711798	2025-09-11 16:20:31.521136		Set an incline bench to ~30° and lie prone with the chest and hips anchored. Take a shoulder-width underhand (supinated) grip, keep elbows tucked, shoulders down and back, and pull the bar toward the lower chest/upper ribs. Squeeze the back at the top, then lower under control to a full stretch. Avoid shrugging or excessive neck extension; the chest-supported setup reduces lower-back strain while emphasizing the lats.	compound	free	pull	beginner
+6da53baf-d357-4392-927f-7da1bf7449dc	Incline Bench Barbell Row	2024-09-07 20:02:52.933304	2025-09-11 16:22:08.383998		Set an incline bench to ~30° and lie prone with the chest supported. Take a wide overhand (pronated) grip, keep a neutral head and ribs down, depress/retract the shoulder blades, and row the bar toward the lower chest/upper ribs leading with the elbows. Pause and squeeze between the shoulder blades, then lower under control to a full stretch. Avoid shrugging or jerking; the chest support minimizes lower-back strain.	compound	free	pull	intermediate
+7976a83a-f4db-4cc5-9cac-7f16f2bc430f	Seated Row (Rope Extension)	2024-09-07 19:58:28.333853	2025-09-11 16:23:52.076073		Attach a rope to a low cable row. Sit tall with a neutral spine, feet braced, and a slight hip hinge. Grip the rope with a neutral grip, set the shoulders by depressing/retracting the scapulae, then pull toward the mid-section (navel/low ribs) while spreading the rope ends apart. Pause and squeeze the shoulder blades together, then return under control to a full stretch without rounding the back. Avoid shrugging or excessive torso lean.	compound	fixed	pull	beginner
+7470e789-9509-4e22-9078-67857074867d	One-Arm Seated Cable Row	2024-09-07 19:56:54.223291	2025-09-11 16:25:51.068787		Attach a single handle to a low cable. Sit tall with a neutral spine and slight hip hinge, feet braced. Grip the handle (neutral or overhand), set the shoulder by depressing/retracting the scapula, and pull the handle toward the mid-torso while keeping hips and shoulders square (avoid twisting). Pause and squeeze the working shoulder blade, then return under control to a full stretch without rounding. Do not shrug the shoulder.	compound	fixed	pull	beginner
+8cccb149-8553-494d-bcb5-ffa9b06e7c0f	Pendlay Row	2024-09-07 19:54:36.108775	2025-09-11 16:59:29.838433		A strict bent-over row from a dead stop on the floor to build explosive pulling strength and upper-back development. Set the bar over mid-foot, hinge until the torso is nearly parallel to the floor, brace, and keep a flat back. Grip double overhand and pull explosively toward the lower chest/upper stomach while retracting the shoulder blades; elbows track roughly 45–60°. Lower under control back to the floor and let the plates settle before the next rep. Avoid using hip extension or torso rise for momentum.	compound	free	pull	intermediate
+0be1c49c-d742-4881-b014-360bc297af34	Reverse Grip Bent Over Row	2024-09-07 19:52:35.860933	2025-09-11 17:02:40.528238		A compound pulling row with an underhand grip that shifts emphasis to the lower lats and biceps while the rhomboids and mid–lower traps handle scapular retraction. Stand about shoulder-width, hinge at the hips with a neutral spine until the bar hangs below the knees, brace, and keep the torso angle fixed. Pull the bar toward the lower chest/upper stomach, tucking elbows close and squeezing the shoulder blades; pause briefly, then lower under control without shrugging or using hip drive.	compound	free	pull	intermediate
+978f906a-8584-4cdf-9d7f-f96d60865e3b	Dumbbell Squat	2024-09-07 20:36:12.342466	2025-09-11 16:00:42.409093		Hold a pair of dumbbells at your sides with a neutral grip, shoulders packed, feet about shoulder-width. Brace the core, keep the chest tall and spine neutral. Sit the hips down and slightly back, letting the knees track over the toes, until thighs reach parallel (or lower as mobility allows). Drive up through the whole foot without bouncing or forcefully locking the knees. Keep the bells close to the body and avoid knee valgus throughout.	compound	free	push	beginner
+9572d666-227a-4639-9ea3-defd67123fbc	Smith Machine Zercher Squat	2024-09-08 11:54:36.16859	2025-09-11 14:55:26.685085		Set the Smith bar in the crooks of your elbows (Zercher position). Stand with feet shoulder-width, brace the core, and squat with an upright torso. The fixed bar path lowers global stabilization demands while the anterior load increases knee extension demand, shifting emphasis to the quadriceps. Glutes and adductors assist hip extension and frontal-plane control; hamstrings act mainly eccentrically; calves and core stabilize; biceps and forearms support the cradle hold.\nCoaching cues: elbows tight to torso, ribs down, descend until hips are below knees, drive through mid-foot/heel while keeping knees tracking over toes.	compound	fixed	push	intermediate
+a4bf88ee-8865-4b1f-88a3-28cf59d28739	Zercher Squat	2024-09-08 11:51:56.624377	2025-09-11 14:58:40.071449		Hold a barbell in the crook of your elbows (Zercher), brace the core, keep the torso relatively upright, and squat to depth with knees tracking over toes. The front-loaded position increases quadriceps demand; glutes and adductors assist hip extension and frontal-plane control; the core stabilizes; biceps/forearms support the cradle hold; hamstrings act mainly eccentrically; calves stabilize the ankle.\nCoaching cues: keep elbows close to the torso, ribs down, neutral spine, descend until hips are below knees, drive through mid-foot/heel while keeping knees tracking over toes.	compound	free	push	advanced
+a40b23bf-bd6d-41d0-adbe-254bce002c2d	Wide Hack Squat	2024-09-08 11:48:44.494903	2025-09-11 15:00:53.699113		Set up on the hack squat machine with a wider-than-shoulder stance and toes slightly turned out. Keep the torso braced against the back pad, descend until hips are below knees, and drive through mid-foot/heel to stand. Wide stance shifts emphasis toward inner quads and increases adductor/glute contribution while the machine reduces stabilization demands.\nCoaching cues: knees track with toes, heels stay flat, neutral pelvis against the pad, control the bottom and avoid bouncing.	compound	fixed	push	intermediate
+395bb56a-d4af-4f4a-abb3-51a9ef1dc686	Wide Stance 45 Degree Leg Press	2024-09-08 11:47:42.803848	2025-09-11 15:02:49.206082		Set up on a 45° leg press with a wider-than-shoulder stance and toes slightly turned out. Keep hips and low back on the pad, descend until thighs approach parallel to the platform, and drive through mid-foot/heel to extend the knees. Wide stance increases inner-thigh (adductor/vastus medialis) involvement while the machine reduces overall stabilization demands.\nCoaching cues: knees track with toes, heels stay flat, hips/back remain on the pad, control the bottom, avoid knee lockout.	compound	fixed	push	beginner
+1e51b837-215d-4069-9d14-c9510c1b1b61	Smith Machine Lunge	2024-09-07 21:02:58.920827	2025-09-11 15:19:59.299722		A unilateral lunge performed on a Smith machine. Set feet in a split stance under the bar, keep the bar path vertical over the mid-foot, brace the core, and descend until the back knee nears the floor; drive through the whole front foot to stand. The fixed bar path lowers global stabilization while the unilateral setup increases frontal-plane control demands. Quadriceps are primary; glutes and adductors assist hip extension and pelvis control; hamstrings act mainly eccentrically; calves and core stabilize.\nCoaching cues: front knee tracks over toes, torso tall, ribcage down, avoid front heel lift and pelvis shifting.	compound	fixed	push	beginner
+7b006564-2c61-4661-ab8c-d4cf60fdb3ed	Smith Machine Squat	2024-09-07 21:00:33.453044	2025-09-11 15:22:17.079449		A barbell squat performed on a Smith machine. Stand with feet under the bar, brace the core, descend to at least parallel keeping a tall torso and knees tracking with toes; drive through the whole foot to stand. The fixed bar path reduces global stabilization and keeps the pattern more knee-dominant (quadriceps). Glutes assist hip extension; hamstrings contribute mainly eccentrically; adductors and calves aid stability; core and upper back support the bar.\nCoaching cues: bar over mid-foot, ribs down, full-foot pressure, control the bottom—no bouncing.	compound	fixed	push	beginner
+24c43903-d3a7-4a39-9231-5bc7d5cec5da	Dumbbell Split Squat	2024-09-07 20:54:24.859554	2025-09-11 15:30:34.314686		Hold dumbbells at your sides, set a stable split stance, brace the core, and descend under control until the back knee nears the floor; drive through the whole front foot to stand. Quadriceps are primary; glutes assist hip extension; hamstrings contribute mainly eccentrically; adductors/abductors aid frontal-plane control; calves and core stabilize.\nCoaching cues: torso tall, front knee tracks toes, pelvis level (no hip drop), full-foot pressure, avoid locking the knee at the top.	compound	free	push	beginner
+14dbd276-30fe-4558-9cf0-104751b58f2d	Dumbbell Rear Lunge	2024-09-07 20:51:46.750556	2025-09-11 15:38:00.936268		Step back into a long split stance with dumbbells at your sides, torso upright, and core braced. Drop straight down until the back knee lightly touches the floor, front knee tracking over toes; drive through the whole front foot to stand. The reverse step biases hip/quad loading while reducing forward knee shear. Keep pelvis square, neutral spine, and steady arms (no trunk lean). Primary: quadriceps; glutes/adductors assist; hamstrings act mostly eccentrically; calves and core stabilize; abductors manage frontal-plane control.	compound	free	push	intermediate
+88baf661-c550-4ecd-b15a-0d1ca4d41116	One Leg Dumbbell Squat (AKA Dumbbell Bulgarian Split Squat)	2024-09-07 20:44:02.278455	2025-09-11 15:42:57.06856		Rear foot elevated on a bench (laces down) in a split stance. Hold dumbbells at the sides with a neutral grip. Brace, descend on the front leg until the back knee approaches the floor, keeping the front knee tracking over toes, pelvis level, and full-foot pressure. Minimize push-off from the rear leg; drive through the mid-foot/heel to stand while maintaining hip–knee–ankle alignment. Primary emphasis is on the quadriceps; glutes and adductors assist hip extension and frontal-plane control; hamstrings co-contract; calves and abdominals stabilize; forearms support the grip.	compound	free	push	intermediate
+10f8ff0e-38c6-465d-b99a-26c4026d22c6	Leg Extension	2024-09-07 20:42:37.44943	2025-09-11 15:47:10.356903		Set up on the leg extension machine with the seat depth adjusted so your knees align with the machine’s pivot/axis. Position the back pad to maintain a neutral spine and place the shin pad just above the ankles. Grip the handles, keep hips and glutes anchored to the seat, dorsiflex the ankles, and extend the knees to fully contract the quadriceps without forcefully locking out. Pause briefly, then lower the weight under control (slightly slower on the way down) while keeping the pelvis level and avoiding momentum.	isolation	fixed	push	beginner
+5ab252b3-204d-4846-80e8-a7629f2d2e25	Frog Squat	2024-09-07 20:56:42.175068	2025-09-13 17:45:37.47417		Bodyweight squat with a wider stance and toes slightly turned out. Drop hips between the knees while keeping the chest up and spine neutral; elbows can gently press against the inner knees to encourage knee tracking. Descend under control to a comfortable depth and stand by driving through the mid-foot/heel. Emphasizes knee flexion (quadriceps) with notable adductor/glute contribution; hamstrings act mainly eccentrically; calves and core stabilize.\nCoaching cues: knees track with toes, full-foot pressure, avoid lumbar rounding/butt-wink, smooth tempo.	compound	body_weight	push	beginner
+ea89fe55-c50f-4bbf-acc1-96e7df46101a	One Leg 45 Degree Leg Press	2024-09-08 11:42:23.510138	2025-09-11 15:16:32.01369		Use one foot centered on the 45° leg press platform. Keep hips/pelvis square to the pad, brace the core, and track the knee over the toes. Lower under control to ~90° knee flexion and press through the mid-foot/heel. Unilateral setup increases frontal-plane control demands (glute medius/adductors) while quadriceps remain the primary driver; glutes/hamstrings assist hip extension; calves stabilize the ankle.\nCoaching cues: keep hips glued to the pad, knee tracks toes, avoid pelvis shifting/tilting, full-foot pressure without locking the knee at the top.	compound	fixed	push	beginner
+4ef87c39-b004-4c4c-82a8-ddd0338de8c8	Smith Machine Front Squat	2024-09-08 11:38:55.940763	2025-09-11 15:18:14.484129		A front-loaded squat performed on a Smith machine. Keep an upright torso, brace the core, and let the knees track over the toes as you descend to depth; drive through the mid-foot to stand. The fixed bar path lowers global stabilization demands and keeps emphasis on knee extension (quadriceps). Glutes assist hip extension; hamstrings contribute mainly eccentrically; calves and core stabilize; upper back (rhomboids) supports the front rack.\nCoaching cues: elbows high/chest up, ribs down, full-foot pressure, avoid bouncing in the hole.	compound	fixed	push	beginner
+4dc80274-2d3e-482e-a736-9f9399330c76	Machine Hack Squat	2024-09-07 20:50:37.219599	2025-09-11 15:39:26.933251		Set feet shoulder-width on the hack platform, toes slightly out, and keep hips/back flat against the pad. Brace, descend by bending knees while allowing knees to track over toes, then drive through the mid-foot/heel to stand without locking out hard. Keep ribs down, neutral spine, and full foot contact. Primary emphasis is on the quadriceps; glutes and adductors assist hip extension and frontal-plane control; hamstrings contribute minimally (mostly co-contraction), while calves and abs stabilize.	compound	fixed	push	beginner
+945bdcdb-6aee-42df-a974-3fedc0b76846	Dumbbell Goblet Squat	2024-09-07 20:40:09.742885	2025-09-11 15:55:18.653749		Hold a dumbbell vertically against the chest in a “goblet” position with elbows tucked. Stand shoulder-width, brace the core, keep the torso tall, and let the knees track over the toes. Descend by sitting between the hips to at least thighs-parallel (or lower as mobility allows) while keeping heels down and a neutral spine. Drive up through the mid-foot/heel without bouncing or forcefully locking the knees; keep the weight close to the chest throughout.	compound	free	push	beginner
+22df24eb-6bb7-45bc-ab46-9d6022eec774	Barbell Back Squat	2024-09-07 20:34:58.039052	2025-09-11 16:03:21.690598		Set the bar across the upper back (not the neck), grip just outside shoulders, and unrack to step back with a shoulder-width stance. Brace the core, keep ribs down, and maintain a neutral spine. Sit the hips down and slightly back, let the knees track over the toes, and keep pressure through the whole foot (midfoot/heel—not the toes). Descend to parallel or as mobility allows without butt-wink, then stand by driving the floor away and finishing with hips under the torso. Avoid collapsing the chest or knee valgus; lock out under control without hyperextending.	compound	free	push	intermediate
+4da455c2-c154-4da7-b9c5-6195bd137eec	Dumbbell Goblet Squat	2024-09-07 20:38:40.685439	2025-09-11 16:06:55.568778		Hold a dumbbell vertically against the chest in a “goblet” position with elbows tucked. Stand shoulder-width, brace the core, keep the torso tall, and let the knees track over the toes. Descend by sitting between the hips to at least thighs-parallel (or lower as mobility allows) while keeping heels down and a neutral spine. Drive up through the mid-foot/heel without bouncing or forcefully locking the knees; keep the weight close to the chest throughout.	compound	free	push	beginner
+ad76d69c-5e90-4643-b507-9e9226d8b5cd	Trap Bar Shrug	2024-09-07 20:21:09.839764	2025-09-11 16:11:27.0279		Stand inside the trap bar with feet hip-width and a neutral grip. Brace the core, keep arms straight, and elevate the shoulders straight up toward the ears (no rolling). Pause 1–2 s at the top, then lower under control to a full stretch while keeping the neck neutral and elbows extended.	isolation	free	pull	beginner
+d180a698-a12e-4731-8234-b96e8f3ca7d9	Barbell Upright Row	2024-09-07 20:15:00.934798	2025-09-11 16:16:44.885597		Stand with feet shoulder-width and grip the bar slightly inside shoulder width. Keep the bar close to the body and lead with the elbows, pulling to about upper-chest height while elevating the shoulders. Keep wrists neutral, torso upright, and avoid swinging or rolling the shoulders. Pause briefly at the top, then lower the bar under control. If shoulder discomfort occurs, widen the grip or reduce the range.	compound	free	pull	beginner
+31b8aa6a-448d-4e4c-bd1e-6386060b526e	Tripod Dumbbell Row	2024-09-07 15:12:48.559544	2025-09-11 17:08:45.360274		The tripod dumbbell row is a unilateral pulling exercise emphasizing the lats, rhomboids, and mid–lower traps with assistance from the biceps and posterior deltoid.\n\nSet up with one knee and the same-side hand braced on a flat bench, the opposite foot on the floor, hips hinged, and the spine neutral. Hold a dumbbell with a neutral grip. Initiate by drawing the elbow toward the hip while retracting and depressing the scapula; keep the torso square (avoid rotation). Pull until the elbow passes the torso, pause briefly, then lower under control to a full stretch.	compound	free	pull	beginner
+738d7264-00af-48dd-a475-3c4d12e28188	Chin Up	2024-09-06 21:19:43.22155	2025-09-11 17:35:30.583853		Using a supinated (underhand) shoulder-width grip, hang from the bar with elbows fully extended. Take a deep breath, squeeze your glutes, and brace your abs. From an active hang, depress and retract the shoulder blades, then drive the elbows straight down to pull your upper chest to the bar (chin over the bar). Keep the ribs down and neck neutral; pause, then lower under control to a full hang without swinging or kipping.	compound	body_weight	pull	beginner
+c18b086c-b0c3-4d1c-a6a3-2653e36c5dff	Straight Leg Deadlift	2024-09-05 13:44:20.952287	2025-09-11 17:44:31.379179		Set the bar on the rack just below hip height and load your plates. Stand shoulder-width and grasp the bar with a double overhand grip. Brace, keep a neutral spine and a slight (soft) knee bend, and hinge by pushing the hips back while keeping the bar over midfoot and close to your legs (shins nearly vertical). Lower until the bar is just below the kneecap without rounding. Keep lats tight, drive through the whole foot, and extend the hips to stand tall by squeezing the glutes—avoid hyperextending the lower back. Control the descent; maintain the same knee angle throughout, and repeat.	compound	free	hinge	intermediate
+21d5ce50-6ffa-44d9-869f-abcfeb518018	Dumbbell Goblet Split Squat	2024-09-08 11:56:12.840633	2025-09-15 09:56:04.711459		Hold one dumbbell vertically at chest level (goblet). Take a long split stance with the front foot flat and torso upright. Descend until the back knee approaches the floor, keeping the front knee tracking over the toes. Drive through the whole front foot to stand. Primary emphasis is on the quadriceps; glutes and adductors assist in hip extension and frontal-plane control; hamstrings act mainly eccentrically; calves and core stabilize; the anterior deltoid supports the goblet hold.	compound	free	push	beginner
+de763854-d06d-43e9-9973-f4ca8839201b	Dumbbell Walking Lunge	2024-09-07 20:55:27.29392	2025-09-11 15:28:21.125021		Hold dumbbells at your sides, step forward into a lunge, descend until the back knee approaches the floor while the front knee tracks over the toes, then drive through the whole front foot to stand and step through. Quadriceps are primary; glutes assist hip extension; hamstrings contribute mainly eccentrically; adductors/abductors control the frontal plane; calves and core stabilize.\nCoaching cues: torso tall, pelvis level, avoid overstriding, full-foot pressure, smooth tempo.	compound	free	push	advanced
+2fd70951-2d44-407e-a7ee-daa94bf6af87	Front Squat	2024-09-07 20:53:13.256272	2025-09-11 15:33:44.900779		Set up in a front rack (clean grip or cross-arm), elbows high, chest up, and bar over mid-foot. Brace the core, sit straight down keeping a relatively upright torso, knees tracking over toes, and stand by driving through the whole foot. Anterior load increases knee flexion demand (quadriceps) while glutes and adductors assist; hamstrings contribute mainly eccentrically; calves and core stabilize; upper back (traps/rhomboids) maintains thoracic extension.\nCoaching cues: full-foot pressure, elbows to the ceiling, neutral spine (avoid butt-wink), controlled depth to at least parallel.	compound	free	push	intermediate
+64406a09-56a6-43da-9329-ff0fb0d83e4f	45-Degree Leg Press	2024-09-07 20:41:37.047377	2025-09-11 15:51:05.00775		Sit with hips and low back firmly on the pad and place your feet shoulder-width on the sled (toes slightly out if comfortable). Unlock the safeties with soft knees, brace, and lower the sled under control until the knees reach about 90° of flexion (thighs near parallel to the sled) without the pelvis rolling off the pad. Drive through the mid-foot/heel to extend the knees and hips, keeping the knees tracking over the toes. Avoid bouncing, lifting the hips, or forcefully locking out at the top.	compound	fixed	push	beginner
+bd3338ee-1841-4686-a98c-3493ab9cfa7e	Reverse Grip Lat Pulldown	2024-09-06 21:26:46.655349	2025-09-11 17:32:48.638313		Attach a straight bar to the lat pulldown and sit with thighs secured. Grasp the bar with a supinated (underhand) grip at or just inside shoulder-width. Sit tall, brace, depress the shoulder blades, and keep the elbows tucked as you drive them down and slightly back to pull the bar to the upper chest. Pause and squeeze the lats, then return overhead under control without shrugging, leaning back, or letting the ribs flare.	compound	fixed	pull	beginner
+6115df45-ddad-4fa6-bfb0-1c0cd72de766	Smith Machine Stiff Leg Deadlift	2024-09-05 13:49:52.421936	2025-09-11 17:42:56.90059		Load the Smith machine and set the bar to a comfortable height. Stand feet hip–shoulder width and grasp the bar overhand. Position the feet slightly forward to keep the bar tracking vertically over midfoot. Keep a neutral spine, soft (not locked) knees, and hinge at the hips—push the hips back while keeping the bar close to your legs and shins nearly vertical. Lower until you feel a strong hamstring stretch without rounding or posterior pelvic tilt. Brace, keep lats engaged, then drive the hips forward by contracting hamstrings and glutes to stand tall without hyperextending. Control the descent and repeat.	compound	fixed	hinge	intermediate
+ad98534e-b2d9-4fef-9983-578ef12b28f7	Stiff Leg Deadlift	2024-09-05 13:05:01.285262	2025-09-11 18:00:08.207783		Position the bar over mid-foot (shoelaces) in a hip-width stance. Hinge by pushing the hips back with minimal knee bend (5–15°) and grasp the bar shoulder-width, double-overhand. Brace, keep a neutral spine, set the lats, and keep shins nearly vertical as the bar tracks straight over mid-foot. Extend the hips to stand tall without hyperextending the lumbar spine. Reverse by pushing the hips back and lowering until you feel strong hamstring tension or plates reach mid-shin—no lumbar rounding. Keep the bar close, control the descent, re-brace, and repeat.	compound	free	hinge	intermediate
+1dcd59ab-674e-49d8-9a06-9c17c2a05730	Conventional Deadlift	2024-09-05 12:56:19.187681	2025-09-11 18:07:02.429548		Set the bar over mid-foot (about 2–3 cm from the shins). Take a hip-width stance and grip just outside the legs. Brace 360°, set a neutral spine, pull the slack out, and engage the lats (bar to shins). Push the floor away: extend knees and hips together keeping the bar over mid-foot and close to the body. Stand tall by squeezing the glutes without hyperextending. Return by hinging back; once the bar passes the knees, bend them and guide the bar to the floor under control. Reset and repeat.	compound	free	hinge	intermediate
+3a39a222-7b4d-4e0e-9e7e-034d78b5d6bf	Good Mornings Off Pins	2024-09-05 12:48:41.905041	2025-09-11 18:27:47.321309		Set safety pins in a rack at the bottom of your desired range (torso near parallel to floor). Position the bar on your upper back against the pins, take a hip-width stance, and grip just outside shoulder-width. Inhale and brace, keep a neutral spine and soft knees (10–15°). Drive the hips forward to lift the bar off the pins and stand tall. Hinge by pushing the hips back with shins nearly vertical, keep lats tight and elbows pulled down. Lower under control until the bar lightly contacts the pins, pause (dead stop), fully re-brace, and repeat. Avoid lumbar rounding or hyperextension throughout.	compound	free	hinge	intermediate
+b39cc5b5-8335-4918-a504-f9cdfb85ceba	Good Mornings	2024-09-03 11:13:27.408276	2025-09-11 18:30:54.469882		Set a barbell across the upper back (not the neck) and unrack from a squat rack. Stand hip-width with a slight knee bend, feet flat. Brace the torso (ribs down), keep a neutral spine, and pin the bar in place by pulling elbows down and lats tight. Hinge by pushing the hips back until you feel a strong hamstring stretch while shins stay near vertical; stop before lumbar flexion. Drive the floor and extend the hips to stand tall without hyperextending. Move under control with consistent tempo; use light-to-moderate loads and spotter arms when learning.	compound	free	hinge	intermediate
+f5f03cc7-c2bc-4367-9042-107114d634ce	Barbell Wrist Curl (Over Bench)	2024-09-03 09:44:32.006932	2025-09-11 18:37:04.339334		Set up kneeling or seated behind a flat bench. Rest your forearms on the bench with wrists hanging past the edge, palms up (supinated), hands shoulder-width, and thumbs wrapped around the bar. Keep elbows fixed and shoulders relaxed. Lower the bar by extending the wrists under control, then curl it up by flexing the wrists until the bar approaches the forearms. Pause, avoid ulnar/radial deviation and momentum, keep forearms glued to the bench, and use a smooth full range of motion.	isolation	free	pull	beginner
+a2f8dd49-606e-4d86-ae04-8af61c0b40e9	Seated Reverse Grip Cable Wrist Curl	2024-09-03 09:42:04.632581	2025-09-11 18:40:51.273838		Set a low pulley and attach a straight bar. Sit on a flat bench facing the stack with forearms resting on your thighs or the bench edge, wrists hanging off. Take a shoulder-width reverse (overhand) grip with thumbs wrapped. Keep elbows and forearms fixed, shoulders relaxed. From wrist flexion, extend the wrists to lift the bar; pause near neutral/comfortable extension, then lower under control back into flexion. Avoid elbow movement, torso sway, and ulnar/radial deviation; use a smooth full range of motion.	isolation	fixed	pull	beginner
+d7871e0c-5e1b-4ffd-a9ab-951028246a01	Behind-The-Back Cable Wrist Curl	2024-09-03 09:37:05.548408	2025-09-11 18:45:00.182027		Set a low pulley with a straight bar. Stand facing away from the stack with the bar held behind your hips, hands shoulder-width. Keep elbows straight, shoulders down, and forearms still. Let the wrists extend to feel a stretch in the forearms, then flex the wrists to pull the bar up toward your glutes; pause and lower under control. Avoid shrugging, bending the elbows, or using momentum to keep tension on the forearm flexors.	isolation	fixed	pull	beginner
+bb9c756b-0c9e-4e87-826f-bb2cbd16d86b	Dumbbell Wrist Curl (Over Bench)	2024-09-03 09:30:01.935018	2025-09-11 18:49:22.377648		Sit on a flat bench and rest your forearm on the bench or thigh with the palm up (supinated), wrist just past the edge. Hold a dumbbell, keep the elbow fixed and shoulder relaxed. Lower into a full stretch by extending the wrist, then curl by flexing the wrist and briefly pausing at the top. Avoid elbow flexion, forearm rotation, or swinging to keep tension on the wrist flexors.	isolation	free	pull	beginner
+d3f54e1c-6333-4a15-b09b-0264ec0b68fe	Reverse Grip Barbell Curl (EZ Bar)	2024-09-03 08:35:16.704123	2025-09-11 18:54:52.507562		Stand tall holding an EZ bar with a pronated (overhand) grip about shoulder-width. Keep elbows pinned to your sides, wrists neutral (avoid flexing/extension), and torso still. Flex the elbows to curl until forearms are near vertical, then lower under control without swinging or shrugging. The pronated grip shifts emphasis toward the brachioradialis and forearm extensors while the biceps assist.	isolation	fixed	pull	beginner
+ddaf509f-3c99-437c-b872-a4651a91601f	Behind-The-Back Barbell Wrist Curl	2024-09-03 08:33:21.446664	2025-09-11 18:56:14.369948		Stand tall holding a barbell behind your hips with a shoulder-width overhand grip. Keep elbows straight but not locked, shoulders down, and torso still. Let the wrists extend under control, then flex to curl the bar up using the forearm flexors only; avoid elbow bending or shrugging. Pause briefly and lower through a full range of motion.	isolation	free	pull	beginner
+61a31a0d-a736-48b5-b03e-44aa1ad7f3eb	Seated Barbell Wrist Curl	2024-09-03 08:30:59.451731	2025-09-13 13:01:06.900303		The seated barbell wrist curl isolates the wrist flexors of the forearm. Sit on a flat bench with forearms resting on your thighs (palms up), grip the bar slightly wider than hip width. Let the bar roll toward the fingers, then flex the wrists to raise it while keeping elbows and shoulders still. Use a controlled tempo (especially a slow eccentric) and avoid excessive range that causes pain.	isolation	free	pull	beginner
+5b7d739c-d130-466c-a5ac-9e8b318b77ad	Smith Machine Bench Press	2024-09-02 21:01:10.551319	2025-09-13 13:08:05.995663		Set a flat bench under the Smith bar and position the bar over mid-chest. Retract/depress the scapulae, plant feet, and grip slightly wider than shoulder width. Unrack, lower to the mid-lower chest with elbows tucked ~45–60°, forearms vertical, then press back to full elbow extension under control. Set safeties to just below chest depth.	compound	fixed	push	beginner
+13fcd794-54fb-413f-8bbf-44353cd29869	Cable Iron Cross	2024-09-02 20:22:38.703372	2025-09-13 13:15:03.968974		Stand centered in a cable crossover with D-handles set slightly above shoulder height. Take a staggered stance, brace the core, and keep a slight elbow bend (~15–30°). Retract and depress the scapulae, then sweep the arms in a wide arc to meet in front of the chest without changing elbow angle; pause and return under control to a deep stretch without letting the shoulders roll forward. Keep it a fly (no pressing) and avoid shrugging.	isolation	fixed	push	beginner
+9be8d3a0-574b-40dc-a42c-06ab42af7e66	Close Grip Dumbbell Press (Crush Press)	2024-09-02 20:18:44.729356	2025-09-13 13:16:14.795399		Lie on a flat bench with neutral grips and the dumbbells touching. Retract/depress the scapulae, keep elbows tucked ~30–45°, and actively squeeze the bells together throughout the press to create constant chest tension. Press up over the lower–mid chest and lower under control without letting the dumbbells drift apart. Keep wrists neutral and avoid shrugging or excessive arching.	compound	free	push	intermediate
+db9ff44c-2e27-42df-8f6a-1b64429999e1	Chest Dip	2024-09-02 15:26:06.627831	2025-09-13 13:18:26.036856		Lean your torso slightly forward (10–30°), keep shoulders depressed and scapulae retracted. Lower under control until shoulders are just below elbows or a comfortable chest stretch, elbows tracking ~30–45° from the torso. Drive up by pressing through the palms and squeezing the chest; avoid shrugging and excessive lockout. Brace the core and master bodyweight before adding load.	compound	body_weight	push	intermediate
+b2e39ab6-118d-46bd-ad8c-8acf9864af6c	Barbell Bench Press	2024-09-02 14:57:19.319304	2025-09-13 13:23:48.72269		The barbell bench press primarily targets the pectoralis major (sternocostal fibers), with strong assistance from the anterior deltoids and triceps. Key cues:\n• 5-point setup (feet, glutes, upper back, head) with a light arch\n• Scapulae retracted/depressed; wrists stacked over elbows\n• Touch point around lower–mid sternum; elbows ~45–70°\n• Bar path: slight J-curve up and back; use spotter or safeties	compound	free	push	intermediate
+3488eaaa-a999-43c5-acd6-b177b8a3df8a	Dumbbell Flys	2024-09-02 14:08:08.34696	2025-09-13 13:24:33.512739		Isolation movement for the chest: lie on a flat bench, slight elbow bend (~15–30°) maintained throughout, palms facing each other. Lower arms in a wide arc until upper arms are near shoulder line (no overstretch), keep scapulae retracted/depressed, neutral wrists; bring the dumbbells together over the chest by horizontal adduction. Control tempo and range to minimize shoulder strain.	isolation	free	push	beginner
+2bc37dec-7b06-404c-af63-99bf3f60fb68	Dumbbell Pullover	2024-09-02 14:06:48.380733	2025-09-13 13:25:25.049625		Compound upper-body movement bridging chest and back. Lie on a flat bench, hold one dumbbell with both hands above the chest, soft elbows (~15–30°). Inhale as you lower in an arc behind the head without losing ribcage/neutral spine; exhale and return by shoulder extension. To bias chest: keep elbows slightly wider and cue ribcage down; to bias lats: tuck elbows closer and drive upper arms toward hips. Keep scapulae depressed/retracted; avoid excessive lumbar arch.	compound	free	pull	intermediate
+de4e9652-b068-4558-9fd3-38d45e5aa0d9	Toes In Seated Calf Raise	2024-09-01 12:49:37.135904	2025-09-13 13:35:29.754767		Seated machine calf raise with toes internally rotated (~15–30°). Sit with knees ~90° under the pad, balls of the feet on the platform edge (heels hanging). Extend the ankles to release the safety. Lower under control into dorsiflexion to a comfortable stretch, then plantarflex strongly to the top; pause 1–2 s and avoid letting the heels rest at the bottom. Keep movement at the ankle only (no knee pumping), use a steady tempo, and drive through the ball of the foot. Toes-in may bias the lateral gastrocnemius; the seated position emphasizes the soleus.	isolation	fixed	push	beginner
+c5901a9a-580c-411b-85bd-2ec738123e14	Hanging Knee Raise	2024-09-01 12:26:49.231068	2025-09-13 13:38:24.912018		Hang from a pull-up bar with a shoulder-width grip (widen if your feet touch the floor). Pack the shoulders (scapular depression), brace, and keep the legs together. Raise the knees by flexing the hips and posteriorly tilting the pelvis to bring the knees toward the chest; avoid swinging. Pause 1–2 s, then lower under control to a full stretch. Keep the torso still and the tempo slow throughout. Progression: hold a dumbbell between the feet when strong enough.	compound	body_weight	pull	intermediate
+984e5dac-f3a8-4980-bfc9-da370cf45e46	Incline Rear Delt Fly	2024-08-29 20:58:25.061062	2025-09-13 13:50:16.616427		Set an adjustable bench to a 30–40° incline. Lie prone with your chest on the bench and feet planted. Hold dumbbells with a neutral grip and keep a slight bend in the elbows. Set the shoulders down and lightly retracted. Inhale, then raise the arms out to the sides in line with your shoulders by driving the elbows out (not back) until the upper arms are level with your torso. Avoid shrugging or turning it into a row. Pause briefly at the top, then lower the dumbbells under control to the start. Repeat for the desired reps.	isolation	free	pull	beginner
+16ba69dc-e99d-4a71-bbcb-0f3ce096a9d9	Machine Shoulder Press	2024-08-29 20:17:41.629601	2025-09-15 13:55:08.03466		Adjust the seat so the handles are at or just below shoulder height. Sit tall with your back and head supported, feet planted. Grip the handles (neutral or pronated), brace your core, keep ribs down, and avoid excessive lumbar arch. Press overhead in the scapular plane until the elbows extend without shrugging; pause, then lower under control to just above shoulder level and repeat.	compound	fixed	push	beginner
+afd7f719-5789-48a0-a5d9-77e9cb1669bb	Standing Cable Reverse Fly	2024-08-29 20:16:07.188606	2025-09-15 13:57:12.653004		Set both pulleys to chest height and attach single handles. Stand tall with a slight knee bend, arms extended in front with a soft elbow. Grip the handles (neutral), brace the core, and avoid shrugging. Pull the arms out laterally in a wide arc until hands are in line with the shoulders without over-pinching the shoulder blades; pause, then lower under control to the start and repeat.	isolation	fixed	pull	beginner
+aada0f37-1f30-4d61-a284-8003027bc871	Cable Face Pull	2024-08-29 20:14:43.135772	2025-09-15 13:58:56.657299		Set a cable with a rope attachment at upper-chest to face height. Take a split or athletic stance, brace your core, and grasp the rope with a neutral/pronated grip. Pull toward the nose/forehead with high elbows, spreading the rope and finishing with slight external rotation (thumbs back) without shrugging. Pause, then return under control keeping ribs down and torso still.	compound	fixed	pull	beginner
+4035dfef-3cc6-4a15-a97f-c167bd274d02	Seated Barbell Shoulder Press	2024-08-29 15:34:32.562958	2025-09-15 14:00:56.738217		Set a squat rack so the bar is just below shoulder height and place an adjustable bench upright inside the rack. Sit tall with your back supported, feet planted, and take a pronated grip slightly wider than shoulder-width. Brace, keep ribs down and wrists stacked, then lower the bar to around upper chest without excessive arching. Press back up in the scapular plane to full elbow extension without shrugging; pause briefly and lower under control.	compound	free	push	beginner
+8508cffc-1df6-4db2-9447-3bafd74a1325	Seated Hammer Curl	2024-08-28 20:50:28.789635	2025-09-15 15:17:26.088304		Sit tall on a flat bench with feet planted. Hold dumbbells at your sides with a neutral (thumbs-up) grip, wrists straight, elbows tucked to your ribs, and torso braced. Curl the dumbbells without swinging or letting the elbows drift forward until you reach comfortable elbow flexion; pause and squeeze, then lower under control to full extension while keeping tension. Inhale before lifting, exhale near the top. Repeat for reps.	isolation	free	pull	beginner
+194fa2ee-7f92-4982-903e-3db80293d773	Barbell Preacher Curl	2024-08-27 20:20:16.517741	2025-09-15 15:43:10.911581		Load the desired weight on a barbell and sit upright with your chest against the preacher pad. Press your upper arms firmly into the pad and use a supinated (palms up) grip about shoulder-width. Extend the elbows to a comfortable stretch without hyperextending. Brace, keep shoulders down, and curl the bar by bending only at the elbows until the bar reaches about shoulder height; pause and squeeze the biceps. Lower under control to the full stretch while keeping the arms glued to the pad. Repeat for the desired reps.	isolation	free	pull	beginner
+855bd9e5-3546-4cfd-b048-e8017f01bfeb	Dumbbell Tricep Kickback	2024-08-27 17:37:27.234715	2025-09-15 16:08:10.950182		Place a dumbbell next to a flat bench. Set up with your right knee and right hand on the bench, left foot on the floor, torso nearly parallel to the ground, and a neutral spine. Hold the dumbbell in your left hand with a neutral grip. Tuck the left upper arm close to your torso and keep it in line with your body; start around 90° of elbow flexion. Moving only at the elbow, extend until the arm is straight without swinging the shoulder. Pause briefly, then lower under control to the start. Complete reps and switch sides.	isolation	free	push	beginner
+c21d3b0f-c8a8-4b7f-92ea-90dc567a1183	Close Grip EZ Bar Press	2024-08-26 14:36:25.633347	2025-09-15 16:24:04.997722	https://s3assets.skimble.com/assets/1141234/image_iphone.jpg	Load an EZ bar and lie on a flat bench with feet planted. Take a close grip (just inside shoulder width) on the angled EZ sections, wrists stacked over forearms. Retract and depress the shoulder blades, keep a light arch and tight upper back, then press the bar to lockout to start.\nInhale, keep elbows ~30–45° to the torso, and lower the bar under control to the lower sternum while maintaining forearms vertical. Light touch to chest, then drive the bar back up by extending the elbows and pressing yourself into the bench. Keep ribs down, wrists neutral, and avoid flaring the elbows. Repeat for reps.	compound	free	push	beginner
+385fb192-7c2c-405a-b483-f36e32e241c8	Close Grip Chest Press	2024-08-26 14:31:15.917591	2025-09-15 16:25:39.268928	https://www.dmoose.com/cdn/shop/articles/1_155d781f-a698-40e7-bdb6-f0de019f9b89.jpg?v=1648738774	Adjust rack height if needed and load the bar. Lie on a flat bench with feet planted. Take a close overhand grip (~8–12 in, just inside shoulder width). Retract and depress the shoulder blades, keep a slight arch and neutral wrists, then unrack to lockout over mid-chest.\nInhale, keep elbows ~30–45° to the torso and forearms vertical, and lower the bar under control to the lower/mid sternum (light touch). Exhale as you press back up by extending the elbows and driving yourself into the bench. Avoid excessive elbow flare and keep ribs down. Repeat for reps.	compound	free	push	beginner
+\.
 
 
 --
 -- Data for Name: exercise_examples_equipments; Type: TABLE DATA; Schema: public; Owner: -
 --
 
-INSERT INTO public.exercise_examples_equipments
-VALUES ('18eac9b2-be10-4878-a7ad-cc7a56f4c846', '2024-08-23 13:51:17.110081', '2024-08-23 13:51:17.110081',
-        '752ee7ba-ae88-46f0-95fb-e0a316212f16', '6cb225d2-be00-461d-9bf0-7f0c87cfea0b');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('30d229f2-dbe0-4c88-ae9e-f194a7a8d323', '2024-08-23 13:51:17.110081', '2024-08-23 13:51:17.110081',
-        '15495639-2adb-41b8-899c-493ac0172f57', '6cb225d2-be00-461d-9bf0-7f0c87cfea0b');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('3878ca87-c414-4a75-b59f-29a12f24c9ee', '2024-08-23 14:29:51.284754', '2024-08-23 14:29:51.284754',
-        '9d66ac93-3a48-429d-aeaa-54302856e204', 'b790c6a6-ecd1-4b3a-afbc-22cd82e55658');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('042477ef-e59a-434d-a0e1-11b576345a4e', '2024-08-23 14:29:51.284754', '2024-08-23 14:29:51.284754',
-        '85dbccf6-454e-4440-8905-50a90d91dbcc', 'b790c6a6-ecd1-4b3a-afbc-22cd82e55658');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('89bed541-8da6-4559-808e-e34b2dde6345', '2024-08-23 14:41:48.924103', '2024-08-23 14:41:48.924103',
-        '9d66ac93-3a48-429d-aeaa-54302856e204', '4d3a89ab-70ae-4311-8b40-a058b2f3057b');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('69d34b8c-9bb3-4ed7-bb21-8c3a803c7eca', '2024-08-23 14:41:48.924103', '2024-08-23 14:41:48.924103',
-        '85dbccf6-454e-4440-8905-50a90d91dbcc', '4d3a89ab-70ae-4311-8b40-a058b2f3057b');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('38b56251-60a5-408c-83af-c5d33d61c7da', '2024-08-23 14:53:43.92338', '2024-08-23 14:53:43.92338',
-        '752ee7ba-ae88-46f0-95fb-e0a316212f16', '0e2fe1e8-f8f1-48e6-b360-8c9d4d9991a6');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('4c3e2a94-a011-4e8e-beed-1e0348721c85', '2024-08-23 14:53:43.92338', '2024-08-23 14:53:43.92338',
-        'af38ec0a-1465-45a8-99ba-a394224530dc', '0e2fe1e8-f8f1-48e6-b360-8c9d4d9991a6');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('49782b9d-fbf1-4930-8b1e-39f5f4b17d58', '2024-08-23 15:30:18.903829', '2024-08-23 15:30:18.903829',
-        'b17ae8af-2d78-4e77-b45b-39253c28247a', 'ab0d7384-444e-446a-911d-f64ac31db8ef');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('bbdbe4a6-a6eb-4755-b30e-3a03daef2393', '2024-08-23 15:30:18.903829', '2024-08-23 15:30:18.903829',
-        'e7fc1da0-48df-4338-b03f-1cea01cd12d5', 'ab0d7384-444e-446a-911d-f64ac31db8ef');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('f02409fc-7bce-4fcc-85d4-e158dd891e8f', '2024-08-23 15:44:41.339864', '2024-08-23 15:44:41.339864',
-        'ad130932-4b2f-4e7b-b3a4-c20b4a6b85ae', '650e9725-d36c-4688-bcab-adf93dfe9e5d');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('10eacba8-7484-47ea-9d09-3d702f319c2b', '2024-08-23 15:44:41.339864', '2024-08-23 15:44:41.339864',
-        '85dbccf6-454e-4440-8905-50a90d91dbcc', '650e9725-d36c-4688-bcab-adf93dfe9e5d');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('d1fade6c-1e1b-4bdb-80e2-c5be66f92913', '2024-08-23 15:50:27.656054', '2024-08-23 15:50:27.656054',
-        'c01e10b9-4ef6-4f23-9b41-7f6d5d4d1e85', '3b828d2f-797f-4a45-9d1d-1d3efe38fb54');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('bd1362af-1dd6-4e05-b7e4-98c642ea54d2', '2024-08-23 20:29:25.198434', '2024-08-23 20:29:25.198434',
-        'ad130932-4b2f-4e7b-b3a4-c20b4a6b85ae', '7517ae2f-c198-4a33-8a1d-1dc7327d1430');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('ab80f98c-307e-4a28-a7b0-0ea95ab0885d', '2024-08-23 20:29:25.198434', '2024-08-23 20:29:25.198434',
-        '85dbccf6-454e-4440-8905-50a90d91dbcc', '7517ae2f-c198-4a33-8a1d-1dc7327d1430');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('13f22fa8-9d47-4d81-874b-fbea62ed7a20', '2024-08-23 20:36:43.361959', '2024-08-23 20:36:43.361959',
-        'b17ae8af-2d78-4e77-b45b-39253c28247a', '4aafe702-f2fc-4fa2-a7fb-c31c279adeda');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('d254e8c0-5208-4d9d-b4ed-963e13b7cc16', '2024-08-23 20:36:43.361959', '2024-08-23 20:36:43.361959',
-        '85dbccf6-454e-4440-8905-50a90d91dbcc', '4aafe702-f2fc-4fa2-a7fb-c31c279adeda');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('69f86c20-a30e-42e2-a53e-ed84621e1c9d', '2024-08-24 13:49:36.268549', '2024-08-24 13:49:36.268549',
-        '9d66ac93-3a48-429d-aeaa-54302856e204', 'faf6674c-2a2a-4b03-ab8b-7a033052b572');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('2d770bea-fe04-4786-932e-bc15dd64e6ff', '2024-08-24 13:55:14.353429', '2024-08-24 13:55:14.353429',
-        '9d66ac93-3a48-429d-aeaa-54302856e204', '93e6b1c4-0510-41d4-983c-a1fde003881f');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('be1b632c-b299-4966-a8dc-2edbc2f0a1bb', '2024-08-24 15:00:28.276311', '2024-08-24 15:00:28.276311',
-        '9d66ac93-3a48-429d-aeaa-54302856e204', '0eaa8980-e29e-4f33-88b0-915db5cf309a');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('268c38c2-ca53-4c01-8cf3-84d04c8b6ba2', '2024-08-24 15:00:28.276311', '2024-08-24 15:00:28.276311',
-        '85dbccf6-454e-4440-8905-50a90d91dbcc', '0eaa8980-e29e-4f33-88b0-915db5cf309a');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('1d820e1c-d5b4-4508-be3d-40bed6caf5cf', '2024-08-24 15:05:24.076016', '2024-08-24 15:05:24.076016',
-        '85dbccf6-454e-4440-8905-50a90d91dbcc', '9f0c8916-a08b-4fe5-9f24-e1680ef627a8');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('1c6d7cc2-ad98-4caf-a03a-8f718de298e1', '2024-08-24 15:14:04.506549', '2024-08-24 15:14:04.506549',
-        '9d66ac93-3a48-429d-aeaa-54302856e204', '547f1f7e-3ee1-4b39-99eb-3462b1ec13af');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('d72c94d3-3ede-4a1d-9976-fcc1afcfe9e9', '2024-08-24 15:21:25.329077', '2024-08-24 15:21:25.329077',
-        '752ee7ba-ae88-46f0-95fb-e0a316212f16', '275097d4-3c8d-4040-9b2e-5f294919df04');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('1ea89282-bb1f-4180-be24-3204e4b018cc', '2024-08-24 15:21:25.329077', '2024-08-24 15:21:25.329077',
-        '331a0c35-f5a5-478d-ba7c-9f14ba2ee0fa', '275097d4-3c8d-4040-9b2e-5f294919df04');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('82b1cf49-36bb-4782-b791-c412629e44a3', '2024-08-26 14:10:38.427023', '2024-08-26 14:10:38.427023',
-        '752ee7ba-ae88-46f0-95fb-e0a316212f16', '5985d847-0473-444e-8fe0-9da5341ef986');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('26d6be34-ab58-483c-973b-2b6b44ae32fb', '2024-08-26 14:10:38.427023', '2024-08-26 14:10:38.427023',
-        '524da8cf-0303-4c53-8761-832a5fdb54ed', '5985d847-0473-444e-8fe0-9da5341ef986');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('9df444cb-f6ec-46e6-be44-382e92bf1f74', '2024-08-26 14:15:00.646836', '2024-08-26 14:15:00.646836',
-        '752ee7ba-ae88-46f0-95fb-e0a316212f16', '11644e17-247a-46b0-a391-b3b2a2a6bba8');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('3c8c831c-be6b-4c40-8342-f0d954a5a051', '2024-08-26 14:21:24.526649', '2024-08-26 14:21:24.526649',
-        'ad130932-4b2f-4e7b-b3a4-c20b4a6b85ae', '50774526-c91f-4d71-82a8-456526b0fbd0');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('26fc3b65-5f07-4ff9-ab98-ba3a95cd56b4', '2024-08-26 14:21:24.526649', '2024-08-26 14:21:24.526649',
-        '85dbccf6-454e-4440-8905-50a90d91dbcc', '50774526-c91f-4d71-82a8-456526b0fbd0');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('670cce16-0591-4106-9a96-b0e051bd88a3', '2024-08-26 14:31:15.934013', '2024-08-26 14:31:15.934013',
-        'b17ae8af-2d78-4e77-b45b-39253c28247a', '385fb192-7c2c-405a-b483-f36e32e241c8');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('327c5b0f-436f-471e-bb85-d3cca3304ccc', '2024-08-26 14:31:15.934013', '2024-08-26 14:31:15.934013',
-        'e7fc1da0-48df-4338-b03f-1cea01cd12d5', '385fb192-7c2c-405a-b483-f36e32e241c8');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('500f112d-a47a-42d7-a51e-c109c0e55241', '2024-08-26 14:36:25.650101', '2024-08-26 14:36:25.650101',
-        'ad130932-4b2f-4e7b-b3a4-c20b4a6b85ae', 'c21d3b0f-c8a8-4b7f-92ea-90dc567a1183');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('eb7d7dc5-4b50-45a2-bbbb-143af87dbf29', '2024-08-26 14:36:25.650101', '2024-08-26 14:36:25.650101',
-        '85dbccf6-454e-4440-8905-50a90d91dbcc', 'c21d3b0f-c8a8-4b7f-92ea-90dc567a1183');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('654dbcff-51cc-4663-be9c-8a32ca26b0a5', '2024-08-26 14:39:55.639589', '2024-08-26 14:39:55.639589',
-        '9d66ac93-3a48-429d-aeaa-54302856e204', '04d275d8-71df-4695-ace9-899ce6e41b29');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('7b0c1dff-bb12-4286-b798-a4cf1c930d0a', '2024-08-26 14:39:55.639589', '2024-08-26 14:39:55.639589',
-        '85dbccf6-454e-4440-8905-50a90d91dbcc', '04d275d8-71df-4695-ace9-899ce6e41b29');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('c09e37f5-af2f-4713-8689-9afb65465850', '2024-08-26 14:46:34.09067', '2024-08-26 14:46:34.09067',
-        '9d66ac93-3a48-429d-aeaa-54302856e204', '1b4402c2-2459-45c1-8d24-356322c71d20');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('48cffaea-2b3b-4f81-9ae9-c273cca655f2', '2024-08-26 14:52:11.254518', '2024-08-26 14:52:11.254518',
-        'b17ae8af-2d78-4e77-b45b-39253c28247a', '4f9bdd10-28bc-447e-8cf5-fbf47cd9af79');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('9a73cd1f-c0b6-428c-b244-29cb35215685', '2024-08-26 15:16:20.205226', '2024-08-26 15:16:20.205226',
-        '752ee7ba-ae88-46f0-95fb-e0a316212f16', '6a312bde-cc33-450b-8f1d-6091ccffe9cc');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('03882ba0-6533-4556-bd5f-52c3e40b3a68', '2024-08-26 15:16:20.205226', '2024-08-26 15:16:20.205226',
-        '15495639-2adb-41b8-899c-493ac0172f57', '6a312bde-cc33-450b-8f1d-6091ccffe9cc');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('28bbaf0c-aba8-4da2-a0cf-c8578b7b9da9', '2024-08-26 15:20:51.090958', '2024-08-26 15:20:51.090958',
-        '9d66ac93-3a48-429d-aeaa-54302856e204', '21e7460d-aa00-448b-8c82-994a73e0164c');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('0692ecf0-4068-49a7-b6db-be6c49ea7568', '2024-08-26 15:20:51.090958', '2024-08-26 15:20:51.090958',
-        '85dbccf6-454e-4440-8905-50a90d91dbcc', '21e7460d-aa00-448b-8c82-994a73e0164c');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('f67de955-3f11-4582-b4ae-b7f7cadf152d', '2024-08-27 16:05:54.993335', '2024-08-27 16:05:54.993335',
-        'ad130932-4b2f-4e7b-b3a4-c20b4a6b85ae', 'ee8cc366-d33b-45a6-84b0-4ab416585ad1');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('ab289319-cdfb-4cd8-af2c-f098fd619382', '2024-08-27 16:05:54.993335', '2024-08-27 16:05:54.993335',
-        '85dbccf6-454e-4440-8905-50a90d91dbcc', 'ee8cc366-d33b-45a6-84b0-4ab416585ad1');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('e97ffe69-97ee-4a11-bd73-a6a8ecf924f9', '2024-08-27 17:08:58.779312', '2024-08-27 17:08:58.779312',
-        '9d66ac93-3a48-429d-aeaa-54302856e204', '490df80e-d34c-42cf-bfe5-c27ddd2cd734');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('6f55bf0d-3bee-4ddd-9141-08e368809a62', '2024-08-27 17:08:58.779312', '2024-08-27 17:08:58.779312',
-        'c4d5e6fe-30fd-4f16-8646-634102d1bf1b', '490df80e-d34c-42cf-bfe5-c27ddd2cd734');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('4c6b53f9-7fc1-4682-b98d-8f429afa4f1b', '2024-08-27 17:14:24.432331', '2024-08-27 17:14:24.432331',
-        'b17ae8af-2d78-4e77-b45b-39253c28247a', 'e21344ff-b825-4a99-bf8b-a778bf1964d1');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('10331756-3ad0-430e-88a0-c189e5c83d47', '2024-08-27 17:14:24.432331', '2024-08-27 17:14:24.432331',
-        '9677e942-8a9b-4754-a27f-7e4d945681a1', 'e21344ff-b825-4a99-bf8b-a778bf1964d1');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('50d919a7-85d0-4214-8741-348e907a78b5', '2024-08-27 17:17:13.853581', '2024-08-27 17:17:13.853581',
-        'ad130932-4b2f-4e7b-b3a4-c20b4a6b85ae', 'd6743870-0d5a-4180-9671-181b8f65e03e');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('7425c787-5ca8-4fc8-bb4d-565d5fe0cd0c', '2024-08-27 17:17:13.853581', '2024-08-27 17:17:13.853581',
-        'c4d5e6fe-30fd-4f16-8646-634102d1bf1b', 'd6743870-0d5a-4180-9671-181b8f65e03e');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('92373663-669a-4b32-96b9-69573292388f', '2024-08-27 17:37:27.255281', '2024-08-27 17:37:27.255281',
-        '9d66ac93-3a48-429d-aeaa-54302856e204', '855bd9e5-3546-4cfd-b048-e8017f01bfeb');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('e9854721-7de4-4d5c-848a-84a8128b807a', '2024-08-27 17:37:27.255281', '2024-08-27 17:37:27.255281',
-        '85dbccf6-454e-4440-8905-50a90d91dbcc', '855bd9e5-3546-4cfd-b048-e8017f01bfeb');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('65cc3832-31d3-4318-97de-77f2ed80c959', '2024-08-27 17:40:04.041202', '2024-08-27 17:40:04.041202',
-        'ad130932-4b2f-4e7b-b3a4-c20b4a6b85ae', '53defdc5-bfec-4af4-bfba-60440e3493cc');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('284d2351-a82b-4c2c-8034-6389c8289553', '2024-08-27 17:40:04.041202', '2024-08-27 17:40:04.041202',
-        '6215cbaf-6065-4534-a9d5-a588c1b3dc28', '53defdc5-bfec-4af4-bfba-60440e3493cc');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('a7265729-e2e4-4256-a60f-8be6e5244aee', '2024-08-27 17:41:21.156137', '2024-08-27 17:41:21.156137',
-        '752ee7ba-ae88-46f0-95fb-e0a316212f16', '748e0a60-9429-4a9d-8a6b-3ba76a7fc4b2');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('0c085ba8-854c-448c-bf29-887e0da8d3de', '2024-08-27 17:41:21.156137', '2024-08-27 17:41:21.156137',
-        'af38ec0a-1465-45a8-99ba-a394224530dc', '748e0a60-9429-4a9d-8a6b-3ba76a7fc4b2');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('4064f615-ed61-463c-b3ff-7922b7df32d5', '2024-08-27 17:44:25.496539', '2024-08-27 17:44:25.496539',
-        '752ee7ba-ae88-46f0-95fb-e0a316212f16', 'a90f4822-63c5-42b9-943c-ff0ceacad1eb');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('6a0ee9fe-90e0-4578-b4d7-6cfe9add1c1f', '2024-08-27 17:44:25.496539', '2024-08-27 17:44:25.496539',
-        '15495639-2adb-41b8-899c-493ac0172f57', 'a90f4822-63c5-42b9-943c-ff0ceacad1eb');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('919bf994-abf9-4f5c-884f-46da3cd3f80c', '2024-08-27 19:58:20.501476', '2024-08-27 19:58:20.501476',
-        '9d66ac93-3a48-429d-aeaa-54302856e204', 'ddc2e877-7197-42fa-ae1e-59706d209774');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('c89b9ddc-1549-4d80-a57f-d856172457fe', '2024-08-27 20:02:25.708679', '2024-08-27 20:02:25.708679',
-        '9d66ac93-3a48-429d-aeaa-54302856e204', '8324ae75-08e9-48de-a00b-55d229085712');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('40670a4f-b5e7-433e-8389-2ec8f1b7a989', '2024-08-27 20:04:23.492626', '2024-08-27 20:04:23.492626',
-        'b17ae8af-2d78-4e77-b45b-39253c28247a', 'bbfbcfe2-1f56-492e-afa6-75e595b84fde');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('09167929-b842-45c2-8f88-3807cac125be', '2024-08-27 20:09:12.665161', '2024-08-27 20:09:12.665161',
-        '9d66ac93-3a48-429d-aeaa-54302856e204', '09386394-e4e1-4a6d-adce-d5f5a518485c');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('f98fce80-3602-436c-b8ef-2377e96e8ff1', '2024-08-27 20:09:12.665161', '2024-08-27 20:09:12.665161',
-        '6215cbaf-6065-4534-a9d5-a588c1b3dc28', '09386394-e4e1-4a6d-adce-d5f5a518485c');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('32d62846-1c9f-4aa4-9187-2db8864bac0c', '2024-08-27 20:11:42.135236', '2024-08-27 20:11:42.135236',
-        '9d66ac93-3a48-429d-aeaa-54302856e204', 'cfb2d83a-b3dc-44e9-ab08-53f9269752d6');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('d1778c89-8b8c-4250-951f-1bc07cd8ba74', '2024-08-27 20:11:42.135236', '2024-08-27 20:11:42.135236',
-        '85dbccf6-454e-4440-8905-50a90d91dbcc', 'cfb2d83a-b3dc-44e9-ab08-53f9269752d6');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('626336cb-099c-4327-ae2a-8af1fd311592', '2024-08-27 20:13:52.521551', '2024-08-27 20:13:52.521551',
-        '752ee7ba-ae88-46f0-95fb-e0a316212f16', '2522a61a-2190-43e9-ae52-ca6bb023815e');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('0cd72b5b-7997-42ee-8352-c7bbac6d7ef6', '2024-08-27 20:13:52.521551', '2024-08-27 20:13:52.521551',
-        '15495639-2adb-41b8-899c-493ac0172f57', '2522a61a-2190-43e9-ae52-ca6bb023815e');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('a8bdaf61-efd4-4969-94bc-e53ef45ff4e1', '2024-08-27 20:15:21.126869', '2024-08-27 20:15:21.126869',
-        'ad130932-4b2f-4e7b-b3a4-c20b4a6b85ae', '9fc5ae4d-2868-4576-bb67-9c83663fc005');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('42498a55-2fa1-4abc-943a-91ca3f049118', '2024-08-27 20:15:21.126869', '2024-08-27 20:15:21.126869',
-        '061ad8e2-77aa-4ba8-9a41-51788e7803c7', '9fc5ae4d-2868-4576-bb67-9c83663fc005');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('caed2850-ef60-4ea3-adf3-8b6becc18356', '2024-08-27 20:17:28.427593', '2024-08-27 20:17:28.427593',
-        '9d66ac93-3a48-429d-aeaa-54302856e204', '89f423d0-315f-4d93-b346-dcb468a97045');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('435c0462-ab6a-48bb-83ad-17280c97ad7f', '2024-08-27 20:20:16.532749', '2024-08-27 20:20:16.532749',
-        'b17ae8af-2d78-4e77-b45b-39253c28247a', '194fa2ee-7f92-4982-903e-3db80293d773');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('6f4e4021-6766-4963-931c-3d3713bd57ce', '2024-08-27 20:20:16.532749', '2024-08-27 20:20:16.532749',
-        '061ad8e2-77aa-4ba8-9a41-51788e7803c7', '194fa2ee-7f92-4982-903e-3db80293d773');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('cbce280d-286e-434a-86fd-e9341139d0c6', '2024-08-27 20:24:43.761365', '2024-08-27 20:24:43.761365',
-        '9d66ac93-3a48-429d-aeaa-54302856e204', 'f2fb31f0-7f6b-42b6-9a79-c22453ac6a63');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('b4f00c95-f019-4e9c-ac6c-62c305550718', '2024-08-27 20:24:43.761365', '2024-08-27 20:24:43.761365',
-        '85dbccf6-454e-4440-8905-50a90d91dbcc', 'f2fb31f0-7f6b-42b6-9a79-c22453ac6a63');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('c01dad93-88d8-424f-b87b-920bfd26194f', '2024-08-27 20:27:54.270257', '2024-08-27 20:27:54.270257',
-        '9d66ac93-3a48-429d-aeaa-54302856e204', '5e3c933f-7511-463e-88b1-a139c8276e69');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('6c0ed978-3e4c-4a8f-bcdf-743eae8e1e8e', '2024-08-27 20:29:12.674065', '2024-08-27 20:29:12.674065',
-        '9d66ac93-3a48-429d-aeaa-54302856e204', 'e7f390fd-7435-44e1-b354-c62073934c66');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('51ad2af3-e4ba-401d-a774-418630a8f725', '2024-08-28 20:36:41.160119', '2024-08-28 20:36:41.160119',
-        '752ee7ba-ae88-46f0-95fb-e0a316212f16', '7e0566c6-eefb-4992-a673-d19902933c26');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('71a2cdd4-6c01-4dde-acde-b63102f23727', '2024-08-28 20:36:41.160119', '2024-08-28 20:36:41.160119',
-        'af38ec0a-1465-45a8-99ba-a394224530dc', '7e0566c6-eefb-4992-a673-d19902933c26');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('742219cd-68b7-4125-b2f8-b084840f3fe5', '2024-08-28 20:38:26.235987', '2024-08-28 20:38:26.235987',
-        '0d0f8242-be68-4086-b665-0a11ff6a0dcd', '7fd82f79-1f5f-4bae-8f2d-b94ecae595d5');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('28f116e4-d3ad-43f1-9a41-68721e7390bb', '2024-08-28 20:40:22.177236', '2024-08-28 20:40:22.177236',
-        '9d66ac93-3a48-429d-aeaa-54302856e204', '908341ec-de1f-44bd-b84d-74ff8a7162a0');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('7fe61f2a-fa43-45ce-b5a4-6232e94ca7e7', '2024-08-28 20:42:25.596199', '2024-08-28 20:42:25.596199',
-        'ad130932-4b2f-4e7b-b3a4-c20b4a6b85ae', 'a2736a56-04b3-4437-835e-1e2dc8029c9e');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('a2f639d5-a744-4b90-8a4e-ff82d1d85120', '2024-08-28 20:42:25.596199', '2024-08-28 20:42:25.596199',
-        '061ad8e2-77aa-4ba8-9a41-51788e7803c7', 'a2736a56-04b3-4437-835e-1e2dc8029c9e');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('d721c23f-f0d8-4b71-bd8a-5352f76e3386', '2024-08-28 20:44:17.626931', '2024-08-28 20:44:17.626931',
-        '9d66ac93-3a48-429d-aeaa-54302856e204', 'da809d98-950b-4ca0-a71b-c67d21fd66da');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('ee825b0f-bde3-4a9d-a09c-d5c852191aa6', '2024-08-28 20:44:17.626931', '2024-08-28 20:44:17.626931',
-        '85dbccf6-454e-4440-8905-50a90d91dbcc', 'da809d98-950b-4ca0-a71b-c67d21fd66da');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('5ab6ca83-5ae3-4aa0-a814-be1dbc79fa26', '2024-08-28 20:45:27.526977', '2024-08-28 20:45:27.526977',
-        '9d66ac93-3a48-429d-aeaa-54302856e204', '4de0744d-0a78-4052-aa1b-e5340959d9fe');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('a1f64ee7-9236-41e1-9112-e11077db7892', '2024-08-28 20:47:16.414029', '2024-08-28 20:47:16.414029',
-        '9d66ac93-3a48-429d-aeaa-54302856e204', 'd7abed66-3c4a-490b-91cc-8e714336f9fa');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('d8654edb-8d03-45f1-8581-d946b232df09', '2024-08-28 20:47:16.414029', '2024-08-28 20:47:16.414029',
-        '061ad8e2-77aa-4ba8-9a41-51788e7803c7', 'd7abed66-3c4a-490b-91cc-8e714336f9fa');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('3703bf88-1b47-425e-82f7-457aba871579', '2024-08-28 20:48:17.220792', '2024-08-28 20:48:17.220792',
-        '9d66ac93-3a48-429d-aeaa-54302856e204', 'cfd086be-f452-4f1d-b0cc-3988d677a8b4');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('d925c831-38d4-4fc5-867f-c75a2e87d057', '2024-08-28 20:48:17.220792', '2024-08-28 20:48:17.220792',
-        '061ad8e2-77aa-4ba8-9a41-51788e7803c7', 'cfd086be-f452-4f1d-b0cc-3988d677a8b4');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('da90a877-7897-431f-9189-604e28eb6eec', '2024-08-28 20:50:28.807559', '2024-08-28 20:50:28.807559',
-        '9d66ac93-3a48-429d-aeaa-54302856e204', '8508cffc-1df6-4db2-9447-3bafd74a1325');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('6abbd704-6b0d-4d1c-9ea8-01b1446aa88d', '2024-08-28 20:50:28.807559', '2024-08-28 20:50:28.807559',
-        '85dbccf6-454e-4440-8905-50a90d91dbcc', '8508cffc-1df6-4db2-9447-3bafd74a1325');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('ce5d2d10-6c3f-49dd-80d9-5e524a71adfb', '2024-08-28 20:51:35.466127', '2024-08-28 20:51:35.466127',
-        'b17ae8af-2d78-4e77-b45b-39253c28247a', '4f1c3655-21e7-4225-a39e-944774f59f76');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('2ac37880-db07-447a-95a5-26f2132aac39', '2024-08-28 20:53:42.347893', '2024-08-28 20:53:42.347893',
-        '752ee7ba-ae88-46f0-95fb-e0a316212f16', '6d5dc164-3c35-4719-85f1-5c75558f0125');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('2d2ead25-67dc-44a2-8a23-98d577699335', '2024-08-28 20:53:42.347893', '2024-08-28 20:53:42.347893',
-        '15495639-2adb-41b8-899c-493ac0172f57', '6d5dc164-3c35-4719-85f1-5c75558f0125');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('c6ddacaf-c3e1-4b95-9f77-89ca21c40d1b', '2024-08-28 20:55:59.983829', '2024-08-28 20:55:59.983829',
-        '752ee7ba-ae88-46f0-95fb-e0a316212f16', 'cebf4622-c0a9-4759-a070-48c7556da67d');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('803c7970-45b1-49a7-8ead-092a88d77f0f', '2024-08-28 20:55:59.983829', '2024-08-28 20:55:59.983829',
-        '15495639-2adb-41b8-899c-493ac0172f57', 'cebf4622-c0a9-4759-a070-48c7556da67d');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('509d67c8-9a10-44dd-b89f-5f642d11e423', '2024-08-28 20:59:16.619963', '2024-08-28 20:59:16.619963',
-        '9d66ac93-3a48-429d-aeaa-54302856e204', '4d72c2f1-2c10-45a3-9f5e-1f04012c0681');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('ea1de13e-c07f-460b-8291-2c552c993ceb', '2024-08-28 20:59:16.619963', '2024-08-28 20:59:16.619963',
-        '6215cbaf-6065-4534-a9d5-a588c1b3dc28', '4d72c2f1-2c10-45a3-9f5e-1f04012c0681');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('c839c5f1-2827-45f6-8e4d-3e3c0a1d01cf', '2024-08-28 21:00:57.798104', '2024-08-28 21:00:57.798104',
-        '9d66ac93-3a48-429d-aeaa-54302856e204', 'af39600b-6fc5-435a-a5f8-a1d0a9994030');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('7d0a7413-8e8b-49ca-b1e4-55565c4f8085', '2024-08-28 21:00:57.798104', '2024-08-28 21:00:57.798104',
-        '6215cbaf-6065-4534-a9d5-a588c1b3dc28', 'af39600b-6fc5-435a-a5f8-a1d0a9994030');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('ad6cd9b9-23aa-4fcd-ab6b-629d7dc1578f', '2024-08-28 21:02:48.219979', '2024-08-28 21:02:48.219979',
-        '9d66ac93-3a48-429d-aeaa-54302856e204', '101f365e-5c84-438a-84b4-c8e798bd0aff');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('23e62232-997b-45b6-bbdc-ec912214531b', '2024-08-28 21:02:48.219979', '2024-08-28 21:02:48.219979',
-        '6215cbaf-6065-4534-a9d5-a588c1b3dc28', '101f365e-5c84-438a-84b4-c8e798bd0aff');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('0e3d31f7-f75c-4fac-9d86-c77b7098cd10', '2024-08-28 21:04:44.328641', '2024-08-28 21:04:44.328641',
-        '9d66ac93-3a48-429d-aeaa-54302856e204', '1f28edb2-29ae-467c-ad11-310c3f656fe2');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('bcba2cc7-ab4a-4f1a-9759-57ac35ef4b8c', '2024-08-28 21:04:44.328641', '2024-08-28 21:04:44.328641',
-        '85dbccf6-454e-4440-8905-50a90d91dbcc', '1f28edb2-29ae-467c-ad11-310c3f656fe2');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('c3a45345-3d3e-445d-9cc7-838f34452f2b', '2024-08-28 21:07:18.658519', '2024-08-28 21:07:18.658519',
-        'b17ae8af-2d78-4e77-b45b-39253c28247a', '04a13a1c-de2b-46f4-be62-3fa6b4655d0d');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('47f07a62-9c4b-475a-9d26-e646f82e6e4f', '2024-08-28 21:07:18.658519', '2024-08-28 21:07:18.658519',
-        '85dbccf6-454e-4440-8905-50a90d91dbcc', '04a13a1c-de2b-46f4-be62-3fa6b4655d0d');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('51805a34-b706-4493-a65d-f470397e7f5a', '2024-08-28 21:08:56.505989', '2024-08-28 21:08:56.505989',
-        '752ee7ba-ae88-46f0-95fb-e0a316212f16', 'a9545ccb-3ec7-4646-95c9-f3a708d0d968');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('73574159-3fc4-413f-ae56-beb39d6e90a5', '2024-08-28 21:08:56.505989', '2024-08-28 21:08:56.505989',
-        '331a0c35-f5a5-478d-ba7c-9f14ba2ee0fa', 'a9545ccb-3ec7-4646-95c9-f3a708d0d968');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('8cd074c5-a535-4b77-a2df-127416314513', '2024-08-28 21:11:35.048465', '2024-08-28 21:11:35.048465',
-        'ad130932-4b2f-4e7b-b3a4-c20b4a6b85ae', 'b99df7e8-eb44-4be1-be81-701347580781');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('39f6d8eb-19c7-4fe7-973a-cb44d2ae153b', '2024-08-28 21:11:35.048465', '2024-08-28 21:11:35.048465',
-        '6215cbaf-6065-4534-a9d5-a588c1b3dc28', 'b99df7e8-eb44-4be1-be81-701347580781');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('4ff03dac-9429-45b7-990a-98f44b743764', '2024-08-28 21:12:39.517028', '2024-08-28 21:12:39.517028',
-        'ad130932-4b2f-4e7b-b3a4-c20b4a6b85ae', '8d2a9df4-af32-4943-b74b-ae901e866b32');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('e76166c7-4e73-4c1c-b2aa-f111389a9545', '2024-08-28 21:13:34.085593', '2024-08-28 21:13:34.085593',
-        'ad130932-4b2f-4e7b-b3a4-c20b4a6b85ae', '8ca7bf65-0ddb-4c64-ba64-f71f25c85d7c');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('16ea2d9b-2c74-4f90-8d9c-6861101331aa', '2024-08-29 15:15:51.74105', '2024-08-29 15:15:51.74105',
-        '9d66ac93-3a48-429d-aeaa-54302856e204', '12221e5c-0208-48fc-8c56-62c266932f74');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('c8101224-bac1-4806-84b3-9dacd70412fa', '2024-08-29 15:18:06.552249', '2024-08-29 15:18:06.552249',
-        'b17ae8af-2d78-4e77-b45b-39253c28247a', '1959abd3-4ab1-42d4-b7e2-45693b899d51');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('83e06a51-6b84-4f0b-b9a8-3a2d13e1288e', '2024-08-29 15:20:32.345462', '2024-08-29 15:20:32.345462',
-        '9d66ac93-3a48-429d-aeaa-54302856e204', '48191b99-06fa-4218-b61b-c9b9abd73278');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('807dbb10-eb51-4e7d-ad22-5b44ac9a124a', '2024-08-29 15:20:32.345462', '2024-08-29 15:20:32.345462',
-        '6215cbaf-6065-4534-a9d5-a588c1b3dc28', '48191b99-06fa-4218-b61b-c9b9abd73278');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('04f0ea3f-6d9a-49e4-9be3-68ca12c15e76', '2024-08-29 15:21:42.17181', '2024-08-29 15:21:42.17181',
-        '9d66ac93-3a48-429d-aeaa-54302856e204', '92d77415-1f9a-430b-ba52-0a09ec07b3a1');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('edebb1f2-1fa5-419d-a3c0-32924c31c27d', '2024-08-29 15:23:10.34832', '2024-08-29 15:23:10.34832',
-        '9d66ac93-3a48-429d-aeaa-54302856e204', '816440ad-f8f2-4ef7-a11f-b6a2bd63fcef');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('4e5220bc-a955-46f6-acf1-d8a3728219bc', '2024-08-29 15:24:22.345392', '2024-08-29 15:24:22.345392',
-        '623e0be7-870a-4bca-b053-76e99c9ea7e0', '506d1cc7-529a-42af-b5bf-4c4d0a9aa409');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('dc57c652-3894-4e49-b37e-c826f461e309', '2024-08-29 15:24:22.345392', '2024-08-29 15:24:22.345392',
-        '6215cbaf-6065-4534-a9d5-a588c1b3dc28', '506d1cc7-529a-42af-b5bf-4c4d0a9aa409');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('124a1851-bdeb-432a-bb2f-6ef4dffba346', '2024-08-29 15:26:45.193381', '2024-08-29 15:26:45.193381',
-        '9d66ac93-3a48-429d-aeaa-54302856e204', '9ab8fe00-58de-48c4-942d-b10e8d16f1c1');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('26c840b4-3fa1-43fd-86b8-c45f5aeafd56', '2024-08-29 15:26:45.193381', '2024-08-29 15:26:45.193381',
-        '6215cbaf-6065-4534-a9d5-a588c1b3dc28', '9ab8fe00-58de-48c4-942d-b10e8d16f1c1');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('a0f9048e-b208-43be-9fdc-fa7d8f847b2c', '2024-08-29 15:28:20.987723', '2024-08-29 15:28:20.987723',
-        '9d66ac93-3a48-429d-aeaa-54302856e204', '3d6e76b5-b409-4f5b-bba4-c22cb10cfbd4');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('2ea0be10-8a19-45fb-9790-6b7080eda7af', '2024-08-29 15:28:20.987723', '2024-08-29 15:28:20.987723',
-        '85dbccf6-454e-4440-8905-50a90d91dbcc', '3d6e76b5-b409-4f5b-bba4-c22cb10cfbd4');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('86bd6604-76d9-4e67-b8db-e22499270425', '2024-08-29 15:30:57.610887', '2024-08-29 15:30:57.610887',
-        '9d66ac93-3a48-429d-aeaa-54302856e204', '77aa5752-a586-4dfe-b69d-4da16fff0b79');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('82a6ea43-4dd4-4a5b-b083-1c423977e9b4', '2024-08-29 15:30:57.610887', '2024-08-29 15:30:57.610887',
-        '85dbccf6-454e-4440-8905-50a90d91dbcc', '77aa5752-a586-4dfe-b69d-4da16fff0b79');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('06e0fb66-fd04-42a4-83c5-68c3fea2a620', '2024-08-29 15:34:32.577527', '2024-08-29 15:34:32.577527',
-        'b17ae8af-2d78-4e77-b45b-39253c28247a', '4035dfef-3cc6-4a15-a97f-c167bd274d02');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('3027b509-5f77-4ae5-998f-7757492ca6d8', '2024-08-29 15:34:32.577527', '2024-08-29 15:34:32.577527',
-        '6215cbaf-6065-4534-a9d5-a588c1b3dc28', '4035dfef-3cc6-4a15-a97f-c167bd274d02');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('b577535e-0ce1-43e5-9b60-de4ec07c3078', '2024-08-29 20:14:43.148532', '2024-08-29 20:14:43.148532',
-        '752ee7ba-ae88-46f0-95fb-e0a316212f16', 'aada0f37-1f30-4d61-a284-8003027bc871');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('d1ce8d63-ec75-4de0-9ee1-4fc7728f5e84', '2024-08-29 20:14:43.148532', '2024-08-29 20:14:43.148532',
-        'af38ec0a-1465-45a8-99ba-a394224530dc', 'aada0f37-1f30-4d61-a284-8003027bc871');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('2efb1622-d211-4150-be80-c3dd4037ce18', '2024-08-29 20:16:07.202411', '2024-08-29 20:16:07.202411',
-        '752ee7ba-ae88-46f0-95fb-e0a316212f16', 'afd7f719-5789-48a0-a5d9-77e9cb1669bb');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('7bb99942-9023-470a-b175-9905edb19ad6', '2024-08-29 20:16:07.202411', '2024-08-29 20:16:07.202411',
-        '373d04ea-8079-439a-82a3-d118da6253b1', 'afd7f719-5789-48a0-a5d9-77e9cb1669bb');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('bd152d98-e1c6-4139-af62-d47ec4c49be0', '2024-08-29 20:17:41.643146', '2024-08-29 20:17:41.643146',
-        '6c587294-e384-4941-b90d-e6ec64b8731d', '16ba69dc-e99d-4a71-bbcb-0f3ce096a9d9');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('252ce762-35c3-4e0c-a69f-b00ed415e607', '2024-08-29 20:18:52.142987', '2024-08-29 20:18:52.142987',
-        '526347a3-ee32-473d-9b5d-049f526ae48e', '3a70ce9c-b1f0-43a7-8775-7d3e7c109c5d');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('d5cf5dfc-fbb9-4665-9e19-e23c98fbf5d1', '2024-08-29 20:20:58.542902', '2024-08-29 20:20:58.542902',
-        'a6628e7c-1488-4268-82ee-5174f3a5a2a5', '4353173b-93b2-4fb1-b462-fc8330b15ce5');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('dd7903c9-c39c-467c-b1e9-a09da60b3993', '2024-08-29 20:20:58.542902', '2024-08-29 20:20:58.542902',
-        '373d04ea-8079-439a-82a3-d118da6253b1', '4353173b-93b2-4fb1-b462-fc8330b15ce5');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('1ae81a2e-bc2c-4b26-8265-6cbaae1ddbdd', '2024-08-29 20:26:45.608525', '2024-08-29 20:26:45.608525',
-        '752ee7ba-ae88-46f0-95fb-e0a316212f16', '1b8fe6fc-9ede-4f28-b4a0-30504db61fed');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('bca20113-bc6c-4f5d-a2de-ac2d2569b544', '2024-08-29 20:26:45.608525', '2024-08-29 20:26:45.608525',
-        '331a0c35-f5a5-478d-ba7c-9f14ba2ee0fa', '1b8fe6fc-9ede-4f28-b4a0-30504db61fed');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('9a555a4d-cbf5-4162-a204-45ce474e98b9', '2024-08-29 20:28:36.098732', '2024-08-29 20:28:36.098732',
-        'b17ae8af-2d78-4e77-b45b-39253c28247a', '90b8d661-a9ef-47e5-8c98-b0599874a972');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('f31fdd69-b646-4bd9-af1d-6c51063cb038', '2024-08-29 20:28:36.098732', '2024-08-29 20:28:36.098732',
-        '6345b70f-6e3f-46e2-9d51-3be51250ed99', '90b8d661-a9ef-47e5-8c98-b0599874a972');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('0ba39240-7331-42e3-b240-cdd72a7f06eb', '2024-08-29 20:31:23.033752', '2024-08-29 20:31:23.033752',
-        '9d66ac93-3a48-429d-aeaa-54302856e204', 'ac45c513-55f3-437f-a10f-ba3c0763a746');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('4239d23f-aa2d-47b5-b59b-63f90e49b0b3', '2024-08-29 20:34:53.754866', '2024-08-29 20:34:53.754866',
-        '0268b0d7-f8e4-47ea-b9da-969427b43adf', '3a41edcb-2c19-4d06-9585-8fe745aba723');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('710586e7-bf4e-407f-82bb-60e5337a9a1f', '2024-08-29 20:37:21.068102', '2024-08-29 20:37:21.068102',
-        '9d66ac93-3a48-429d-aeaa-54302856e204', 'b8fa1238-0f58-4daa-ade8-0f8c6fa2d1b1');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('1eadea08-5f24-48e8-b9e6-b97e88edba3f', '2024-08-29 20:37:21.068102', '2024-08-29 20:37:21.068102',
-        '6215cbaf-6065-4534-a9d5-a588c1b3dc28', 'b8fa1238-0f58-4daa-ade8-0f8c6fa2d1b1');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('4399522d-7aad-4eb3-afce-36f03020478c', '2024-08-29 20:46:11.394407', '2024-08-29 20:46:11.394407',
-        'a6628e7c-1488-4268-82ee-5174f3a5a2a5', 'ed5db0ac-4343-4e68-a884-d5f84e4020c1');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('f9d45502-5c8c-4963-a147-885233e3bf4c', '2024-08-29 20:46:11.394407', '2024-08-29 20:46:11.394407',
-        '331a0c35-f5a5-478d-ba7c-9f14ba2ee0fa', 'ed5db0ac-4343-4e68-a884-d5f84e4020c1');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('f72e14a6-5683-4f7d-a0e6-e5012b4ca59c', '2024-08-29 20:48:13.159828', '2024-08-29 20:48:13.159828',
-        '623e0be7-870a-4bca-b053-76e99c9ea7e0', 'd20646b6-efd1-49fc-8ffa-180461aea5ab');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('063c63b4-153c-4ddc-93ec-e5c28fac3095', '2024-08-29 20:49:40.184734', '2024-08-29 20:49:40.184734',
-        'b17ae8af-2d78-4e77-b45b-39253c28247a', '1f8abb63-8024-46ca-ac1e-2574a839eed6');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('0f3ebc8e-b4cd-447d-9799-5558e2b585c4', '2024-08-29 20:52:10.214663', '2024-08-29 20:52:10.214663',
-        '9d66ac93-3a48-429d-aeaa-54302856e204', 'b22e5ada-86c1-4104-828b-b7e06a7f5d16');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('ef2cd1df-932f-41ec-b154-08d471d4ac36', '2024-08-29 20:52:10.214663', '2024-08-29 20:52:10.214663',
-        '6215cbaf-6065-4534-a9d5-a588c1b3dc28', 'b22e5ada-86c1-4104-828b-b7e06a7f5d16');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('6b3c6a02-ea89-4410-b7e5-9520f1b79e13', '2024-08-29 20:55:27.361136', '2024-08-29 20:55:27.361136',
-        '752ee7ba-ae88-46f0-95fb-e0a316212f16', '7a933584-128c-4b82-8e5b-5e7312cadfdf');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('dbd25a48-bfb0-4845-9327-f6e455c7ba20', '2024-08-29 20:55:27.361136', '2024-08-29 20:55:27.361136',
-        '331a0c35-f5a5-478d-ba7c-9f14ba2ee0fa', '7a933584-128c-4b82-8e5b-5e7312cadfdf');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('ef1abdcc-386b-42bb-865e-e36307434f47', '2024-08-29 20:58:25.076692', '2024-08-29 20:58:25.076692',
-        '9d66ac93-3a48-429d-aeaa-54302856e204', '984e5dac-f3a8-4980-bfc9-da370cf45e46');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('3d2f7c53-f1c5-4303-9479-965d5be0ab8e', '2024-08-29 20:58:25.076692', '2024-08-29 20:58:25.076692',
-        '6215cbaf-6065-4534-a9d5-a588c1b3dc28', '984e5dac-f3a8-4980-bfc9-da370cf45e46');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('125d4f99-0e82-40c1-ac09-6a354c5669a9', '2024-08-29 21:01:10.950406', '2024-08-29 21:01:10.950406',
-        '752ee7ba-ae88-46f0-95fb-e0a316212f16', 'ff188494-a871-4721-9d1e-26742539080c');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('792c6603-c86f-4fe8-b9a6-e96cf74247c2', '2024-08-29 21:01:10.950406', '2024-08-29 21:01:10.950406',
-        '15495639-2adb-41b8-899c-493ac0172f57', 'ff188494-a871-4721-9d1e-26742539080c');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('6a9ab4bb-d478-4077-8e89-6a205a5c3a7f', '2024-08-29 21:09:08.322752', '2024-08-29 21:09:08.322752',
-        '9d66ac93-3a48-429d-aeaa-54302856e204', '68381c41-b015-4218-93cb-2bcb64bee255');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('8f61f0e0-bb61-43f3-8d27-4f5edc1da12f', '2024-08-31 21:55:50.627691', '2024-08-31 21:55:50.627691',
-        '32bed80a-1512-4945-9654-8d710618ef81', '1fdffa53-d9cb-4aa1-9999-5c83fdb9be80');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('79ce4ce3-9af7-4610-940e-3c6bd46796da', '2024-08-31 22:01:53.342028', '2024-08-31 22:01:53.342028',
-        '9a4df37b-9fdb-4c19-93b3-d99393d9e605', 'a8f9abc7-4515-4f5e-a4f5-095b1b17b9e1');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('418ee62d-bae1-40a4-87dc-f5600e8ec0ca', '2024-09-01 09:37:56.278637', '2024-09-01 09:37:56.278637',
-        '752ee7ba-ae88-46f0-95fb-e0a316212f16', 'e1361643-e92a-419b-8eb8-fe2a188016e0');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('d4ead82a-db97-4beb-b2e9-9f4bd11a8f86', '2024-09-01 09:37:56.278637', '2024-09-01 09:37:56.278637',
-        'af38ec0a-1465-45a8-99ba-a394224530dc', 'e1361643-e92a-419b-8eb8-fe2a188016e0');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('a9e0063f-d896-48ce-80b3-56677f4e3bd4', '2024-09-01 12:11:44.14147', '2024-09-01 12:11:44.14147',
-        'ddf4299a-fc48-47bd-9bdf-7e3d7692b09f', 'f2cf498f-d991-4b85-b08e-58c5f9ff563e');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('621f2bb2-94b6-48a0-aa90-83fd1bc05243', '2024-09-01 12:13:55.750094', '2024-09-01 12:13:55.750094',
-        '9d66ac93-3a48-429d-aeaa-54302856e204', '7e80becf-491c-4b48-a98a-a36fff26e29c');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('148699e0-bd1e-4d1d-a4a8-5d62bde8bfb1', '2024-09-01 12:14:59.692189', '2024-09-01 12:14:59.692189',
-        'c4d5e6fe-30fd-4f16-8646-634102d1bf1b', '2f49a8e8-6f42-422c-aa6f-c23e215620e2');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('fd262b33-6e2f-4bb9-9bf6-3eed7b52a0b7', '2024-09-01 12:24:23.213877', '2024-09-01 12:24:23.213877',
-        '85dbccf6-454e-4440-8905-50a90d91dbcc', 'f2868e11-6e1d-4ce4-a1a8-eb0384a60b71');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('75b87f45-37ce-4e44-956b-28ed4373b4cf', '2024-09-01 12:25:43.172492', '2024-09-01 12:25:43.172492',
-        'ddf4299a-fc48-47bd-9bdf-7e3d7692b09f', '38af9c0d-b19f-433d-bcda-0b974b5475cf');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('ad0a8479-1442-43c4-8438-0985114c04a4', '2024-09-01 12:26:49.236953', '2024-09-01 12:26:49.236953',
-        'ddf4299a-fc48-47bd-9bdf-7e3d7692b09f', 'c5901a9a-580c-411b-85bd-2ec738123e14');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('78e04b3c-02a4-4663-ace1-fc700a32f559', '2024-09-01 12:41:05.655011', '2024-09-01 12:41:05.655011',
-        '7752a881-139d-4cf4-98b2-e92e9de0e2e5', '6e4bc8b2-33ab-46da-9b79-9fff2266cd27');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('63bdc4bb-0001-40e8-bd4c-972ab4789f5a', '2024-09-01 12:43:01.53445', '2024-09-01 12:43:01.53445',
-        '85dbccf6-454e-4440-8905-50a90d91dbcc', '01dff88c-893b-4410-8d54-1e36013b9fdb');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('9d614bbd-016b-48d0-b03b-918b5fa99d3d', '2024-09-01 12:43:01.53445', '2024-09-01 12:43:01.53445',
-        '9d66ac93-3a48-429d-aeaa-54302856e204', '01dff88c-893b-4410-8d54-1e36013b9fdb');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('011edf8a-a8b4-45b8-8825-568519dd71b7', '2024-09-01 12:49:37.152666', '2024-09-01 12:49:37.152666',
-        '7752a881-139d-4cf4-98b2-e92e9de0e2e5', 'de4e9652-b068-4558-9fd3-38d45e5aa0d9');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('100900e0-67b3-4c61-9108-a8cc18d83298', '2024-09-01 12:52:29.690195', '2024-09-01 12:52:29.690195',
-        '623e0be7-870a-4bca-b053-76e99c9ea7e0', '46b1efa3-a4f8-4492-a81c-9e48c650dd3d');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('9030787b-f6eb-4611-89ac-083e8655b5f4', '2024-09-01 12:54:31.27172', '2024-09-01 12:54:31.27172',
-        '623e0be7-870a-4bca-b053-76e99c9ea7e0', '89ffca84-73f0-4a69-871f-9d9c96521a05');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('cd336569-8d94-4f32-880d-4aacef19c47d', '2024-09-01 12:56:50.703307', '2024-09-01 12:56:50.703307',
-        '7752a881-139d-4cf4-98b2-e92e9de0e2e5', 'f11c8751-e5ca-413e-b30d-2b387ec14733');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('e79d44da-2255-4445-bf81-07bfde8ac4f3', '2024-09-01 12:51:11.829723', '2024-09-01 12:51:11.829723',
-        '1959d942-75fb-4ece-b501-b7cf8884d479', '7227c8f6-cf65-4134-97de-d5e64cb5ff1b');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('d0c8768e-08bc-46da-8ec0-6b6ccde3cce2', '2024-09-01 12:47:02.029745', '2024-09-01 12:47:02.029745',
-        '1959d942-75fb-4ece-b501-b7cf8884d479', 'd2f28afc-e84c-467c-90d9-c6c2cb63acbc');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('6e15b634-3eb9-4021-9621-2c6c2f817ff3', '2024-09-01 13:30:53.583243', '2024-09-01 13:30:53.583243',
-        '20e225dd-68d7-409b-9b7d-5ef6d4224d02', '9e348a26-e5d0-4ee0-b3e6-fe58563ac698');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('b7a0ec3b-b5f0-41f2-b23c-3d325f8f978b', '2024-09-02 14:01:43.622797', '2024-09-02 14:01:43.622797',
-        '9d66ac93-3a48-429d-aeaa-54302856e204', '548b3de6-0980-4795-ab86-763c20dbc325');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('6564ac53-1d75-421f-ac0a-23035fb471b5', '2024-09-02 14:01:43.622797', '2024-09-02 14:01:43.622797',
-        '85dbccf6-454e-4440-8905-50a90d91dbcc', '548b3de6-0980-4795-ab86-763c20dbc325');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('2aaae5bb-5701-4917-ad85-1a07cc8265ea', '2024-09-02 14:03:25.461134', '2024-09-02 14:03:25.461134',
-        '9d66ac93-3a48-429d-aeaa-54302856e204', '47f00a63-05df-4db7-b2c7-68000c72be9b');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('8a50bdfc-f5e9-42d0-9847-66452c64737f', '2024-09-02 14:03:25.461134', '2024-09-02 14:03:25.461134',
-        '6215cbaf-6065-4534-a9d5-a588c1b3dc28', '47f00a63-05df-4db7-b2c7-68000c72be9b');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('b0db3fb6-d244-4b69-85ae-9b4ae5411988', '2024-09-02 14:05:57.423919', '2024-09-02 14:05:57.423919',
-        '9d66ac93-3a48-429d-aeaa-54302856e204', 'c0a055b2-daf6-4ecc-b97b-cfedfce6a42a');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('2f5f2aa4-ce7e-4dce-881a-d61e5e9361ca', '2024-09-02 14:05:57.423919', '2024-09-02 14:05:57.423919',
-        '85dbccf6-454e-4440-8905-50a90d91dbcc', 'c0a055b2-daf6-4ecc-b97b-cfedfce6a42a');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('582ce50e-a9ad-478e-b249-e2775c9f07d9', '2024-09-02 14:06:48.393095', '2024-09-02 14:06:48.393095',
-        '9d66ac93-3a48-429d-aeaa-54302856e204', '2bc37dec-7b06-404c-af63-99bf3f60fb68');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('a5b131e8-8b29-471e-83c2-2db6efbffb84', '2024-09-02 14:06:48.393095', '2024-09-02 14:06:48.393095',
-        '85dbccf6-454e-4440-8905-50a90d91dbcc', '2bc37dec-7b06-404c-af63-99bf3f60fb68');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('fe418a73-bcef-45fe-9709-3893bdce5c12', '2024-09-02 14:08:08.360773', '2024-09-02 14:08:08.360773',
-        '9d66ac93-3a48-429d-aeaa-54302856e204', '3488eaaa-a999-43c5-acd6-b177b8a3df8a');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('7ac6a2c0-5cd2-45d0-9ce5-1dcf470ccae6', '2024-09-02 14:08:08.360773', '2024-09-02 14:08:08.360773',
-        '85dbccf6-454e-4440-8905-50a90d91dbcc', '3488eaaa-a999-43c5-acd6-b177b8a3df8a');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('482f8e5e-016e-4697-bd1b-c72ad285416a', '2024-09-02 14:57:19.339855', '2024-09-02 14:57:19.339855',
-        'b17ae8af-2d78-4e77-b45b-39253c28247a', 'b2e39ab6-118d-46bd-ad8c-8acf9864af6c');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('6ca06222-c80c-44a3-bba6-22ffdafe13b0', '2024-09-02 14:57:19.339855', '2024-09-02 14:57:19.339855',
-        'e7fc1da0-48df-4338-b03f-1cea01cd12d5', 'b2e39ab6-118d-46bd-ad8c-8acf9864af6c');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('d36b5b67-cae7-42bf-bd19-1cf01a7f87cf', '2024-09-02 14:58:44.043645', '2024-09-02 14:58:44.043645',
-        'b17ae8af-2d78-4e77-b45b-39253c28247a', '885918a3-5c64-4f15-982e-1b9a91cb3743');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('dcd95394-a179-4893-a4bb-c9b7be8308a9', '2024-09-02 14:58:44.043645', '2024-09-02 14:58:44.043645',
-        '6345b70f-6e3f-46e2-9d51-3be51250ed99', '885918a3-5c64-4f15-982e-1b9a91cb3743');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('73544ee5-882a-4b11-ab6b-78b0edd64b7b', '2024-09-02 15:01:10.965681', '2024-09-02 15:01:10.965681',
-        '3f2fb6e0-df68-4881-a735-f07ea083aaa7', '21370a0a-b01b-4e32-8f43-8648a54cd35c');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('1a1dca59-d321-47ec-ba1a-638daf38dc89', '2024-09-02 15:03:16.614054', '2024-09-02 15:03:16.614054',
-        'a6628e7c-1488-4268-82ee-5174f3a5a2a5', 'e1511aa4-1d34-4984-aa54-88f88029a96e');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('aa01d7c8-29b1-4547-8a31-67cb3ecce949', '2024-09-02 15:03:16.614054', '2024-09-02 15:03:16.614054',
-        '331a0c35-f5a5-478d-ba7c-9f14ba2ee0fa', 'e1511aa4-1d34-4984-aa54-88f88029a96e');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('32bc63f0-faa1-4ab2-880a-9c6dffec7624', '2024-09-02 15:21:43.003281', '2024-09-02 15:21:43.003281',
-        '79e4532a-afda-421f-9b5f-8c2de5f63ec0', 'fff561d6-3738-4360-a110-f93dcb3c8c10');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('463e354c-4669-45e5-9ae3-390b8798f239', '2024-09-02 15:26:06.643932', '2024-09-02 15:26:06.643932',
-        'c01e10b9-4ef6-4f23-9b41-7f6d5d4d1e85', 'db9ff44c-2e27-42df-8f6a-1b64429999e1');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('685611f6-baea-4051-801e-2d504f4daa9b', '2024-09-02 20:16:40.198699', '2024-09-02 20:16:40.198699',
-        '9d66ac93-3a48-429d-aeaa-54302856e204', 'ec09f8c7-04cf-4219-8033-3dd17ea5c1d9');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('793ef5fa-73cf-4252-a149-7a7f39e765c3', '2024-09-02 20:16:40.198699', '2024-09-02 20:16:40.198699',
-        '6215cbaf-6065-4534-a9d5-a588c1b3dc28', 'ec09f8c7-04cf-4219-8033-3dd17ea5c1d9');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('89944416-0434-4646-8ecc-4d83fc21afb1', '2024-09-02 20:18:44.753169', '2024-09-02 20:18:44.753169',
-        '9d66ac93-3a48-429d-aeaa-54302856e204', '9be8d3a0-574b-40dc-a42c-06ab42af7e66');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('e053b7a5-1780-410e-ae60-a40c2fc51ad4', '2024-09-02 20:18:44.753169', '2024-09-02 20:18:44.753169',
-        '85dbccf6-454e-4440-8905-50a90d91dbcc', '9be8d3a0-574b-40dc-a42c-06ab42af7e66');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('95807c3a-0548-403e-b30e-a2c9f506a036', '2024-09-02 20:20:26.764029', '2024-09-02 20:20:26.764029',
-        'a6628e7c-1488-4268-82ee-5174f3a5a2a5', '82890348-a566-4762-b9b4-f89e52534936');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('d209f2be-5779-4c36-abe2-9cd079376f68', '2024-09-02 20:20:26.764029', '2024-09-02 20:20:26.764029',
-        '331a0c35-f5a5-478d-ba7c-9f14ba2ee0fa', '82890348-a566-4762-b9b4-f89e52534936');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('1195f1ea-397b-4a23-ada1-04e106d218c0', '2024-09-02 20:22:38.722144', '2024-09-02 20:22:38.722144',
-        'a6628e7c-1488-4268-82ee-5174f3a5a2a5', '13fcd794-54fb-413f-8bbf-44353cd29869');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('a51e6dce-5e08-4ab5-b52a-59353268a89d', '2024-09-02 20:22:38.722144', '2024-09-02 20:22:38.722144',
-        '331a0c35-f5a5-478d-ba7c-9f14ba2ee0fa', '13fcd794-54fb-413f-8bbf-44353cd29869');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('935552b7-0eab-44fe-9e96-1b7e2641816b', '2024-09-02 20:26:26.28052', '2024-09-02 20:26:26.28052',
-        'b17ae8af-2d78-4e77-b45b-39253c28247a', '3d0c8e76-37a9-4f4c-84fa-47a6a07aaacc');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('660f8da1-e831-42dd-99b9-fc3ed30fbb2f', '2024-09-02 20:26:26.28052', '2024-09-02 20:26:26.28052',
-        '9677e942-8a9b-4754-a27f-7e4d945681a1', '3d0c8e76-37a9-4f4c-84fa-47a6a07aaacc');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('e0cc1762-c021-458a-914b-c3fc4f63bdd7', '2024-09-02 20:27:53.788571', '2024-09-02 20:27:53.788571',
-        '9d66ac93-3a48-429d-aeaa-54302856e204', '8a39b1e7-986c-41e7-a0b9-44a4efb46360');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('4d903c0c-abb5-4faf-acc8-205bf0a6c9b0', '2024-09-02 20:27:53.788571', '2024-09-02 20:27:53.788571',
-        '85dbccf6-454e-4440-8905-50a90d91dbcc', '8a39b1e7-986c-41e7-a0b9-44a4efb46360');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('d027208d-9de2-49b0-bebb-8cb6dfc22ab6', '2024-09-02 20:31:29.288147', '2024-09-02 20:31:29.288147',
-        '9d66ac93-3a48-429d-aeaa-54302856e204', '8a73b841-1d4e-4808-8ed7-58c4931e0e96');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('9ef3b9a6-c4eb-4e8f-89a8-eaa4a48fe599', '2024-09-02 20:31:29.288147', '2024-09-02 20:31:29.288147',
-        'c4d5e6fe-30fd-4f16-8646-634102d1bf1b', '8a73b841-1d4e-4808-8ed7-58c4931e0e96');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('59d295ae-bc27-43dd-a654-79e2cd90c320', '2024-09-02 20:35:21.734912', '2024-09-02 20:35:21.734912',
-        'a6628e7c-1488-4268-82ee-5174f3a5a2a5', 'b720265e-a3ce-48d3-8e8e-87e05c07b8a3');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('a1df1e71-c461-4826-9c37-8250744e5b9e', '2024-09-02 20:35:21.734912', '2024-09-02 20:35:21.734912',
-        '331a0c35-f5a5-478d-ba7c-9f14ba2ee0fa', 'b720265e-a3ce-48d3-8e8e-87e05c07b8a3');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('59d88f5c-4450-4e93-8c8c-c963773d87ea', '2024-09-02 20:38:34.936709', '2024-09-02 20:38:34.936709',
-        '623e0be7-870a-4bca-b053-76e99c9ea7e0', 'f6dd98f1-ad1d-4ea2-ba97-9939ce0fc028');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('7f799ac5-2b4a-4257-83a7-3068fe5d3a32', '2024-09-02 20:38:34.936709', '2024-09-02 20:38:34.936709',
-        '6215cbaf-6065-4534-a9d5-a588c1b3dc28', 'f6dd98f1-ad1d-4ea2-ba97-9939ce0fc028');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('d1bce429-c0d6-4308-a292-40120be47d3e', '2024-09-02 20:40:09.543442', '2024-09-02 20:40:09.543442',
-        'a6628e7c-1488-4268-82ee-5174f3a5a2a5', 'f467d244-5568-40f6-bd7a-b3bdcad82398');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('e26ceaf2-6046-4faa-917a-db947b662694', '2024-09-02 20:40:09.543442', '2024-09-02 20:40:09.543442',
-        '331a0c35-f5a5-478d-ba7c-9f14ba2ee0fa', 'f467d244-5568-40f6-bd7a-b3bdcad82398');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('cfa0a39a-0e58-42ab-8582-2ea000dac05a', '2024-09-02 20:42:00.05867', '2024-09-02 20:42:00.05867',
-        'a6628e7c-1488-4268-82ee-5174f3a5a2a5', '2780e6d9-a86f-4038-b96f-ef59f961cb4b');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('ad329922-bbd7-4e66-80cf-6ed9566689b0', '2024-09-02 20:42:00.05867', '2024-09-02 20:42:00.05867',
-        '331a0c35-f5a5-478d-ba7c-9f14ba2ee0fa', '2780e6d9-a86f-4038-b96f-ef59f961cb4b');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('f0463996-b24d-4466-9c10-ceb9bfa80452', '2024-09-02 20:59:37.535624', '2024-09-02 20:59:37.535624',
-        '85dbccf6-454e-4440-8905-50a90d91dbcc', 'e68781f2-7021-4907-af54-de18b80d181a');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('e693bf01-4167-474e-8a7d-9b5e7355058a', '2024-09-02 21:01:10.568064', '2024-09-02 21:01:10.568064',
-        '623e0be7-870a-4bca-b053-76e99c9ea7e0', '5b7d739c-d130-466c-a5ac-9e8b318b77ad');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('ed67c329-ea65-43c3-b62e-021076b0f820', '2024-09-02 21:01:10.568064', '2024-09-02 21:01:10.568064',
-        '85dbccf6-454e-4440-8905-50a90d91dbcc', '5b7d739c-d130-466c-a5ac-9e8b318b77ad');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('4b1c8ae8-e90c-43f8-b1a6-dc33b328990d', '2024-09-02 21:02:37.715664', '2024-09-02 21:02:37.715664',
-        '9d66ac93-3a48-429d-aeaa-54302856e204', '3edb750e-4725-4338-a079-d48dc8797917');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('1807502e-73ab-414c-aa97-47b60808d2c8', '2024-09-02 21:02:37.715664', '2024-09-02 21:02:37.715664',
-        'c4d5e6fe-30fd-4f16-8646-634102d1bf1b', '3edb750e-4725-4338-a079-d48dc8797917');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('adbe7f9c-e1ed-4d2b-91a2-a44fe8241823', '2024-09-02 21:04:38.441037', '2024-09-02 21:04:38.441037',
-        'a6628e7c-1488-4268-82ee-5174f3a5a2a5', 'ff2d84fc-ff6d-4637-8128-91c1495c98e8');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('b4efbf2b-7f8a-464f-ab6e-4cef025f504b', '2024-09-02 21:04:38.441037', '2024-09-02 21:04:38.441037',
-        '6215cbaf-6065-4534-a9d5-a588c1b3dc28', 'ff2d84fc-ff6d-4637-8128-91c1495c98e8');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('1911bc53-884c-40bb-bbb6-f14cec766d1c', '2024-09-02 21:04:38.441037', '2024-09-02 21:04:38.441037',
-        '331a0c35-f5a5-478d-ba7c-9f14ba2ee0fa', 'ff2d84fc-ff6d-4637-8128-91c1495c98e8');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('8a382c0a-3cef-482e-8309-1d2e72cc924f', '2024-09-02 21:07:15.408038', '2024-09-02 21:07:15.408038',
-        'a6628e7c-1488-4268-82ee-5174f3a5a2a5', 'c2059aab-d7b5-4532-a8a7-ad15a4054b33');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('c7d9f039-2931-431b-a543-5d8706bb36c7', '2024-09-02 21:07:15.408038', '2024-09-02 21:07:15.408038',
-        '331a0c35-f5a5-478d-ba7c-9f14ba2ee0fa', 'c2059aab-d7b5-4532-a8a7-ad15a4054b33');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('5f375732-d54f-4681-b122-ed319091db0f', '2024-09-02 21:09:41.744759', '2024-09-02 21:09:41.744759',
-        'a6628e7c-1488-4268-82ee-5174f3a5a2a5', '118eab6d-cae9-4c0b-b8e6-57f3e5541f1a');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('68335921-70b3-44a2-991e-e76dc536d429', '2024-09-02 21:09:41.744759', '2024-09-02 21:09:41.744759',
-        '85dbccf6-454e-4440-8905-50a90d91dbcc', '118eab6d-cae9-4c0b-b8e6-57f3e5541f1a');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('f97709e1-9000-41e3-9279-750122b92f74', '2024-09-02 21:09:41.744759', '2024-09-02 21:09:41.744759',
-        '331a0c35-f5a5-478d-ba7c-9f14ba2ee0fa', '118eab6d-cae9-4c0b-b8e6-57f3e5541f1a');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('e0dce1e0-d11d-444c-b72b-6b07b0f58e00', '2024-09-02 21:11:10.388136', '2024-09-02 21:11:10.388136',
-        'a6628e7c-1488-4268-82ee-5174f3a5a2a5', '9a4eec3b-3f0b-4b36-a2b5-0f544376cf78');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('c26fbcda-bd1f-4a76-8ded-4873864d5465', '2024-09-02 21:11:10.388136', '2024-09-02 21:11:10.388136',
-        'c4d5e6fe-30fd-4f16-8646-634102d1bf1b', '9a4eec3b-3f0b-4b36-a2b5-0f544376cf78');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('660071a1-8860-45bf-b7c5-c3299edfeff0', '2024-09-02 21:11:10.388136', '2024-09-02 21:11:10.388136',
-        '331a0c35-f5a5-478d-ba7c-9f14ba2ee0fa', '9a4eec3b-3f0b-4b36-a2b5-0f544376cf78');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('9ac9d5cb-384a-4d98-96f7-5198b1af8751', '2024-09-03 08:30:59.481053', '2024-09-03 08:30:59.481053',
-        'b17ae8af-2d78-4e77-b45b-39253c28247a', '61a31a0d-a736-48b5-b03e-44aa1ad7f3eb');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('17729009-9154-44b6-b1bd-3a24f6e58eb1', '2024-09-03 08:30:59.481053', '2024-09-03 08:30:59.481053',
-        '85dbccf6-454e-4440-8905-50a90d91dbcc', '61a31a0d-a736-48b5-b03e-44aa1ad7f3eb');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('ea239ef0-fddf-45d7-a91e-b325f2ace924', '2024-09-03 08:32:01.600557', '2024-09-03 08:32:01.600557',
-        'b17ae8af-2d78-4e77-b45b-39253c28247a', 'c5864272-ae27-4363-add6-7ead1b7b3379');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('e0667892-bc85-4c76-90c4-9dff62282d11', '2024-09-03 08:33:21.461537', '2024-09-03 08:33:21.461537',
-        'b17ae8af-2d78-4e77-b45b-39253c28247a', 'ddaf509f-3c99-437c-b872-a4651a91601f');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('609fd1e1-519d-41ec-85ac-4448b46c3f4f', '2024-09-03 08:35:16.719492', '2024-09-03 08:35:16.719492',
-        'ad130932-4b2f-4e7b-b3a4-c20b4a6b85ae', 'd3f54e1c-6333-4a15-b09b-0264ec0b68fe');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('7d1e0f4a-ec9f-44d7-a0ff-77adfe3a5b02', '2024-09-03 08:56:48.840824', '2024-09-03 08:56:48.840824',
-        '9d66ac93-3a48-429d-aeaa-54302856e204', '414a1891-1a28-4dbe-84e3-a992c6e879bc');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('76a839d5-a121-4ae9-8498-8c100ae6833b', '2024-09-03 08:56:48.840824', '2024-09-03 08:56:48.840824',
-        '85dbccf6-454e-4440-8905-50a90d91dbcc', '414a1891-1a28-4dbe-84e3-a992c6e879bc');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('925c629c-aff6-4ea7-a355-9d1d5314dea9', '2024-09-03 09:26:50.102291', '2024-09-03 09:26:50.102291',
-        'b17ae8af-2d78-4e77-b45b-39253c28247a', 'd59d340d-774d-4c81-8b3d-251175936221');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('2bd6edbc-65c2-46c7-9a56-f62e1713d27c', '2024-09-03 09:26:50.102291', '2024-09-03 09:26:50.102291',
-        '85dbccf6-454e-4440-8905-50a90d91dbcc', 'd59d340d-774d-4c81-8b3d-251175936221');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('1b51ecf3-d12d-402d-b8e9-5e44a6207f7e', '2024-09-03 09:28:25.004652', '2024-09-03 09:28:25.004652',
-        '9d66ac93-3a48-429d-aeaa-54302856e204', '10870aab-3086-462e-a64e-14710e3fbffe');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('80e7fdb9-c640-4ff6-a353-27b080372ec7', '2024-09-03 09:28:25.004652', '2024-09-03 09:28:25.004652',
-        '85dbccf6-454e-4440-8905-50a90d91dbcc', '10870aab-3086-462e-a64e-14710e3fbffe');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('5a0fba38-a683-47fa-bda8-8f3e373d748b', '2024-09-03 09:30:01.952859', '2024-09-03 09:30:01.952859',
-        '9d66ac93-3a48-429d-aeaa-54302856e204', 'bb9c756b-0c9e-4e87-826f-bb2cbd16d86b');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('96828f4a-2361-45f7-a9eb-40b9a378c0c8', '2024-09-03 09:30:01.952859', '2024-09-03 09:30:01.952859',
-        '85dbccf6-454e-4440-8905-50a90d91dbcc', 'bb9c756b-0c9e-4e87-826f-bb2cbd16d86b');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('58c4f7b3-2aec-4daa-991c-1aa14947cf6e', '2024-09-03 09:32:06.561414', '2024-09-03 09:32:06.561414',
-        '9d66ac93-3a48-429d-aeaa-54302856e204', '7545289f-f7c8-456b-98e9-f7b15600254c');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('f99fbb76-6a27-42cd-98e9-b48b87632ce7', '2024-09-03 09:32:06.561414', '2024-09-03 09:32:06.561414',
-        '85dbccf6-454e-4440-8905-50a90d91dbcc', '7545289f-f7c8-456b-98e9-f7b15600254c');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('8be3ccfc-28c5-4d23-bf02-2cf14ee28473', '2024-09-03 09:34:29.282248', '2024-09-03 09:34:29.282248',
-        '752ee7ba-ae88-46f0-95fb-e0a316212f16', 'b35c5710-3c80-4f48-8ee4-295e5a15999f');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('fdec77fa-9b93-4245-b799-e33f28c1ddb1', '2024-09-03 09:34:29.282248', '2024-09-03 09:34:29.282248',
-        '15495639-2adb-41b8-899c-493ac0172f57', 'b35c5710-3c80-4f48-8ee4-295e5a15999f');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('1ec253bd-d0f3-4566-bacd-6395b870a862', '2024-09-03 09:37:05.564711', '2024-09-03 09:37:05.564711',
-        '752ee7ba-ae88-46f0-95fb-e0a316212f16', 'd7871e0c-5e1b-4ffd-a9ab-951028246a01');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('568fe738-c7e6-4f85-9f4c-0ac5f8b663f5', '2024-09-03 09:37:05.564711', '2024-09-03 09:37:05.564711',
-        '15495639-2adb-41b8-899c-493ac0172f57', 'd7871e0c-5e1b-4ffd-a9ab-951028246a01');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('fa9f57ba-4129-4df1-8e1e-224b11304a97', '2024-09-03 09:38:26.932631', '2024-09-03 09:38:26.932631',
-        'b17ae8af-2d78-4e77-b45b-39253c28247a', 'b53daf0a-c7b6-4be8-9230-b33695eb5340');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('d9e9bd1b-a5f4-4829-bc8c-bad5be22320b', '2024-09-03 09:38:26.932631', '2024-09-03 09:38:26.932631',
-        '85dbccf6-454e-4440-8905-50a90d91dbcc', 'b53daf0a-c7b6-4be8-9230-b33695eb5340');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('62da9cf8-d10d-466f-bc36-7f9f733d5610', '2024-09-03 09:39:30.853833', '2024-09-03 09:39:30.853833',
-        'ad130932-4b2f-4e7b-b3a4-c20b4a6b85ae', '60bd8dbc-6bb8-4be0-9ee7-f4c5a295c5b4');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('e7c1d243-8054-41b8-b357-bdf260344065', '2024-09-03 09:39:30.853833', '2024-09-03 09:39:30.853833',
-        '061ad8e2-77aa-4ba8-9a41-51788e7803c7', '60bd8dbc-6bb8-4be0-9ee7-f4c5a295c5b4');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('e1b9123a-3de8-4529-b71b-37f36f7584ae', '2024-09-03 09:42:04.645342', '2024-09-03 09:42:04.645342',
-        '752ee7ba-ae88-46f0-95fb-e0a316212f16', 'a2f8dd49-606e-4d86-ae04-8af61c0b40e9');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('bd98bc90-e3b7-48d8-9138-4706ad67c139', '2024-09-03 09:42:04.645342', '2024-09-03 09:42:04.645342',
-        '15495639-2adb-41b8-899c-493ac0172f57', 'a2f8dd49-606e-4d86-ae04-8af61c0b40e9');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('08e98012-595a-4b8c-89c9-b4e6c7df9cff', '2024-09-03 09:42:04.645342', '2024-09-03 09:42:04.645342',
-        '85dbccf6-454e-4440-8905-50a90d91dbcc', 'a2f8dd49-606e-4d86-ae04-8af61c0b40e9');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('fb233b4f-a40a-40d9-8af4-645ca106bc9b', '2024-09-03 09:43:17.740343', '2024-09-03 09:43:17.740343',
-        '752ee7ba-ae88-46f0-95fb-e0a316212f16', 'b515dd55-701a-45f4-938f-fdb26d2d5cba');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('788ae371-9468-40de-8a0c-e30fa5de86fa', '2024-09-03 09:43:17.740343', '2024-09-03 09:43:17.740343',
-        '15495639-2adb-41b8-899c-493ac0172f57', 'b515dd55-701a-45f4-938f-fdb26d2d5cba');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('83d283ec-9646-457d-8872-aea9f8e3634a', '2024-09-03 09:43:17.740343', '2024-09-03 09:43:17.740343',
-        '85dbccf6-454e-4440-8905-50a90d91dbcc', 'b515dd55-701a-45f4-938f-fdb26d2d5cba');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('9320ca6b-51a1-4112-8452-fed9ef76b84e', '2024-09-03 09:44:32.019479', '2024-09-03 09:44:32.019479',
-        'b17ae8af-2d78-4e77-b45b-39253c28247a', 'f5f03cc7-c2bc-4367-9042-107114d634ce');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('c33098e4-4368-4864-aed8-48d5da8c7daf', '2024-09-03 09:44:32.019479', '2024-09-03 09:44:32.019479',
-        '85dbccf6-454e-4440-8905-50a90d91dbcc', 'f5f03cc7-c2bc-4367-9042-107114d634ce');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('2cbafca1-ebe8-4984-9801-9d5dd01731d3', '2024-09-03 11:04:13.316126', '2024-09-03 11:04:13.316126',
-        'afe516f8-6dc9-45ca-b95e-81142c336878', '7d823dc8-8303-4ddd-a25d-935569c662b7');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('aa95424c-4171-45e2-be12-2e3cf849dedb', '2024-09-03 11:07:53.761481', '2024-09-03 11:07:53.761481',
-        'b17ae8af-2d78-4e77-b45b-39253c28247a', '78b3c689-0222-46de-a7b3-9bd6c75b920c');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('997a16d9-0040-4dc7-9cf0-2fa47540a418', '2024-09-03 11:07:53.761481', '2024-09-03 11:07:53.761481',
-        '85dbccf6-454e-4440-8905-50a90d91dbcc', '78b3c689-0222-46de-a7b3-9bd6c75b920c');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('4ac67982-b31e-4cde-9d14-81ba2877a864', '2024-09-03 11:13:27.424853', '2024-09-03 11:13:27.424853',
-        'b17ae8af-2d78-4e77-b45b-39253c28247a', 'b39cc5b5-8335-4918-a504-f9cdfb85ceba');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('d52ef106-78de-460e-97fd-783660f9e36a', '2024-09-03 11:13:27.424853', '2024-09-03 11:13:27.424853',
-        'a025ec57-670e-45ea-962e-9c9430786666', 'b39cc5b5-8335-4918-a504-f9cdfb85ceba');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('6497b854-ddb6-438d-a8ff-c03704c7710d', '2024-09-03 11:21:01.353043', '2024-09-03 11:21:01.353043',
-        '306270ba-834e-461e-81ce-45fd5a77c99f', 'd806b4f1-399c-4ceb-bb91-663ec0350e6d');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('7463a8dd-3405-466e-ae7b-e8b161af011c', '2024-09-05 12:48:41.935518', '2024-09-05 12:48:41.935518',
-        'b17ae8af-2d78-4e77-b45b-39253c28247a', '3a39a222-7b4d-4e0e-9e7e-034d78b5d6bf');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('73c30b3e-8292-43bc-bf6a-a4bd82b4b009', '2024-09-05 12:48:41.935518', '2024-09-05 12:48:41.935518',
-        'a025ec57-670e-45ea-962e-9c9430786666', '3a39a222-7b4d-4e0e-9e7e-034d78b5d6bf');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('da66c6f8-af5d-49a9-8532-53d6728dcaee', '2024-09-05 12:54:46.798949', '2024-09-05 12:54:46.798949',
-        '9d66ac93-3a48-429d-aeaa-54302856e204', 'be3c01a7-3bd0-448c-844b-583bd824c90b');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('915d3dde-452a-4065-97b4-f43a7166122d', '2024-09-05 12:56:19.222297', '2024-09-05 12:56:19.222297',
-        'b17ae8af-2d78-4e77-b45b-39253c28247a', '1dcd59ab-674e-49d8-9a06-9c17c2a05730');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('ec70b268-dcba-4f29-bc22-09f39a8b0b96', '2024-09-05 12:59:02.114543', '2024-09-05 12:59:02.114543',
-        'a8a80e95-9165-4200-af80-cd7608099307', '05b3842c-2a19-484e-bae3-a12e86c2fa4c');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('42590ebc-3389-4499-afdd-db24a48c1869', '2024-09-05 13:05:01.304619', '2024-09-05 13:05:01.304619',
-        'b17ae8af-2d78-4e77-b45b-39253c28247a', 'ad98534e-b2d9-4fef-9983-578ef12b28f7');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('71f9d832-3a06-46ba-92c5-3717ccbed4d1', '2024-09-05 13:06:37.171303', '2024-09-05 13:06:37.171303',
-        'b17ae8af-2d78-4e77-b45b-39253c28247a', 'b5c6e6a6-6eec-422c-ad4a-8dca82287312');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('667970b6-07ea-4cc1-b1e4-a41a6677c952', '2024-09-05 13:08:00.590087', '2024-09-05 13:08:00.590087',
-        '9d66ac93-3a48-429d-aeaa-54302856e204', '9b3f9b20-544d-49e1-880e-879e24e81581');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('a0be2bf4-1bd4-4f0f-a6b8-80d3de3ca5d0', '2024-09-05 13:10:41.491381', '2024-09-05 13:10:41.491381',
-        '21aad68b-b21b-4452-9ebf-7407be8e613d', '12070323-971e-421a-9eaf-bdce4f8e0464');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('2c7089c4-a615-4daa-8e1b-9d8e967742a3', '2024-09-05 13:12:38.919761', '2024-09-05 13:12:38.919761',
-        '21aad68b-b21b-4452-9ebf-7407be8e613d', '379d64cd-24bf-4a81-9b97-936c9a088e17');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('5a24fbe6-d301-4475-a925-a4cb667fa81d', '2024-09-05 13:33:56.333513', '2024-09-05 13:33:56.333513',
-        '20e225dd-68d7-409b-9b7d-5ef6d4224d02', '04d3e242-807d-4cba-9be4-e3d11a8efbc4');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('f9649482-4f82-4937-a846-7726941fb15a', '2024-09-05 13:37:08.624602', '2024-09-05 13:37:08.624602',
-        'b17ae8af-2d78-4e77-b45b-39253c28247a', 'ca38bcba-658f-4c7a-be54-b2c3f845fbe0');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('9baa4575-bcc5-463e-872f-3a3bf5656c3c', '2024-09-05 13:38:49.282638', '2024-09-05 13:38:49.282638',
-        '306270ba-834e-461e-81ce-45fd5a77c99f', 'f11ef4dd-cc6b-42ad-844d-0e94cef691f0');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('71a9cf3d-d7fd-41b1-a325-4cda9f4c5b3b', '2024-09-05 13:42:24.387105', '2024-09-05 13:42:24.387105',
-        '21aad68b-b21b-4452-9ebf-7407be8e613d', '676f21e5-7b5a-4c11-a505-4545822673de');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('5dea08ec-3e97-4605-b52e-979db427994b', '2024-09-05 13:44:20.967667', '2024-09-05 13:44:20.967667',
-        'b17ae8af-2d78-4e77-b45b-39253c28247a', 'c18b086c-b0c3-4d1c-a6a3-2653e36c5dff');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('38307eb7-35ad-4571-bc17-845ad48d0de2', '2024-09-05 13:49:52.440143', '2024-09-05 13:49:52.440143',
-        '623e0be7-870a-4bca-b053-76e99c9ea7e0', '6115df45-ddad-4fa6-bfb0-1c0cd72de766');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('e781fc4f-bc1c-436c-80dc-19158f3e09e4', '2024-09-06 11:10:17.468218', '2024-09-06 11:10:17.468218',
-        '752ee7ba-ae88-46f0-95fb-e0a316212f16', 'f4041256-a9ac-430d-b611-d8a957e2aeb0');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('22271295-2abe-4f44-91f5-d6e6f564f427', '2024-09-06 11:10:17.468218', '2024-09-06 11:10:17.468218',
-        '15495639-2adb-41b8-899c-493ac0172f57', 'f4041256-a9ac-430d-b611-d8a957e2aeb0');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('3b026b6e-3232-418a-a7e7-c83a0da499d0', '2024-09-06 11:15:01.154775', '2024-09-06 11:15:01.154775',
-        'ddf4299a-fc48-47bd-9bdf-7e3d7692b09f', '8e687b8b-0142-49f7-92e9-4d5df9aa86c9');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('4de92f49-2970-4403-92f1-ba221b788b4e', '2024-09-06 11:18:17.212483', '2024-09-06 11:18:17.212483',
-        '18995b62-6971-4750-84fe-0c2bc712f352', '4a2c7160-6cf2-456d-8ef4-80040b720420');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('8a50ccab-f036-4f86-a21d-914ab1ab90e1', '2024-09-06 11:18:17.212483', '2024-09-06 11:18:17.212483',
-        'dec9f53a-7dac-4199-b4ff-ab0624090b8b', '4a2c7160-6cf2-456d-8ef4-80040b720420');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('7cc2b9e8-a397-4098-a17c-eef53ad40e84', '2024-09-06 11:21:03.174118', '2024-09-06 11:21:03.174118',
-        '18995b62-6971-4750-84fe-0c2bc712f352', '93c687ff-68f2-44d0-9f3a-8c4c15c960e8');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('7665c3a5-196d-4c99-a91d-ae4d77b27070', '2024-09-06 11:21:03.174118', '2024-09-06 11:21:03.174118',
-        'dec9f53a-7dac-4199-b4ff-ab0624090b8b', '93c687ff-68f2-44d0-9f3a-8c4c15c960e8');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('3c74b271-2336-4b44-9d30-34ea6428edd3', '2024-09-06 21:19:43.241244', '2024-09-06 21:19:43.241244',
-        'ddf4299a-fc48-47bd-9bdf-7e3d7692b09f', '738d7264-00af-48dd-a475-3c4d12e28188');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('072e8596-6607-404a-9b5f-f3c8724988f7', '2024-09-06 21:22:25.314861', '2024-09-06 21:22:25.314861',
-        '18995b62-6971-4750-84fe-0c2bc712f352', 'e84c6031-9d71-41a1-ae2c-6c9901ea1d6b');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('de9b55c8-a4bc-4b2a-9d96-0dcf21757611', '2024-09-06 21:22:25.314861', '2024-09-06 21:22:25.314861',
-        'dec9f53a-7dac-4199-b4ff-ab0624090b8b', 'e84c6031-9d71-41a1-ae2c-6c9901ea1d6b');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('9d3cecc1-1d78-43f8-934a-1ff66f8f2892', '2024-09-06 21:26:46.66858', '2024-09-06 21:26:46.66858',
-        '18995b62-6971-4750-84fe-0c2bc712f352', 'bd3338ee-1841-4686-a98c-3493ab9cfa7e');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('f3f8c438-e1ab-45c1-85a1-cd0e67635995', '2024-09-06 21:26:46.66858', '2024-09-06 21:26:46.66858',
-        'dec9f53a-7dac-4199-b4ff-ab0624090b8b', 'bd3338ee-1841-4686-a98c-3493ab9cfa7e');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('008710a1-c34b-42ea-9ce8-4b0fd7a6703a', '2024-09-06 21:28:12.854436', '2024-09-06 21:28:12.854436',
-        '752ee7ba-ae88-46f0-95fb-e0a316212f16', 'eaf575b3-2cb6-45a3-914f-81838c4c7e4d');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('c9095b39-8405-4cea-9890-aa5ca1fc51a6', '2024-09-06 21:28:12.854436', '2024-09-06 21:28:12.854436',
-        'af38ec0a-1465-45a8-99ba-a394224530dc', 'eaf575b3-2cb6-45a3-914f-81838c4c7e4d');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('22010d0b-8136-45c5-a6a4-b7959fcf96bc', '2024-09-06 21:31:44.43865', '2024-09-06 21:31:44.43865',
-        '18995b62-6971-4750-84fe-0c2bc712f352', 'c25a5f07-d65f-4ba9-9b0d-cb4d5b426455');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('eaa57672-d999-4161-934d-77ba359b62b0', '2024-09-06 21:31:44.43865', '2024-09-06 21:31:44.43865',
-        'c7c51826-c595-4ae8-9ac4-4421b2afc4ad', 'c25a5f07-d65f-4ba9-9b0d-cb4d5b426455');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('bb8bc214-6882-4484-b744-5785a5dbf8bb', '2024-09-06 21:35:46.040378', '2024-09-06 21:35:46.040378',
-        '18995b62-6971-4750-84fe-0c2bc712f352', '85a317d2-6cf2-4155-a6ea-a271afc4a803');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('376a3be5-69d8-4a5d-a3a0-ce9203b986e4', '2024-09-06 21:35:46.040378', '2024-09-06 21:35:46.040378',
-        'dec9f53a-7dac-4199-b4ff-ab0624090b8b', '85a317d2-6cf2-4155-a6ea-a271afc4a803');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('720273a9-4d13-42e2-a9ad-100bd3df183e', '2024-09-07 14:58:48.654447', '2024-09-07 14:58:48.654447',
-        '9d66ac93-3a48-429d-aeaa-54302856e204', 'c1ca2c25-9148-4977-99fe-3acda0b4ad33');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('93b388fb-6d1f-4f50-86f1-7bfcf0caf757', '2024-09-07 15:00:25.353525', '2024-09-07 15:00:25.353525',
-        'b17ae8af-2d78-4e77-b45b-39253c28247a', '950cd0cd-fc3b-442f-aba9-3c48bfc6cda9');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('d22c14b4-8a02-4272-9cef-59d3efe547bb', '2024-09-07 15:02:06.009523', '2024-09-07 15:02:06.009523',
-        '9d66ac93-3a48-429d-aeaa-54302856e204', '9c029423-aa52-4b90-97c0-f5d4b4574f12');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('5cdf4f97-3991-4482-a131-d10228dd4a0c', '2024-09-07 15:06:50.272715', '2024-09-07 15:06:50.272715',
-        '373d04ea-8079-439a-82a3-d118da6253b1', 'baa3f656-0ad7-422b-ba8b-e5e9f5d4cd63');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('bf36717d-52ec-491c-8626-a60e602b5a99', '2024-09-07 15:06:50.272715', '2024-09-07 15:06:50.272715',
-        'c7c51826-c595-4ae8-9ac4-4421b2afc4ad', 'baa3f656-0ad7-422b-ba8b-e5e9f5d4cd63');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('a1ddbf01-c4ec-471a-a600-6abef35c4b8b', '2024-09-07 15:09:04.687328', '2024-09-07 15:09:04.687328',
-        '9d66ac93-3a48-429d-aeaa-54302856e204', '6389ce45-7d30-4372-8c29-e5816d893b1a');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('03ce2623-f3d3-4f74-9756-52315e8ef4f6', '2024-09-07 15:09:04.687328', '2024-09-07 15:09:04.687328',
-        '6215cbaf-6065-4534-a9d5-a588c1b3dc28', '6389ce45-7d30-4372-8c29-e5816d893b1a');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('970bc41e-42ca-4885-9c45-59300f0cc715', '2024-09-07 15:12:48.574203', '2024-09-07 15:12:48.574203',
-        '9d66ac93-3a48-429d-aeaa-54302856e204', '31b8aa6a-448d-4e4c-bd1e-6386060b526e');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('752e2f2d-35af-4c97-a1f6-c188e6235b82', '2024-09-07 15:12:48.574203', '2024-09-07 15:12:48.574203',
-        '85dbccf6-454e-4440-8905-50a90d91dbcc', '31b8aa6a-448d-4e4c-bd1e-6386060b526e');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('08db552c-b8ad-46a8-8f48-8db87c1716cb', '2024-09-07 15:16:24.621301', '2024-09-07 15:16:24.621301',
-        '9d66ac93-3a48-429d-aeaa-54302856e204', '13826a3e-6b12-464c-95c8-5790f0e13947');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('04770e78-6e61-4b32-9552-f9cf4f9ee3f7', '2024-09-07 15:18:31.441789', '2024-09-07 15:18:31.441789',
-        '9d66ac93-3a48-429d-aeaa-54302856e204', '91f6781b-915e-4bb4-8d8c-e345aa66e42d');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('3a74fcc8-9fd0-4d05-9359-2e133d19dce1', '2024-09-07 15:18:31.441789', '2024-09-07 15:18:31.441789',
-        '6215cbaf-6065-4534-a9d5-a588c1b3dc28', '91f6781b-915e-4bb4-8d8c-e345aa66e42d');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('00fe0f44-2150-4b30-a81d-bab6f8d4a1c3', '2024-09-07 15:29:18.472763', '2024-09-07 15:29:18.472763',
-        '623e0be7-870a-4bca-b053-76e99c9ea7e0', 'cbb152c0-ba9c-47ea-a8a3-28ad88f56eb6');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('28b62420-3418-4d37-9a2c-c9701cac7262', '2024-09-07 19:52:35.874631', '2024-09-07 19:52:35.874631',
-        'b17ae8af-2d78-4e77-b45b-39253c28247a', '0be1c49c-d742-4881-b014-360bc297af34');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('4748c3ed-2e6f-4afb-8503-ee2de41ae99c', '2024-09-07 19:54:36.140536', '2024-09-07 19:54:36.140536',
-        'b17ae8af-2d78-4e77-b45b-39253c28247a', '8cccb149-8553-494d-bcb5-ffa9b06e7c0f');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('7513d817-b2ac-466c-8451-c13327ffb6bb', '2024-09-07 19:56:54.242266', '2024-09-07 19:56:54.242266',
-        '373d04ea-8079-439a-82a3-d118da6253b1', '7470e789-9509-4e22-9078-67857074867d');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('8b3b6380-4e0d-485e-86c9-f2c91899b25e', '2024-09-07 19:56:54.242266', '2024-09-07 19:56:54.242266',
-        '331a0c35-f5a5-478d-ba7c-9f14ba2ee0fa', '7470e789-9509-4e22-9078-67857074867d');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('149f454c-9c42-4c28-97e5-4430097de67f', '2024-09-07 19:58:28.351619', '2024-09-07 19:58:28.351619',
-        '373d04ea-8079-439a-82a3-d118da6253b1', '7976a83a-f4db-4cc5-9cac-7f16f2bc430f');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('482ea4fd-886d-466f-8828-ce22f78e453f', '2024-09-07 19:58:28.351619', '2024-09-07 19:58:28.351619',
-        'af38ec0a-1465-45a8-99ba-a394224530dc', '7976a83a-f4db-4cc5-9cac-7f16f2bc430f');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('2f6e93ac-c618-4d63-ae52-7217d94d5ec3', '2024-09-07 20:02:52.951001', '2024-09-07 20:02:52.951001',
-        'b17ae8af-2d78-4e77-b45b-39253c28247a', '6da53baf-d357-4392-927f-7da1bf7449dc');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('deb481ed-3145-45be-87ac-0a7456ea08bf', '2024-09-07 20:02:52.951001', '2024-09-07 20:02:52.951001',
-        '6215cbaf-6065-4534-a9d5-a588c1b3dc28', '6da53baf-d357-4392-927f-7da1bf7449dc');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('17cf51e3-ceca-4c72-88fb-5885d41c5fa1', '2024-09-07 20:04:30.73186', '2024-09-07 20:04:30.73186',
-        'b17ae8af-2d78-4e77-b45b-39253c28247a', '6bb0675d-eba0-496c-bd20-5fd11a4a0282');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('bd1306a1-7bc6-4903-82c2-83d9c968d3ba', '2024-09-07 20:04:30.73186', '2024-09-07 20:04:30.73186',
-        '6215cbaf-6065-4534-a9d5-a588c1b3dc28', '6bb0675d-eba0-496c-bd20-5fd11a4a0282');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('6a9a7699-e872-413e-9fcc-6245b135942b', '2024-09-07 20:10:41.933722', '2024-09-07 20:10:41.933722',
-        '9d66ac93-3a48-429d-aeaa-54302856e204', '5de5124e-8ebb-4477-b4b3-e1122cc80496');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('61d2c27b-ab9d-47b4-85b6-a7c68639a155', '2024-09-07 20:15:00.952432', '2024-09-07 20:15:00.952432',
-        'b17ae8af-2d78-4e77-b45b-39253c28247a', 'd180a698-a12e-4731-8234-b96e8f3ca7d9');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('618e8937-5890-42b2-ae7a-df1991a718f0', '2024-09-07 20:17:27.656857', '2024-09-07 20:17:27.656857',
-        'b17ae8af-2d78-4e77-b45b-39253c28247a', '49ef1d62-a375-485a-84bd-289a5548e81b');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('0e0a44ae-2ee1-430b-8ffe-3aa3aad184b9', '2024-09-07 20:18:56.62261', '2024-09-07 20:18:56.62261',
-        '9d66ac93-3a48-429d-aeaa-54302856e204', 'abe543c6-ec69-49ad-b9ca-ef959ffa10f2');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('f2188482-cd86-408c-8bd6-88499940c73c', '2024-09-07 20:18:56.62261', '2024-09-07 20:18:56.62261',
-        '85dbccf6-454e-4440-8905-50a90d91dbcc', 'abe543c6-ec69-49ad-b9ca-ef959ffa10f2');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('045928ce-80fb-4924-aae3-117a0912fb60', '2024-09-07 20:20:03.758785', '2024-09-07 20:20:03.758785',
-        '623e0be7-870a-4bca-b053-76e99c9ea7e0', 'cae7b841-a7f8-4973-baf0-4aadbbdcd0ca');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('b6990ea3-8bdb-4f9c-a3c7-5584a7bbdd92', '2024-09-07 20:21:09.874228', '2024-09-07 20:21:09.874228',
-        '21aad68b-b21b-4452-9ebf-7407be8e613d', 'ad76d69c-5e90-4643-b507-9e9226d8b5cd');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('a78cbc66-b0fd-495a-be14-68b8589716ad', '2024-09-07 20:22:58.475906', '2024-09-07 20:22:58.475906',
-        'a6628e7c-1488-4268-82ee-5174f3a5a2a5', 'f451289a-6d35-4926-981d-8ebae71741a2');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('c8ca821f-37b3-4a77-8920-e765545b226c', '2024-09-07 20:22:58.475906', '2024-09-07 20:22:58.475906',
-        '331a0c35-f5a5-478d-ba7c-9f14ba2ee0fa', 'f451289a-6d35-4926-981d-8ebae71741a2');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('0c8da05d-5326-4135-8adf-51ecc6f96f85', '2024-09-07 20:24:09.682872', '2024-09-07 20:24:09.682872',
-        '752ee7ba-ae88-46f0-95fb-e0a316212f16', '98791e1d-6029-4cb2-bcaf-611a337208ef');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('0a2e0c1b-21ad-417a-84fc-7bf84c9db584', '2024-09-07 20:24:09.682872', '2024-09-07 20:24:09.682872',
-        'af38ec0a-1465-45a8-99ba-a394224530dc', '98791e1d-6029-4cb2-bcaf-611a337208ef');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('cf534b18-abff-4d06-a5c8-505d6a0f1eff', '2024-09-07 20:34:58.050348', '2024-09-07 20:34:58.050348',
-        'b17ae8af-2d78-4e77-b45b-39253c28247a', '22df24eb-6bb7-45bc-ab46-9d6022eec774');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('47dedfa5-1147-47c0-b9f4-6dcd4f649736', '2024-09-07 20:34:58.050348', '2024-09-07 20:34:58.050348',
-        'a025ec57-670e-45ea-962e-9c9430786666', '22df24eb-6bb7-45bc-ab46-9d6022eec774');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('28ab49d8-a697-41d4-973e-9ea70910ba9e', '2024-09-07 20:36:12.360253', '2024-09-07 20:36:12.360253',
-        '9d66ac93-3a48-429d-aeaa-54302856e204', '978f906a-8584-4cdf-9d7f-f96d60865e3b');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('1a6fb40b-fadb-4c9a-86e8-66372918ed31', '2024-09-07 20:38:40.703598', '2024-09-07 20:38:40.703598',
-        '9d66ac93-3a48-429d-aeaa-54302856e204', '4da455c2-c154-4da7-b9c5-6195bd137eec');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('ab827755-8db2-4e8e-b245-44da52c20975', '2024-09-07 20:40:09.759616', '2024-09-07 20:40:09.759616',
-        '9d66ac93-3a48-429d-aeaa-54302856e204', '945bdcdb-6aee-42df-a974-3fedc0b76846');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('782c3ba3-91a7-4db6-9eda-4c53b3a90a51', '2024-09-07 20:41:37.064387', '2024-09-07 20:41:37.064387',
-        '1959d942-75fb-4ece-b501-b7cf8884d479', '64406a09-56a6-43da-9329-ff0fb0d83e4f');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('90145c25-7358-4f61-95b6-4e9d0302b056', '2024-09-07 20:42:37.464957', '2024-09-07 20:42:37.464957',
-        'c74a2236-739f-476b-96d9-a11487d4049f', '10f8ff0e-38c6-465d-b99a-26c4026d22c6');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('ffb29e82-ad9a-4ac1-88e7-1ca1eca9ebdb', '2024-09-07 20:44:02.296095', '2024-09-07 20:44:02.296095',
-        '9d66ac93-3a48-429d-aeaa-54302856e204', '88baf661-c550-4ecd-b15a-0d1ca4d41116');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('634e3875-64a6-4c80-811b-2d8867c88f74', '2024-09-07 20:44:02.296095', '2024-09-07 20:44:02.296095',
-        '85dbccf6-454e-4440-8905-50a90d91dbcc', '88baf661-c550-4ecd-b15a-0d1ca4d41116');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('b3c7f483-ec9a-4981-bf86-8f5f5999bfee', '2024-09-07 20:50:37.24265', '2024-09-07 20:50:37.24265',
-        '20e225dd-68d7-409b-9b7d-5ef6d4224d02', '4dc80274-2d3e-482e-a736-9f9399330c76');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('931ed3b9-aa20-407a-8ae8-a40b5ec56c61', '2024-09-07 20:51:46.77683', '2024-09-07 20:51:46.77683',
-        '9d66ac93-3a48-429d-aeaa-54302856e204', '14dbd276-30fe-4558-9cf0-104751b58f2d');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('c64765d7-fa51-47f5-bb3f-76c97a36b7d6', '2024-09-07 20:53:13.278016', '2024-09-07 20:53:13.278016',
-        'b17ae8af-2d78-4e77-b45b-39253c28247a', '2fd70951-2d44-407e-a7ee-daa94bf6af87');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('981c3a79-8a15-4cb0-9bb8-67590cad4b8d', '2024-09-07 20:53:13.278016', '2024-09-07 20:53:13.278016',
-        'a025ec57-670e-45ea-962e-9c9430786666', '2fd70951-2d44-407e-a7ee-daa94bf6af87');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('2cf7f272-31cd-429c-9f5b-7e42650ac398', '2024-09-07 20:54:24.889757', '2024-09-07 20:54:24.889757',
-        '9d66ac93-3a48-429d-aeaa-54302856e204', '24c43903-d3a7-4a39-9231-5bc7d5cec5da');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('12888867-de03-45ba-904a-86db9163bf00', '2024-09-07 20:55:27.31679', '2024-09-07 20:55:27.31679',
-        '9d66ac93-3a48-429d-aeaa-54302856e204', 'de763854-d06d-43e9-9973-f4ca8839201b');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('87d03941-7721-4ae4-bc0e-9754baa76784', '2024-09-07 20:56:42.196785', '2024-09-07 20:56:42.196785',
-        '9d66ac93-3a48-429d-aeaa-54302856e204', '5ab252b3-204d-4846-80e8-a7629f2d2e25');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('c0f5558e-4650-4dd1-8d33-564b1e915f72', '2024-09-07 21:00:33.469294', '2024-09-07 21:00:33.469294',
-        '623e0be7-870a-4bca-b053-76e99c9ea7e0', '7b006564-2c61-4661-ab8c-d4cf60fdb3ed');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('dc25e6ce-b255-4dda-821d-717c0631410b', '2024-09-07 21:02:58.937636', '2024-09-07 21:02:58.937636',
-        '623e0be7-870a-4bca-b053-76e99c9ea7e0', '1e51b837-215d-4069-9d14-c9510c1b1b61');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('6c1c9b03-ace2-45d8-81d8-e6d3bf207549', '2024-09-08 11:38:55.97306', '2024-09-08 11:38:55.97306',
-        '623e0be7-870a-4bca-b053-76e99c9ea7e0', '4ef87c39-b004-4c4c-82a8-ddd0338de8c8');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('eb6546ae-ea12-4dfa-857b-de4bbe4e65ca', '2024-09-08 11:42:23.523464', '2024-09-08 11:42:23.523464',
-        '1959d942-75fb-4ece-b501-b7cf8884d479', 'ea89fe55-c50f-4bbf-acc1-96e7df46101a');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('00d40c39-b402-4f76-a21c-d17c60ddc429', '2024-09-08 11:47:42.824531', '2024-09-08 11:47:42.824531',
-        '1959d942-75fb-4ece-b501-b7cf8884d479', '395bb56a-d4af-4f4a-abb3-51a9ef1dc686');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('b0be49fb-d604-4dbe-8e31-0ac1b30bd780', '2024-09-08 11:48:44.510721', '2024-09-08 11:48:44.510721',
-        '20e225dd-68d7-409b-9b7d-5ef6d4224d02', 'a40b23bf-bd6d-41d0-adbe-254bce002c2d');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('ee35ea63-3dc3-41bd-bc8c-10198b13fe19', '2024-09-08 11:51:56.651231', '2024-09-08 11:51:56.651231',
-        'b17ae8af-2d78-4e77-b45b-39253c28247a', 'a4bf88ee-8865-4b1f-88a3-28cf59d28739');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('6ff7a64c-3387-4add-8da7-4bb1c283c88b', '2024-09-08 11:51:56.651231', '2024-09-08 11:51:56.651231',
-        'a025ec57-670e-45ea-962e-9c9430786666', 'a4bf88ee-8865-4b1f-88a3-28cf59d28739');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('476e08af-6936-4cfc-9a35-abbc1b76ef0c', '2024-09-08 11:54:36.184609', '2024-09-08 11:54:36.184609',
-        '623e0be7-870a-4bca-b053-76e99c9ea7e0', '9572d666-227a-4639-9ea3-defd67123fbc');
-INSERT INTO public.exercise_examples_equipments
-VALUES ('4f31706f-2ff2-4d48-bdc8-ea7a7401e734', '2024-09-08 11:56:12.857504', '2024-09-08 11:56:12.857504',
-        '9d66ac93-3a48-429d-aeaa-54302856e204', '21d5ce50-6ffa-44d9-869f-abcfeb518018');
+COPY public.exercise_examples_equipments (id, created_at, updated_at, equipment_id, exercise_example_id) FROM stdin;
+de4aac26-8edb-4d17-9351-1975b8832149	2025-09-15 15:27:48.789435	2025-09-15 15:27:48.789435	9d66ac93-3a48-429d-aeaa-54302856e204	908341ec-de1f-44bd-b84d-74ff8a7162a0
+0b59649a-3272-4b4c-9d1d-e10e68fec953	2025-09-15 15:41:07.307492	2025-09-15 15:41:07.307492	85dbccf6-454e-4440-8905-50a90d91dbcc	f2fb31f0-7f6b-42b6-9a79-c22453ac6a63
+f4f7586f-8236-4c46-94f4-06bd0ff22132	2025-09-15 15:50:31.263722	2025-09-15 15:50:31.263722	9d66ac93-3a48-429d-aeaa-54302856e204	cfb2d83a-b3dc-44e9-ab08-53f9269752d6
+6bf68e63-dec5-427c-b2cf-6b48ba2aa5ad	2025-09-15 15:50:31.263722	2025-09-15 15:50:31.263722	85dbccf6-454e-4440-8905-50a90d91dbcc	cfb2d83a-b3dc-44e9-ab08-53f9269752d6
+43d5b922-f9a0-469d-a4a1-e4fa99aa94d7	2025-09-15 16:02:04.859997	2025-09-15 16:02:04.859997	752ee7ba-ae88-46f0-95fb-e0a316212f16	a90f4822-63c5-42b9-943c-ff0ceacad1eb
+5eac63e0-c841-4478-859e-4d7320d8fc04	2025-09-15 16:02:04.859997	2025-09-15 16:02:04.859997	15495639-2adb-41b8-899c-493ac0172f57	a90f4822-63c5-42b9-943c-ff0ceacad1eb
+7fbc53e5-8cc1-4c69-84d2-0e3cbf8080b5	2025-09-15 16:11:38.78951	2025-09-15 16:11:38.78951	b17ae8af-2d78-4e77-b45b-39253c28247a	e21344ff-b825-4a99-bf8b-a778bf1964d1
+8935a4a6-9240-4cd5-befa-e1c279efe731	2025-09-15 16:11:38.78951	2025-09-15 16:11:38.78951	9677e942-8a9b-4754-a27f-7e4d945681a1	e21344ff-b825-4a99-bf8b-a778bf1964d1
+e63bf678-eec8-482c-8657-7c6d6c0159b2	2025-09-15 16:18:28.988991	2025-09-15 16:18:28.988991	752ee7ba-ae88-46f0-95fb-e0a316212f16	6a312bde-cc33-450b-8f1d-6091ccffe9cc
+06b2a845-6e89-4aa1-baad-31acb6d7a711	2025-09-15 16:18:28.988991	2025-09-15 16:18:28.988991	15495639-2adb-41b8-899c-493ac0172f57	6a312bde-cc33-450b-8f1d-6091ccffe9cc
+a3771f56-622b-4bb3-b2d5-06c586edb789	2025-09-15 16:22:46.742312	2025-09-15 16:22:46.742312	9d66ac93-3a48-429d-aeaa-54302856e204	04d275d8-71df-4695-ace9-899ce6e41b29
+1d83b11c-54e2-4fbb-9dc8-a2717d29bb98	2025-09-15 16:27:44.417862	2025-09-15 16:27:44.417862	ad130932-4b2f-4e7b-b3a4-c20b4a6b85ae	50774526-c91f-4d71-82a8-456526b0fbd0
+02e7f4c6-ae73-4b4b-b691-8cbce32dc246	2025-09-15 16:27:44.417862	2025-09-15 16:27:44.417862	85dbccf6-454e-4440-8905-50a90d91dbcc	50774526-c91f-4d71-82a8-456526b0fbd0
+463d78ec-41bc-422f-8a70-70c14f63ee66	2025-09-15 16:32:48.61278	2025-09-15 16:32:48.61278	752ee7ba-ae88-46f0-95fb-e0a316212f16	275097d4-3c8d-4040-9b2e-5f294919df04
+b525f1e4-2f12-4dc9-9a0b-6d740b22ce4d	2025-09-15 16:32:48.61278	2025-09-15 16:32:48.61278	331a0c35-f5a5-478d-ba7c-9f14ba2ee0fa	275097d4-3c8d-4040-9b2e-5f294919df04
+633ef071-16fb-4db9-9ae8-f54672981dcc	2025-09-15 16:38:05.025098	2025-09-15 16:38:05.025098	85dbccf6-454e-4440-8905-50a90d91dbcc	0eaa8980-e29e-4f33-88b0-915db5cf309a
+0a93b694-0ebd-4cd7-8511-a3bf484cd416	2025-09-15 16:38:05.025098	2025-09-15 16:38:05.025098	9d66ac93-3a48-429d-aeaa-54302856e204	0eaa8980-e29e-4f33-88b0-915db5cf309a
+b138437e-92aa-4e5b-ae8c-0e6e6f2d4c6d	2025-09-15 16:43:20.063503	2025-09-15 16:43:20.063503	b17ae8af-2d78-4e77-b45b-39253c28247a	4aafe702-f2fc-4fa2-a7fb-c31c279adeda
+5e911c7c-8e90-4e40-973e-50e971991761	2025-09-15 16:43:20.063503	2025-09-15 16:43:20.063503	85dbccf6-454e-4440-8905-50a90d91dbcc	4aafe702-f2fc-4fa2-a7fb-c31c279adeda
+c6647c4b-54fc-490b-9163-a002f6e85ee2	2025-09-15 16:47:55.713775	2025-09-15 16:47:55.713775	ad130932-4b2f-4e7b-b3a4-c20b4a6b85ae	650e9725-d36c-4688-bcab-adf93dfe9e5d
+b4c6e337-a5f7-4e65-86b9-50e5cfcd6c92	2025-09-15 16:47:55.713775	2025-09-15 16:47:55.713775	85dbccf6-454e-4440-8905-50a90d91dbcc	650e9725-d36c-4688-bcab-adf93dfe9e5d
+a396387f-00d3-4082-8fa4-44fad7b288b5	2025-09-15 16:51:31.482535	2025-09-15 16:51:31.482535	9d66ac93-3a48-429d-aeaa-54302856e204	4d3a89ab-70ae-4311-8b40-a058b2f3057b
+4f068b73-32be-4edb-a63a-c79b98d938ef	2025-09-15 16:51:31.482535	2025-09-15 16:51:31.482535	6215cbaf-6065-4534-a9d5-a588c1b3dc28	4d3a89ab-70ae-4311-8b40-a058b2f3057b
+ca3282b5-af3c-4169-99ab-2c916b23f1c5	2025-09-15 15:30:56.252495	2025-09-15 15:30:56.252495	0d0f8242-be68-4086-b665-0a11ff6a0dcd	7fd82f79-1f5f-4bae-8f2d-b94ecae595d5
+185077a0-8f16-4dc6-be48-a8e893bc6744	2025-09-15 15:43:10.911581	2025-09-15 15:43:10.911581	061ad8e2-77aa-4ba8-9a41-51788e7803c7	194fa2ee-7f92-4982-903e-3db80293d773
+6bb1cf82-da45-4c6a-aa77-9c168b1f0482	2025-09-15 15:43:10.911581	2025-09-15 15:43:10.911581	b17ae8af-2d78-4e77-b45b-39253c28247a	194fa2ee-7f92-4982-903e-3db80293d773
+cb7a879e-c37a-4465-bc18-3e062bfb9745	2025-09-15 15:52:01.066085	2025-09-15 15:52:01.066085	9d66ac93-3a48-429d-aeaa-54302856e204	09386394-e4e1-4a6d-adce-d5f5a518485c
+cff8ed20-b006-4f6a-a801-3845a9ddbad9	2025-09-15 15:52:01.066085	2025-09-15 15:52:01.066085	6215cbaf-6065-4534-a9d5-a588c1b3dc28	09386394-e4e1-4a6d-adce-d5f5a518485c
+2996d2ad-1e3d-47ce-88b9-4163d4285a66	2025-09-15 16:03:40.111017	2025-09-15 16:03:40.111017	752ee7ba-ae88-46f0-95fb-e0a316212f16	748e0a60-9429-4a9d-8a6b-3ba76a7fc4b2
+18ce79a2-3802-475c-a9b8-877d5c15019f	2025-09-15 16:03:40.111017	2025-09-15 16:03:40.111017	af38ec0a-1465-45a8-99ba-a394224530dc	748e0a60-9429-4a9d-8a6b-3ba76a7fc4b2
+4bfe4f48-3acb-4ffe-9c66-c3245f83074a	2025-09-15 16:13:02.93229	2025-09-15 16:13:02.93229	c4d5e6fe-30fd-4f16-8646-634102d1bf1b	490df80e-d34c-42cf-bfe5-c27ddd2cd734
+71e85c44-de0a-476a-8134-d462dc164b51	2025-09-15 16:13:02.93229	2025-09-15 16:13:02.93229	9d66ac93-3a48-429d-aeaa-54302856e204	490df80e-d34c-42cf-bfe5-c27ddd2cd734
+27d7b199-25ad-4370-8f95-7f1f35e8b209	2025-09-15 16:20:19.368067	2025-09-15 16:20:19.368067	b17ae8af-2d78-4e77-b45b-39253c28247a	4f9bdd10-28bc-447e-8cf5-fbf47cd9af79
+872cedb3-63db-4f89-b5c1-7c5554382f88	2025-09-15 16:20:19.368067	2025-09-15 16:20:19.368067	ad130932-4b2f-4e7b-b3a4-c20b4a6b85ae	4f9bdd10-28bc-447e-8cf5-fbf47cd9af79
+e849eca9-a3d9-4f25-bc31-60cd98eb72e9	2025-09-15 16:24:04.997722	2025-09-15 16:24:04.997722	85dbccf6-454e-4440-8905-50a90d91dbcc	c21d3b0f-c8a8-4b7f-92ea-90dc567a1183
+f2792eb2-9849-42d1-863a-e6694b5d1346	2025-09-15 16:24:04.997722	2025-09-15 16:24:04.997722	ad130932-4b2f-4e7b-b3a4-c20b4a6b85ae	c21d3b0f-c8a8-4b7f-92ea-90dc567a1183
+397d21a0-c503-4e01-acab-42dc52811daa	2025-09-15 16:29:39.931143	2025-09-15 16:29:39.931143	752ee7ba-ae88-46f0-95fb-e0a316212f16	11644e17-247a-46b0-a391-b3b2a2a6bba8
+0270c54c-ccc2-46ba-88a8-034e652bbff4	2025-09-15 16:29:39.931143	2025-09-15 16:29:39.931143	331a0c35-f5a5-478d-ba7c-9f14ba2ee0fa	11644e17-247a-46b0-a391-b3b2a2a6bba8
+d46d9ef6-ffe9-4be6-b1ef-196852470d13	2025-09-15 16:34:46.207996	2025-09-15 16:34:46.207996	9d66ac93-3a48-429d-aeaa-54302856e204	547f1f7e-3ee1-4b39-99eb-3462b1ec13af
+7f01f757-538f-4b12-ab03-fa1611520a16	2025-09-15 16:39:47.341847	2025-09-15 16:39:47.341847	9d66ac93-3a48-429d-aeaa-54302856e204	93e6b1c4-0510-41d4-983c-a1fde003881f
+c0409d78-4873-4db7-9488-3855cf66ce86	2025-09-15 16:44:27.403264	2025-09-15 16:44:27.403264	ad130932-4b2f-4e7b-b3a4-c20b4a6b85ae	7517ae2f-c198-4a33-8a1d-1dc7327d1430
+d3903e6b-3fd3-42e6-a087-f8168f59551d	2025-09-15 16:44:27.403264	2025-09-15 16:44:27.403264	85dbccf6-454e-4440-8905-50a90d91dbcc	7517ae2f-c198-4a33-8a1d-1dc7327d1430
+4ee92bd3-1f08-4909-9396-ddeac238997a	2025-09-15 16:48:48.571747	2025-09-15 16:48:48.571747	b17ae8af-2d78-4e77-b45b-39253c28247a	ab0d7384-444e-446a-911d-f64ac31db8ef
+846f5656-a440-4033-b972-90f6fe2052d0	2025-09-15 16:48:48.571747	2025-09-15 16:48:48.571747	e7fc1da0-48df-4338-b03f-1cea01cd12d5	ab0d7384-444e-446a-911d-f64ac31db8ef
+7665e49a-e5e0-42b5-a7e3-a6edb623cbfe	2025-09-15 16:52:31.821814	2025-09-15 16:52:31.821814	9d66ac93-3a48-429d-aeaa-54302856e204	b790c6a6-ecd1-4b3a-afbc-22cd82e55658
+bb416086-2830-4bdc-ac73-1cded2ad0f7b	2025-09-15 16:52:31.821814	2025-09-15 16:52:31.821814	85dbccf6-454e-4440-8905-50a90d91dbcc	b790c6a6-ecd1-4b3a-afbc-22cd82e55658
+79d982d5-4e70-499c-986b-4192d37bb0bd	2025-09-15 15:35:01.903684	2025-09-15 15:35:01.903684	af38ec0a-1465-45a8-99ba-a394224530dc	7e0566c6-eefb-4992-a673-d19902933c26
+480b9ed2-7678-4abd-8f8c-d07c71a29845	2025-09-15 15:35:01.903684	2025-09-15 15:35:01.903684	752ee7ba-ae88-46f0-95fb-e0a316212f16	7e0566c6-eefb-4992-a673-d19902933c26
+bf7e5019-9da9-4d99-8de3-eb80e98b6ded	2025-09-15 15:44:50.458407	2025-09-15 15:44:50.458407	9d66ac93-3a48-429d-aeaa-54302856e204	89f423d0-315f-4d93-b346-dcb468a97045
+b8733769-2d55-4fe6-8c75-3e41b3f8a5e4	2025-09-15 15:53:53.94422	2025-09-15 15:53:53.94422	b17ae8af-2d78-4e77-b45b-39253c28247a	bbfbcfe2-1f56-492e-afa6-75e595b84fde
+13c20231-2304-4542-9f16-221528941485	2025-09-15 16:06:04.550945	2025-09-15 16:06:04.550945	ad130932-4b2f-4e7b-b3a4-c20b4a6b85ae	53defdc5-bfec-4af4-bfba-60440e3493cc
+57cc7bda-c6d8-41aa-8e78-0b161da1eabd	2025-09-15 16:06:04.550945	2025-09-15 16:06:04.550945	6215cbaf-6065-4534-a9d5-a588c1b3dc28	53defdc5-bfec-4af4-bfba-60440e3493cc
+55ef3df5-103e-4a9a-bace-049e41e32347	2025-09-15 16:14:37.93572	2025-09-15 16:14:37.93572	85dbccf6-454e-4440-8905-50a90d91dbcc	ee8cc366-d33b-45a6-84b0-4ab416585ad1
+19351249-1361-4de3-9053-0558e8064f6b	2025-09-15 16:14:37.93572	2025-09-15 16:14:37.93572	ad130932-4b2f-4e7b-b3a4-c20b4a6b85ae	ee8cc366-d33b-45a6-84b0-4ab416585ad1
+5e059573-2689-42a7-8bfd-f1edc4d437ed	2025-09-15 16:21:37.396914	2025-09-15 16:21:37.396914	9d66ac93-3a48-429d-aeaa-54302856e204	1b4402c2-2459-45c1-8d24-356322c71d20
+8a756169-990f-494a-b2ad-1adcda97269d	2025-09-15 16:25:39.268928	2025-09-15 16:25:39.268928	b17ae8af-2d78-4e77-b45b-39253c28247a	385fb192-7c2c-405a-b483-f36e32e241c8
+c46f5384-1ddd-4135-8f18-9ef7e3736d58	2025-09-15 16:25:39.268928	2025-09-15 16:25:39.268928	e7fc1da0-48df-4338-b03f-1cea01cd12d5	385fb192-7c2c-405a-b483-f36e32e241c8
+29c9ae74-2aa7-462c-8fd0-6e3838caffe9	2025-09-15 16:31:08.300805	2025-09-15 16:31:08.300805	752ee7ba-ae88-46f0-95fb-e0a316212f16	5985d847-0473-444e-8fe0-9da5341ef986
+393124dc-7886-4142-aaab-8e6a3c0c2516	2025-09-15 16:31:08.300805	2025-09-15 16:31:08.300805	524da8cf-0303-4c53-8761-832a5fdb54ed	5985d847-0473-444e-8fe0-9da5341ef986
+51a27d22-9858-4aff-aa08-1433d2abcaeb	2025-09-15 16:36:37.883984	2025-09-15 16:36:37.883984	85dbccf6-454e-4440-8905-50a90d91dbcc	9f0c8916-a08b-4fe5-9f24-e1680ef627a8
+a5be5f61-2737-4d3a-9d5f-752bd8bb7cfc	2025-09-15 16:41:34.105112	2025-09-15 16:41:34.105112	9d66ac93-3a48-429d-aeaa-54302856e204	faf6674c-2a2a-4b03-ab8b-7a033052b572
+3486b73b-d3ad-483b-9a94-3a42a59ec546	2025-09-15 16:46:53.694388	2025-09-15 16:46:53.694388	c01e10b9-4ef6-4f23-9b41-7f6d5d4d1e85	3b828d2f-797f-4a45-9d1d-1d3efe38fb54
+80579ef0-5378-4bf9-bcbe-7232c2f2aec2	2025-09-15 16:46:53.694388	2025-09-15 16:46:53.694388	9d66ac93-3a48-429d-aeaa-54302856e204	3b828d2f-797f-4a45-9d1d-1d3efe38fb54
+25215fec-aa7b-4c4f-8126-b28d7eb2ad65	2025-09-15 16:50:09.879898	2025-09-15 16:50:09.879898	af38ec0a-1465-45a8-99ba-a394224530dc	0e2fe1e8-f8f1-48e6-b360-8c9d4d9991a6
+91ccc639-a446-4ae6-a7aa-12a574951b6b	2025-09-15 16:50:09.879898	2025-09-15 16:50:09.879898	752ee7ba-ae88-46f0-95fb-e0a316212f16	0e2fe1e8-f8f1-48e6-b360-8c9d4d9991a6
+b37d5cbb-a3a8-4869-bab8-f803a57e1cc6	2025-09-15 16:54:29.58636	2025-09-15 16:54:29.58636	752ee7ba-ae88-46f0-95fb-e0a316212f16	6cb225d2-be00-461d-9bf0-7f0c87cfea0b
+3709c79b-1caf-44e6-bc71-ce07e2a4395c	2025-09-15 16:54:29.58636	2025-09-15 16:54:29.58636	15495639-2adb-41b8-899c-493ac0172f57	6cb225d2-be00-461d-9bf0-7f0c87cfea0b
+6b6e8b0c-9492-45d1-b35c-18fbe93851df	2025-09-13 13:15:38.783008	2025-09-13 13:15:38.783008	331a0c35-f5a5-478d-ba7c-9f14ba2ee0fa	82890348-a566-4762-b9b4-f89e52534936
+8921f2c5-c130-4ed9-a902-f4be9db0e0fd	2025-09-13 13:15:38.783008	2025-09-13 13:15:38.783008	a6628e7c-1488-4268-82ee-5174f3a5a2a5	82890348-a566-4762-b9b4-f89e52534936
+33dec5b0-bf29-4fba-81c0-45658a7c1720	2025-09-13 13:19:06.359624	2025-09-13 13:19:06.359624	79e4532a-afda-421f-9b5f-8c2de5f63ec0	fff561d6-3738-4360-a110-f93dcb3c8c10
+95c979e1-ff82-45d2-9427-6a0618442072	2025-09-13 13:23:48.72269	2025-09-13 13:23:48.72269	e7fc1da0-48df-4338-b03f-1cea01cd12d5	b2e39ab6-118d-46bd-ad8c-8acf9864af6c
+8b751ab9-41cf-42b4-970d-6bc77b69b1fb	2025-09-13 13:23:48.72269	2025-09-13 13:23:48.72269	b17ae8af-2d78-4e77-b45b-39253c28247a	b2e39ab6-118d-46bd-ad8c-8acf9864af6c
+9f1cf608-f966-434a-9325-a8c37b06566f	2025-09-13 13:26:41.37015	2025-09-13 13:26:41.37015	6215cbaf-6065-4534-a9d5-a588c1b3dc28	47f00a63-05df-4db7-b2c7-68000c72be9b
+2f9ceed1-d46d-40a1-98d7-5ffb5cb7a6c5	2025-09-13 13:26:41.37015	2025-09-13 13:26:41.37015	9d66ac93-3a48-429d-aeaa-54302856e204	47f00a63-05df-4db7-b2c7-68000c72be9b
+d6127410-e0e8-45e7-95de-bebda313e7a2	2025-09-13 13:32:40.391156	2025-09-13 13:32:40.391156	623e0be7-870a-4bca-b053-76e99c9ea7e0	89ffca84-73f0-4a69-871f-9d9c96521a05
+ee461eb1-b730-4919-8737-a2bc65f74c29	2025-09-13 13:35:29.754767	2025-09-13 13:35:29.754767	7752a881-139d-4cf4-98b2-e92e9de0e2e5	de4e9652-b068-4558-9fd3-38d45e5aa0d9
+f8c53d9a-a10b-4e6a-b25a-eadd2f6aed9a	2025-09-13 13:37:36.122528	2025-09-13 13:37:36.122528	7752a881-139d-4cf4-98b2-e92e9de0e2e5	6e4bc8b2-33ab-46da-9b79-9fff2266cd27
+3adf550c-2c98-48e1-a01f-e3860a69bbbc	2025-09-13 13:40:01.24719	2025-09-13 13:40:01.24719	85dbccf6-454e-4440-8905-50a90d91dbcc	f2868e11-6e1d-4ce4-a1a8-eb0384a60b71
+2fdc06e1-389f-4cd9-bfab-cae827d07fc2	2025-09-13 13:42:37.487796	2025-09-13 13:42:37.487796	ddf4299a-fc48-47bd-9bdf-7e3d7692b09f	f2cf498f-d991-4b85-b08e-58c5f9ff563e
+b007ef5d-7573-4b36-bd91-0230c2070a18	2025-09-13 13:47:35.595819	2025-09-13 13:47:35.595819	32bed80a-1512-4945-9654-8d710618ef81	1fdffa53-d9cb-4aa1-9999-5c83fdb9be80
+c7264182-ec77-4279-8586-de4d21693519	2025-09-13 13:50:16.616427	2025-09-13 13:50:16.616427	9d66ac93-3a48-429d-aeaa-54302856e204	984e5dac-f3a8-4980-bfc9-da370cf45e46
+a4e68ec2-0678-407f-a9df-74bb69690739	2025-09-13 13:50:16.616427	2025-09-13 13:50:16.616427	6215cbaf-6065-4534-a9d5-a588c1b3dc28	984e5dac-f3a8-4980-bfc9-da370cf45e46
+cf7ba475-bc53-4f34-9169-4547e70f1219	2025-09-13 13:52:31.633878	2025-09-13 13:52:31.633878	b17ae8af-2d78-4e77-b45b-39253c28247a	1f8abb63-8024-46ca-ac1e-2574a839eed6
+509e5790-95b8-466a-804f-8f3b51442ae4	2025-09-13 13:52:31.633878	2025-09-13 13:52:31.633878	a025ec57-670e-45ea-962e-9c9430786666	1f8abb63-8024-46ca-ac1e-2574a839eed6
+491ddaf9-d3a4-4287-bb03-6e7bfe97a847	2025-09-13 13:54:54.488751	2025-09-13 13:54:54.488751	6215cbaf-6065-4534-a9d5-a588c1b3dc28	b8fa1238-0f58-4daa-ade8-0f8c6fa2d1b1
+4a56e015-2f21-4255-8b91-8f1b6707e608	2025-09-13 13:54:54.488751	2025-09-13 13:54:54.488751	9d66ac93-3a48-429d-aeaa-54302856e204	b8fa1238-0f58-4daa-ade8-0f8c6fa2d1b1
+6656a4a5-b64d-4345-b5fc-1e6ab665fa9c	2025-09-13 18:59:24.368676	2025-09-13 18:59:24.368676	b17ae8af-2d78-4e77-b45b-39253c28247a	90b8d661-a9ef-47e5-8c98-b0599874a972
+342718a4-030b-4a0b-a434-cfa2730b5748	2025-09-13 18:59:24.368676	2025-09-13 18:59:24.368676	a025ec57-670e-45ea-962e-9c9430786666	90b8d661-a9ef-47e5-8c98-b0599874a972
+0245e4d8-e644-4415-b312-86a0f945e896	2025-09-13 18:59:24.368676	2025-09-13 18:59:24.368676	6215cbaf-6065-4534-a9d5-a588c1b3dc28	90b8d661-a9ef-47e5-8c98-b0599874a972
+fd7594a0-a6aa-4533-a815-f1898da9e7bc	2025-09-15 13:49:07.426149	2025-09-15 13:49:07.426149	752ee7ba-ae88-46f0-95fb-e0a316212f16	1b8fe6fc-9ede-4f28-b4a0-30504db61fed
+8028b202-9d4e-4381-967a-35a8176c246a	2025-09-15 13:49:07.426149	2025-09-15 13:49:07.426149	331a0c35-f5a5-478d-ba7c-9f14ba2ee0fa	1b8fe6fc-9ede-4f28-b4a0-30504db61fed
+1ac79882-19c7-45b7-956a-3718e80917d1	2025-09-15 13:55:08.03466	2025-09-15 13:55:08.03466	6c587294-e384-4941-b90d-e6ec64b8731d	16ba69dc-e99d-4a71-bbcb-0f3ce096a9d9
+2a94cd6b-9b1c-4241-8616-1b78a3d77917	2025-09-15 14:00:56.738217	2025-09-15 14:00:56.738217	b17ae8af-2d78-4e77-b45b-39253c28247a	4035dfef-3cc6-4a15-a97f-c167bd274d02
+e76efbd6-1f90-4768-928b-b45435379d2d	2025-09-15 14:00:56.738217	2025-09-15 14:00:56.738217	6215cbaf-6065-4534-a9d5-a588c1b3dc28	4035dfef-3cc6-4a15-a97f-c167bd274d02
+11a170c1-dcf1-44f4-add4-75ff328d30d8	2025-09-15 14:00:56.738217	2025-09-15 14:00:56.738217	a025ec57-670e-45ea-962e-9c9430786666	4035dfef-3cc6-4a15-a97f-c167bd274d02
+272b7408-6319-4dc3-b159-beee41519833	2025-09-15 14:06:14.941483	2025-09-15 14:06:14.941483	9d66ac93-3a48-429d-aeaa-54302856e204	9ab8fe00-58de-48c4-942d-b10e8d16f1c1
+6a2f6eef-18b1-4c28-9ce8-735137f46da1	2025-09-15 14:06:14.941483	2025-09-15 14:06:14.941483	6215cbaf-6065-4534-a9d5-a588c1b3dc28	9ab8fe00-58de-48c4-942d-b10e8d16f1c1
+df9a1fea-3d34-4efc-b72c-e9e507147c92	2025-09-15 14:12:19.479223	2025-09-15 14:12:19.479223	9d66ac93-3a48-429d-aeaa-54302856e204	92d77415-1f9a-430b-ba52-0a09ec07b3a1
+2bdf2fa1-04fe-4b7f-88c4-70ec6290ba07	2025-09-15 14:53:04.69952	2025-09-15 14:53:04.69952	9d66ac93-3a48-429d-aeaa-54302856e204	12221e5c-0208-48fc-8c56-62c266932f74
+7598df66-a879-4f8d-818b-8dff107959c7	2025-09-15 15:00:03.100637	2025-09-15 15:00:03.100637	6215cbaf-6065-4534-a9d5-a588c1b3dc28	b99df7e8-eb44-4be1-be81-701347580781
+a2bb5183-5d82-4464-b6aa-7d117f0854ba	2025-09-15 15:00:03.100637	2025-09-15 15:00:03.100637	ad130932-4b2f-4e7b-b3a4-c20b4a6b85ae	b99df7e8-eb44-4be1-be81-701347580781
+a5c8b5f8-54be-4179-b01d-fb4cb9bffdde	2025-09-15 15:04:48.59729	2025-09-15 15:04:48.59729	9d66ac93-3a48-429d-aeaa-54302856e204	1f28edb2-29ae-467c-ad11-310c3f656fe2
+9ccca6fe-c079-4e46-b189-75a8d992a4d3	2025-09-15 15:04:48.59729	2025-09-15 15:04:48.59729	85dbccf6-454e-4440-8905-50a90d91dbcc	1f28edb2-29ae-467c-ad11-310c3f656fe2
+2997bb53-f79d-424a-8c2b-e25ed88a2181	2025-09-15 15:09:36.228389	2025-09-15 15:09:36.228389	9d66ac93-3a48-429d-aeaa-54302856e204	4d72c2f1-2c10-45a3-9f5e-1f04012c0681
+055fb31c-faca-4b6d-a1da-9ea598082add	2025-09-15 15:09:36.228389	2025-09-15 15:09:36.228389	6215cbaf-6065-4534-a9d5-a588c1b3dc28	4d72c2f1-2c10-45a3-9f5e-1f04012c0681
+72bb40c3-87d8-4af3-afba-5cc38b7ccc80	2025-09-15 15:15:38.059272	2025-09-15 15:15:38.059272	b17ae8af-2d78-4e77-b45b-39253c28247a	4f1c3655-21e7-4225-a39e-944774f59f76
+db0b6e99-b47f-4d7b-a022-34c810629276	2025-09-15 15:20:08.470728	2025-09-15 15:20:08.470728	9d66ac93-3a48-429d-aeaa-54302856e204	d7abed66-3c4a-490b-91cc-8e714336f9fa
+db358594-6e68-435c-b776-be22ca16c9d7	2025-09-15 15:20:08.470728	2025-09-15 15:20:08.470728	061ad8e2-77aa-4ba8-9a41-51788e7803c7	d7abed66-3c4a-490b-91cc-8e714336f9fa
+c0c9e312-8866-4a31-8f88-3ab17b378cb3	2025-09-15 15:26:02.180732	2025-09-15 15:26:02.180732	ad130932-4b2f-4e7b-b3a4-c20b4a6b85ae	a2736a56-04b3-4437-835e-1e2dc8029c9e
+8e51c726-b84d-487c-b95f-97fa0a5e7c1c	2025-09-15 15:26:02.180732	2025-09-15 15:26:02.180732	061ad8e2-77aa-4ba8-9a41-51788e7803c7	a2736a56-04b3-4437-835e-1e2dc8029c9e
+7b0805fd-1981-4f1b-94e9-d852959b4445	2025-09-13 13:16:14.795399	2025-09-13 13:16:14.795399	85dbccf6-454e-4440-8905-50a90d91dbcc	9be8d3a0-574b-40dc-a42c-06ab42af7e66
+4e08ae00-c64e-47ea-a8f0-e119c11bd892	2025-09-13 13:16:14.795399	2025-09-13 13:16:14.795399	9d66ac93-3a48-429d-aeaa-54302856e204	9be8d3a0-574b-40dc-a42c-06ab42af7e66
+10c877be-f0ca-4b74-95a2-f10ebd7bb591	2025-09-13 13:19:46.517101	2025-09-13 13:19:46.517101	a6628e7c-1488-4268-82ee-5174f3a5a2a5	e1511aa4-1d34-4984-aa54-88f88029a96e
+db3c23ac-dea7-49a9-b3c5-d8c86820399a	2025-09-13 13:19:46.517101	2025-09-13 13:19:46.517101	331a0c35-f5a5-478d-ba7c-9f14ba2ee0fa	e1511aa4-1d34-4984-aa54-88f88029a96e
+a72d4360-fad8-4666-9426-ebbfdce4b1c5	2025-09-13 13:24:33.512739	2025-09-13 13:24:33.512739	85dbccf6-454e-4440-8905-50a90d91dbcc	3488eaaa-a999-43c5-acd6-b177b8a3df8a
+6721f41b-e31b-4f3b-9192-55ffd6204545	2025-09-13 13:24:33.512739	2025-09-13 13:24:33.512739	9d66ac93-3a48-429d-aeaa-54302856e204	3488eaaa-a999-43c5-acd6-b177b8a3df8a
+187dd6ce-3442-4815-a073-af7a39cdb1e3	2025-09-13 13:27:23.06222	2025-09-13 13:27:23.06222	9d66ac93-3a48-429d-aeaa-54302856e204	548b3de6-0980-4795-ab86-763c20dbc325
+84a31f46-1c50-40f7-8dd2-c559c5c5b83c	2025-09-13 13:27:23.06222	2025-09-13 13:27:23.06222	85dbccf6-454e-4440-8905-50a90d91dbcc	548b3de6-0980-4795-ab86-763c20dbc325
+362b8768-55fb-42d9-9fa0-9fef718d1d93	2025-09-13 13:33:22.50373	2025-09-13 13:33:22.50373	623e0be7-870a-4bca-b053-76e99c9ea7e0	46b1efa3-a4f8-4492-a81c-9e48c650dd3d
+89bc91dd-6178-43ca-9b1f-4662ff19040b	2025-09-13 13:36:12.098965	2025-09-13 13:36:12.098965	1959d942-75fb-4ece-b501-b7cf8884d479	d2f28afc-e84c-467c-90d9-c6c2cb63acbc
+3bab080f-1dc4-4b74-b4f5-eee6ff06e4ad	2025-09-13 13:38:24.912018	2025-09-13 13:38:24.912018	ddf4299a-fc48-47bd-9bdf-7e3d7692b09f	c5901a9a-580c-411b-85bd-2ec738123e14
+7e7c1f12-c837-4fa3-b753-418889c6396c	2025-09-13 13:40:48.036075	2025-09-13 13:40:48.036075	c4d5e6fe-30fd-4f16-8646-634102d1bf1b	2f49a8e8-6f42-422c-aa6f-c23e215620e2
+d0af0905-2a2d-421f-8d8b-fd0df4a8908f	2025-09-13 13:43:22.630852	2025-09-13 13:43:22.630852	752ee7ba-ae88-46f0-95fb-e0a316212f16	e1361643-e92a-419b-8eb8-fe2a188016e0
+82e85704-8755-4bf7-a407-4d321aaf214c	2025-09-13 13:43:22.630852	2025-09-13 13:43:22.630852	af38ec0a-1465-45a8-99ba-a394224530dc	e1361643-e92a-419b-8eb8-fe2a188016e0
+64360116-88c0-4d2b-8d4f-d9a0a971245a	2025-09-11 16:22:08.383998	2025-09-11 16:22:08.383998	b17ae8af-2d78-4e77-b45b-39253c28247a	6da53baf-d357-4392-927f-7da1bf7449dc
+a3f622ec-4880-4f29-bee5-2b7551eb3e1e	2025-09-11 16:22:08.383998	2025-09-11 16:22:08.383998	6215cbaf-6065-4534-a9d5-a588c1b3dc28	6da53baf-d357-4392-927f-7da1bf7449dc
+739b54c1-15f0-487b-8ddf-6e63f68bd764	2025-09-11 16:59:29.838433	2025-09-11 16:59:29.838433	b17ae8af-2d78-4e77-b45b-39253c28247a	8cccb149-8553-494d-bcb5-ffa9b06e7c0f
+47835956-ace3-42c9-9947-7d3e38a3d63e	2025-09-11 17:05:51.710543	2025-09-11 17:05:51.710543	9d66ac93-3a48-429d-aeaa-54302856e204	91f6781b-915e-4bb4-8d8c-e345aa66e42d
+d2a2e51b-3e95-470e-b9ec-fceb1eb5b07a	2025-09-11 17:05:51.710543	2025-09-11 17:05:51.710543	6215cbaf-6065-4534-a9d5-a588c1b3dc28	91f6781b-915e-4bb4-8d8c-e345aa66e42d
+cabd0b37-c2bd-42c2-a8e9-a53dcc4da0d4	2025-09-11 17:10:21.645332	2025-09-11 17:10:21.645332	6215cbaf-6065-4534-a9d5-a588c1b3dc28	6389ce45-7d30-4372-8c29-e5816d893b1a
+e833a240-f7c6-4822-90da-c2321de64419	2025-09-11 17:10:21.645332	2025-09-11 17:10:21.645332	9d66ac93-3a48-429d-aeaa-54302856e204	6389ce45-7d30-4372-8c29-e5816d893b1a
+009d68af-d4de-4f3d-b243-84e5689267fc	2025-09-11 17:15:00.074645	2025-09-11 17:15:00.074645	b17ae8af-2d78-4e77-b45b-39253c28247a	950cd0cd-fc3b-442f-aba9-3c48bfc6cda9
+f57552b9-fec8-48ea-8759-07527ca3fa48	2025-09-11 17:28:43.201857	2025-09-11 17:28:43.201857	524da8cf-0303-4c53-8761-832a5fdb54ed	c25a5f07-d65f-4ba9-9b0d-cb4d5b426455
+f01ec0cd-5bcf-43d5-9f65-978652275706	2025-09-11 17:28:43.201857	2025-09-11 17:28:43.201857	18995b62-6971-4750-84fe-0c2bc712f352	c25a5f07-d65f-4ba9-9b0d-cb4d5b426455
+6377e749-bc1d-42d1-9bb2-a1e8f74cb5cf	2025-09-11 17:34:09.911409	2025-09-11 17:34:09.911409	dec9f53a-7dac-4199-b4ff-ab0624090b8b	e84c6031-9d71-41a1-ae2c-6c9901ea1d6b
+464316a1-e8e7-49c2-9da5-6de69502420e	2025-09-11 17:34:09.911409	2025-09-11 17:34:09.911409	18995b62-6971-4750-84fe-0c2bc712f352	e84c6031-9d71-41a1-ae2c-6c9901ea1d6b
+6c184cd4-b584-4a03-97ba-a993c28a04f8	2025-09-11 17:37:50.97794	2025-09-11 17:37:50.97794	dec9f53a-7dac-4199-b4ff-ab0624090b8b	4a2c7160-6cf2-456d-8ef4-80040b720420
+d26f4074-821a-4150-88a2-895d26173b69	2025-09-11 17:37:50.97794	2025-09-11 17:37:50.97794	18995b62-6971-4750-84fe-0c2bc712f352	4a2c7160-6cf2-456d-8ef4-80040b720420
+c805a049-acec-4bf9-898d-0b6a7a702353	2025-09-11 17:42:56.90059	2025-09-11 17:42:56.90059	623e0be7-870a-4bca-b053-76e99c9ea7e0	6115df45-ddad-4fa6-bfb0-1c0cd72de766
+4df35982-2eeb-47cc-9332-1eeb5999ad3f	2025-09-11 17:47:29.642026	2025-09-11 17:47:29.642026	306270ba-834e-461e-81ce-45fd5a77c99f	f11ef4dd-cc6b-42ad-844d-0e94cef691f0
+f8986188-1573-4698-8035-86629b95a1dd	2025-09-11 17:52:42.228449	2025-09-11 17:52:42.228449	21aad68b-b21b-4452-9ebf-7407be8e613d	379d64cd-24bf-4a81-9b97-936c9a088e17
+cf99ad07-8bab-4c0a-ab21-633e6f652c07	2025-09-11 17:57:50.635256	2025-09-11 17:57:50.635256	b17ae8af-2d78-4e77-b45b-39253c28247a	b5c6e6a6-6eec-422c-ad4a-8dca82287312
+031900c5-5d13-4460-a729-036ad96257ed	2025-09-11 18:07:02.429548	2025-09-11 18:07:02.429548	b17ae8af-2d78-4e77-b45b-39253c28247a	1dcd59ab-674e-49d8-9a06-9c17c2a05730
+982c43ab-ae7e-4b73-89f1-7f586d21d588	2025-09-11 18:29:18.948581	2025-09-11 18:29:18.948581	306270ba-834e-461e-81ce-45fd5a77c99f	d806b4f1-399c-4ceb-bb91-663ec0350e6d
+70da832f-0fdf-45bb-b246-389ca89abef1	2025-09-11 18:34:18.473928	2025-09-11 18:34:18.473928	afe516f8-6dc9-45ca-b95e-81142c336878	7d823dc8-8303-4ddd-a25d-935569c662b7
+c9027e52-bafb-456e-9ce4-5bd2982cc0d2	2025-09-11 18:40:51.273838	2025-09-11 18:40:51.273838	752ee7ba-ae88-46f0-95fb-e0a316212f16	a2f8dd49-606e-4d86-ae04-8af61c0b40e9
+0d86e5e0-3a2f-463c-9314-11587c9f2f22	2025-09-11 18:40:51.273838	2025-09-11 18:40:51.273838	15495639-2adb-41b8-899c-493ac0172f57	a2f8dd49-606e-4d86-ae04-8af61c0b40e9
+32396f6d-614f-40ad-9d13-c820006e109c	2025-09-11 18:40:51.273838	2025-09-11 18:40:51.273838	85dbccf6-454e-4440-8905-50a90d91dbcc	a2f8dd49-606e-4d86-ae04-8af61c0b40e9
+7891dabf-5fd7-4b75-a4e3-7e459194c70f	2025-09-11 18:45:00.182027	2025-09-11 18:45:00.182027	752ee7ba-ae88-46f0-95fb-e0a316212f16	d7871e0c-5e1b-4ffd-a9ab-951028246a01
+b3af93ae-26e1-4a98-a2a5-9ad43fa91fef	2025-09-11 18:45:00.182027	2025-09-11 18:45:00.182027	15495639-2adb-41b8-899c-493ac0172f57	d7871e0c-5e1b-4ffd-a9ab-951028246a01
+d9b78de0-3965-4d0f-9c3b-c461ea874f67	2025-09-11 18:49:22.377648	2025-09-11 18:49:22.377648	9d66ac93-3a48-429d-aeaa-54302856e204	bb9c756b-0c9e-4e87-826f-bb2cbd16d86b
+2bde4c14-99ac-4e43-a5fa-287bbfb1cb78	2025-09-11 18:49:22.377648	2025-09-11 18:49:22.377648	85dbccf6-454e-4440-8905-50a90d91dbcc	bb9c756b-0c9e-4e87-826f-bb2cbd16d86b
+03f46e40-8040-4f3e-9ec4-9cb5dcd48bc4	2025-09-11 18:53:04.159802	2025-09-11 18:53:04.159802	9d66ac93-3a48-429d-aeaa-54302856e204	414a1891-1a28-4dbe-84e3-a992c6e879bc
+9e42ca47-5897-4f26-a967-3239ece524f8	2025-09-11 18:53:04.159802	2025-09-11 18:53:04.159802	85dbccf6-454e-4440-8905-50a90d91dbcc	414a1891-1a28-4dbe-84e3-a992c6e879bc
+ae5b5b9c-6356-4992-a943-4aa0ca998376	2025-09-11 18:57:25.854338	2025-09-11 18:57:25.854338	b17ae8af-2d78-4e77-b45b-39253c28247a	c5864272-ae27-4363-add6-7ead1b7b3379
+d1008f6c-75a3-4604-b4bc-9d6c4687fc9d	2025-09-13 13:02:37.478405	2025-09-13 13:02:37.478405	331a0c35-f5a5-478d-ba7c-9f14ba2ee0fa	118eab6d-cae9-4c0b-b8e6-57f3e5541f1a
+8e8aa472-03d8-4c49-9f8e-4e1a54588e55	2025-09-13 13:02:37.478405	2025-09-13 13:02:37.478405	a6628e7c-1488-4268-82ee-5174f3a5a2a5	118eab6d-cae9-4c0b-b8e6-57f3e5541f1a
+0ee2369a-62c7-4940-a078-197c9ecb0d48	2025-09-13 13:02:37.478405	2025-09-13 13:02:37.478405	85dbccf6-454e-4440-8905-50a90d91dbcc	118eab6d-cae9-4c0b-b8e6-57f3e5541f1a
+9a8660fe-1321-44c1-bee8-6a2c67e33c71	2025-09-13 13:07:23.889914	2025-09-13 13:07:23.889914	9d66ac93-3a48-429d-aeaa-54302856e204	3edb750e-4725-4338-a079-d48dc8797917
+1883ac1f-f817-4a7c-928c-c63620429c32	2025-09-13 13:07:23.889914	2025-09-13 13:07:23.889914	c4d5e6fe-30fd-4f16-8646-634102d1bf1b	3edb750e-4725-4338-a079-d48dc8797917
+64bdaf4b-1b33-410b-8042-d1fac23db3eb	2025-09-13 13:09:27.772986	2025-09-13 13:09:27.772986	a6628e7c-1488-4268-82ee-5174f3a5a2a5	2780e6d9-a86f-4038-b96f-ef59f961cb4b
+6abc85fa-c6df-4bb5-8cff-b958c738a59e	2025-09-13 13:09:27.772986	2025-09-13 13:09:27.772986	331a0c35-f5a5-478d-ba7c-9f14ba2ee0fa	2780e6d9-a86f-4038-b96f-ef59f961cb4b
+bf7ceff8-2dfa-4fa6-aba7-3d0aafca6ae5	2025-09-13 13:11:02.537696	2025-09-13 13:11:02.537696	a6628e7c-1488-4268-82ee-5174f3a5a2a5	b720265e-a3ce-48d3-8e8e-87e05c07b8a3
+84dbce00-2a8b-42f0-8389-2d3107e7d2d2	2025-09-13 13:11:02.537696	2025-09-13 13:11:02.537696	331a0c35-f5a5-478d-ba7c-9f14ba2ee0fa	b720265e-a3ce-48d3-8e8e-87e05c07b8a3
+849629a4-8d76-49f2-bd43-718837ddbb61	2025-09-13 13:14:28.912179	2025-09-13 13:14:28.912179	9677e942-8a9b-4754-a27f-7e4d945681a1	3d0c8e76-37a9-4f4c-84fa-47a6a07aaacc
+a471aca1-5143-4506-8e88-edab7b31aae1	2025-09-13 13:14:28.912179	2025-09-13 13:14:28.912179	b17ae8af-2d78-4e77-b45b-39253c28247a	3d0c8e76-37a9-4f4c-84fa-47a6a07aaacc
+56e675e7-211b-49bf-9492-8241dc319d4d	2025-09-13 13:48:26.787748	2025-09-13 13:48:26.787748	9d66ac93-3a48-429d-aeaa-54302856e204	68381c41-b015-4218-93cb-2bcb64bee255
+60fb6136-cdd0-4c6b-956e-671175677f37	2025-09-13 13:51:08.071676	2025-09-13 13:51:08.071676	752ee7ba-ae88-46f0-95fb-e0a316212f16	7a933584-128c-4b82-8e5b-5e7312cadfdf
+9ecdc656-651f-44d8-9ea2-e0939cc20b90	2025-09-13 13:51:08.071676	2025-09-13 13:51:08.071676	331a0c35-f5a5-478d-ba7c-9f14ba2ee0fa	7a933584-128c-4b82-8e5b-5e7312cadfdf
+9bf6abff-7f29-40de-a589-48ed1015ece7	2025-09-13 13:53:26.008642	2025-09-13 13:53:26.008642	623e0be7-870a-4bca-b053-76e99c9ea7e0	d20646b6-efd1-49fc-8ffa-180461aea5ab
+c5653289-5631-4981-86a8-d550213601b8	2025-09-13 13:55:46.237594	2025-09-13 13:55:46.237594	0268b0d7-f8e4-47ea-b9da-969427b43adf	3a41edcb-2c19-4d06-9585-8fe745aba723
+b9c4274c-dbee-4ba3-b4bf-d561d8f29608	2025-09-15 15:37:08.441021	2025-09-15 15:37:08.441021	9d66ac93-3a48-429d-aeaa-54302856e204	e7f390fd-7435-44e1-b354-c62073934c66
+efea6df2-ca9e-4c25-ac2b-861a3e608e00	2025-09-15 13:51:04.217011	2025-09-15 13:51:04.217011	752ee7ba-ae88-46f0-95fb-e0a316212f16	4353173b-93b2-4fb1-b462-fc8330b15ce5
+4d711875-52e8-4d5a-b807-f452516e1ce1	2025-09-15 13:51:04.217011	2025-09-15 13:51:04.217011	331a0c35-f5a5-478d-ba7c-9f14ba2ee0fa	4353173b-93b2-4fb1-b462-fc8330b15ce5
+26f51cb0-d944-4137-acc3-9f8eebb6f91a	2025-09-15 13:57:12.653004	2025-09-15 13:57:12.653004	752ee7ba-ae88-46f0-95fb-e0a316212f16	afd7f719-5789-48a0-a5d9-77e9cb1669bb
+4bd06aed-9e33-4829-803d-d520a36c6b07	2025-09-15 13:57:12.653004	2025-09-15 13:57:12.653004	331a0c35-f5a5-478d-ba7c-9f14ba2ee0fa	afd7f719-5789-48a0-a5d9-77e9cb1669bb
+b9616d96-037d-40f0-9837-c4b41362f5b2	2025-09-15 14:02:33.373556	2025-09-15 14:02:33.373556	9d66ac93-3a48-429d-aeaa-54302856e204	77aa5752-a586-4dfe-b69d-4da16fff0b79
+07b13002-4cc7-4076-9929-cfe9c5f25efc	2025-09-15 14:02:33.373556	2025-09-15 14:02:33.373556	85dbccf6-454e-4440-8905-50a90d91dbcc	77aa5752-a586-4dfe-b69d-4da16fff0b79
+5986787f-d344-4a9e-b70f-bffb23c9705b	2025-09-15 14:08:28.313515	2025-09-15 14:08:28.313515	623e0be7-870a-4bca-b053-76e99c9ea7e0	506d1cc7-529a-42af-b5bf-4c4d0a9aa409
+7720eefc-9937-4dc2-bac9-df00ac018a41	2025-09-15 14:08:28.313515	2025-09-15 14:08:28.313515	6215cbaf-6065-4534-a9d5-a588c1b3dc28	506d1cc7-529a-42af-b5bf-4c4d0a9aa409
+dad0ba08-7133-4a31-b090-9edbf8e418a0	2025-09-15 14:13:58.854521	2025-09-15 14:13:58.854521	6215cbaf-6065-4534-a9d5-a588c1b3dc28	48191b99-06fa-4218-b61b-c9b9abd73278
+598c8752-1362-47dc-aea8-723a9510f609	2025-09-15 14:13:58.854521	2025-09-15 14:13:58.854521	9d66ac93-3a48-429d-aeaa-54302856e204	48191b99-06fa-4218-b61b-c9b9abd73278
+d8deae20-414a-4863-9e33-e05461ce63e4	2025-09-15 14:54:43.629364	2025-09-15 14:54:43.629364	ad130932-4b2f-4e7b-b3a4-c20b4a6b85ae	8ca7bf65-0ddb-4c64-ba64-f71f25c85d7c
+15df8ebd-140e-420f-8d5b-3c3d4bce4a98	2025-09-15 15:01:20.318382	2025-09-15 15:01:20.318382	331a0c35-f5a5-478d-ba7c-9f14ba2ee0fa	a9545ccb-3ec7-4646-95c9-f3a708d0d968
+3df82a44-4607-4d59-a436-ec3a814bcc9f	2025-09-15 15:01:20.318382	2025-09-15 15:01:20.318382	752ee7ba-ae88-46f0-95fb-e0a316212f16	a9545ccb-3ec7-4646-95c9-f3a708d0d968
+1ef19446-0199-414c-aa40-d742d7d05765	2025-09-15 15:06:15.666652	2025-09-15 15:06:15.666652	9d66ac93-3a48-429d-aeaa-54302856e204	101f365e-5c84-438a-84b4-c8e798bd0aff
+4c1a650b-44e9-4cbd-9bde-dc34ec19f928	2025-09-15 15:06:15.666652	2025-09-15 15:06:15.666652	6215cbaf-6065-4534-a9d5-a588c1b3dc28	101f365e-5c84-438a-84b4-c8e798bd0aff
+a17ffd22-9e17-486d-bab3-197db9c22340	2025-09-15 15:11:48.918655	2025-09-15 15:11:48.918655	752ee7ba-ae88-46f0-95fb-e0a316212f16	cebf4622-c0a9-4759-a070-48c7556da67d
+faed152a-8c98-413a-8e5a-dde4287f6631	2025-09-15 15:11:48.918655	2025-09-15 15:11:48.918655	15495639-2adb-41b8-899c-493ac0172f57	cebf4622-c0a9-4759-a070-48c7556da67d
+071f983d-e5e4-426e-8322-4ca35d3479db	2025-09-15 15:17:26.088304	2025-09-15 15:17:26.088304	85dbccf6-454e-4440-8905-50a90d91dbcc	8508cffc-1df6-4db2-9447-3bafd74a1325
+6fc7d99a-4903-4d55-916d-bbd656920f45	2025-09-15 15:17:26.088304	2025-09-15 15:17:26.088304	9d66ac93-3a48-429d-aeaa-54302856e204	8508cffc-1df6-4db2-9447-3bafd74a1325
+d46b2a13-e75e-4034-99e7-a51ce2bc9477	2025-09-15 15:21:42.982047	2025-09-15 15:21:42.982047	9d66ac93-3a48-429d-aeaa-54302856e204	4de0744d-0a78-4052-aa1b-e5340959d9fe
+4d4c0ea1-6893-4457-aa0e-e78155f19ff0	2025-09-15 15:46:14.740268	2025-09-15 15:46:14.740268	ad130932-4b2f-4e7b-b3a4-c20b4a6b85ae	9fc5ae4d-2868-4576-bb67-9c83663fc005
+3041bd1e-6df1-4ee7-9c4e-7d1261732e4d	2025-09-15 15:46:14.740268	2025-09-15 15:46:14.740268	061ad8e2-77aa-4ba8-9a41-51788e7803c7	9fc5ae4d-2868-4576-bb67-9c83663fc005
+6775ea2e-33ac-4ac6-83a2-4c61fd1d9441	2025-09-15 15:55:48.445705	2025-09-15 15:55:48.445705	9d66ac93-3a48-429d-aeaa-54302856e204	8324ae75-08e9-48de-a00b-55d229085712
+ca288b03-1163-49a7-acb7-fb70a58f8938	2025-09-15 16:08:10.950182	2025-09-15 16:08:10.950182	85dbccf6-454e-4440-8905-50a90d91dbcc	855bd9e5-3546-4cfd-b048-e8017f01bfeb
+c1510bb0-1ef1-4459-8bf3-2b39f32ffe94	2025-09-15 16:08:10.950182	2025-09-15 16:08:10.950182	9d66ac93-3a48-429d-aeaa-54302856e204	855bd9e5-3546-4cfd-b048-e8017f01bfeb
+7fc2b215-f2d2-4ac0-8e8b-0a1f5c256b28	2025-09-15 16:16:08.770401	2025-09-15 16:16:08.770401	9d66ac93-3a48-429d-aeaa-54302856e204	21e7460d-aa00-448b-8c82-994a73e0164c
+f18f4a69-952c-4b3f-9e29-d6a62dc45050	2025-09-11 16:23:52.076073	2025-09-11 16:23:52.076073	373d04ea-8079-439a-82a3-d118da6253b1	7976a83a-f4db-4cc5-9cac-7f16f2bc430f
+c4ea7f24-f8a9-44b7-b21b-0f32ecc8780a	2025-09-11 16:23:52.076073	2025-09-11 16:23:52.076073	af38ec0a-1465-45a8-99ba-a394224530dc	7976a83a-f4db-4cc5-9cac-7f16f2bc430f
+3fdb85e2-c1b5-48fb-8d9e-e3ad87cb16b6	2025-09-11 17:02:40.528238	2025-09-11 17:02:40.528238	b17ae8af-2d78-4e77-b45b-39253c28247a	0be1c49c-d742-4881-b014-360bc297af34
+c5be9491-e9c4-4567-805e-d08a22f1b5f3	2025-09-11 17:07:02.971532	2025-09-11 17:07:02.971532	9d66ac93-3a48-429d-aeaa-54302856e204	13826a3e-6b12-464c-95c8-5790f0e13947
+dd530c4f-a1b3-4061-b2ff-efa85abaab1c	2025-09-11 17:12:20.442541	2025-09-11 17:12:20.442541	373d04ea-8079-439a-82a3-d118da6253b1	baa3f656-0ad7-422b-ba8b-e5e9f5d4cd63
+4ac812c4-442a-4e08-8f43-cac9624d31da	2025-09-11 17:12:20.442541	2025-09-11 17:12:20.442541	c7c51826-c595-4ae8-9ac4-4421b2afc4ad	baa3f656-0ad7-422b-ba8b-e5e9f5d4cd63
+6cc53b06-a5a1-45c9-bb14-6e534ae5912d	2025-09-11 17:16:45.545345	2025-09-11 17:16:45.545345	9d66ac93-3a48-429d-aeaa-54302856e204	c1ca2c25-9148-4977-99fe-3acda0b4ad33
+27f460f5-3cdb-4113-a032-636fec9e7f73	2025-09-11 17:16:45.545345	2025-09-11 17:16:45.545345	85dbccf6-454e-4440-8905-50a90d91dbcc	c1ca2c25-9148-4977-99fe-3acda0b4ad33
+4b1c44a7-2bb0-4202-b7c2-e8bc682c4a22	2025-09-11 17:30:44.813027	2025-09-11 17:30:44.813027	af38ec0a-1465-45a8-99ba-a394224530dc	eaf575b3-2cb6-45a3-914f-81838c4c7e4d
+b34562e8-c8b2-47de-88f7-f39883b2761d	2025-09-11 17:30:44.813027	2025-09-11 17:30:44.813027	752ee7ba-ae88-46f0-95fb-e0a316212f16	eaf575b3-2cb6-45a3-914f-81838c4c7e4d
+0b506788-9537-44ce-a84e-a0f836236425	2025-09-11 17:35:30.583853	2025-09-11 17:35:30.583853	ddf4299a-fc48-47bd-9bdf-7e3d7692b09f	738d7264-00af-48dd-a475-3c4d12e28188
+4417c4ec-5814-4086-9be9-b009c785411c	2025-09-11 17:39:05.479762	2025-09-11 17:39:05.479762	ddf4299a-fc48-47bd-9bdf-7e3d7692b09f	8e687b8b-0142-49f7-92e9-4d5df9aa86c9
+8afa63bb-699a-42d9-920e-125c62880300	2025-09-11 17:44:31.379179	2025-09-11 17:44:31.379179	b17ae8af-2d78-4e77-b45b-39253c28247a	c18b086c-b0c3-4d1c-a6a3-2653e36c5dff
+50b0a7b6-8ad0-4199-a23e-daf3e75880bf	2025-09-11 17:49:21.680004	2025-09-11 17:49:21.680004	b17ae8af-2d78-4e77-b45b-39253c28247a	ca38bcba-658f-4c7a-be54-b2c3f845fbe0
+09af1a5d-0672-4557-ac06-5890dfd973ea	2025-09-11 17:54:48.017486	2025-09-11 17:54:48.017486	a025ec57-670e-45ea-962e-9c9430786666	12070323-971e-421a-9eaf-bdce4f8e0464
+6cd378af-0cc7-4f0c-9cd9-a9d14736927e	2025-09-11 17:54:48.017486	2025-09-11 17:54:48.017486	21aad68b-b21b-4452-9ebf-7407be8e613d	12070323-971e-421a-9eaf-bdce4f8e0464
+f601c5aa-d1be-4bbb-aa12-ee1bae1e2159	2025-09-11 18:00:08.207783	2025-09-11 18:00:08.207783	b17ae8af-2d78-4e77-b45b-39253c28247a	ad98534e-b2d9-4fef-9983-578ef12b28f7
+56092c91-4430-47e4-a57f-5c5afdc95449	2025-09-11 18:08:42.081844	2025-09-11 18:08:42.081844	9d66ac93-3a48-429d-aeaa-54302856e204	be3c01a7-3bd0-448c-844b-583bd824c90b
+977e1265-80b7-4207-af1a-207aa6be7d49	2025-09-11 18:30:54.469882	2025-09-11 18:30:54.469882	b17ae8af-2d78-4e77-b45b-39253c28247a	b39cc5b5-8335-4918-a504-f9cdfb85ceba
+00f39064-4bab-4fe5-adaf-25127a565b59	2025-09-11 18:30:54.469882	2025-09-11 18:30:54.469882	a025ec57-670e-45ea-962e-9c9430786666	b39cc5b5-8335-4918-a504-f9cdfb85ceba
+31aa5e93-df75-4c9e-99ae-b7a689655c1f	2025-09-11 18:37:04.339334	2025-09-11 18:37:04.339334	b17ae8af-2d78-4e77-b45b-39253c28247a	f5f03cc7-c2bc-4367-9042-107114d634ce
+8de96240-9a42-4f92-8632-9109ca15e188	2025-09-11 18:37:04.339334	2025-09-11 18:37:04.339334	85dbccf6-454e-4440-8905-50a90d91dbcc	f5f03cc7-c2bc-4367-9042-107114d634ce
+6971cc60-c3ba-4b1c-b7ad-02ec9a772286	2025-09-11 18:42:15.415412	2025-09-11 18:42:15.415412	ad130932-4b2f-4e7b-b3a4-c20b4a6b85ae	60bd8dbc-6bb8-4be0-9ee7-f4c5a295c5b4
+35d3b566-afee-494f-8459-76bbaa14247a	2025-09-15 15:39:28.866495	2025-09-15 15:39:28.866495	9d66ac93-3a48-429d-aeaa-54302856e204	5e3c933f-7511-463e-88b1-a139c8276e69
+3e97caf3-0bb0-4fa1-b34b-6fca8daed80d	2025-09-11 18:42:15.415412	2025-09-11 18:42:15.415412	061ad8e2-77aa-4ba8-9a41-51788e7803c7	60bd8dbc-6bb8-4be0-9ee7-f4c5a295c5b4
+b67b2bee-85a6-4fe6-a13e-6c6f3d3d85e7	2025-09-11 18:46:04.250275	2025-09-11 18:46:04.250275	752ee7ba-ae88-46f0-95fb-e0a316212f16	b35c5710-3c80-4f48-8ee4-295e5a15999f
+b173680d-4e41-4e52-ac3c-eca19e45d21e	2025-09-11 18:46:04.250275	2025-09-11 18:46:04.250275	15495639-2adb-41b8-899c-493ac0172f57	b35c5710-3c80-4f48-8ee4-295e5a15999f
+9f7737e4-2dd9-4f6b-9a19-005036b49e35	2025-09-11 18:50:22.369158	2025-09-11 18:50:22.369158	9d66ac93-3a48-429d-aeaa-54302856e204	10870aab-3086-462e-a64e-14710e3fbffe
+078fab3b-5fcd-49e1-8ba4-1b3ffa772f5c	2025-09-11 18:50:22.369158	2025-09-11 18:50:22.369158	85dbccf6-454e-4440-8905-50a90d91dbcc	10870aab-3086-462e-a64e-14710e3fbffe
+e1d9dddc-c128-4bf9-807d-0ab141b3e901	2025-09-11 18:54:52.507562	2025-09-11 18:54:52.507562	ad130932-4b2f-4e7b-b3a4-c20b4a6b85ae	d3f54e1c-6333-4a15-b09b-0264ec0b68fe
+64994497-e438-407c-b980-1428fafabf65	2025-09-13 13:01:06.900303	2025-09-13 13:01:06.900303	b17ae8af-2d78-4e77-b45b-39253c28247a	61a31a0d-a736-48b5-b03e-44aa1ad7f3eb
+f1cc2de1-201e-4daa-b444-90f73ab81074	2025-09-13 13:01:06.900303	2025-09-13 13:01:06.900303	85dbccf6-454e-4440-8905-50a90d91dbcc	61a31a0d-a736-48b5-b03e-44aa1ad7f3eb
+af74a496-eaed-4af6-ba3b-080beb2d8b88	2025-09-13 13:06:03.967447	2025-09-13 13:06:03.967447	a6628e7c-1488-4268-82ee-5174f3a5a2a5	c2059aab-d7b5-4532-a8a7-ad15a4054b33
+a022c229-b39c-4c63-a40c-3215f277452e	2025-09-13 13:06:03.967447	2025-09-13 13:06:03.967447	331a0c35-f5a5-478d-ba7c-9f14ba2ee0fa	c2059aab-d7b5-4532-a8a7-ad15a4054b33
+84e14168-21fb-4a29-a5de-fd285e043e30	2025-09-13 13:08:05.995663	2025-09-13 13:08:05.995663	623e0be7-870a-4bca-b053-76e99c9ea7e0	5b7d739c-d130-466c-a5ac-9e8b318b77ad
+df2ce12b-6fce-445e-9583-59658560a31d	2025-09-13 13:08:05.995663	2025-09-13 13:08:05.995663	85dbccf6-454e-4440-8905-50a90d91dbcc	5b7d739c-d130-466c-a5ac-9e8b318b77ad
+4218824b-7536-4eff-961e-aa576da0f8e5	2025-09-13 13:09:56.50883	2025-09-13 13:09:56.50883	a6628e7c-1488-4268-82ee-5174f3a5a2a5	f467d244-5568-40f6-bd7a-b3bdcad82398
+6d75fb31-79a3-4843-aaca-74252ef1db23	2025-09-13 13:09:56.50883	2025-09-13 13:09:56.50883	331a0c35-f5a5-478d-ba7c-9f14ba2ee0fa	f467d244-5568-40f6-bd7a-b3bdcad82398
+9ac86ddc-a2f8-4514-82bf-ca2ad1cc89b4	2025-09-13 13:11:43.144513	2025-09-13 13:11:43.144513	c4d5e6fe-30fd-4f16-8646-634102d1bf1b	8a73b841-1d4e-4808-8ed7-58c4931e0e96
+c9842999-4b32-44eb-97d2-3b9cec9f705b	2025-09-13 13:11:43.144513	2025-09-13 13:11:43.144513	9d66ac93-3a48-429d-aeaa-54302856e204	8a73b841-1d4e-4808-8ed7-58c4931e0e96
+0a4dbec0-8520-49ef-975a-d3466e9afe13	2025-09-13 13:15:03.968974	2025-09-13 13:15:03.968974	331a0c35-f5a5-478d-ba7c-9f14ba2ee0fa	13fcd794-54fb-413f-8bbf-44353cd29869
+c41753b7-0e37-4018-b867-72acc48989fc	2025-09-13 13:15:03.968974	2025-09-13 13:15:03.968974	a6628e7c-1488-4268-82ee-5174f3a5a2a5	13fcd794-54fb-413f-8bbf-44353cd29869
+d11436b7-7b8d-44ae-8ef9-ce1beb0a1cc8	2025-09-13 13:17:24.552945	2025-09-13 13:17:24.552945	9d66ac93-3a48-429d-aeaa-54302856e204	ec09f8c7-04cf-4219-8033-3dd17ea5c1d9
+57015692-c117-47ce-9f99-558dc06555ae	2025-09-13 13:17:24.552945	2025-09-13 13:17:24.552945	6215cbaf-6065-4534-a9d5-a588c1b3dc28	ec09f8c7-04cf-4219-8033-3dd17ea5c1d9
+c44e9c8e-b237-4e35-8e1c-9b894f40a8e0	2025-09-13 13:20:44.36002	2025-09-13 13:20:44.36002	3f2fb6e0-df68-4881-a735-f07ea083aaa7	21370a0a-b01b-4e32-8f43-8648a54cd35c
+1c5968e0-1f2e-4dd2-b3f5-066bf5590f55	2025-09-13 13:25:25.049625	2025-09-13 13:25:25.049625	9d66ac93-3a48-429d-aeaa-54302856e204	2bc37dec-7b06-404c-af63-99bf3f60fb68
+302d8808-a69f-4fc2-993c-e05bb6d482eb	2025-09-13 13:25:25.049625	2025-09-13 13:25:25.049625	85dbccf6-454e-4440-8905-50a90d91dbcc	2bc37dec-7b06-404c-af63-99bf3f60fb68
+16e969b3-502e-415e-8c92-3210d4bb23ac	2025-09-13 13:31:21.824926	2025-09-13 13:31:21.824926	20e225dd-68d7-409b-9b7d-5ef6d4224d02	9e348a26-e5d0-4ee0-b3e6-fe58563ac698
+204ea34d-772a-4c3b-88df-7101093a4681	2025-09-13 13:33:56.430597	2025-09-13 13:33:56.430597	1959d942-75fb-4ece-b501-b7cf8884d479	7227c8f6-cf65-4134-97de-d5e64cb5ff1b
+5fb7e28f-db22-483f-b6c8-26b76b666bb9	2025-09-13 13:36:58.879229	2025-09-13 13:36:58.879229	9d66ac93-3a48-429d-aeaa-54302856e204	01dff88c-893b-4410-8d54-1e36013b9fdb
+e8e4ba56-a1fb-48e0-9ac5-298549016e75	2025-09-13 13:36:58.879229	2025-09-13 13:36:58.879229	85dbccf6-454e-4440-8905-50a90d91dbcc	01dff88c-893b-4410-8d54-1e36013b9fdb
+f7c8d3ea-9bb3-4d45-8b45-16b07b8ec545	2025-09-13 13:39:08.207483	2025-09-13 13:39:08.207483	ddf4299a-fc48-47bd-9bdf-7e3d7692b09f	38af9c0d-b19f-433d-bcda-0b974b5475cf
+b2e18fab-c16b-4450-aa1e-96720b6b1f9d	2025-09-13 13:41:47.000536	2025-09-13 13:41:47.000536	9d66ac93-3a48-429d-aeaa-54302856e204	7e80becf-491c-4b48-a98a-a36fff26e29c
+a5ceac77-90ac-47d3-ac25-c4a621c13720	2025-09-13 13:46:43.114324	2025-09-13 13:46:43.114324	9a4df37b-9fdb-4c19-93b3-d99393d9e605	a8f9abc7-4515-4f5e-a4f5-095b1b17b9e1
+ddf7fba8-4a1d-4b08-b859-3a16bcc32be1	2025-09-13 13:49:25.881441	2025-09-13 13:49:25.881441	752ee7ba-ae88-46f0-95fb-e0a316212f16	ff188494-a871-4721-9d1e-26742539080c
+7cf9a251-74ca-4672-b47a-16e15276cbda	2025-09-13 13:49:25.881441	2025-09-13 13:49:25.881441	15495639-2adb-41b8-899c-493ac0172f57	ff188494-a871-4721-9d1e-26742539080c
+307166ff-a91c-4bad-8dec-d888936f52ac	2025-09-13 13:51:47.574343	2025-09-13 13:51:47.574343	6215cbaf-6065-4534-a9d5-a588c1b3dc28	b22e5ada-86c1-4104-828b-b7e06a7f5d16
+dee5b243-0b9d-4a38-b8e2-ae136c2642c9	2025-09-13 13:51:47.574343	2025-09-13 13:51:47.574343	9d66ac93-3a48-429d-aeaa-54302856e204	b22e5ada-86c1-4104-828b-b7e06a7f5d16
+8d4577d4-2da5-4efc-978d-61f632a05509	2025-09-13 13:54:14.75226	2025-09-13 13:54:14.75226	a6628e7c-1488-4268-82ee-5174f3a5a2a5	ed5db0ac-4343-4e68-a884-d5f84e4020c1
+02aa5263-a60a-4f92-b757-bc31ce50bdb0	2025-09-13 13:54:14.75226	2025-09-13 13:54:14.75226	331a0c35-f5a5-478d-ba7c-9f14ba2ee0fa	ed5db0ac-4343-4e68-a884-d5f84e4020c1
+488bb142-b939-4498-856e-e9590c3d4f8e	2025-09-13 18:58:21.752864	2025-09-13 18:58:21.752864	9d66ac93-3a48-429d-aeaa-54302856e204	ac45c513-55f3-437f-a10f-ba3c0763a746
+d4f28a24-fced-4edc-89a3-da424d6a2647	2025-09-15 09:56:04.711459	2025-09-15 09:56:04.711459	9d66ac93-3a48-429d-aeaa-54302856e204	21d5ce50-6ffa-44d9-869f-abcfeb518018
+918630a1-18df-47c0-b5bf-88b3ee3b18f9	2025-09-15 13:52:46.027223	2025-09-15 13:52:46.027223	526347a3-ee32-473d-9b5d-049f526ae48e	3a70ce9c-b1f0-43a7-8775-7d3e7c109c5d
+ff9941cf-b47b-4c95-913c-59aec40f96af	2025-09-15 13:58:56.657299	2025-09-15 13:58:56.657299	af38ec0a-1465-45a8-99ba-a394224530dc	aada0f37-1f30-4d61-a284-8003027bc871
+79f68de9-a82a-4d2a-9b2e-0a282338c1ba	2025-09-15 13:58:56.657299	2025-09-15 13:58:56.657299	752ee7ba-ae88-46f0-95fb-e0a316212f16	aada0f37-1f30-4d61-a284-8003027bc871
+eb8707c9-0d9a-4120-9a21-9b815875ee93	2025-09-15 14:04:18.701842	2025-09-15 14:04:18.701842	9d66ac93-3a48-429d-aeaa-54302856e204	3d6e76b5-b409-4f5b-bba4-c22cb10cfbd4
+265c352a-d7f9-480f-9a27-91dca3f603b4	2025-09-15 14:04:18.701842	2025-09-15 14:04:18.701842	85dbccf6-454e-4440-8905-50a90d91dbcc	3d6e76b5-b409-4f5b-bba4-c22cb10cfbd4
+c0baa6c7-0436-4a78-b40d-ffadd43748f6	2025-09-15 14:10:46.364761	2025-09-15 14:10:46.364761	9d66ac93-3a48-429d-aeaa-54302856e204	816440ad-f8f2-4ef7-a11f-b6a2bd63fcef
+bd48368f-8892-48f6-a8bc-5516447753cb	2025-09-15 14:16:02.076244	2025-09-15 14:16:02.076244	b17ae8af-2d78-4e77-b45b-39253c28247a	1959abd3-4ab1-42d4-b7e2-45693b899d51
+1a1cfc05-6a66-4674-be27-bc921953fd49	2025-09-15 14:16:02.076244	2025-09-15 14:16:02.076244	a025ec57-670e-45ea-962e-9c9430786666	1959abd3-4ab1-42d4-b7e2-45693b899d51
+d6537a97-08b5-4691-a75e-c133b5b35ec1	2025-09-15 14:57:51.105804	2025-09-15 14:57:51.105804	ad130932-4b2f-4e7b-b3a4-c20b4a6b85ae	8d2a9df4-af32-4943-b74b-ae901e866b32
+58b9e1c0-c3ae-48a3-9e1c-dec0569b870b	2025-09-15 15:03:04.356088	2025-09-15 15:03:04.356088	85dbccf6-454e-4440-8905-50a90d91dbcc	04a13a1c-de2b-46f4-be62-3fa6b4655d0d
+c917a3bf-3967-40ce-a663-0ead1b995036	2025-09-15 15:03:04.356088	2025-09-15 15:03:04.356088	b17ae8af-2d78-4e77-b45b-39253c28247a	04a13a1c-de2b-46f4-be62-3fa6b4655d0d
+e2dc099a-35c1-4aab-99b7-c58609768022	2025-09-15 15:08:22.510033	2025-09-15 15:08:22.510033	9d66ac93-3a48-429d-aeaa-54302856e204	af39600b-6fc5-435a-a5f8-a1d0a9994030
+01bcfea2-19bd-4d1d-be70-5b968c28a8d7	2025-09-15 15:08:22.510033	2025-09-15 15:08:22.510033	6215cbaf-6065-4534-a9d5-a588c1b3dc28	af39600b-6fc5-435a-a5f8-a1d0a9994030
+3fbc8d84-b2e5-4545-95c9-a90f08c7a431	2025-09-15 15:13:48.37304	2025-09-15 15:13:48.37304	15495639-2adb-41b8-899c-493ac0172f57	6d5dc164-3c35-4719-85f1-5c75558f0125
+b3591f48-357f-4504-ad72-b38f9a76900c	2025-09-15 15:13:48.37304	2025-09-15 15:13:48.37304	752ee7ba-ae88-46f0-95fb-e0a316212f16	6d5dc164-3c35-4719-85f1-5c75558f0125
+48fb1826-22f7-4a7f-9ef4-07578a3fa5ff	2025-09-15 15:18:53.490871	2025-09-15 15:18:53.490871	061ad8e2-77aa-4ba8-9a41-51788e7803c7	cfd086be-f452-4f1d-b0cc-3988d677a8b4
+2643449d-37f8-4452-92fd-277384f02eff	2025-09-15 15:18:53.490871	2025-09-15 15:18:53.490871	9d66ac93-3a48-429d-aeaa-54302856e204	cfd086be-f452-4f1d-b0cc-3988d677a8b4
+2199a632-5381-4281-8a7a-c441ec3c53a0	2025-09-15 15:23:42.601958	2025-09-15 15:23:42.601958	85dbccf6-454e-4440-8905-50a90d91dbcc	da809d98-950b-4ca0-a71b-c67d21fd66da
+626772a0-42d3-4344-83eb-5a3b0b69f03e	2025-09-15 15:23:42.601958	2025-09-15 15:23:42.601958	9d66ac93-3a48-429d-aeaa-54302856e204	da809d98-950b-4ca0-a71b-c67d21fd66da
+18099285-eb93-4a51-95ca-4126c5e8fc83	2025-09-15 15:48:55.935457	2025-09-15 15:48:55.935457	752ee7ba-ae88-46f0-95fb-e0a316212f16	2522a61a-2190-43e9-ae52-ca6bb023815e
+9e67cf36-7faa-40a5-a1e4-aa2c9abf8c03	2025-09-15 15:48:55.935457	2025-09-15 15:48:55.935457	15495639-2adb-41b8-899c-493ac0172f57	2522a61a-2190-43e9-ae52-ca6bb023815e
+c74d231a-c44f-47be-9f21-19ff92eac67a	2025-09-15 15:57:13.950676	2025-09-15 15:57:13.950676	9d66ac93-3a48-429d-aeaa-54302856e204	ddc2e877-7197-42fa-ae1e-59706d209774
+4b2fbf3f-d9e3-4dd7-92e1-9cdac4338609	2025-09-15 16:09:42.883863	2025-09-15 16:09:42.883863	ad130932-4b2f-4e7b-b3a4-c20b4a6b85ae	d6743870-0d5a-4180-9671-181b8f65e03e
+12173fbf-deb0-4dfa-94a8-5c40416c6823	2025-09-15 16:09:42.883863	2025-09-15 16:09:42.883863	c4d5e6fe-30fd-4f16-8646-634102d1bf1b	d6743870-0d5a-4180-9671-181b8f65e03e
+23a6a367-dd94-45c0-86ba-26a06f994757	2025-09-15 16:16:08.770401	2025-09-15 16:16:08.770401	85dbccf6-454e-4440-8905-50a90d91dbcc	21e7460d-aa00-448b-8c82-994a73e0164c
+14cfb01f-6d3e-40ee-aba7-bd0d80a79221	2025-09-15 16:22:46.742312	2025-09-15 16:22:46.742312	6215cbaf-6065-4534-a9d5-a588c1b3dc28	04d275d8-71df-4695-ace9-899ce6e41b29
+ad75572c-7c6d-44c5-881a-26fa90d9b05a	2025-09-15 15:41:07.307492	2025-09-15 15:41:07.307492	9d66ac93-3a48-429d-aeaa-54302856e204	f2fb31f0-7f6b-42b6-9a79-c22453ac6a63
+d10f67bc-4e18-4444-9464-8420486cdf17	2025-09-11 14:55:26.685085	2025-09-11 14:55:26.685085	623e0be7-870a-4bca-b053-76e99c9ea7e0	9572d666-227a-4639-9ea3-defd67123fbc
+d4131ea2-4422-4c31-98ee-354316f4d4f9	2025-09-11 14:58:40.071449	2025-09-11 14:58:40.071449	b17ae8af-2d78-4e77-b45b-39253c28247a	a4bf88ee-8865-4b1f-88a3-28cf59d28739
+be0d3fa7-54ea-4198-b52d-6430a29b5b29	2025-09-11 14:58:40.071449	2025-09-11 14:58:40.071449	a025ec57-670e-45ea-962e-9c9430786666	a4bf88ee-8865-4b1f-88a3-28cf59d28739
+8a36c4b8-6c2a-4b0d-84b5-a9d236e79096	2025-09-11 15:00:53.699113	2025-09-11 15:00:53.699113	20e225dd-68d7-409b-9b7d-5ef6d4224d02	a40b23bf-bd6d-41d0-adbe-254bce002c2d
+939d6897-970c-48ec-b4aa-b34664ae8b67	2025-09-11 15:02:49.206082	2025-09-11 15:02:49.206082	1959d942-75fb-4ece-b501-b7cf8884d479	395bb56a-d4af-4f4a-abb3-51a9ef1dc686
+1d01220a-c939-4bc6-9f7a-63384308d57d	2025-09-11 15:16:32.01369	2025-09-11 15:16:32.01369	1959d942-75fb-4ece-b501-b7cf8884d479	ea89fe55-c50f-4bbf-acc1-96e7df46101a
+a01602e1-b7e7-4b73-98f3-fd7b8fd2a1a1	2025-09-11 15:18:14.484129	2025-09-11 15:18:14.484129	623e0be7-870a-4bca-b053-76e99c9ea7e0	4ef87c39-b004-4c4c-82a8-ddd0338de8c8
+c7955a61-b317-428e-bfc2-3d351efd92a1	2025-09-11 15:19:59.299722	2025-09-11 15:19:59.299722	623e0be7-870a-4bca-b053-76e99c9ea7e0	1e51b837-215d-4069-9d14-c9510c1b1b61
+38b007ac-d524-462a-8fe7-1d705b2135f3	2025-09-11 15:22:17.079449	2025-09-11 15:22:17.079449	623e0be7-870a-4bca-b053-76e99c9ea7e0	7b006564-2c61-4661-ab8c-d4cf60fdb3ed
+a8ec7ff5-a9d7-472b-9b93-e0012ad98a38	2025-09-11 15:28:21.125021	2025-09-11 15:28:21.125021	9d66ac93-3a48-429d-aeaa-54302856e204	de763854-d06d-43e9-9973-f4ca8839201b
+08840d01-c75c-4bb7-81ca-73e0e83fbbfe	2025-09-11 15:30:34.314686	2025-09-11 15:30:34.314686	9d66ac93-3a48-429d-aeaa-54302856e204	24c43903-d3a7-4a39-9231-5bc7d5cec5da
+17a91641-63f0-4f99-8261-3fbca9f44f6a	2025-09-11 15:33:44.900779	2025-09-11 15:33:44.900779	b17ae8af-2d78-4e77-b45b-39253c28247a	2fd70951-2d44-407e-a7ee-daa94bf6af87
+14420a56-a3c5-4a42-a176-1ea35f25eaaa	2025-09-11 15:33:44.900779	2025-09-11 15:33:44.900779	a025ec57-670e-45ea-962e-9c9430786666	2fd70951-2d44-407e-a7ee-daa94bf6af87
+b148e4ba-e3c7-48f0-9553-6c98a718cc9c	2025-09-11 15:38:00.936268	2025-09-11 15:38:00.936268	9d66ac93-3a48-429d-aeaa-54302856e204	14dbd276-30fe-4558-9cf0-104751b58f2d
+e026005a-a6bf-4cf7-9b77-cd8b444456c6	2025-09-11 15:39:26.933251	2025-09-11 15:39:26.933251	20e225dd-68d7-409b-9b7d-5ef6d4224d02	4dc80274-2d3e-482e-a736-9f9399330c76
+36b83e42-166e-4fbe-a665-d00ea35aa858	2025-09-11 15:42:57.06856	2025-09-11 15:42:57.06856	9d66ac93-3a48-429d-aeaa-54302856e204	88baf661-c550-4ecd-b15a-0d1ca4d41116
+67887786-ad2d-4de7-9199-d557d4f79326	2025-09-11 15:42:57.06856	2025-09-11 15:42:57.06856	85dbccf6-454e-4440-8905-50a90d91dbcc	88baf661-c550-4ecd-b15a-0d1ca4d41116
+f140f637-cfd6-47c8-8b47-0e33c772c71d	2025-09-11 15:47:10.356903	2025-09-11 15:47:10.356903	c74a2236-739f-476b-96d9-a11487d4049f	10f8ff0e-38c6-465d-b99a-26c4026d22c6
+7df7deec-9bac-404d-9f09-6d3ea290e2fe	2025-09-11 16:25:51.068787	2025-09-11 16:25:51.068787	373d04ea-8079-439a-82a3-d118da6253b1	7470e789-9509-4e22-9078-67857074867d
+b589946c-e585-4fbc-aae5-dbee519e107e	2025-09-11 15:51:35.830781	2025-09-11 15:51:35.830781	1959d942-75fb-4ece-b501-b7cf8884d479	64406a09-56a6-43da-9329-ff0fb0d83e4f
+ff7a4cc4-f681-469f-a33a-c9dfb679245e	2025-09-11 15:55:18.653749	2025-09-11 15:55:18.653749	9d66ac93-3a48-429d-aeaa-54302856e204	945bdcdb-6aee-42df-a974-3fedc0b76846
+bf213261-71d9-4cc2-b171-a8ec02d1aec8	2025-09-11 16:00:42.409093	2025-09-11 16:00:42.409093	9d66ac93-3a48-429d-aeaa-54302856e204	978f906a-8584-4cdf-9d7f-f96d60865e3b
+fd4bd60b-2a69-4e46-b5dd-bf7b8921ac4f	2025-09-11 16:03:21.690598	2025-09-11 16:03:21.690598	a025ec57-670e-45ea-962e-9c9430786666	22df24eb-6bb7-45bc-ab46-9d6022eec774
+264af86a-3332-4199-8e29-daecbd1c7477	2025-09-11 16:03:21.690598	2025-09-11 16:03:21.690598	b17ae8af-2d78-4e77-b45b-39253c28247a	22df24eb-6bb7-45bc-ab46-9d6022eec774
+defb6cfb-ff73-44f9-97a5-57f6514eb219	2025-09-11 16:05:43.124945	2025-09-11 16:05:43.124945	752ee7ba-ae88-46f0-95fb-e0a316212f16	98791e1d-6029-4cb2-bcaf-611a337208ef
+10cf398e-5929-4fd3-bcf8-2ae50a7ca19e	2025-09-11 16:05:43.124945	2025-09-11 16:05:43.124945	af38ec0a-1465-45a8-99ba-a394224530dc	98791e1d-6029-4cb2-bcaf-611a337208ef
+e84b4337-021c-4ad5-b0cb-45a790cb54bf	2025-09-11 16:06:55.568778	2025-09-11 16:06:55.568778	9d66ac93-3a48-429d-aeaa-54302856e204	4da455c2-c154-4da7-b9c5-6195bd137eec
+12ff2215-abc5-40f6-91b3-e0249cfa0d18	2025-09-11 16:09:49.878638	2025-09-11 16:09:49.878638	752ee7ba-ae88-46f0-95fb-e0a316212f16	f451289a-6d35-4926-981d-8ebae71741a2
+6cbec5f7-0ce1-4a6a-ada8-ba44368260ec	2025-09-11 16:09:49.878638	2025-09-11 16:09:49.878638	331a0c35-f5a5-478d-ba7c-9f14ba2ee0fa	f451289a-6d35-4926-981d-8ebae71741a2
+b49ac9f5-57fd-43f1-9113-605104d97fe5	2025-09-11 16:11:27.0279	2025-09-11 16:11:27.0279	21aad68b-b21b-4452-9ebf-7407be8e613d	ad76d69c-5e90-4643-b507-9e9226d8b5cd
+74afcfda-6e97-4f3e-909d-7c0e6bc10e22	2025-09-11 16:12:39.936546	2025-09-11 16:12:39.936546	623e0be7-870a-4bca-b053-76e99c9ea7e0	cae7b841-a7f8-4973-baf0-4aadbbdcd0ca
+3eced44d-43e9-4cd7-a39a-aad37015fcd1	2025-09-11 16:14:07.540708	2025-09-11 16:14:07.540708	85dbccf6-454e-4440-8905-50a90d91dbcc	abe543c6-ec69-49ad-b9ca-ef959ffa10f2
+ab164f80-bc73-43f8-8f1d-4e80021d7351	2025-09-11 16:14:07.540708	2025-09-11 16:14:07.540708	9d66ac93-3a48-429d-aeaa-54302856e204	abe543c6-ec69-49ad-b9ca-ef959ffa10f2
+83fb29a8-e54f-4240-b36e-8da60d83c783	2025-09-11 16:15:35.10143	2025-09-11 16:15:35.10143	b17ae8af-2d78-4e77-b45b-39253c28247a	49ef1d62-a375-485a-84bd-289a5548e81b
+d5c6b238-ccff-4b23-b609-e34d191fe7a2	2025-09-11 16:16:44.885597	2025-09-11 16:16:44.885597	b17ae8af-2d78-4e77-b45b-39253c28247a	d180a698-a12e-4731-8234-b96e8f3ca7d9
+625c88e4-d490-492e-b849-4ee1d70e97e6	2025-09-11 16:18:03.659796	2025-09-11 16:18:03.659796	9d66ac93-3a48-429d-aeaa-54302856e204	5de5124e-8ebb-4477-b4b3-e1122cc80496
+041a5a68-abe7-405b-8560-8bdead88ee72	2025-09-11 16:20:31.521136	2025-09-11 16:20:31.521136	b17ae8af-2d78-4e77-b45b-39253c28247a	6bb0675d-eba0-496c-bd20-5fd11a4a0282
+9aee9a08-3d5f-4306-baf6-08ed1ab0c7c5	2025-09-11 16:20:31.521136	2025-09-11 16:20:31.521136	6215cbaf-6065-4534-a9d5-a588c1b3dc28	6bb0675d-eba0-496c-bd20-5fd11a4a0282
+64c38b9b-98e1-4be4-9e98-8e25595a71f5	2025-09-11 16:25:51.068787	2025-09-11 16:25:51.068787	331a0c35-f5a5-478d-ba7c-9f14ba2ee0fa	7470e789-9509-4e22-9078-67857074867d
+cd7e17f0-3834-4989-a596-f7ee94cd0900	2025-09-11 17:04:05.219507	2025-09-11 17:04:05.219507	623e0be7-870a-4bca-b053-76e99c9ea7e0	cbb152c0-ba9c-47ea-a8a3-28ad88f56eb6
+5e2ca8b7-7d7f-4e69-a75c-101affa9022a	2025-09-11 17:08:45.360274	2025-09-11 17:08:45.360274	9d66ac93-3a48-429d-aeaa-54302856e204	31b8aa6a-448d-4e4c-bd1e-6386060b526e
+41c7bd7a-efbc-4566-b822-b9e1bcefb162	2025-09-11 17:08:45.360274	2025-09-11 17:08:45.360274	85dbccf6-454e-4440-8905-50a90d91dbcc	31b8aa6a-448d-4e4c-bd1e-6386060b526e
+dc388f58-b354-4532-a449-ebce4ca1c820	2025-09-11 17:13:25.292268	2025-09-11 17:13:25.292268	9d66ac93-3a48-429d-aeaa-54302856e204	9c029423-aa52-4b90-97c0-f5d4b4574f12
+3f52f5e0-6f4a-49fd-8b7f-45b007dc3bc9	2025-09-11 17:27:09.027591	2025-09-11 17:27:09.027591	dec9f53a-7dac-4199-b4ff-ab0624090b8b	85a317d2-6cf2-4155-a6ea-a271afc4a803
+a7dc04df-4fa8-4609-9fe2-09c03e662ae4	2025-09-11 17:27:09.027591	2025-09-11 17:27:09.027591	18995b62-6971-4750-84fe-0c2bc712f352	85a317d2-6cf2-4155-a6ea-a271afc4a803
+898b8cbe-1e25-46e2-b18f-b7319ffe5cc3	2025-09-11 17:32:48.638313	2025-09-11 17:32:48.638313	15495639-2adb-41b8-899c-493ac0172f57	bd3338ee-1841-4686-a98c-3493ab9cfa7e
+ed922d82-db22-4928-8fe4-5e93ce642af4	2025-09-11 17:32:48.638313	2025-09-11 17:32:48.638313	18995b62-6971-4750-84fe-0c2bc712f352	bd3338ee-1841-4686-a98c-3493ab9cfa7e
+39180c0d-d122-491e-9dda-b1ff07d9606f	2025-09-11 17:36:51.435739	2025-09-11 17:36:51.435739	dec9f53a-7dac-4199-b4ff-ab0624090b8b	93c687ff-68f2-44d0-9f3a-8c4c15c960e8
+82fb9fce-b4b6-4049-8a90-1d2b7560df0b	2025-09-11 17:36:51.435739	2025-09-11 17:36:51.435739	18995b62-6971-4750-84fe-0c2bc712f352	93c687ff-68f2-44d0-9f3a-8c4c15c960e8
+b22e3d57-7a08-4ba2-a4e1-2b21163774fd	2025-09-11 17:40:45.140242	2025-09-11 17:40:45.140242	752ee7ba-ae88-46f0-95fb-e0a316212f16	f4041256-a9ac-430d-b611-d8a957e2aeb0
+b6f4a83a-2657-4e89-b196-ef47a91be3a6	2025-09-11 17:40:45.140242	2025-09-11 17:40:45.140242	15495639-2adb-41b8-899c-493ac0172f57	f4041256-a9ac-430d-b611-d8a957e2aeb0
+b45d24f2-7fcc-4e6f-a751-d90fc61c60e4	2025-09-11 17:45:59.921715	2025-09-11 17:45:59.921715	21aad68b-b21b-4452-9ebf-7407be8e613d	676f21e5-7b5a-4c11-a505-4545822673de
+fabaf1c9-5680-4f40-af93-51c21b036357	2025-09-11 17:51:16.449063	2025-09-11 17:51:16.449063	20e225dd-68d7-409b-9b7d-5ef6d4224d02	04d3e242-807d-4cba-9be4-e3d11a8efbc4
+9fa3eafd-9ab9-4582-b4a3-bb2f6f9216b5	2025-09-11 17:56:14.324755	2025-09-11 17:56:14.324755	9d66ac93-3a48-429d-aeaa-54302856e204	9b3f9b20-544d-49e1-880e-879e24e81581
+6c28a5e4-ffd9-470d-b3f3-dad9709ca849	2025-09-11 17:56:14.324755	2025-09-11 17:56:14.324755	85dbccf6-454e-4440-8905-50a90d91dbcc	9b3f9b20-544d-49e1-880e-879e24e81581
+97e58fd9-1852-458c-bde2-016e4107b593	2025-09-11 18:01:39.046472	2025-09-11 18:01:39.046472	a8a80e95-9165-4200-af80-cd7608099307	05b3842c-2a19-484e-bae3-a12e86c2fa4c
+ac7335a9-4a76-4dc9-bec0-37b320ccb1bf	2025-09-11 18:27:47.321309	2025-09-11 18:27:47.321309	b17ae8af-2d78-4e77-b45b-39253c28247a	3a39a222-7b4d-4e0e-9e7e-034d78b5d6bf
+7a9513a3-99d3-4d70-875e-a021f9c80153	2025-09-11 18:27:47.321309	2025-09-11 18:27:47.321309	a025ec57-670e-45ea-962e-9c9430786666	3a39a222-7b4d-4e0e-9e7e-034d78b5d6bf
+a3df5f1b-cc9a-40b9-9c9c-cbdaa5411df3	2025-09-11 18:32:26.414259	2025-09-11 18:32:26.414259	b17ae8af-2d78-4e77-b45b-39253c28247a	78b3c689-0222-46de-a7b3-9bd6c75b920c
+d87a53b6-1250-4b70-91f2-6cbd8fc54f3c	2025-09-11 18:32:26.414259	2025-09-11 18:32:26.414259	85dbccf6-454e-4440-8905-50a90d91dbcc	78b3c689-0222-46de-a7b3-9bd6c75b920c
+f106680f-075f-4345-83cd-b64f7580d1ec	2025-09-11 18:39:39.091379	2025-09-11 18:39:39.091379	752ee7ba-ae88-46f0-95fb-e0a316212f16	b515dd55-701a-45f4-938f-fdb26d2d5cba
+4128758f-f590-442d-afb1-9d95b2b64dc4	2025-09-11 18:39:39.091379	2025-09-11 18:39:39.091379	15495639-2adb-41b8-899c-493ac0172f57	b515dd55-701a-45f4-938f-fdb26d2d5cba
+04b5b5a3-2d10-449a-acc7-c86900ac1f55	2025-09-11 18:39:39.091379	2025-09-11 18:39:39.091379	85dbccf6-454e-4440-8905-50a90d91dbcc	b515dd55-701a-45f4-938f-fdb26d2d5cba
+06577d2a-680a-4626-875c-adf36096d3c8	2025-09-11 18:43:48.029958	2025-09-11 18:43:48.029958	b17ae8af-2d78-4e77-b45b-39253c28247a	b53daf0a-c7b6-4be8-9230-b33695eb5340
+052fd964-3ceb-4472-8d4f-29ebd99ff1ce	2025-09-11 18:43:48.029958	2025-09-11 18:43:48.029958	85dbccf6-454e-4440-8905-50a90d91dbcc	b53daf0a-c7b6-4be8-9230-b33695eb5340
+367b9e70-8b9a-48b0-97e8-56b73ecefe65	2025-09-11 18:47:22.869193	2025-09-11 18:47:22.869193	9d66ac93-3a48-429d-aeaa-54302856e204	7545289f-f7c8-456b-98e9-f7b15600254c
+f2056b7b-cfe7-4fda-b5f7-d094657cc8ee	2025-09-11 18:47:22.869193	2025-09-11 18:47:22.869193	85dbccf6-454e-4440-8905-50a90d91dbcc	7545289f-f7c8-456b-98e9-f7b15600254c
+fdebcb9b-ab66-48d3-903e-7c9bb45b04b5	2025-09-11 18:51:48.790077	2025-09-11 18:51:48.790077	b17ae8af-2d78-4e77-b45b-39253c28247a	d59d340d-774d-4c81-8b3d-251175936221
+eb49b165-7076-418b-bae7-651edc6e9dca	2025-09-11 18:51:48.790077	2025-09-11 18:51:48.790077	85dbccf6-454e-4440-8905-50a90d91dbcc	d59d340d-774d-4c81-8b3d-251175936221
+f6009bf6-811d-4774-b61c-38a64a84aac6	2025-09-11 18:56:14.369948	2025-09-11 18:56:14.369948	b17ae8af-2d78-4e77-b45b-39253c28247a	ddaf509f-3c99-437c-b872-a4651a91601f
+bc7a41ee-0d17-4084-9bcd-2922eb09fc45	2025-09-13 13:01:53.763061	2025-09-13 13:01:53.763061	c4d5e6fe-30fd-4f16-8646-634102d1bf1b	9a4eec3b-3f0b-4b36-a2b5-0f544376cf78
+91d11613-535a-43e4-bea0-107858262a2c	2025-09-13 13:01:53.763061	2025-09-13 13:01:53.763061	a6628e7c-1488-4268-82ee-5174f3a5a2a5	9a4eec3b-3f0b-4b36-a2b5-0f544376cf78
+7c1d9b8f-0d69-4487-ad21-0d72dfc05c69	2025-09-13 13:01:53.763061	2025-09-13 13:01:53.763061	331a0c35-f5a5-478d-ba7c-9f14ba2ee0fa	9a4eec3b-3f0b-4b36-a2b5-0f544376cf78
+26eca7f1-14b4-456a-97a9-ab4c30a4f8eb	2025-09-13 13:06:46.314004	2025-09-13 13:06:46.314004	a6628e7c-1488-4268-82ee-5174f3a5a2a5	ff2d84fc-ff6d-4637-8128-91c1495c98e8
+5d5e933d-9279-4097-ac99-8e918dcfd182	2025-09-13 13:06:46.314004	2025-09-13 13:06:46.314004	331a0c35-f5a5-478d-ba7c-9f14ba2ee0fa	ff2d84fc-ff6d-4637-8128-91c1495c98e8
+ac7a6745-fe02-4729-bd6e-1e33e2f7171c	2025-09-13 13:06:46.314004	2025-09-13 13:06:46.314004	6215cbaf-6065-4534-a9d5-a588c1b3dc28	ff2d84fc-ff6d-4637-8128-91c1495c98e8
+729e79f4-1240-42d9-aa6e-ecb854b19b1b	2025-09-13 13:08:51.624269	2025-09-13 13:08:51.624269	85dbccf6-454e-4440-8905-50a90d91dbcc	e68781f2-7021-4907-af54-de18b80d181a
+0a0c2965-10b2-4c4e-b11a-b5616b03875f	2025-09-13 13:10:28.313057	2025-09-13 13:10:28.313057	623e0be7-870a-4bca-b053-76e99c9ea7e0	f6dd98f1-ad1d-4ea2-ba97-9939ce0fc028
+870912ac-b93d-49b4-9cab-da1cd21c9ec8	2025-09-13 13:10:28.313057	2025-09-13 13:10:28.313057	6215cbaf-6065-4534-a9d5-a588c1b3dc28	f6dd98f1-ad1d-4ea2-ba97-9939ce0fc028
+86b551f3-a141-475c-9c8c-a0f06bd56fa8	2025-09-13 13:13:43.048346	2025-09-13 13:13:43.048346	9d66ac93-3a48-429d-aeaa-54302856e204	8a39b1e7-986c-41e7-a0b9-44a4efb46360
+0a0db20d-2f28-4a07-89cb-e2cd8d148532	2025-09-13 13:13:43.048346	2025-09-13 13:13:43.048346	85dbccf6-454e-4440-8905-50a90d91dbcc	8a39b1e7-986c-41e7-a0b9-44a4efb46360
+9595d8ae-eb43-4308-835b-8fec7ea75adc	2025-09-13 13:18:26.036856	2025-09-13 13:18:26.036856	c01e10b9-4ef6-4f23-9b41-7f6d5d4d1e85	db9ff44c-2e27-42df-8f6a-1b64429999e1
+cbc8e217-1ac7-4d64-9a96-11665b1781b5	2025-09-13 13:23:05.998557	2025-09-13 13:23:05.998557	b17ae8af-2d78-4e77-b45b-39253c28247a	885918a3-5c64-4f15-982e-1b9a91cb3743
+606087c6-4cc0-43e4-9037-a47f88d899e1	2025-09-13 13:23:05.998557	2025-09-13 13:23:05.998557	6345b70f-6e3f-46e2-9d51-3be51250ed99	885918a3-5c64-4f15-982e-1b9a91cb3743
+c5ffa72e-4794-4798-beaf-e034b446882b	2025-09-13 13:26:03.920945	2025-09-13 13:26:03.920945	9d66ac93-3a48-429d-aeaa-54302856e204	c0a055b2-daf6-4ecc-b97b-cfedfce6a42a
+16d029bd-2506-45fc-9443-460ac5f38a02	2025-09-13 13:26:03.920945	2025-09-13 13:26:03.920945	85dbccf6-454e-4440-8905-50a90d91dbcc	c0a055b2-daf6-4ecc-b97b-cfedfce6a42a
+cd0c85b2-b6c8-4831-8482-c6ef83c6a25c	2025-09-13 13:31:58.922652	2025-09-13 13:31:58.922652	7752a881-139d-4cf4-98b2-e92e9de0e2e5	f11c8751-e5ca-413e-b30d-2b387ec14733
+\.
 
 
 --
 -- Data for Name: exercises; Type: TABLE DATA; Schema: public; Owner: -
 --
 
+COPY public.exercises (id, name, volume, repetitions, intensity, training_id, exercise_example_id, created_at, updated_at) FROM stdin;
+8aca48a7-eddb-4e16-8333-56e5cef1d5c4	Bent Over Barbell Row	3520.0	32	110.00	b7433600-19d8-4514-8ed3-b35b50f4aff4	950cd0cd-fc3b-442f-aba9-3c48bfc6cda9	2025-09-10 19:00:06.690089	2025-09-10 19:00:06.690089
+82116928-d227-43f7-bc3c-1d574545e56b	Barbell Shrug	4160.0	32	130.00	b7433600-19d8-4514-8ed3-b35b50f4aff4	49ef1d62-a375-485a-84bd-289a5548e81b	2025-09-10 19:00:06.690089	2025-09-10 19:00:06.690089
+1b8dd640-5e3d-477f-aeed-883f7606e21d	Lat Pulldown	2400.0	24	100.00	b7433600-19d8-4514-8ed3-b35b50f4aff4	4a2c7160-6cf2-456d-8ef4-80040b720420	2025-09-10 19:00:06.690089	2025-09-10 19:00:06.690089
+cfe040a0-b1a9-44cf-a43e-206718c9fefa	Straight Arm Lat Pulldown	2320.0	24	96.67	b7433600-19d8-4514-8ed3-b35b50f4aff4	f4041256-a9ac-430d-b611-d8a957e2aeb0	2025-09-10 19:00:06.690089	2025-09-10 19:00:06.690089
+7f413faf-fef5-49aa-8239-a97db7d7b586	Incline Dumbbell Curl	1408.0	32	44.00	b7433600-19d8-4514-8ed3-b35b50f4aff4	09386394-e4e1-4a6d-adce-d5f5a518485c	2025-09-10 19:00:06.690089	2025-09-10 19:00:06.690089
+7a1f81fd-3b81-4cbe-bb49-fe4e0b4deab5	Standing Hammer Curl	1008.0	20	50.40	b7433600-19d8-4514-8ed3-b35b50f4aff4	8324ae75-08e9-48de-a00b-55d229085712	2025-09-10 19:00:06.690089	2025-09-10 19:00:06.690089
+dae45f2a-37fa-481f-a658-a3288ea7ce93	Seated Cable Wrist Curl	3870.0	43	90.00	b7433600-19d8-4514-8ed3-b35b50f4aff4	b515dd55-701a-45f4-938f-fdb26d2d5cba	2025-09-10 19:00:06.690089	2025-09-10 19:00:06.690089
+c108f9de-3fb9-4442-b5e7-eb98a27beb94	Seated Reverse Barbell Wrist Curl	940.0	26	36.15	b7433600-19d8-4514-8ed3-b35b50f4aff4	b53daf0a-c7b6-4be8-9230-b33695eb5340	2025-09-10 19:00:06.690089	2025-09-10 19:00:06.690089
+0ff48281-b594-422a-bdb1-890ae6374db1	Alternating Bent-Over Dumbbell Kickback 	441.0	21	21.00	20618ae1-4a3d-4b9d-b1c5-3130cc83576c	faf6674c-2a2a-4b03-ab8b-7a033052b572	2025-09-11 19:27:31.164899	2025-09-11 19:27:31.164899
+ad8fb230-f4f9-4828-8a10-6774c07fa522	Alternating Bent-Over Dumbbell Kickback 	21.0	1	21.00	1a433b12-a80e-4321-9e6f-b4b70a40bd1f	faf6674c-2a2a-4b03-ab8b-7a033052b572	2025-09-11 20:21:02.529649	2025-09-11 20:21:02.529649
+1375f642-b585-4241-bc67-91d06305d83c	45-Degree Leg Press	252.0	12	21.00	1ff47ebb-40ae-48d2-a4e7-85f0eea8bdaa	64406a09-56a6-43da-9329-ff0fb0d83e4f	2025-09-11 20:23:56.384931	2025-09-11 20:23:56.384931
+6186a4f3-44c9-4649-a513-9bb7633e6c24	45 Degree Leg Press Calf Raise	252.0	21	12.00	35073fc3-51b8-44ba-ace3-306c2889cf7f	d2f28afc-e84c-467c-90d9-c6c2cb63acbc	2025-09-12 09:53:26.307267	2025-09-12 09:53:26.307267
+ffa4b9d7-7000-4fd6-acff-8f3913971459	45 Degree Leg Press Calf Raise	1024.0	32	32.00	964b8335-dc36-4903-ad1a-03bf8dd3f214	d2f28afc-e84c-467c-90d9-c6c2cb63acbc	2025-09-12 09:54:44.310588	2025-09-12 09:54:44.310588
+52b375e2-79d7-4d44-bc13-1dfe1292e594	45 Degree Leg Press Calf Raise	252.0	12	21.00	b314bd45-8c88-40e3-af36-deefe3bc9e5a	d2f28afc-e84c-467c-90d9-c6c2cb63acbc	2025-09-12 09:57:19.963906	2025-09-12 09:57:19.963906
+70aa9038-b4b3-4912-b519-a039561cf0ec	Barbell Shrug	441.0	21	21.00	d4f94e3c-a248-458f-8aa2-1d31ceebe334	49ef1d62-a375-485a-84bd-289a5548e81b	2025-09-12 14:52:13.884468	2025-09-12 14:52:13.884468
+188c7748-55fc-492f-a5c1-2650ce0b08d9	Barbell Back Squat	2600.0	20	130.00	9d79d540-e3a3-43e2-b2ff-f560a38d7d8d	22df24eb-6bb7-45bc-ab46-9d6022eec774	2025-09-12 18:39:24.893794	2025-09-12 18:39:24.893794
+a7571437-6b92-485e-abf7-352b737df99a	Romanian Deadlift (RDL)	3140.0	26	120.77	9d79d540-e3a3-43e2-b2ff-f560a38d7d8d	b5c6e6a6-6eec-422c-ad4a-8dca82287312	2025-09-12 18:39:24.893794	2025-09-12 18:39:24.893794
+047f27f0-d1cb-4bac-92fa-88f47fe2e4f5	Leg Curl	2240.0	29	77.24	9d79d540-e3a3-43e2-b2ff-f560a38d7d8d	05b3842c-2a19-484e-bae3-a12e86c2fa4c	2025-09-12 18:39:24.893794	2025-09-12 18:39:24.893794
+f54e3317-8c7e-40db-8b07-4248e901a086	Seated Calf Raise	6660.0	74	90.00	9d79d540-e3a3-43e2-b2ff-f560a38d7d8d	6e4bc8b2-33ab-46da-9b79-9fff2266cd27	2025-09-12 18:39:24.893794	2025-09-12 18:39:24.893794
+b3181ceb-fcd6-4f59-b472-49d938d24232	Close Grip Bench Press	2880.0	32	90.00	9d79d540-e3a3-43e2-b2ff-f560a38d7d8d	ab0d7384-444e-446a-911d-f64ac31db8ef	2025-09-12 18:39:24.893794	2025-09-12 18:39:24.893794
+2c9a54f0-9441-4e16-bbcc-8d5c5267ff19	Barbell Bench Press	3520.0	32	110.00	dea13a4d-bdbc-4846-8b88-1e68544b859a	b2e39ab6-118d-46bd-ad8c-8acf9864af6c	2025-09-15 18:58:58.834289	2025-09-15 18:58:58.834289
+cf900144-9f91-40c1-a2b3-67c8700cb839	Smith Machine Incline Bench Press	2340.0	28	83.57	dea13a4d-bdbc-4846-8b88-1e68544b859a	f6dd98f1-ad1d-4ea2-ba97-9939ce0fc028	2025-09-15 18:58:58.834289	2025-09-15 18:58:58.834289
+66821e42-d41a-488d-ac60-23952f06a477	Cable Crossovers (Mid Chest)	2640.0	33	80.00	dea13a4d-bdbc-4846-8b88-1e68544b859a	e1511aa4-1d34-4984-aa54-88f88029a96e	2025-09-15 18:58:58.834289	2025-09-15 18:58:58.834289
+671ca6f0-d921-45dd-9556-7a63401c053c	Machine Shoulder Press	2160.0	27	80.00	dea13a4d-bdbc-4846-8b88-1e68544b859a	16ba69dc-e99d-4a71-bbcb-0f3ce096a9d9	2025-09-15 18:58:58.834289	2025-09-15 18:58:58.834289
+33cc865a-4d45-4671-a0c2-1ab93c7b8b65	Cable Lateral Raise	1600.0	32	50.00	dea13a4d-bdbc-4846-8b88-1e68544b859a	4353173b-93b2-4fb1-b462-fc8330b15ce5	2025-09-15 18:58:58.834289	2025-09-15 18:58:58.834289
+3b240aa8-9945-4a84-866a-103fa8aa6035	Bent Over Low Pulley Rear Delt Fly	1110.0	37	30.00	dea13a4d-bdbc-4846-8b88-1e68544b859a	ed5db0ac-4343-4e68-a884-d5f84e4020c1	2025-09-15 18:58:58.834289	2025-09-15 18:58:58.834289
+\.
+
 
 --
 -- Data for Name: iterations; Type: TABLE DATA; Schema: public; Owner: -
 --
+
+COPY public.iterations (id, weight, repetitions, exercise_id, created_at, updated_at) FROM stdin;
+582c3591-b8f8-4fd8-88f2-265ef9928ac8	100.0	8	8aca48a7-eddb-4e16-8333-56e5cef1d5c4	2025-09-10 19:00:06.690089	2025-09-10 19:00:06.690089
+8ce24c9d-4bc2-4ac9-b523-0b4096207631	110.0	8	8aca48a7-eddb-4e16-8333-56e5cef1d5c4	2025-09-10 19:00:06.690089	2025-09-10 19:00:06.690089
+9cada7b6-831a-4e00-8b8c-7d2c92aa86f0	115.0	8	8aca48a7-eddb-4e16-8333-56e5cef1d5c4	2025-09-10 19:00:06.690089	2025-09-10 19:00:06.690089
+a88a46f2-5258-4d2d-85aa-e846355b3c35	115.0	8	8aca48a7-eddb-4e16-8333-56e5cef1d5c4	2025-09-10 19:00:06.690089	2025-09-10 19:00:06.690089
+bae89c37-1b85-4613-a02f-cfc56430254e	130.0	8	82116928-d227-43f7-bc3c-1d574545e56b	2025-09-10 19:00:06.690089	2025-09-10 19:00:06.690089
+af837691-e7e0-46a5-a970-1928b49946c6	130.0	8	82116928-d227-43f7-bc3c-1d574545e56b	2025-09-10 19:00:06.690089	2025-09-10 19:00:06.690089
+e8449205-538f-446e-8086-561282da5eed	130.0	8	82116928-d227-43f7-bc3c-1d574545e56b	2025-09-10 19:00:06.690089	2025-09-10 19:00:06.690089
+c5fdc61b-1ae2-4a17-9c88-10c0ba48419d	130.0	8	82116928-d227-43f7-bc3c-1d574545e56b	2025-09-10 19:00:06.690089	2025-09-10 19:00:06.690089
+e90bbc0e-2149-4aea-999f-e10fc0924bb1	100.0	8	1b8dd640-5e3d-477f-aeed-883f7606e21d	2025-09-10 19:00:06.690089	2025-09-10 19:00:06.690089
+eb34a25e-2ea3-42cf-88f3-c51a969134ee	100.0	8	1b8dd640-5e3d-477f-aeed-883f7606e21d	2025-09-10 19:00:06.690089	2025-09-10 19:00:06.690089
+0db37082-ea0b-4863-82a2-3577a788c64f	100.0	8	1b8dd640-5e3d-477f-aeed-883f7606e21d	2025-09-10 19:00:06.690089	2025-09-10 19:00:06.690089
+139f52af-49ca-4a03-94ac-0fa2acad27c5	100.0	8	cfe040a0-b1a9-44cf-a43e-206718c9fefa	2025-09-10 19:00:06.690089	2025-09-10 19:00:06.690089
+66f261f0-bde4-4823-aac5-521d9c3d5119	95.0	8	cfe040a0-b1a9-44cf-a43e-206718c9fefa	2025-09-10 19:00:06.690089	2025-09-10 19:00:06.690089
+eedb89e6-b0e5-4a36-917b-841220e363c5	95.0	8	cfe040a0-b1a9-44cf-a43e-206718c9fefa	2025-09-10 19:00:06.690089	2025-09-10 19:00:06.690089
+2355ce9d-464e-4705-9910-1ce6a8f094cd	44.0	8	7f413faf-fef5-49aa-8239-a97db7d7b586	2025-09-10 19:00:06.690089	2025-09-10 19:00:06.690089
+ad2c5115-6b94-41a0-8937-adec4db3a5cb	44.0	8	7f413faf-fef5-49aa-8239-a97db7d7b586	2025-09-10 19:00:06.690089	2025-09-10 19:00:06.690089
+69ce62d0-3a7b-4e9c-95fc-05b9be0deab4	44.0	8	7f413faf-fef5-49aa-8239-a97db7d7b586	2025-09-10 19:00:06.690089	2025-09-10 19:00:06.690089
+0936255b-7c31-4887-b5d6-b4cada2d4d46	44.0	8	7f413faf-fef5-49aa-8239-a97db7d7b586	2025-09-10 19:00:06.690089	2025-09-10 19:00:06.690089
+dc7bc53e-27e6-481e-99a6-f72f813e937d	52.0	6	7a1f81fd-3b81-4cbe-bb49-fe4e0b4deab5	2025-09-10 19:00:06.690089	2025-09-10 19:00:06.690089
+524aa2b1-624a-44a3-a677-f9b622cfc049	52.0	6	7a1f81fd-3b81-4cbe-bb49-fe4e0b4deab5	2025-09-10 19:00:06.690089	2025-09-10 19:00:06.690089
+da1aae08-22a6-4ce2-a9de-2d86dda3a0a4	48.0	8	7a1f81fd-3b81-4cbe-bb49-fe4e0b4deab5	2025-09-10 19:00:06.690089	2025-09-10 19:00:06.690089
+e8a84fd1-dddc-4b09-b022-d59450f78cba	90.0	10	dae45f2a-37fa-481f-a658-a3288ea7ce93	2025-09-10 19:00:06.690089	2025-09-10 19:00:06.690089
+e8695405-77ef-4b94-9ca0-0c9373370d94	90.0	12	dae45f2a-37fa-481f-a658-a3288ea7ce93	2025-09-10 19:00:06.690089	2025-09-10 19:00:06.690089
+bc7be634-84e1-4758-b37b-80fa69ce8e1b	90.0	10	dae45f2a-37fa-481f-a658-a3288ea7ce93	2025-09-10 19:00:06.690089	2025-09-10 19:00:06.690089
+2d039d34-2b45-479c-8393-dd60d1ec5cc1	90.0	11	dae45f2a-37fa-481f-a658-a3288ea7ce93	2025-09-10 19:00:06.690089	2025-09-10 19:00:06.690089
+c54848bf-0ecb-41f6-9d76-71db5c0195fa	30.0	10	c108f9de-3fb9-4442-b5e7-eb98a27beb94	2025-09-10 19:00:06.690089	2025-09-10 19:00:06.690089
+d998917e-8f6a-49e3-92a9-266baa1b71e1	40.0	8	c108f9de-3fb9-4442-b5e7-eb98a27beb94	2025-09-10 19:00:06.690089	2025-09-10 19:00:06.690089
+f8567af5-20e2-4394-809c-6964398abc3f	40.0	8	c108f9de-3fb9-4442-b5e7-eb98a27beb94	2025-09-10 19:00:06.690089	2025-09-10 19:00:06.690089
+933a0a20-73c2-4d8e-b738-29b69015182c	21.0	21	0ff48281-b594-422a-bdb1-890ae6374db1	2025-09-11 19:27:31.164899	2025-09-11 19:27:31.164899
+6af9fbc2-0b44-4c47-ad17-decab1bf495d	21.0	1	ad8fb230-f4f9-4828-8a10-6774c07fa522	2025-09-11 20:21:02.529649	2025-09-11 20:21:02.529649
+8cad45f6-0312-4c7e-a435-b108cb761382	21.0	12	1375f642-b585-4241-bc67-91d06305d83c	2025-09-11 20:23:56.384931	2025-09-11 20:23:56.384931
+c22f0599-b2f4-4579-963f-c55fa8365ea1	12.0	21	6186a4f3-44c9-4649-a513-9bb7633e6c24	2025-09-12 09:53:26.307267	2025-09-12 09:53:26.307267
+36e097fe-7ec7-427f-a828-c89d4879548c	32.0	32	ffa4b9d7-7000-4fd6-acff-8f3913971459	2025-09-12 09:54:44.310588	2025-09-12 09:54:44.310588
+76a98339-52a4-4231-9796-fa9051393b8e	21.0	12	52b375e2-79d7-4d44-bc13-1dfe1292e594	2025-09-12 09:57:19.963906	2025-09-12 09:57:19.963906
+88ff03b7-b9f4-427e-8808-0d2fdadf539e	21.0	21	70aa9038-b4b3-4912-b519-a039561cf0ec	2025-09-12 14:52:13.884468	2025-09-12 14:52:13.884468
+f54b71ef-86ba-4fd6-bd61-7e8a149e7908	130.0	5	188c7748-55fc-492f-a5c1-2650ce0b08d9	2025-09-12 18:39:24.893794	2025-09-12 18:39:24.893794
+a7498f02-1e28-4bc2-981f-3b1c4f1f86fe	130.0	5	188c7748-55fc-492f-a5c1-2650ce0b08d9	2025-09-12 18:39:24.893794	2025-09-12 18:39:24.893794
+58c18119-9a2e-44fd-a3ed-2942ffe5dad9	130.0	5	188c7748-55fc-492f-a5c1-2650ce0b08d9	2025-09-12 18:39:24.893794	2025-09-12 18:39:24.893794
+01cf8a99-e9a5-4ceb-96ab-c2f6a9746d27	130.0	5	188c7748-55fc-492f-a5c1-2650ce0b08d9	2025-09-12 18:39:24.893794	2025-09-12 18:39:24.893794
+bed146f5-4da1-4ced-9069-285aab9f2b67	100.0	8	a7571437-6b92-485e-abf7-352b737df99a	2025-09-12 18:39:24.893794	2025-09-12 18:39:24.893794
+cb9d22e9-22d0-4607-bee4-6c4aeeb978e9	130.0	6	a7571437-6b92-485e-abf7-352b737df99a	2025-09-12 18:39:24.893794	2025-09-12 18:39:24.893794
+6cea5830-e4ef-4910-83e1-926b424b1a6f	130.0	6	a7571437-6b92-485e-abf7-352b737df99a	2025-09-12 18:39:24.893794	2025-09-12 18:39:24.893794
+9137ea99-b7d3-40e7-8b45-b479102380e6	130.0	6	a7571437-6b92-485e-abf7-352b737df99a	2025-09-12 18:39:24.893794	2025-09-12 18:39:24.893794
+757faf72-18f6-4eb1-ae7a-7cef0af92c46	80.0	7	047f27f0-d1cb-4bac-92fa-88f47fe2e4f5	2025-09-12 18:39:24.893794	2025-09-12 18:39:24.893794
+ccb15d7d-3a5f-4f98-a2a0-821f211e5526	80.0	6	047f27f0-d1cb-4bac-92fa-88f47fe2e4f5	2025-09-12 18:39:24.893794	2025-09-12 18:39:24.893794
+e51fa28e-8eb0-496c-8440-5b48aa651058	75.0	8	047f27f0-d1cb-4bac-92fa-88f47fe2e4f5	2025-09-12 18:39:24.893794	2025-09-12 18:39:24.893794
+a9fb39ca-e039-4e70-af49-a75c0ac69ce2	75.0	8	047f27f0-d1cb-4bac-92fa-88f47fe2e4f5	2025-09-12 18:39:24.893794	2025-09-12 18:39:24.893794
+0ee07e4e-6d6f-4d9d-92bb-bd41af4595c1	90.0	20	f54e3317-8c7e-40db-8b07-4248e901a086	2025-09-12 18:39:24.893794	2025-09-12 18:39:24.893794
+75b9d4b5-67fa-4b95-aa8b-5d3a28673efb	90.0	18	f54e3317-8c7e-40db-8b07-4248e901a086	2025-09-12 18:39:24.893794	2025-09-12 18:39:24.893794
+2c58729f-5954-4349-a616-2ac87b644fe8	90.0	16	f54e3317-8c7e-40db-8b07-4248e901a086	2025-09-12 18:39:24.893794	2025-09-12 18:39:24.893794
+1fd45848-6a64-4deb-b152-1fa35d6c3fb6	90.0	20	f54e3317-8c7e-40db-8b07-4248e901a086	2025-09-12 18:39:24.893794	2025-09-12 18:39:24.893794
+8bbf91c2-0f36-416f-99ab-d77e29076ea2	90.0	8	b3181ceb-fcd6-4f59-b472-49d938d24232	2025-09-12 18:39:24.893794	2025-09-12 18:39:24.893794
+a19ca67a-64e6-4152-befc-11ee933339b8	90.0	8	b3181ceb-fcd6-4f59-b472-49d938d24232	2025-09-12 18:39:24.893794	2025-09-12 18:39:24.893794
+32bdf8ee-5036-4a14-ba75-119182e42f4a	90.0	8	b3181ceb-fcd6-4f59-b472-49d938d24232	2025-09-12 18:39:24.893794	2025-09-12 18:39:24.893794
+9e0b4482-4a03-4121-8834-3c2f6f600ee4	90.0	8	b3181ceb-fcd6-4f59-b472-49d938d24232	2025-09-12 18:39:24.893794	2025-09-12 18:39:24.893794
+8932e762-7406-4b3c-857d-6465c3467778	110.0	8	2c9a54f0-9441-4e16-bbcc-8d5c5267ff19	2025-09-15 18:58:58.834289	2025-09-15 18:58:58.834289
+27a468a1-888b-416d-9cd5-19ca6d097c87	110.0	8	2c9a54f0-9441-4e16-bbcc-8d5c5267ff19	2025-09-15 18:58:58.834289	2025-09-15 18:58:58.834289
+f63c5982-5221-4b10-b60d-6932321233e4	110.0	8	2c9a54f0-9441-4e16-bbcc-8d5c5267ff19	2025-09-15 18:58:58.834289	2025-09-15 18:58:58.834289
+c3a3ea2e-5c4d-4695-b1cb-f55c2cec411e	110.0	8	2c9a54f0-9441-4e16-bbcc-8d5c5267ff19	2025-09-15 18:58:58.834289	2025-09-15 18:58:58.834289
+894198c4-09fe-4a89-b001-a35dc4707e98	80.0	8	cf900144-9f91-40c1-a2b3-67c8700cb839	2025-09-15 18:58:58.834289	2025-09-15 18:58:58.834289
+8f244fd6-f4aa-4da4-a74f-9f311e02e487	85.0	7	cf900144-9f91-40c1-a2b3-67c8700cb839	2025-09-15 18:58:58.834289	2025-09-15 18:58:58.834289
+a7b7a2f6-5027-4518-89ed-d0b064b68c3d	85.0	7	cf900144-9f91-40c1-a2b3-67c8700cb839	2025-09-15 18:58:58.834289	2025-09-15 18:58:58.834289
+3fde4faa-975c-4d03-8abc-2d2635b8a4af	85.0	6	cf900144-9f91-40c1-a2b3-67c8700cb839	2025-09-15 18:58:58.834289	2025-09-15 18:58:58.834289
+96f795fd-6d39-4888-9749-bb8a63103d40	80.0	8	66821e42-d41a-488d-ac60-23952f06a477	2025-09-15 18:58:58.834289	2025-09-15 18:58:58.834289
+e759af1c-f1df-4771-87d6-ea3b49b9950b	80.0	8	66821e42-d41a-488d-ac60-23952f06a477	2025-09-15 18:58:58.834289	2025-09-15 18:58:58.834289
+72bfbd6e-e013-48b6-9911-5b693c5c7bfe	80.0	8	66821e42-d41a-488d-ac60-23952f06a477	2025-09-15 18:58:58.834289	2025-09-15 18:58:58.834289
+8b76799b-280d-45fd-8c99-f7523d548341	80.0	9	66821e42-d41a-488d-ac60-23952f06a477	2025-09-15 18:58:58.834289	2025-09-15 18:58:58.834289
+13f03477-fd69-4888-9f54-84596cd1603d	80.0	7	671ca6f0-d921-45dd-9556-7a63401c053c	2025-09-15 18:58:58.834289	2025-09-15 18:58:58.834289
+794f133d-4cef-4226-8b50-f6e946778b6b	80.0	7	671ca6f0-d921-45dd-9556-7a63401c053c	2025-09-15 18:58:58.834289	2025-09-15 18:58:58.834289
+0ecef811-775c-4e9c-bf14-38abf146d8d3	80.0	6	671ca6f0-d921-45dd-9556-7a63401c053c	2025-09-15 18:58:58.834289	2025-09-15 18:58:58.834289
+5845e7ed-aac2-4850-bfc4-22239136ef5e	80.0	7	671ca6f0-d921-45dd-9556-7a63401c053c	2025-09-15 18:58:58.834289	2025-09-15 18:58:58.834289
+8349ee4b-6b24-41f4-8a2f-2a6922d2e55a	50.0	8	33cc865a-4d45-4671-a0c2-1ab93c7b8b65	2025-09-15 18:58:58.834289	2025-09-15 18:58:58.834289
+68c3e7b7-4c90-4b1b-86db-5e77c1bdaccd	50.0	8	33cc865a-4d45-4671-a0c2-1ab93c7b8b65	2025-09-15 18:58:58.834289	2025-09-15 18:58:58.834289
+917e9937-359d-4f73-bb62-b1ea6a772bfb	50.0	8	33cc865a-4d45-4671-a0c2-1ab93c7b8b65	2025-09-15 18:58:58.834289	2025-09-15 18:58:58.834289
+89615e2d-a6da-4a1f-ab23-c73bb954a5fa	50.0	8	33cc865a-4d45-4671-a0c2-1ab93c7b8b65	2025-09-15 18:58:58.834289	2025-09-15 18:58:58.834289
+6e1762be-f5dd-4db8-87b2-736446201520	30.0	10	3b240aa8-9945-4a84-866a-103fa8aa6035	2025-09-15 18:58:58.834289	2025-09-15 18:58:58.834289
+102355bc-5bb2-4707-a146-97a565c930c3	30.0	9	3b240aa8-9945-4a84-866a-103fa8aa6035	2025-09-15 18:58:58.834289	2025-09-15 18:58:58.834289
+6a94d640-0336-481a-9dd6-b57621eb49fd	30.0	9	3b240aa8-9945-4a84-866a-103fa8aa6035	2025-09-15 18:58:58.834289	2025-09-15 18:58:58.834289
+3d515712-e79a-4e57-b6b9-087be5560386	30.0	9	3b240aa8-9945-4a84-866a-103fa8aa6035	2025-09-15 18:58:58.834289	2025-09-15 18:58:58.834289
+\.
 
 
 --
 -- Data for Name: muscle_exercise_bundles; Type: TABLE DATA; Schema: public; Owner: -
 --
 
+COPY public.muscle_exercise_bundles (id, percentage, exercise_example_id, muscle_id, created_at, updated_at) FROM stdin;
+\.
+
 
 --
 -- Data for Name: muscle_groups; Type: TABLE DATA; Schema: public; Owner: -
 --
 
-INSERT INTO public.muscle_groups
-VALUES ('e1f1e456-3f8d-46f6-b7ba-75bb4b8c3802', 'Abdominal Muscles', '2023-11-12 00:38:32.665553',
-        '2023-11-12 00:38:32.665553', 'abdominal_muscles');
-INSERT INTO public.muscle_groups
-VALUES ('2043a22c-c547-42c2-81bb-81f85693d9cd', 'Arms and Forearms', '2023-11-12 00:38:32.665553',
-        '2023-11-12 00:38:32.665553', 'arms_and_forearms');
-INSERT INTO public.muscle_groups
-VALUES ('4289bf91-51d8-40b0-9aca-66780584a4eb', 'Back Muscles', '2023-11-12 00:38:32.665553',
-        '2023-11-12 00:38:32.665553', 'back_muscles');
-INSERT INTO public.muscle_groups
-VALUES ('255efc07-6c7e-42ab-97e5-01c06d60b5a3', 'Legs', '2023-11-12 00:38:32.665553', '2023-11-12 00:38:32.665553',
-        'legs');
-INSERT INTO public.muscle_groups
-VALUES ('5fd8ccc9-8630-4357-a234-c2f278d905db', 'Chest Muscles', '2023-11-12 00:38:32.665553',
-        '2023-11-12 00:38:32.665553', 'chest_muscles');
-INSERT INTO public.muscle_groups
-VALUES ('e1117068-06cd-4330-a4f9-93b485165805', 'Shoulder Muscles', '2023-11-12 00:38:32.665553',
-        '2023-11-12 00:38:32.665553', 'shoulder_muscles');
+COPY public.muscle_groups (id, name, created_at, updated_at, type) FROM stdin;
+e1f1e456-3f8d-46f6-b7ba-75bb4b8c3802	Abdominal Muscles	2023-11-12 00:38:32.665553	2023-11-12 00:38:32.665553	abdominal_muscles
+2043a22c-c547-42c2-81bb-81f85693d9cd	Arms and Forearms	2023-11-12 00:38:32.665553	2023-11-12 00:38:32.665553	arms_and_forearms
+4289bf91-51d8-40b0-9aca-66780584a4eb	Back Muscles	2023-11-12 00:38:32.665553	2023-11-12 00:38:32.665553	back_muscles
+255efc07-6c7e-42ab-97e5-01c06d60b5a3	Legs	2023-11-12 00:38:32.665553	2023-11-12 00:38:32.665553	legs
+5fd8ccc9-8630-4357-a234-c2f278d905db	Chest Muscles	2023-11-12 00:38:32.665553	2023-11-12 00:38:32.665553	chest_muscles
+e1117068-06cd-4330-a4f9-93b485165805	Shoulder Muscles	2023-11-12 00:38:32.665553	2023-11-12 00:38:32.665553	shoulder_muscles
+\.
 
 
 --
 -- Data for Name: muscles; Type: TABLE DATA; Schema: public; Owner: -
 --
 
-INSERT INTO public.muscles
-VALUES ('2e0faf2b-31a5-4c63-ac15-454be132796f', 'Trapezius', '4289bf91-51d8-40b0-9aca-66780584a4eb',
-        '2023-11-12 00:44:51.190921', '2023-11-12 00:44:51.190921', 'trapezius', 48);
-INSERT INTO public.muscles
-VALUES ('af854064-078a-4f50-af1d-8744e866751e', 'Rhomboids', '4289bf91-51d8-40b0-9aca-66780584a4eb',
-        '2023-11-12 00:44:51.190921', '2023-11-12 00:44:51.190921', 'rhomboids', 48);
-INSERT INTO public.muscles
-VALUES ('1ddbb748-37a6-4d66-a7d4-4957bdbc647f', 'Obliques', 'e1f1e456-3f8d-46f6-b7ba-75bb4b8c3802',
-        '2023-11-12 00:49:49.921299', '2023-11-12 00:49:49.921299', 'obliques', 48);
-INSERT INTO public.muscles
-VALUES ('9e69205f-6c6e-44a7-8ee6-89215e28a28e', 'Rectus Abdominis', 'e1f1e456-3f8d-46f6-b7ba-75bb4b8c3802',
-        '2023-11-12 00:49:49.921299', '2023-11-12 00:49:49.921299', 'rectus_abdominis', 48);
-INSERT INTO public.muscles
-VALUES ('57559b71-b757-468a-983d-a1b3cec4acef', 'Quadriceps', '255efc07-6c7e-42ab-97e5-01c06d60b5a3',
-        '2023-11-12 00:51:12.539967', '2023-11-12 00:51:12.539967', 'quadriceps', 48);
-INSERT INTO public.muscles
-VALUES ('831f39bd-80a8-4d11-9964-bde1788abae1', 'Latissimus Dorsi', '4289bf91-51d8-40b0-9aca-66780584a4eb',
-        '2023-11-12 00:44:51.190921', '2023-11-12 00:44:51.190921', 'latissimus_dorsi', 48);
-INSERT INTO public.muscles
-VALUES ('2da3d8f2-6a28-45ff-90a2-ea3a6bb2afe8', 'Lateral Deltoid', 'e1117068-06cd-4330-a4f9-93b485165805',
-        '2023-11-13 21:03:29.671135', '2023-11-13 21:03:29.671135', 'lateral_deltoid', 48);
-INSERT INTO public.muscles
-VALUES ('d736a513-9d73-47a3-bffc-c14911662ea2', 'Anterior Deltoid', 'e1117068-06cd-4330-a4f9-93b485165805',
-        '2023-11-13 21:03:29.671135', '2023-11-13 21:03:29.671135', 'anterior_deltoid', 48);
-INSERT INTO public.muscles
-VALUES ('97136fa7-622a-49d6-9d09-403a631d253d', 'Posterior Deltoid', 'e1117068-06cd-4330-a4f9-93b485165805',
-        '2023-11-13 21:03:29.671135', '2023-11-13 21:03:29.671135', 'posterior_deltoid', 48);
-INSERT INTO public.muscles
-VALUES ('bba5b66d-9a9c-4b44-8dd6-9574760038ee', 'Calf Muscles', '255efc07-6c7e-42ab-97e5-01c06d60b5a3',
-        '2023-11-12 00:51:12.539967', '2023-11-12 00:51:12.539967', 'calf', 48);
-INSERT INTO public.muscles
-VALUES ('f6e65bfe-0746-4a8f-8210-0e9bf88d9886', 'Gluteal Muscles', '255efc07-6c7e-42ab-97e5-01c06d60b5a3',
-        '2023-11-15 21:31:45.933229', '2023-11-15 21:31:45.933229', 'gluteal', 48);
-INSERT INTO public.muscles
-VALUES ('3eeaa9fa-0847-4780-9d01-185f91252794', 'Hamstrings', '255efc07-6c7e-42ab-97e5-01c06d60b5a3',
-        '2023-11-12 00:51:12.539967', '2023-11-12 00:51:12.539967', 'hamstrings', 48);
-INSERT INTO public.muscles
-VALUES ('9a8024fe-c721-4bea-969c-db88674b5ece', 'Forearm Muscles', '2043a22c-c547-42c2-81bb-81f85693d9cd',
-        '2023-11-13 21:01:37.624512', '2023-11-13 21:01:37.624512', 'forearm', 36);
-INSERT INTO public.muscles
-VALUES ('97a87b01-35e8-490a-94b9-9bdae9c2f965', 'Biceps Brachii', '2043a22c-c547-42c2-81bb-81f85693d9cd',
-        '2023-11-12 00:47:55.131334', '2023-11-12 00:47:55.131334', 'biceps', 36);
-INSERT INTO public.muscles
-VALUES ('0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a', 'Triceps Brachii', '2043a22c-c547-42c2-81bb-81f85693d9cd',
-        '2023-11-13 21:01:37.624512', '2023-11-13 21:01:37.624512', 'triceps', 36);
-INSERT INTO public.muscles
-VALUES ('be38dcef-1bc8-487b-a44f-96df1ab9e68c', 'Teres Major', '4289bf91-51d8-40b0-9aca-66780584a4eb',
-        '2024-07-30 19:46:35.870695', '2024-07-30 19:46:35.870695', 'teres_major', 36);
-INSERT INTO public.muscles
-VALUES ('fa8025e6-e106-475c-8b9d-77831132fb47', 'Adductors', '255efc07-6c7e-42ab-97e5-01c06d60b5a3',
-        '2024-08-31 13:39:50.77308', '2024-08-31 13:39:50.77308', 'adductors', 48);
-INSERT INTO public.muscles
-VALUES ('ab1dbd50-83a4-42c7-a3cd-da1784818ec8', 'Abductors', '255efc07-6c7e-42ab-97e5-01c06d60b5a3',
-        '2024-08-31 13:39:50.77308', '2024-08-31 13:39:50.77308', 'abductors', 48);
-INSERT INTO public.muscles
-VALUES ('b4658891-9713-48c4-864c-8dd907da19b0', 'Pectoralis (sternocostal)', '5fd8ccc9-8630-4357-a234-c2f278d905db',
-        '2023-11-12 00:44:51.190921', '2023-11-12 00:44:51.190921', 'pectoralis_major_sternocostal', 48);
-INSERT INTO public.muscles
-VALUES ('c57aa60c-61ea-4498-b01f-fedcafe8a32a', 'Pectoralis (clavicular)', '5fd8ccc9-8630-4357-a234-c2f278d905db',
-        '2023-11-12 00:44:51.190921', '2023-11-12 00:44:51.190921', 'pectoralis_major_clavicular', 48);
-INSERT INTO public.muscles
-VALUES ('a3a8eae0-6315-4435-8974-f2c07ec3567f', 'Pectoralis (abdominal)', '5fd8ccc9-8630-4357-a234-c2f278d905db',
-        '2024-09-02 11:45:52.106331', '2024-09-02 11:45:52.106331', 'pectoralis_major_abdominal', 48);
+COPY public.muscles (id, name, muscle_group_id, created_at, updated_at, type, recovery_time_hours) FROM stdin;
+2e0faf2b-31a5-4c63-ac15-454be132796f	Trapezius	4289bf91-51d8-40b0-9aca-66780584a4eb	2023-11-12 00:44:51.190921	2023-11-12 00:44:51.190921	trapezius	48
+af854064-078a-4f50-af1d-8744e866751e	Rhomboids	4289bf91-51d8-40b0-9aca-66780584a4eb	2023-11-12 00:44:51.190921	2023-11-12 00:44:51.190921	rhomboids	48
+1ddbb748-37a6-4d66-a7d4-4957bdbc647f	Obliques	e1f1e456-3f8d-46f6-b7ba-75bb4b8c3802	2023-11-12 00:49:49.921299	2023-11-12 00:49:49.921299	obliques	48
+9e69205f-6c6e-44a7-8ee6-89215e28a28e	Rectus Abdominis	e1f1e456-3f8d-46f6-b7ba-75bb4b8c3802	2023-11-12 00:49:49.921299	2023-11-12 00:49:49.921299	rectus_abdominis	48
+57559b71-b757-468a-983d-a1b3cec4acef	Quadriceps	255efc07-6c7e-42ab-97e5-01c06d60b5a3	2023-11-12 00:51:12.539967	2023-11-12 00:51:12.539967	quadriceps	48
+831f39bd-80a8-4d11-9964-bde1788abae1	Latissimus Dorsi	4289bf91-51d8-40b0-9aca-66780584a4eb	2023-11-12 00:44:51.190921	2023-11-12 00:44:51.190921	latissimus_dorsi	48
+2da3d8f2-6a28-45ff-90a2-ea3a6bb2afe8	Lateral Deltoid	e1117068-06cd-4330-a4f9-93b485165805	2023-11-13 21:03:29.671135	2023-11-13 21:03:29.671135	lateral_deltoid	48
+d736a513-9d73-47a3-bffc-c14911662ea2	Anterior Deltoid	e1117068-06cd-4330-a4f9-93b485165805	2023-11-13 21:03:29.671135	2023-11-13 21:03:29.671135	anterior_deltoid	48
+97136fa7-622a-49d6-9d09-403a631d253d	Posterior Deltoid	e1117068-06cd-4330-a4f9-93b485165805	2023-11-13 21:03:29.671135	2023-11-13 21:03:29.671135	posterior_deltoid	48
+bba5b66d-9a9c-4b44-8dd6-9574760038ee	Calf Muscles	255efc07-6c7e-42ab-97e5-01c06d60b5a3	2023-11-12 00:51:12.539967	2023-11-12 00:51:12.539967	calf	48
+f6e65bfe-0746-4a8f-8210-0e9bf88d9886	Gluteal Muscles	255efc07-6c7e-42ab-97e5-01c06d60b5a3	2023-11-15 21:31:45.933229	2023-11-15 21:31:45.933229	gluteal	48
+3eeaa9fa-0847-4780-9d01-185f91252794	Hamstrings	255efc07-6c7e-42ab-97e5-01c06d60b5a3	2023-11-12 00:51:12.539967	2023-11-12 00:51:12.539967	hamstrings	48
+9a8024fe-c721-4bea-969c-db88674b5ece	Forearm Muscles	2043a22c-c547-42c2-81bb-81f85693d9cd	2023-11-13 21:01:37.624512	2023-11-13 21:01:37.624512	forearm	36
+97a87b01-35e8-490a-94b9-9bdae9c2f965	Biceps Brachii	2043a22c-c547-42c2-81bb-81f85693d9cd	2023-11-12 00:47:55.131334	2023-11-12 00:47:55.131334	biceps	36
+0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a	Triceps Brachii	2043a22c-c547-42c2-81bb-81f85693d9cd	2023-11-13 21:01:37.624512	2023-11-13 21:01:37.624512	triceps	36
+be38dcef-1bc8-487b-a44f-96df1ab9e68c	Teres Major	4289bf91-51d8-40b0-9aca-66780584a4eb	2024-07-30 19:46:35.870695	2024-07-30 19:46:35.870695	teres_major	36
+fa8025e6-e106-475c-8b9d-77831132fb47	Adductors	255efc07-6c7e-42ab-97e5-01c06d60b5a3	2024-08-31 13:39:50.77308	2024-08-31 13:39:50.77308	adductors	48
+ab1dbd50-83a4-42c7-a3cd-da1784818ec8	Abductors	255efc07-6c7e-42ab-97e5-01c06d60b5a3	2024-08-31 13:39:50.77308	2024-08-31 13:39:50.77308	abductors	48
+b4658891-9713-48c4-864c-8dd907da19b0	Pectoralis (sternocostal)	5fd8ccc9-8630-4357-a234-c2f278d905db	2023-11-12 00:44:51.190921	2023-11-12 00:44:51.190921	pectoralis_major_sternocostal	48
+c57aa60c-61ea-4498-b01f-fedcafe8a32a	Pectoralis (clavicular)	5fd8ccc9-8630-4357-a234-c2f278d905db	2023-11-12 00:44:51.190921	2023-11-12 00:44:51.190921	pectoralis_major_clavicular	48
+a3a8eae0-6315-4435-8974-f2c07ec3567f	Pectoralis (abdominal)	5fd8ccc9-8630-4357-a234-c2f278d905db	2024-09-02 11:45:52.106331	2024-09-02 11:45:52.106331	pectoralis_major_abdominal	48
+\.
 
 
 --
 -- Data for Name: trainings; Type: TABLE DATA; Schema: public; Owner: -
 --
+
+COPY public.trainings (id, duration, volume, repetitions, intensity, user_id, created_at, updated_at) FROM stdin;
+b7433600-19d8-4514-8ed3-b35b50f4aff4	143	19626.0	233	84.23	11287af9-deaa-48f8-a3d8-d3c696c0c579	2025-09-10 19:00:06.690089	2025-09-10 19:00:06.690089
+20618ae1-4a3d-4b9d-b1c5-3130cc83576c	0	441.0	21	21.00	6b85d5f5-0f89-440d-8ae6-11efe039c5f1	2025-09-11 19:27:31.164899	2025-09-11 19:27:31.164899
+1a433b12-a80e-4321-9e6f-b4b70a40bd1f	0	21.0	1	21.00	6b85d5f5-0f89-440d-8ae6-11efe039c5f1	2025-09-11 20:21:02.529649	2025-09-11 20:21:02.529649
+1ff47ebb-40ae-48d2-a4e7-85f0eea8bdaa	0	252.0	12	21.00	6b85d5f5-0f89-440d-8ae6-11efe039c5f1	2025-09-11 20:23:56.384931	2025-09-11 20:23:56.384931
+35073fc3-51b8-44ba-ace3-306c2889cf7f	0	252.0	21	12.00	4b62a03a-8ec3-4cba-8d3a-cbf6ecd25dfe	2025-09-12 09:53:26.307267	2025-09-12 09:53:26.307267
+964b8335-dc36-4903-ad1a-03bf8dd3f214	0	1024.0	32	32.00	4b62a03a-8ec3-4cba-8d3a-cbf6ecd25dfe	2025-09-12 09:54:44.310588	2025-09-12 09:54:44.310588
+b314bd45-8c88-40e3-af36-deefe3bc9e5a	0	252.0	12	21.00	7613e175-eb6a-4277-9370-ad0a5a35b019	2025-09-12 09:57:19.963906	2025-09-12 09:57:19.963906
+d4f94e3c-a248-458f-8aa2-1d31ceebe334	0	441.0	21	21.00	6b85d5f5-0f89-440d-8ae6-11efe039c5f1	2025-09-12 14:52:13.884468	2025-09-12 14:52:13.884468
+9d79d540-e3a3-43e2-b2ff-f560a38d7d8d	106	17520.0	181	96.80	11287af9-deaa-48f8-a3d8-d3c696c0c579	2025-09-12 18:39:24.893794	2025-09-12 18:39:24.893794
+dea13a4d-bdbc-4846-8b88-1e68544b859a	136	13370.0	189	70.74	11287af9-deaa-48f8-a3d8-d3c696c0c579	2025-09-15 18:58:58.834289	2025-09-15 18:58:58.834289
+\.
+
+
+--
+-- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public.users (id, email, password, name, created_at, updated_at, height, experience) FROM stdin;
+8609c741-baec-4aac-87a6-2c1ddcda3809	grippo@admin.panel	$2a$10$UlRASgvH6dr8ged6JFlu3.tan67zzguKumE4vadRoDivapksOoKAK	Max	2025-09-10 14:45:32.236181	2025-09-10 14:45:32.236181	175	pro
+6b85d5f5-0f89-440d-8ae6-11efe039c5f1	grippo@mail.com	$2a$10$yonnoL/LSy2TeBcfG5eFMukGAIsKy56KxDpWOJIRUo3bt.yz4Q7sS	Max	2025-09-10 14:46:39.822108	2025-09-10 14:46:39.822108	175	pro
+11287af9-deaa-48f8-a3d8-d3c696c0c579	max@mail.com	$2a$10$PjzqKwp..t4kWftUyjRy8uIaoDSzff9oyskaOXPwlyt8jvBJH8wTG	Max Test	2025-09-10 15:58:08.04251	2025-09-10 15:58:08.04251	175	advanced
+ff5b7fa7-9b91-40a2-a3f6-335533db5a76	qwerty@qwe.rty	$2a$10$v/tLloSysSF/XiYlX6Mw/.EsNenid/JDvIR2068.pE8gQ4IkrwSmG	qweqwe	2025-09-12 09:34:14.664886	2025-09-12 09:34:14.664886	175	advanced
+66e983eb-ef8f-4290-b8d8-4ca46c581f57	asda@asd.asd	$2a$10$6Z5ZG8Ar6xRyKMSP95T0lOp2eEWJeGrIqarzslZu4fsUd32OCEAoS	asdasd	2025-09-12 09:36:07.242659	2025-09-12 09:36:07.242659	175	advanced
+22c1e484-e597-4275-89ad-3a94d4455a49	ddd@dd.dd	$2a$10$BzCzQOC8qhD/KOomDvYPUus5JYp4AY8ejI.Kyim8Go3UiyJMCMEGm	asdad	2025-09-12 09:37:50.685961	2025-09-12 09:37:50.685961	175	pro
+c8254e30-98b0-435d-9979-21d5b4a46670	dsa@ee.qq	$2a$10$7TkhoP05K2unO13dmy4pBeyWKOLdqWFiUfF30pMY8z0YGAeFNZso2	qwee	2025-09-12 09:38:28.455955	2025-09-12 09:38:28.455955	175	pro
+b2104f44-b3f2-48f0-bbf7-0dfcbe7c4b3c	dda@asd.asdas	$2a$10$7BLSPi1SLp7TvEZMYYb6LO69NoPHlm31D5fcdWzxgczKMTXXqVnSy	asdasd	2025-09-12 09:40:35.886588	2025-09-12 09:40:35.886588	175	advanced
+eb70143a-f257-4ac1-acb4-fb5bc1aed5c4	adsasda@asdadsda.asadsads	$2a$10$JRumd0st0PWf4qC.w5v2OeQkFQsM5tHpPz4WD2MBUpfvLHXu.hnTS	adsadsdsda	2025-09-12 09:41:26.310599	2025-09-12 09:41:26.310599	175	advanced
+5f1c9617-9eaa-4aa3-bce3-f82c9ad79ee9	qweads@sdqwe.qwe	$2a$10$iX/qwyFV8enVTVhvG4jG2.6EtHReZYU8EIJNx80TcKTShMPeyVW3S	asddad	2025-09-12 09:42:35.853958	2025-09-12 09:42:35.853958	175	advanced
+f3e15f59-9e1f-41a4-a007-cf8ec9080908	asdasd@asdas.adasds	$2a$10$wab3z9Y5aCPVA3.cbYcApeGJzEbkpME.MKsAcEK8/Z6s8wznshcri	dsadasd	2025-09-12 09:43:36.792129	2025-09-12 09:43:36.792129	175	advanced
+01e739b3-827a-45bc-bead-0230643cb370	asdsadasd@asd.asdsada	$2a$10$GMtC8XaynZ.F./ads5KMKelVNax.JQ8VX.JdNoWI5YKQk4rEA84Ey	addsadasddadsdsas	2025-09-12 09:44:11.966063	2025-09-12 09:44:11.966063	175	advanced
+f7ec50f6-2112-402d-9d59-0397dea94b90	dasdsa@asdsd.asdasd	$2a$10$Cqy34VlcDQDxDqpJPDLYl.Kcrx8MlpWQb4En.85vx1f3cyMeiYHIy	asdasda	2025-09-12 09:46:35.793764	2025-09-12 09:46:35.793764	175	advanced
+7982e065-74bb-467e-8861-1dea1c6d6b52	zxcasd@asdzxc.zxcasd	$2a$10$OSDkiGAs/9hhxE4ink.F2.zWEbKYna.GNXzaWL3uii9j4QMewjEiq	asdasd	2025-09-12 09:47:22.021652	2025-09-12 09:47:22.021652	175	advanced
+4b62a03a-8ec3-4cba-8d3a-cbf6ecd25dfe	asdkdsa@ad.dsakasds	$2a$10$EeVhc.QXg8.Pi6aILy7jjeha3Q9yv8n1xIAevmoBWr0E2I5ts5li2	asdasd	2025-09-12 09:51:51.074541	2025-09-12 09:51:51.074541	175	pro
+7613e175-eb6a-4277-9370-ad0a5a35b019	lsll@ada.asds	$2a$10$tey11H1DTHN/ig6w3AafXu8mj3f8XrZAQZ0e4iOFaWQPd3nDPOSw.	dsasa	2025-09-12 09:57:02.208294	2025-09-12 09:57:02.208294	175	intermediate
+5dc2605a-be3f-4f06-8c43-a19d2b5039f9	sssss@mail.com	$2a$10$RixqrJolzmoowmMZ/3iTdu8FKcjGVwI7F.IHwcepU4KwnqGTuUp0S	Sssss	2025-09-15 19:59:39.18715	2025-09-15 19:59:39.18715	175	pro
+\.
+
+
+--
+-- Data for Name: weight_history; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public.weight_history (id, user_id, weight, created_at, updated_at) FROM stdin;
+920847ad-25ce-43e4-b441-e23784b6cf85	8609c741-baec-4aac-87a6-2c1ddcda3809	82.5	2025-09-10 14:45:32.236181	2025-09-10 14:45:32.236181
+b48c2e79-5c86-4741-89b3-737e619dc85e	6b85d5f5-0f89-440d-8ae6-11efe039c5f1	82.5	2025-09-10 14:46:39.822108	2025-09-10 14:46:39.822108
+4f4a456b-9b34-4174-96ef-411c300ae2cd	11287af9-deaa-48f8-a3d8-d3c696c0c579	70.0	2025-09-10 15:58:08.04251	2025-09-10 15:58:08.04251
+8301b4df-0968-4adf-b109-064c9e05aa23	ff5b7fa7-9b91-40a2-a3f6-335533db5a76	70.0	2025-09-12 09:34:14.664886	2025-09-12 09:34:14.664886
+83dc95d4-84eb-45d9-8df3-e22e07fb6c49	66e983eb-ef8f-4290-b8d8-4ca46c581f57	70.0	2025-09-12 09:36:07.242659	2025-09-12 09:36:07.242659
+d6f0d546-5776-4a75-affa-a62d96b2b74e	22c1e484-e597-4275-89ad-3a94d4455a49	70.0	2025-09-12 09:37:50.685961	2025-09-12 09:37:50.685961
+3b48bff0-a629-47d5-889e-9088acd8e034	c8254e30-98b0-435d-9979-21d5b4a46670	70.0	2025-09-12 09:38:28.455955	2025-09-12 09:38:28.455955
+176d0893-9e55-4c08-9c43-9e4f0895504b	b2104f44-b3f2-48f0-bbf7-0dfcbe7c4b3c	70.0	2025-09-12 09:40:35.886588	2025-09-12 09:40:35.886588
+fe8ca8d7-df0d-4c93-9fd2-833f8043001e	eb70143a-f257-4ac1-acb4-fb5bc1aed5c4	70.0	2025-09-12 09:41:26.310599	2025-09-12 09:41:26.310599
+9454f5ec-7507-48d9-867d-7749f49b3baf	5f1c9617-9eaa-4aa3-bce3-f82c9ad79ee9	70.0	2025-09-12 09:42:35.853958	2025-09-12 09:42:35.853958
+36545c1d-cadf-44b7-b4a8-16da9976364f	f3e15f59-9e1f-41a4-a007-cf8ec9080908	70.0	2025-09-12 09:43:36.792129	2025-09-12 09:43:36.792129
+db0e623a-a25e-434d-b7b4-c3c0bab470a6	01e739b3-827a-45bc-bead-0230643cb370	70.0	2025-09-12 09:44:11.966063	2025-09-12 09:44:11.966063
+ae073d01-cc2d-46f7-958f-d67016c74cae	f7ec50f6-2112-402d-9d59-0397dea94b90	70.0	2025-09-12 09:46:35.793764	2025-09-12 09:46:35.793764
+16c78d8f-8d07-4402-9a16-24ab9c031cb0	7982e065-74bb-467e-8861-1dea1c6d6b52	70.0	2025-09-12 09:47:22.021652	2025-09-12 09:47:22.021652
+da5eb9b4-a0f2-48a9-b00e-04c5fbf59dad	4b62a03a-8ec3-4cba-8d3a-cbf6ecd25dfe	70.0	2025-09-12 09:51:51.074541	2025-09-12 09:51:51.074541
+1dc0f5d1-9ac0-4121-8c87-441b9d61c4f2	7613e175-eb6a-4277-9370-ad0a5a35b019	70.0	2025-09-12 09:57:02.208294	2025-09-12 09:57:02.208294
+e5fa5eb8-caaa-434a-8811-aa5eb26f86a8	5dc2605a-be3f-4f06-8c43-a19d2b5039f9	70.0	2025-09-15 19:59:39.18715	2025-09-15 19:59:39.18715
+\.
 
 
 --
@@ -6386,7 +2645,7 @@ CREATE INDEX "IDX_b43dd7bd8917f9fca521d49232" ON public.trainings USING btree (c
 --
 
 ALTER TABLE ONLY public.trainings
-    ADD CONSTRAINT "FK_0a6488e45e7e8ed7d5f69e0dead" FOREIGN KEY (user_id) REFERENCES public.users (id) ON DELETE CASCADE;
+    ADD CONSTRAINT "FK_0a6488e45e7e8ed7d5f69e0dead" FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
 
 
 --
@@ -6394,7 +2653,7 @@ ALTER TABLE ONLY public.trainings
 --
 
 ALTER TABLE ONLY public.muscle_exercise_bundles
-    ADD CONSTRAINT "FK_183fdb588e33d2d612dc4998e95" FOREIGN KEY (exercise_example_id) REFERENCES public.exercise_examples (id) ON DELETE CASCADE;
+    ADD CONSTRAINT "FK_183fdb588e33d2d612dc4998e95" FOREIGN KEY (exercise_example_id) REFERENCES public.exercise_examples(id) ON DELETE CASCADE;
 
 
 --
@@ -6402,7 +2661,7 @@ ALTER TABLE ONLY public.muscle_exercise_bundles
 --
 
 ALTER TABLE ONLY public.exercise_example_bundles
-    ADD CONSTRAINT "FK_2d9baa79828c7180ebf28ff5065" FOREIGN KEY (muscle_id) REFERENCES public.muscles (id) ON DELETE CASCADE;
+    ADD CONSTRAINT "FK_2d9baa79828c7180ebf28ff5065" FOREIGN KEY (muscle_id) REFERENCES public.muscles(id) ON DELETE CASCADE;
 
 
 --
@@ -6410,7 +2669,7 @@ ALTER TABLE ONLY public.exercise_example_bundles
 --
 
 ALTER TABLE ONLY public.excluded_equipments
-    ADD CONSTRAINT "FK_3fc2cde19015c5361418979a02a" FOREIGN KEY (equipment_id) REFERENCES public.equipments (id) ON DELETE CASCADE;
+    ADD CONSTRAINT "FK_3fc2cde19015c5361418979a02a" FOREIGN KEY (equipment_id) REFERENCES public.equipments(id) ON DELETE CASCADE;
 
 
 --
@@ -6418,7 +2677,7 @@ ALTER TABLE ONLY public.excluded_equipments
 --
 
 ALTER TABLE ONLY public.excluded_muscles
-    ADD CONSTRAINT "FK_487dfe271837b6e15ee40561fc7" FOREIGN KEY (muscle_id) REFERENCES public.muscles (id) ON DELETE CASCADE;
+    ADD CONSTRAINT "FK_487dfe271837b6e15ee40561fc7" FOREIGN KEY (muscle_id) REFERENCES public.muscles(id) ON DELETE CASCADE;
 
 
 --
@@ -6426,7 +2685,7 @@ ALTER TABLE ONLY public.excluded_muscles
 --
 
 ALTER TABLE ONLY public.muscle_exercise_bundles
-    ADD CONSTRAINT "FK_5b415788262521c5bfe20147ddc" FOREIGN KEY (muscle_id) REFERENCES public.muscles (id) ON DELETE CASCADE;
+    ADD CONSTRAINT "FK_5b415788262521c5bfe20147ddc" FOREIGN KEY (muscle_id) REFERENCES public.muscles(id) ON DELETE CASCADE;
 
 
 --
@@ -6434,7 +2693,7 @@ ALTER TABLE ONLY public.muscle_exercise_bundles
 --
 
 ALTER TABLE ONLY public.exercise_example_bundles
-    ADD CONSTRAINT "FK_600bedaa30ff58235320ef11133" FOREIGN KEY (exercise_example_id) REFERENCES public.exercise_examples (id) ON DELETE CASCADE;
+    ADD CONSTRAINT "FK_600bedaa30ff58235320ef11133" FOREIGN KEY (exercise_example_id) REFERENCES public.exercise_examples(id) ON DELETE CASCADE;
 
 
 --
@@ -6442,7 +2701,7 @@ ALTER TABLE ONLY public.exercise_example_bundles
 --
 
 ALTER TABLE ONLY public.excluded_equipments
-    ADD CONSTRAINT "FK_67d0ce866c36449a91e2b5e7296" FOREIGN KEY (user_id) REFERENCES public.users (id) ON DELETE CASCADE;
+    ADD CONSTRAINT "FK_67d0ce866c36449a91e2b5e7296" FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
 
 
 --
@@ -6450,7 +2709,7 @@ ALTER TABLE ONLY public.excluded_equipments
 --
 
 ALTER TABLE ONLY public.iterations
-    ADD CONSTRAINT "FK_83c23650e879d2d07e375574069" FOREIGN KEY (exercise_id) REFERENCES public.exercises (id) ON DELETE CASCADE;
+    ADD CONSTRAINT "FK_83c23650e879d2d07e375574069" FOREIGN KEY (exercise_id) REFERENCES public.exercises(id) ON DELETE CASCADE;
 
 
 --
@@ -6458,7 +2717,7 @@ ALTER TABLE ONLY public.iterations
 --
 
 ALTER TABLE ONLY public.weight_history
-    ADD CONSTRAINT "FK_90d01effa2fdd927e738e232f0e" FOREIGN KEY (user_id) REFERENCES public.users (id) ON DELETE CASCADE;
+    ADD CONSTRAINT "FK_90d01effa2fdd927e738e232f0e" FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
 
 
 --
@@ -6466,7 +2725,7 @@ ALTER TABLE ONLY public.weight_history
 --
 
 ALTER TABLE ONLY public.muscles
-    ADD CONSTRAINT "FK_97c14a3154bde81534490d92186" FOREIGN KEY (muscle_group_id) REFERENCES public.muscle_groups (id) ON DELETE CASCADE;
+    ADD CONSTRAINT "FK_97c14a3154bde81534490d92186" FOREIGN KEY (muscle_group_id) REFERENCES public.muscle_groups(id) ON DELETE CASCADE;
 
 
 --
@@ -6474,7 +2733,7 @@ ALTER TABLE ONLY public.muscles
 --
 
 ALTER TABLE ONLY public.exercise_examples_equipments
-    ADD CONSTRAINT "FK_a97b574c6a2ddefc48ce4e34f80" FOREIGN KEY (exercise_example_id) REFERENCES public.exercise_examples (id) ON DELETE CASCADE;
+    ADD CONSTRAINT "FK_a97b574c6a2ddefc48ce4e34f80" FOREIGN KEY (exercise_example_id) REFERENCES public.exercise_examples(id) ON DELETE CASCADE;
 
 
 --
@@ -6482,14 +2741,15 @@ ALTER TABLE ONLY public.exercise_examples_equipments
 --
 
 ALTER TABLE ONLY public.exercises
-    ADD CONSTRAINT "FK_b0947cc4c27363a5d4525d103dd" FOREIGN KEY (training_id) REFERENCES public.trainings (id) ON DELETE CASCADE;
+    ADD CONSTRAINT "FK_b0947cc4c27363a5d4525d103dd" FOREIGN KEY (training_id) REFERENCES public.trainings(id) ON DELETE CASCADE;
+
 
 --
 -- Name: exercise_examples_equipments FK_ca612324a3e3a31b91989cac790; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.exercise_examples_equipments
-    ADD CONSTRAINT "FK_ca612324a3e3a31b91989cac790" FOREIGN KEY (equipment_id) REFERENCES public.equipments (id) ON DELETE CASCADE;
+    ADD CONSTRAINT "FK_ca612324a3e3a31b91989cac790" FOREIGN KEY (equipment_id) REFERENCES public.equipments(id) ON DELETE CASCADE;
 
 
 --
@@ -6497,7 +2757,7 @@ ALTER TABLE ONLY public.exercise_examples_equipments
 --
 
 ALTER TABLE ONLY public.equipments
-    ADD CONSTRAINT "FK_dbe5cf6e8bfb13366defd7706ab" FOREIGN KEY (equipment_group_id) REFERENCES public.equipment_groups (id) ON DELETE CASCADE;
+    ADD CONSTRAINT "FK_dbe5cf6e8bfb13366defd7706ab" FOREIGN KEY (equipment_group_id) REFERENCES public.equipment_groups(id) ON DELETE CASCADE;
 
 
 --
@@ -6505,7 +2765,7 @@ ALTER TABLE ONLY public.equipments
 --
 
 ALTER TABLE ONLY public.exercises
-    ADD CONSTRAINT "FK_f2cff4897a8c9ce4a3511086e1e" FOREIGN KEY (exercise_example_id) REFERENCES public.exercise_examples (id) ON DELETE SET NULL;
+    ADD CONSTRAINT "FK_f2cff4897a8c9ce4a3511086e1e" FOREIGN KEY (exercise_example_id) REFERENCES public.exercise_examples(id) ON DELETE SET NULL;
 
 
 --
@@ -6513,7 +2773,7 @@ ALTER TABLE ONLY public.exercises
 --
 
 ALTER TABLE ONLY public.excluded_muscles
-    ADD CONSTRAINT "FK_fb5bf30c118024b483e9e2d88c8" FOREIGN KEY (user_id) REFERENCES public.users (id) ON DELETE CASCADE;
+    ADD CONSTRAINT "FK_fb5bf30c118024b483e9e2d88c8" FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
 
 
 --
