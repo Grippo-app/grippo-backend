@@ -10,7 +10,7 @@ if [[ -f "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/logger.sh" ]]; then
   source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/logger.sh"
 else
   log_info()    { printf '%s\n' "$*"; }
-  log_warn()    { printf '%s\n' "$*" ; }
+  log_warn()    { printf '%s\n' "$*"; }
   log_error()   { printf '%s\n' "$*" >&2; }
   log_success() { printf '%s\n' "$*"; }
   log_step_start() {
@@ -39,7 +39,6 @@ require_bin() {
 }
 
 file_size_h() {
-  # Portable-ish human size
   if command -v du >/dev/null 2>&1; then
     (du -h "$1" 2>/dev/null || du -h -d0 "$1" 2>/dev/null) | awk 'NR==1{print $1}'
   else
@@ -76,7 +75,6 @@ mkdir -p "$(dirname "$SQL_TARGET")" "$BACKUP_DIR"
 
 STAMP="$(date -u +%Y%m%d_%H%M%SZ)"
 SQL_SNAPSHOT="${BACKUP_DIR}/${POSTGRES_DATABASE}_${STAMP}.sql"
-DUMP_SNAPSHOT="${BACKUP_DIR}/${POSTGRES_DATABASE}_${STAMP}.dump"
 log_step_end
 
 # =========================
@@ -85,25 +83,22 @@ log_step_end
 log_step_start "🔎 Pre-checks (container tools)"
 docker exec "$POSTGRES_CONTAINER_NAME" sh -lc 'command -v pg_dump >/dev/null' \
   || { log_error "pg_dump not found inside container ${POSTGRES_CONTAINER_NAME}"; exit 1; }
-docker exec "$POSTGRES_CONTAINER_NAME" sh -lc 'command -v psql >/dev/null' \
-  || { log_error "psql not found inside container ${POSTGRES_CONTAINER_NAME}"; exit 1; }
-log_success "Tools found: pg_dump, psql"
+log_success "Tools found: pg_dump"
 log_step_end
 
 # =========================
-# Plain SQL dump (COPY)
+# Plain SQL dump (INSERT)
 # =========================
-log_step_start "🐘 pg_dump → plain SQL (COPY)"
+log_step_start "🐘 pg_dump → plain SQL with INSERT"
 docker exec -e PGPASSWORD="$POSTGRES_PASSWORD" "$POSTGRES_CONTAINER_NAME" \
   pg_dump \
     -U "$POSTGRES_USERNAME" \
     -d "$POSTGRES_DATABASE" \
     -F p \
-    --clean \
-    --if-exists \
-    -b \
+    --inserts \
     --no-owner \
     --no-privileges \
+    -b \
   > "$SQL_SNAPSHOT"
 
 if [[ ! -s "$SQL_SNAPSHOT" ]]; then
@@ -111,32 +106,13 @@ if [[ ! -s "$SQL_SNAPSHOT" ]]; then
   exit 1
 fi
 
+# Atomically update the target used by your importer
 cp -f "$SQL_SNAPSHOT" "$SQL_TARGET"
 log_info "SQL snapshot: $SQL_SNAPSHOT ($(file_size_h "$SQL_SNAPSHOT"))"
 log_success "SQL dump (latest): $SQL_TARGET ($(file_size_h "$SQL_TARGET"))"
 log_step_end
 
 # =========================
-# Custom archive (.dump)
-# =========================
-log_step_start "📦 pg_dump → Custom archive (.dump)"
-docker exec -e PGPASSWORD="$POSTGRES_PASSWORD" "$POSTGRES_CONTAINER_NAME" \
-  pg_dump \
-    -U "$POSTGRES_USERNAME" \
-    -d "$POSTGRES_DATABASE" \
-    -F c \
-    -C \
-    -b \
-  > "$DUMP_SNAPSHOT"
-
-if [[ ! -s "$DUMP_SNAPSHOT" ]]; then
-  log_error "Archive dump is empty: $DUMP_SNAPSHOT"
-  exit 1
-fi
-log_success "Archive dump: $DUMP_SNAPSHOT ($(file_size_h "$DUMP_SNAPSHOT"))"
-log_step_end
-
-# =========================
 # Summary
 # =========================
-log_success "✅ Done. Snapshots stored in: $BACKUP_DIR"
+log_success "✅ Done. Snapshot stored in: $BACKUP_DIR"
