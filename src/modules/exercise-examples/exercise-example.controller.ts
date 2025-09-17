@@ -1,6 +1,6 @@
 import {
     Body,
-    Controller,
+    Controller, Delete,
     Get,
     HttpCode,
     HttpStatus,
@@ -15,8 +15,8 @@ import {
 } from '@nestjs/common';
 import {
     ApiBadRequestResponse,
-    ApiBearerAuth,
-    ApiExtraModels,
+    ApiBearerAuth, ApiConflictResponse,
+    ApiExtraModels, ApiNoContentResponse,
     ApiNotFoundResponse,
     ApiOkResponse,
     ApiOperation,
@@ -107,5 +107,21 @@ export class ExerciseExampleController {
         @Body() body: ExerciseExampleRequest,
     ): Promise<void> {
         return this.exerciseExamplesService.updateExerciseExample(id, body);
+    }
+
+    @Delete(':id')
+    @UseGuards(AdminOnlyGuard)
+    @HttpCode(HttpStatus.NO_CONTENT)
+    @ApiOperation({ summary: 'Delete an exercise example (admin only)' })
+    @ApiParam({ name: 'id', description: 'Exercise example ID (UUID)', type: String, required: true })
+    @ApiNoContentResponse({ description: 'Exercise example deleted successfully' })
+    @ApiNotFoundResponse({ description: 'Exercise example not found' })
+    @ApiConflictResponse({ description: 'Example is referenced by exercises' })
+    @ApiResponse({ status: HttpStatus.FORBIDDEN, description: 'Forbidden' })
+    @ApiBearerAuth('access-token')
+    async deleteExerciseExample(
+        @Param('id', new ParseUUIDPipe()) id: string,
+    ): Promise<void> {
+        return this.exerciseExamplesService.deleteExerciseExample(id);
     }
 }

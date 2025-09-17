@@ -1,4 +1,4 @@
-import {BadRequestException, Inject, Injectable, NotFoundException} from '@nestjs/common';
+import {BadRequestException, ConflictException, Inject, Injectable, NotFoundException} from '@nestjs/common';
 import {UsersEntity} from '../../entities/users.entity';
 import {Repository} from 'typeorm';
 import {v4} from 'uuid';
@@ -180,6 +180,34 @@ export class ExerciseExampleService {
             await manager.save(ExerciseExamplesEntity, exerciseExample);
             await manager.save(ExerciseExampleBundlesEntity, bundles);
             await manager.save(ExerciseExamplesEquipmentsEntity, equipmentRefsEntities);
+        });
+    }
+
+    /**
+     * Delete an exercise example and its direct relations (bundles, equipment refs).
+     * Does NOT delete muscles or equipments themselves.
+     * Throws 409 if the example is referenced by existing exercises.
+     */
+    async deleteExerciseExample(id: string): Promise<void> {
+        // Check existence
+        const existing = await this.exerciseExamplesRepository.findOne({ where: { id } });
+        if (!existing) {
+            throw new NotFoundException(`Exercise example with id ${id} not found`);
+        }
+
+        // Guard: example is used by exercises -> block deletion
+        const usageCount = await this.exercisesRepository.count({ where: { exerciseExampleId: id } });
+        if (usageCount > 0) {
+            throw new ConflictException(
+                `Cannot delete exercise example ${id}: referenced by ${usageCount} exercise(s).`
+            );
+        }
+
+        // Transactionally delete direct relations, then the example itself
+        await this.exerciseExamplesRepository.manager.transaction(async (manager) => {
+            await manager.delete(ExerciseExampleBundlesEntity, { exerciseExampleId: id });
+            await manager.delete(ExerciseExamplesEquipmentsEntity, { exerciseExampleId: id });
+            await manager.delete(ExerciseExamplesEntity, { id });
         });
     }
 }
