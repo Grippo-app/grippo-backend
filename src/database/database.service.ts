@@ -22,7 +22,7 @@ export class DatabaseService {
             database: get('POSTGRES_DATABASE'),
 
             entities: [join(__dirname, '..', 'entities', '*.entity.{ts,js}')],
-            migrations: [],
+            migrations: [join(__dirname, '..', 'database', 'migrations', '*.{ts,js}')],
 
             synchronize: get<boolean>('POSTGRES_SYNC'),
             logging: get<boolean>('POSTGRES_LOGS'),

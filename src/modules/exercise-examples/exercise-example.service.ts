@@ -7,13 +7,17 @@ import {ExerciseExampleBundlesEntity} from "../../entities/exercise-example-bund
 import {ExerciseExampleRequest} from "./dto/exercise-example.request";
 import {ExerciseExampleCreateResponse, ExerciseExampleWithStatsResponse} from "./dto/exercise-example.response";
 import {ExerciseExamplesEquipmentsEntity} from "../../entities/exercise-examples-equipments.entity";
+import {ExerciseExampleTranslationEntity} from "../../entities/exercise-example-translation.entity";
 import {ExcludedEquipmentsEntity} from "../../entities/excluded-equipments.entity";
 import {ExcludedMusclesEntity} from "../../entities/excluded-muscles.entity";
 import {ExercisesEntity} from "../../entities/exercises.entity";
+import {ExerciseExampleI18nService} from "../../i18n/exercise-example-i18n.service";
+import {SupportedLanguage} from "../../i18n/i18n.types";
 
 @Injectable()
 export class ExerciseExampleService {
     constructor(
+        private readonly exerciseExampleI18nService: ExerciseExampleI18nService,
         @Inject('USERS_REPOSITORY') private readonly usersRepository: Repository<UsersEntity>,
         @Inject('EXERCISE_EXAMPLES_REPOSITORY') private readonly exerciseExamplesRepository: Repository<ExerciseExamplesEntity>,
         @Inject('EXERCISE_EXAMPLE_BUNDLES_REPOSITORY') private readonly exerciseExampleBundlesRepository: Repository<ExerciseExampleBundlesEntity>,
@@ -24,7 +28,7 @@ export class ExerciseExampleService {
     ) {
     }
 
-    async getExerciseExamples(user: any): Promise<ExerciseExampleWithStatsResponse[]> {
+    async getExerciseExamples(user: any, language: SupportedLanguage): Promise<ExerciseExampleWithStatsResponse[]> {
         const userId = typeof user?.id === 'string' && user.id.length > 0 ? user.id : null;
         if (!userId) throw new BadRequestException('User not authenticated');
 
@@ -34,6 +38,7 @@ export class ExerciseExampleService {
             .leftJoinAndSelect('exerciseExampleBundles.muscle', 'muscle')
             .leftJoinAndSelect('exercise_examples.equipmentRefs', 'equipment_refs')
             .leftJoinAndSelect('equipment_refs.equipment', 'equipments')
+            .leftJoinAndSelect('exercise_examples.translations', 'translations')
             .orderBy('exercise_examples.createdAt', 'DESC')
             .getMany();
 
@@ -61,6 +66,8 @@ export class ExerciseExampleService {
             });
         }
 
+        this.exerciseExampleI18nService.translateExamples(entities, language);
+
         return entities.map((entity) => ({
             entity,
             usageCount: statsMap.get(entity.id)?.usageCount ?? 0,
@@ -68,7 +75,7 @@ export class ExerciseExampleService {
         }));
     }
 
-    async getExerciseExampleById(id: string, user: any): Promise<ExerciseExampleWithStatsResponse | null> {
+    async getExerciseExampleById(id: string, user: any, language: SupportedLanguage): Promise<ExerciseExampleWithStatsResponse | null> {
         const userId = typeof user?.id === 'string' && user.id.length > 0 ? user.id : null;
         if (!userId) throw new BadRequestException('User not authenticated');
 
@@ -79,6 +86,7 @@ export class ExerciseExampleService {
             .leftJoinAndSelect('exercise_example_bundles.muscle', 'muscle')
             .leftJoinAndSelect('exercise_examples.equipmentRefs', 'equipment_refs')
             .leftJoinAndSelect('equipment_refs.equipment', 'equipments')
+            .leftJoinAndSelect('exercise_examples.translations', 'translations')
             .getOne();
 
         if (!entity) return null;
@@ -91,6 +99,8 @@ export class ExerciseExampleService {
             .where('ex.exerciseExampleId = :id', {id})
             .andWhere('t.userId = :userId', {userId})
             .getRawOne<{ usageCount: string; lastUsed: Date | null }>();
+
+        this.exerciseExampleI18nService.translateExample(entity, language);
 
         return {
             entity,
@@ -105,12 +115,25 @@ export class ExerciseExampleService {
      * @returns Object with exercise example ID
      */
     async createExerciseExample(body: ExerciseExampleRequest): Promise<ExerciseExampleCreateResponse> {
-        const {exerciseExampleBundles, equipmentRefs, ...rest} = body;
+        const {
+            exerciseExampleBundles,
+            equipmentRefs,
+            nameTranslations,
+            descriptionTranslations,
+            ...rest
+        } = body;
         const id = v4();
 
         const exerciseExample = new ExerciseExamplesEntity();
         Object.assign(exerciseExample, rest);
         exerciseExample.id = id;
+
+        const translationEntities = this.exerciseExampleI18nService.buildTranslationEntities(
+            id,
+            [],
+            nameTranslations,
+            descriptionTranslations,
+        );
 
         const bundles = exerciseExampleBundles.map((el) => {
             const entity = new ExerciseExampleBundlesEntity();
@@ -132,6 +155,9 @@ export class ExerciseExampleService {
             await manager.save(ExerciseExamplesEntity, exerciseExample);
             await manager.save(ExerciseExampleBundlesEntity, bundles);
             await manager.save(ExerciseExamplesEquipmentsEntity, equipmentRefsEntities);
+            if (translationEntities.length > 0) {
+                await manager.save(ExerciseExampleTranslationEntity, translationEntities);
+            }
         });
 
         return {id: id};
@@ -145,18 +171,32 @@ export class ExerciseExampleService {
     async updateExerciseExample(id: string, body: ExerciseExampleRequest): Promise<void> {
         // Check if exercise example exists
         const existingExerciseExample = await this.exerciseExamplesRepository.findOne({
-            where: {id}
+            where: {id},
+            relations: ['translations'],
         });
 
         if (!existingExerciseExample) {
             throw new NotFoundException(`Exercise example with id ${id} not found`);
         }
 
-        const {exerciseExampleBundles, equipmentRefs, ...rest} = body;
+        const {
+            exerciseExampleBundles,
+            equipmentRefs,
+            nameTranslations,
+            descriptionTranslations,
+            ...rest
+        } = body;
 
         const exerciseExample = new ExerciseExamplesEntity();
         Object.assign(exerciseExample, rest);
         exerciseExample.id = id;
+
+        const translationEntities = this.exerciseExampleI18nService.buildTranslationEntities(
+            id,
+            existingExerciseExample.translations,
+            nameTranslations,
+            descriptionTranslations,
+        );
 
         const bundles = exerciseExampleBundles.map((el) => {
             const entity = new ExerciseExampleBundlesEntity();
@@ -176,10 +216,14 @@ export class ExerciseExampleService {
         await this.exerciseExamplesRepository.manager.transaction(async (manager) => {
             await manager.delete(ExerciseExampleBundlesEntity, {exerciseExampleId: id});
             await manager.delete(ExerciseExamplesEquipmentsEntity, {exerciseExampleId: id});
+            await manager.delete(ExerciseExampleTranslationEntity, {exerciseExampleId: id});
 
             await manager.save(ExerciseExamplesEntity, exerciseExample);
             await manager.save(ExerciseExampleBundlesEntity, bundles);
             await manager.save(ExerciseExamplesEquipmentsEntity, equipmentRefsEntities);
+            if (translationEntities.length > 0) {
+                await manager.save(ExerciseExampleTranslationEntity, translationEntities);
+            }
         });
     }
 

@@ -4,13 +4,17 @@ import {TrainingsService} from './trainings.service';
 import {JwtAuthGuard} from '../../common/jwt-auth.guard';
 import {TrainingsRequest} from './dto/trainings.request';
 import {TrainingCreateResponse} from './dto/trainings.response';
+import {ExerciseExampleI18nService} from '../../i18n/exercise-example-i18n.service';
 
 @ApiTags('trainings')
 @ApiBearerAuth('access-token')
 @UseGuards(JwtAuthGuard)
 @Controller('trainings')
 export class TrainingsController {
-    constructor(private readonly trainingsService: TrainingsService) {
+    constructor(
+        private readonly trainingsService: TrainingsService,
+        private readonly exerciseExampleI18nService: ExerciseExampleI18nService,
+    ) {
     }
 
     @Get()
@@ -25,7 +29,8 @@ export class TrainingsController {
         @Query('start') start: string,
         @Query('end') end: string,
     ): Promise<any> {
-        return this.trainingsService.getTrainings(req.user, start, end);
+        const language = req.locale ?? this.exerciseExampleI18nService.resolveLanguage();
+        return this.trainingsService.getTrainings(req.user, start, end, language);
     }
 
     @Get(':id')
@@ -37,7 +42,8 @@ export class TrainingsController {
         @Req() req,
         @Param('id') id: string,
     ): Promise<any> {
-        return this.trainingsService.getTrainingById(id, req.user);
+        const language = req.locale ?? this.exerciseExampleI18nService.resolveLanguage();
+        return this.trainingsService.getTrainingById(id, req.user, language);
     }
 
     @Post()

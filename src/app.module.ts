@@ -11,6 +11,7 @@ import { MusclesModule } from './modules/muscles/muscles.module';
 import { WeightHistoryModule } from './modules/weight-history/weight-history.module';
 import { ExerciseMetricsModule } from './modules/exercise-metrics/exercise-metrics.module';
 import { EquipmentsModule } from './modules/equipments/equipments.module';
+import { I18nModule } from './i18n/i18n.module';
 
 @Module({
     imports: [
@@ -21,6 +22,7 @@ import { EquipmentsModule } from './modules/equipments/equipments.module';
 
         // Shared
         DatabaseModule,
+        I18nModule,
 
         // Features
         AuthModule,

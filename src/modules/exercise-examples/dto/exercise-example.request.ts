@@ -3,7 +3,7 @@ import {ExerciseCategoryEnum} from "../../../lib/exercise-category.enum";
 import {WeightTypeEnum} from "../../../lib/weight-type.enum";
 import {ExperienceEnum} from "../../../lib/experience.enum";
 import {ForceTypeEnum} from "../../../lib/force-type.enum";
-import {IsEnum, IsInt, IsString, IsUUID, ValidateNested} from "class-validator";
+import {IsEnum, IsInt, IsOptional, IsString, IsUUID, ValidateNested} from "class-validator";
 import {Type} from "class-transformer";
 
 export class ExerciseExampleBundleRequest {
@@ -22,6 +22,22 @@ export class ExerciseExampleEquipmentRefsRequest {
     equipmentId: string;
 }
 
+export class ExerciseExampleTranslationDto {
+    @ApiProperty({ type: 'string', example: 'Bench press', required: false })
+    @IsOptional()
+    @IsString()
+    en?: string;
+
+    @ApiProperty({ type: 'string', example: 'Жим лежачи', required: false })
+    @IsOptional()
+    @IsString()
+    ua?: string;
+
+    @ApiProperty({ type: 'string', example: 'Жим лежа', required: false })
+    @IsOptional()
+    @IsString()
+    ru?: string;
+}
 
 export class ExerciseExampleRequest {
     id?: string;
@@ -33,6 +49,18 @@ export class ExerciseExampleRequest {
     @ApiProperty({ type: 'string', example: 'The bench press is a compound strength-training...' })
     @IsString()
     description: string;
+
+    @ApiProperty({ type: () => ExerciseExampleTranslationDto, required: false })
+    @ValidateNested()
+    @Type(() => ExerciseExampleTranslationDto)
+    @IsOptional()
+    nameTranslations?: ExerciseExampleTranslationDto;
+
+    @ApiProperty({ type: () => ExerciseExampleTranslationDto, required: false })
+    @ValidateNested()
+    @Type(() => ExerciseExampleTranslationDto)
+    @IsOptional()
+    descriptionTranslations?: ExerciseExampleTranslationDto;
 
     @ApiProperty({ type: 'string', example: WeightTypeEnum.Fixed })
     @IsEnum(WeightTypeEnum)

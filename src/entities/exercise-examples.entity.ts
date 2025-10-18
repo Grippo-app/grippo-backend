@@ -15,6 +15,7 @@ import {WeightTypeEnum} from "../lib/weight-type.enum";
 import {ExerciseExamplesEquipmentsEntity} from "./exercise-examples-equipments.entity";
 import {ForceTypeEnum} from "../lib/force-type.enum";
 import {ExperienceEnum} from "../lib/experience.enum";
+import {ExerciseExampleTranslationEntity} from "./exercise-example-translation.entity";
 
 @Entity({name: 'exercise_examples'})
 export class ExerciseExamplesEntity {
@@ -22,10 +23,10 @@ export class ExerciseExamplesEntity {
     id: string;
 
     @Column({default: null})
-    name: string;
+    name: string | null;
 
     @Column({default: null})
-    description: string;
+    description: string | null;
 
     @Column({default: null})
     imageUrl: string;
@@ -62,4 +63,9 @@ export class ExerciseExamplesEntity {
         cascade: ['remove']
     })
     equipmentRefs: ExerciseExamplesEquipmentsEntity[];
+
+    @OneToMany(() => ExerciseExampleTranslationEntity, (translation) => translation.exerciseExample, {
+        cascade: ['remove']
+    })
+    translations: ExerciseExampleTranslationEntity[];
 }

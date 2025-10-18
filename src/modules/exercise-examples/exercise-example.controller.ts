@@ -32,13 +32,17 @@ import {ExerciseExampleRequest} from "./dto/exercise-example.request";
 import {ExerciseExampleCreateResponse, ExerciseExampleWithStatsResponse} from "./dto/exercise-example.response";
 import {ExerciseExamplesEntity} from "../../entities/exercise-examples.entity";
 import {AdminOnlyGuard} from "../../common/admin.guard";
+import {ExerciseExampleI18nService} from "../../i18n/exercise-example-i18n.service";
 
 @Controller('exercise-examples')
 @ApiTags('exercise-examples')
 @ApiBearerAuth('access-token')
 @UseGuards(JwtAuthGuard)
 export class ExerciseExampleController {
-    constructor(private readonly exerciseExamplesService: ExerciseExampleService) {
+    constructor(
+        private readonly exerciseExamplesService: ExerciseExampleService,
+        private readonly exerciseExampleI18nService: ExerciseExampleI18nService,
+    ) {
     }
 
     @Get()
@@ -48,8 +52,11 @@ export class ExerciseExampleController {
     @ApiUnauthorizedResponse({description: 'Unauthorized'})
     @ApiBearerAuth('access-token')
     @ApiExtraModels(ExerciseExamplesEntity, ExerciseExampleWithStatsResponse)
-    async getExerciseExamples(@Req() req: any): Promise<ExerciseExampleWithStatsResponse[]> {
-        return this.exerciseExamplesService.getExerciseExamples(req.user);
+    async getExerciseExamples(
+        @Req() req: any,
+    ): Promise<ExerciseExampleWithStatsResponse[]> {
+        const language = req.locale ?? this.exerciseExampleI18nService.resolveLanguage();
+        return this.exerciseExamplesService.getExerciseExamples(req.user, language);
     }
 
     @Get(':id')
@@ -66,7 +73,8 @@ export class ExerciseExampleController {
         @Req() req: any,
         @Param('id', new ParseUUIDPipe()) id: string,
     ): Promise<ExerciseExampleWithStatsResponse> {
-        const result = await this.exerciseExamplesService.getExerciseExampleById(id, req.user);
+        const language = req.locale ?? this.exerciseExampleI18nService.resolveLanguage();
+        const result = await this.exerciseExamplesService.getExerciseExampleById(id, req.user, language);
         if (!result) throw new NotFoundException(`Exercise example with id ${id} not found`);
         return result;
     }

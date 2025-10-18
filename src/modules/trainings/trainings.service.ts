@@ -8,11 +8,14 @@ import {TrainingsEntity} from '../../entities/trainings.entity';
 import {ExercisesEntity} from '../../entities/exercises.entity';
 import {IterationsEntity} from '../../entities/iterations.entity';
 import * as moment from 'moment'
-import {ExerciseExamplesEntity} from "../../entities/exercise-examples.entity";
+import {ExerciseExamplesEntity} from '../../entities/exercise-examples.entity';
+import {ExerciseExampleI18nService} from '../../i18n/exercise-example-i18n.service';
+import {SupportedLanguage} from '../../i18n/i18n.types';
 
 @Injectable()
 export class TrainingsService {
     constructor(
+        private readonly exerciseExampleI18nService: ExerciseExampleI18nService,
         @Inject('USERS_REPOSITORY') private readonly usersRepository: Repository<UsersEntity>,
         @Inject('TRAININGS_REPOSITORY') private readonly trainingsRepository: Repository<TrainingsEntity>,
         @Inject('EXERCISES_REPOSITORY') private readonly exercisesRepository: Repository<ExercisesEntity>,
@@ -21,12 +24,12 @@ export class TrainingsService {
     ) {
     }
 
-    async getTrainings(user, start, end) {
+    async getTrainings(user, start, end, language: SupportedLanguage) {
         if (!moment(start).isValid() || !moment(end).isValid()) {
             throw new BadRequestException('Wrong date format');
         }
 
-        return this.trainingsRepository
+        const trainings = await this.trainingsRepository
             .createQueryBuilder('trainings')
             .where('trainings.user_id = :userId', {userId: user.id})
             .andWhere('date(:start) <= date(trainings.created_at) and date(:end) >= date(trainings.created_at)', {
@@ -35,13 +38,25 @@ export class TrainingsService {
             })
             .leftJoinAndSelect('trainings.exercises', 'exercises')
             .leftJoinAndSelect('exercises.exerciseExample', 'exerciseExample')
+            .leftJoinAndSelect('exerciseExample.translations', 'exerciseExampleTranslations')
             .leftJoinAndSelect('exercises.iterations', 'iterations')
             .addOrderBy('trainings.created_at', 'DESC')
             .getMany();
+
+        if (trainings.length === 0) {
+            return trainings;
+        }
+
+        for (const training of trainings) {
+            if (!training.exercises) continue;
+            this.exerciseExampleI18nService.translateExercisesCollection(training.exercises, language);
+        }
+
+        return trainings;
     }
 
-    async getTrainingById(id: string, user) {
-        return this.trainingsRepository
+    async getTrainingById(id: string, user, language: SupportedLanguage) {
+        const training = await this.trainingsRepository
             .createQueryBuilder('trainings')
             .where('trainings.id = :id', {id})
             .andWhere('trainings.user_id = :userId', {userId: user.id})
@@ -49,9 +64,20 @@ export class TrainingsService {
             .leftJoinAndSelect('exercises.exerciseExample', 'exerciseExample')
             .leftJoinAndSelect('exerciseExample.exerciseExampleBundles', 'exerciseExampleBundles')
             .leftJoinAndSelect('exerciseExampleBundles.muscle', 'muscle')
+            .leftJoinAndSelect('exerciseExample.translations', 'exerciseExampleTranslations')
             .leftJoinAndSelect('exercises.iterations', 'iterations')
             .addOrderBy('trainings.created_at', 'DESC')
             .getOne();
+
+        if (!training) {
+            return training;
+        }
+
+        if (training.exercises) {
+            this.exerciseExampleI18nService.translateExercisesCollection(training.exercises, language);
+        }
+
+        return training;
     }
 
     /**
