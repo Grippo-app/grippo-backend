@@ -32,6 +32,35 @@ export function setupSwagger(app: INestApplication): void {
 
     const doc = SwaggerModule.createDocument(app, config, options);
 
+    doc.components ??= {};
+    doc.components.parameters ??= {};
+    doc.components.parameters.AcceptLanguage = {
+        name: 'Accept-Language',
+        in: 'header',
+        description: 'Optional locale (en | ua | ru)',
+        required: false,
+        schema: {
+            type: 'string',
+            enum: ['en', 'ua', 'ru'],
+        },
+    };
+
+    for (const pathItem of Object.values(doc.paths ?? {})) {
+        if (!pathItem) continue;
+        for (const method of Object.keys(pathItem)) {
+            const operation: any = (pathItem as any)[method];
+            if (!operation || typeof operation !== 'object') continue;
+            operation.parameters ??= [];
+
+            const alreadyPresent = operation.parameters.some(
+                (param: any) => param?.['$ref'] === '#/components/parameters/AcceptLanguage',
+            );
+            if (!alreadyPresent) {
+                operation.parameters.push({['$ref']: '#/components/parameters/AcceptLanguage'});
+            }
+        }
+    }
+
     const customCss = `
     .swagger-ui .topbar {
       background-color: ${isProd ? '#ffffff' : '#1e293b'};
