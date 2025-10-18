@@ -9,7 +9,7 @@ import { TrainingsModule } from './modules/trainings/trainings.module';
 import { ExerciseExampleModule } from './modules/exercise-examples/exercise-example.module';
 import { MusclesModule } from './modules/muscles/muscles.module';
 import { WeightHistoryModule } from './modules/weight-history/weight-history.module';
-import { StatisticsModule } from './modules/statistics/statistics.module';
+import { ExerciseMetricsModule } from './modules/exercise-metrics/exercise-metrics.module';
 import { EquipmentsModule } from './modules/equipments/equipments.module';
 
 @Module({
@@ -29,7 +29,7 @@ import { EquipmentsModule } from './modules/equipments/equipments.module';
         ExerciseExampleModule,
         MusclesModule,
         WeightHistoryModule,
-        StatisticsModule,
+        ExerciseMetricsModule,
         EquipmentsModule,
     ],
 })
