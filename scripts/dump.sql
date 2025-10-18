@@ -155,6 +155,17 @@ CREATE TYPE public.exercise_examples_weight_type_enum AS ENUM (
 
 
 --
+-- Name: supported_language_enum; Type: TYPE; Schema: public; Owner: -
+--
+
+CREATE TYPE public.supported_language_enum AS ENUM (
+    'en',
+    'ua',
+    'ru'
+);
+
+
+--
 -- Name: muscle_groups_type_enum; Type: TYPE; Schema: public; Owner: -
 --
 
@@ -296,6 +307,22 @@ CREATE TABLE public.exercise_examples (
     force_type public.exercise_examples_force_type_enum,
     experience public.exercise_examples_experience_enum
 );
+
+
+--
+-- Name: exercise_example_translations; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.exercise_example_translations (
+    id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
+    exercise_example_id uuid NOT NULL,
+    language public.supported_language_enum NOT NULL,
+    name text,
+    description text,
+    created_at timestamp without time zone DEFAULT now() NOT NULL,
+    updated_at timestamp without time zone DEFAULT now() NOT NULL
+);
+
 
 
 --
@@ -2289,6 +2316,7 @@ INSERT INTO public.exercise_examples_equipments VALUES ('123bb553-2524-4977-a155
 -- Data for Name: exercises; Type: TABLE DATA; Schema: public; Owner: -
 --
 
+
 INSERT INTO public.exercises VALUES ('8aca48a7-eddb-4e16-8333-56e5cef1d5c4', 'Bent Over Barbell Row', 3520.0, 32, 110.00, 'b7433600-19d8-4514-8ed3-b35b50f4aff4', '950cd0cd-fc3b-442f-aba9-3c48bfc6cda9', '2025-09-10 19:00:06.690089', '2025-09-10 19:00:06.690089');
 INSERT INTO public.exercises VALUES ('82116928-d227-43f7-bc3c-1d574545e56b', 'Barbell Shrug', 4160.0, 32, 130.00, 'b7433600-19d8-4514-8ed3-b35b50f4aff4', '49ef1d62-a375-485a-84bd-289a5548e81b', '2025-09-10 19:00:06.690089', '2025-09-10 19:00:06.690089');
 INSERT INTO public.exercises VALUES ('1b8dd640-5e3d-477f-aeed-883f7606e21d', 'Lat Pulldown', 2400.0, 24, 100.00, 'b7433600-19d8-4514-8ed3-b35b50f4aff4', '4a2c7160-6cf2-456d-8ef4-80040b720420', '2025-09-10 19:00:06.690089', '2025-09-10 19:00:06.690089');
@@ -3249,6 +3277,14 @@ ALTER TABLE ONLY public.exercise_examples
 
 
 --
+-- Name: exercise_example_translations exercise_example_translations_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.exercise_example_translations
+    ADD CONSTRAINT exercise_example_translations_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: excluded_muscles PK_9557dfb4752d43a0520eaf71ddd; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3342,6 +3378,14 @@ ALTER TABLE ONLY public.equipment_groups
 
 ALTER TABLE ONLY public.users
     ADD CONSTRAINT "UQ_97672ac88f789774dd47f7c8be3" UNIQUE (email);
+
+
+--
+-- Name: exercise_example_translations uq_exercise_example_translations_language; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.exercise_example_translations
+    ADD CONSTRAINT uq_exercise_example_translations_language UNIQUE (exercise_example_id, language);
 
 
 --
@@ -3448,6 +3492,14 @@ ALTER TABLE ONLY public.exercise_examples_equipments
 
 
 --
+-- Name: exercise_example_translations fk_exercise_example_translations_example; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.exercise_example_translations
+    ADD CONSTRAINT fk_exercise_example_translations_example FOREIGN KEY (exercise_example_id) REFERENCES public.exercise_examples(id) ON DELETE CASCADE;
+
+
+--
 -- Name: exercises FK_b0947cc4c27363a5d4525d103dd; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3490,4 +3542,3 @@ ALTER TABLE ONLY public.excluded_muscles
 --
 -- PostgreSQL database dump complete
 --
-

@@ -130,3 +130,5 @@ dist
 .pnp.*
 
 grippo-key.pem
+.idea/
+backups/
