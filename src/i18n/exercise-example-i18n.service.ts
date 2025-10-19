@@ -79,20 +79,10 @@ export class ExerciseExampleI18nService {
 
     buildTranslationEntities(
         exerciseExampleId: string,
-        existing: ExerciseExampleTranslationEntity[] | undefined,
-        nameTranslations?: Partial<Record<SupportedLanguage, string>>,
-        descriptionTranslations?: Partial<Record<SupportedLanguage, string>>,
+        nameTranslations?: Partial<Record<SupportedLanguage, string | null>>,
+        descriptionTranslations?: Partial<Record<SupportedLanguage, string | null>>,
     ): ExerciseExampleTranslationEntity[] {
-        const byLanguage = new Map<SupportedLanguage, ExerciseExampleTranslationEntity>();
-
-        for (const translation of existing ?? []) {
-            const entity = new ExerciseExampleTranslationEntity();
-            entity.exerciseExampleId = exerciseExampleId;
-            entity.language = translation.language;
-            entity.name = translation.name;
-            entity.description = translation.description;
-            byLanguage.set(translation.language, entity);
-        }
+        const result: ExerciseExampleTranslationEntity[] = [];
 
         for (const language of SUPPORTED_LANGUAGES) {
             const nameUpdate = this.normalizeInput(nameTranslations?.[language]);
@@ -102,26 +92,19 @@ export class ExerciseExampleI18nService {
                 continue;
             }
 
-            const entity = byLanguage.get(language) ?? new ExerciseExampleTranslationEntity();
+            if ((nameUpdate ?? null) === null && (descriptionUpdate ?? null) === null) {
+                continue; // drop translation when both fields are null/empty
+            }
+
+            const entity = new ExerciseExampleTranslationEntity();
             entity.exerciseExampleId = exerciseExampleId;
             entity.language = language;
-
-            if (nameUpdate !== undefined) {
-                entity.name = nameUpdate;
-            }
-
-            if (descriptionUpdate !== undefined) {
-                entity.description = descriptionUpdate;
-            }
-
-            if ((entity.name ?? null) === null && (entity.description ?? null) === null) {
-                byLanguage.delete(language);
-            } else {
-                byLanguage.set(language, entity);
-            }
+            entity.name = nameUpdate ?? null;
+            entity.description = descriptionUpdate ?? null;
+            result.push(entity);
         }
 
-        return Array.from(byLanguage.values());
+        return result;
     }
 
     private normalizeInput(value?: string | null): string | null | undefined {

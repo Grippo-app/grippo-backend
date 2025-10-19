@@ -4,7 +4,7 @@ import {Repository} from 'typeorm';
 import {v4} from 'uuid';
 import {ExerciseExamplesEntity} from "../../entities/exercise-examples.entity";
 import {ExerciseExampleBundlesEntity} from "../../entities/exercise-example-bundles.entity";
-import {ExerciseExampleRequest} from "./dto/exercise-example.request";
+import {ExerciseExampleLocalizedTextDto, ExerciseExampleRequest} from "./dto/exercise-example.request";
 import {ExerciseExampleCreateResponse, ExerciseExampleWithStatsResponse} from "./dto/exercise-example.response";
 import {ExerciseExamplesEquipmentsEntity} from "../../entities/exercise-examples-equipments.entity";
 import {ExerciseExampleTranslationEntity} from "../../entities/exercise-example-translation.entity";
@@ -12,7 +12,7 @@ import {ExcludedEquipmentsEntity} from "../../entities/excluded-equipments.entit
 import {ExcludedMusclesEntity} from "../../entities/excluded-muscles.entity";
 import {ExercisesEntity} from "../../entities/exercises.entity";
 import {ExerciseExampleI18nService} from "../../i18n/exercise-example-i18n.service";
-import {SupportedLanguage} from "../../i18n/i18n.types";
+import {DEFAULT_LANGUAGE, SupportedLanguage} from "../../i18n/i18n.types";
 
 @Injectable()
 export class ExerciseExampleService {
@@ -118,8 +118,8 @@ export class ExerciseExampleService {
         const {
             exerciseExampleBundles,
             equipmentRefs,
-            nameTranslations,
-            descriptionTranslations,
+            name,
+            description,
             ...rest
         } = body;
         const id = v4();
@@ -127,12 +127,15 @@ export class ExerciseExampleService {
         const exerciseExample = new ExerciseExamplesEntity();
         Object.assign(exerciseExample, rest);
         exerciseExample.id = id;
+        const nameInput = this.prepareTranslationInput(name);
+        const descriptionInput = this.prepareTranslationInput(description);
+        exerciseExample.name = nameInput.baseValue;
+        exerciseExample.description = descriptionInput.baseValue;
 
         const translationEntities = this.exerciseExampleI18nService.buildTranslationEntities(
             id,
-            [],
-            nameTranslations,
-            descriptionTranslations,
+            nameInput.record,
+            descriptionInput.record,
         );
 
         const bundles = exerciseExampleBundles.map((el) => {
@@ -172,7 +175,6 @@ export class ExerciseExampleService {
         // Check if exercise example exists
         const existingExerciseExample = await this.exerciseExamplesRepository.findOne({
             where: {id},
-            relations: ['translations'],
         });
 
         if (!existingExerciseExample) {
@@ -182,20 +184,23 @@ export class ExerciseExampleService {
         const {
             exerciseExampleBundles,
             equipmentRefs,
-            nameTranslations,
-            descriptionTranslations,
+            name,
+            description,
             ...rest
         } = body;
 
         const exerciseExample = new ExerciseExamplesEntity();
         Object.assign(exerciseExample, rest);
         exerciseExample.id = id;
+        const nameInput = this.prepareTranslationInput(name);
+        const descriptionInput = this.prepareTranslationInput(description);
+        exerciseExample.name = nameInput.baseValue;
+        exerciseExample.description = descriptionInput.baseValue;
 
         const translationEntities = this.exerciseExampleI18nService.buildTranslationEntities(
             id,
-            existingExerciseExample.translations,
-            nameTranslations,
-            descriptionTranslations,
+            nameInput.record,
+            descriptionInput.record,
         );
 
         const bundles = exerciseExampleBundles.map((el) => {
@@ -253,5 +258,46 @@ export class ExerciseExampleService {
             await manager.delete(ExerciseExamplesEquipmentsEntity, { exerciseExampleId: id });
             await manager.delete(ExerciseExamplesEntity, { id });
         });
+}
+
+    private prepareTranslationInput(
+        items?: ExerciseExampleLocalizedTextDto[],
+    ): {
+        record: Partial<Record<SupportedLanguage, string | null>>;
+        baseValue: string | null;
+    } {
+        const record: Partial<Record<SupportedLanguage, string | null>> = {};
+        let firstNonNull: string | null = null;
+
+        for (const item of items ?? []) {
+            if (!item) continue;
+            const normalized = this.normalizeTranslationValue(item.value);
+            if (normalized === undefined) continue;
+            record[item.language] = normalized;
+            if (firstNonNull === null && normalized !== null) {
+                firstNonNull = normalized;
+            }
+        }
+
+        const defaultValue = record[DEFAULT_LANGUAGE];
+        const baseValue = defaultValue !== undefined ? defaultValue : firstNonNull;
+
+        return {
+            record,
+            baseValue: baseValue ?? null,
+        };
+    }
+
+    private normalizeTranslationValue(value?: string): string | null | undefined {
+        if (value === undefined) {
+            return undefined;
+        }
+
+        const trimmed = value.trim();
+        if (trimmed.length === 0) {
+            return null;
+        }
+
+        return trimmed;
     }
 }

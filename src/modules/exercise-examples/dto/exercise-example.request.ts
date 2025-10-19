@@ -3,8 +3,9 @@ import {ExerciseCategoryEnum} from "../../../lib/exercise-category.enum";
 import {WeightTypeEnum} from "../../../lib/weight-type.enum";
 import {ExperienceEnum} from "../../../lib/experience.enum";
 import {ForceTypeEnum} from "../../../lib/force-type.enum";
-import {IsEnum, IsInt, IsOptional, IsString, IsUUID, ValidateNested} from "class-validator";
+import {ArrayNotEmpty, IsArray, IsEnum, IsIn, IsInt, IsOptional, IsString, IsUUID, ValidateNested} from "class-validator";
 import {Type} from "class-transformer";
+import {SUPPORTED_LANGUAGES, SupportedLanguage} from "../../../i18n/i18n.types";
 
 export class ExerciseExampleBundleRequest {
     @ApiProperty({ type: 'string', example: '3a975ded-af6b-4dd2-9a0e-6e3554e8e6dd' })
@@ -22,45 +23,36 @@ export class ExerciseExampleEquipmentRefsRequest {
     equipmentId: string;
 }
 
-export class ExerciseExampleTranslationDto {
+export class ExerciseExampleLocalizedTextDto {
+    @ApiProperty({ enum: SUPPORTED_LANGUAGES, example: 'en' })
+    @IsIn(SUPPORTED_LANGUAGES)
+    language: SupportedLanguage;
+
     @ApiProperty({ type: 'string', example: 'Bench press', required: false })
     @IsOptional()
     @IsString()
-    en?: string;
-
-    @ApiProperty({ type: 'string', example: 'Жим лежачи', required: false })
-    @IsOptional()
-    @IsString()
-    ua?: string;
-
-    @ApiProperty({ type: 'string', example: 'Жим лежа', required: false })
-    @IsOptional()
-    @IsString()
-    ru?: string;
+    value?: string;
 }
 
 export class ExerciseExampleRequest {
     id?: string;
 
-    @ApiProperty({ type: 'string', example: 'bench press' })
-    @IsString()
-    name: string;
+    @ApiProperty({ type: () => [ExerciseExampleLocalizedTextDto], example: [{ language: 'en', value: 'Bench press' }] })
+    @ValidateNested({ each: true })
+    @Type(() => ExerciseExampleLocalizedTextDto)
+    @IsArray()
+    @ArrayNotEmpty()
+    name: ExerciseExampleLocalizedTextDto[];
 
-    @ApiProperty({ type: 'string', example: 'The bench press is a compound strength-training...' })
-    @IsString()
-    description: string;
-
-    @ApiProperty({ type: () => ExerciseExampleTranslationDto, required: false })
-    @ValidateNested()
-    @Type(() => ExerciseExampleTranslationDto)
-    @IsOptional()
-    nameTranslations?: ExerciseExampleTranslationDto;
-
-    @ApiProperty({ type: () => ExerciseExampleTranslationDto, required: false })
-    @ValidateNested()
-    @Type(() => ExerciseExampleTranslationDto)
-    @IsOptional()
-    descriptionTranslations?: ExerciseExampleTranslationDto;
+    @ApiProperty({
+        type: () => [ExerciseExampleLocalizedTextDto],
+        example: [{ language: 'en', value: 'The bench press is a compound strength-training...' }],
+    })
+    @ValidateNested({ each: true })
+    @Type(() => ExerciseExampleLocalizedTextDto)
+    @IsArray()
+    @ArrayNotEmpty()
+    description: ExerciseExampleLocalizedTextDto[];
 
     @ApiProperty({ type: 'string', example: WeightTypeEnum.Fixed })
     @IsEnum(WeightTypeEnum)
