@@ -1,6 +1,6 @@
-import { Injectable, NestMiddleware } from '@nestjs/common';
-import { Request, Response, NextFunction } from 'express';
-import { ExerciseExampleI18nService } from './exercise-example-i18n.service';
+import {Injectable, NestMiddleware} from '@nestjs/common';
+import {NextFunction, Request, Response} from 'express';
+import {ExerciseExampleI18nService} from './exercise-example-i18n.service';
 
 @Injectable()
 export class LanguageMiddleware implements NestMiddleware {
@@ -8,8 +8,7 @@ export class LanguageMiddleware implements NestMiddleware {
 
     use(req: Request, _: Response, next: NextFunction): void {
         const header = req.headers['accept-language'];
-        const resolved = this.exerciseExampleI18nService.resolveLanguage(header as string | string[] | undefined);
-        req.locale = resolved;
+        req.locale = this.exerciseExampleI18nService.resolveLanguage(header as string | string[] | undefined);
         next();
     }
 }

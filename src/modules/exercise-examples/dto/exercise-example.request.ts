@@ -95,5 +95,4 @@ export class ExerciseExampleRequest {
     @ValidateNested({ each: true })
     @Type(() => ExerciseExampleEquipmentRefsRequest)
     equipmentRefs: ExerciseExampleEquipmentRefsRequest[];
-
 }
