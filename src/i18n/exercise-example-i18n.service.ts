@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ExerciseExamplesEntity } from '../entities/exercise-examples.entity';
 import { ExerciseExampleTranslationEntity } from '../entities/exercise-example-translation.entity';
 import { DEFAULT_LANGUAGE, SupportedLanguage, SUPPORTED_LANGUAGES } from './i18n.types';
+import { tryNormalizeLocale } from './locale.helper';
 
 @Injectable()
 export class ExerciseExampleI18nService {
@@ -16,14 +17,13 @@ export class ExerciseExampleI18nService {
 
         const candidates = header
             .split(',')
-            .map((part) => part.split(';')[0]?.trim().toLowerCase())
+            .map((part) => part.split(';')[0]?.trim())
             .filter((part): part is string => Boolean(part));
 
         for (const candidate of candidates) {
-            for (const supported of SUPPORTED_LANGUAGES) {
-                if (candidate === supported || candidate.startsWith(`${supported}-`)) {
-                    return supported;
-                }
+            const normalized = tryNormalizeLocale(candidate);
+            if (normalized) {
+                return normalized;
             }
         }
 
