@@ -4,6 +4,7 @@ import {WeightHistoryEntity} from './weight-history.entity';
 import {ExcludedMusclesEntity} from './excluded-muscles.entity';
 import {ExcludedEquipmentsEntity} from './excluded-equipments.entity';
 import {ExperienceEnum} from '../lib/experience.enum';
+import {UserRoleEnum} from '../lib/user-role.enum';
 
 @Entity({name: 'users'})
 export class UsersEntity {
@@ -26,6 +27,9 @@ export class UsersEntity {
 
     @Column({type: 'enum', enum: ExperienceEnum, nullable: true})
     experience: ExperienceEnum;
+
+    @Column({type: 'enum', enum: UserRoleEnum, default: UserRoleEnum.DEFAULT})
+    role: UserRoleEnum;
 
     // 📅 Metadata
     @CreateDateColumn({type: 'timestamp without time zone', name: 'created_at'})

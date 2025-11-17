@@ -40,16 +40,25 @@ export class TrainingsService {
             .leftJoinAndSelect('exercises.exerciseExample', 'exerciseExample')
             .leftJoinAndSelect('exerciseExample.translations', 'exerciseExampleTranslations')
             .leftJoinAndSelect('exercises.iterations', 'iterations')
-            .addOrderBy('trainings.created_at', 'DESC')
+            .orderBy('trainings.created_at', 'ASC')
+            .addOrderBy('exercises.created_at', 'ASC')
+            .addOrderBy('iterations.created_at', 'ASC')
             .getMany();
 
         if (trainings.length === 0) {
             return trainings;
         }
 
+        trainings.sort((a, b) => +a.createdAt - +b.createdAt);
+
         for (const training of trainings) {
             if (!training.exercises) continue;
             this.exerciseExampleI18nService.translateExercisesCollection(training.exercises, language);
+            training.exercises.sort((a, b) => +a.createdAt - +b.createdAt);
+            for (const exercise of training.exercises) {
+                if (!exercise.iterations) continue;
+                exercise.iterations.sort((a, b) => +a.createdAt - +b.createdAt);
+            }
         }
 
         return trainings;
@@ -66,7 +75,9 @@ export class TrainingsService {
             .leftJoinAndSelect('exerciseExampleBundles.muscle', 'muscle')
             .leftJoinAndSelect('exerciseExample.translations', 'exerciseExampleTranslations')
             .leftJoinAndSelect('exercises.iterations', 'iterations')
-            .addOrderBy('trainings.created_at', 'DESC')
+            .orderBy('trainings.created_at', 'ASC')
+            .addOrderBy('exercises.created_at', 'ASC')
+            .addOrderBy('iterations.created_at', 'ASC')
             .getOne();
 
         if (!training) {
@@ -75,6 +86,11 @@ export class TrainingsService {
 
         if (training.exercises) {
             this.exerciseExampleI18nService.translateExercisesCollection(training.exercises, language);
+            training.exercises.sort((a, b) => +a.createdAt - +b.createdAt);
+            for (const exercise of training.exercises) {
+                if (!exercise.iterations) continue;
+                exercise.iterations.sort((a, b) => +a.createdAt - +b.createdAt);
+            }
         }
 
         return training;
@@ -96,8 +112,7 @@ export class TrainingsService {
                 userId: user.id,
             });
 
-            const exerciseEntities: ExercisesEntity[] = [];
-            const iterationEntities: IterationsEntity[] = [];
+            await manager.save(training);
 
             for (const el of exercises) {
                 const {iterations, exerciseExampleId, ...exerciseData} = el;
@@ -116,7 +131,7 @@ export class TrainingsService {
                     exerciseExampleId: exerciseExampleId || null,
                 });
 
-                exerciseEntities.push(exercise);
+                await manager.save(exercise);
 
                 for (const iter of iterations) {
                     const iteration = manager.create(IterationsEntity, {
@@ -124,13 +139,9 @@ export class TrainingsService {
                         id: v4(),
                         exerciseId: exercise.id,
                     });
-                    iterationEntities.push(iteration);
+                    await manager.save(iteration);
                 }
             }
-
-            await manager.save(training);
-            await manager.save(exerciseEntities);
-            await manager.save(iterationEntities);
 
             return {id: training.id};
         });
@@ -165,9 +176,6 @@ export class TrainingsService {
             await manager.delete(ExercisesEntity, {trainingId: id});
 
             // Create new exercises and iterations
-            const exerciseEntities: ExercisesEntity[] = [];
-            const iterationEntities: IterationsEntity[] = [];
-
             for (const el of exercises) {
                 const {iterations, exerciseExampleId, ...exerciseData} = el;
 
@@ -185,7 +193,7 @@ export class TrainingsService {
                     exerciseExampleId: exerciseExampleId || null,
                 });
 
-                exerciseEntities.push(exercise);
+                await manager.save(exercise);
 
                 for (const iter of iterations) {
                     const iteration = manager.create(IterationsEntity, {
@@ -193,12 +201,9 @@ export class TrainingsService {
                         id: v4(),
                         exerciseId: exercise.id,
                     });
-                    iterationEntities.push(iteration);
+                    await manager.save(iteration);
                 }
             }
-
-            await manager.save(exerciseEntities);
-            await manager.save(iterationEntities);
         });
     }
 

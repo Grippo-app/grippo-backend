@@ -12,6 +12,7 @@ import {LoginRequest} from './dto/login.request';
 import {RegisterRequest} from './dto/register.request';
 import {Hash} from '../../lib/hash';
 import {ConfigService} from "@nestjs/config";
+import {UserRoleEnum} from '../../lib/user-role.enum';
 
 @Injectable()
 export class AuthService {
@@ -78,6 +79,7 @@ export class AuthService {
                 height: dto.height,
                 experience: dto.experience,
                 password: Hash.make(dto.password),
+                role: UserRoleEnum.DEFAULT,
             });
 
             await usersRepo.save(user);

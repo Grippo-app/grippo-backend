@@ -36,6 +36,7 @@ export class UsersService {
                 'users.name',
                 'users.experience',
                 'users.height',
+                'users.role',
                 'users.createdAt',
                 'users.updatedAt',
             ])
