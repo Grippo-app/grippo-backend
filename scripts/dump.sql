@@ -220,6 +220,16 @@ CREATE TYPE public.users_experience_enum AS ENUM (
 );
 
 
+--
+-- Name: users_role_enum; Type: TYPE; Schema: public; Owner: -
+--
+
+CREATE TYPE public.users_role_enum AS ENUM (
+    'default',
+    'admin'
+);
+
+
 SET default_tablespace = '';
 
 SET default_table_access_method = heap;
@@ -438,7 +448,8 @@ CREATE TABLE public.users (
     created_at timestamp without time zone DEFAULT now() NOT NULL,
     updated_at timestamp without time zone DEFAULT now() NOT NULL,
     height double precision NOT NULL,
-    experience public.users_experience_enum
+    experience public.users_experience_enum,
+    role public.users_role_enum DEFAULT 'default'::public.users_role_enum NOT NULL
 );
 
 
@@ -3408,4 +3419,3 @@ ALTER TABLE ONLY public.exercise_example_translations
 --
 -- PostgreSQL database dump complete
 --
-
