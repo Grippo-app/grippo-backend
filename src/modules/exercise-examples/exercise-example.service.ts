@@ -1,5 +1,4 @@
 import {BadRequestException, ConflictException, Inject, Injectable, NotFoundException} from '@nestjs/common';
-import {UsersEntity} from '../../entities/users.entity';
 import {Repository} from 'typeorm';
 import {v4} from 'uuid';
 import {ExerciseExamplesEntity} from "../../entities/exercise-examples.entity";
@@ -13,12 +12,13 @@ import {ExcludedMusclesEntity} from "../../entities/excluded-muscles.entity";
 import {ExercisesEntity} from "../../entities/exercises.entity";
 import {ExerciseExampleI18nService} from "../../i18n/exercise-example-i18n.service";
 import {DEFAULT_LANGUAGE, SupportedLanguage} from "../../i18n/i18n.types";
+import {UserProfilesEntity} from '../../entities/user-profiles.entity';
 
 @Injectable()
 export class ExerciseExampleService {
     constructor(
         private readonly exerciseExampleI18nService: ExerciseExampleI18nService,
-        @Inject('USERS_REPOSITORY') private readonly usersRepository: Repository<UsersEntity>,
+        @Inject('USER_PROFILES_REPOSITORY') private readonly userProfilesRepository: Repository<UserProfilesEntity>,
         @Inject('EXERCISE_EXAMPLES_REPOSITORY') private readonly exerciseExamplesRepository: Repository<ExerciseExamplesEntity>,
         @Inject('EXERCISE_EXAMPLE_BUNDLES_REPOSITORY') private readonly exerciseExampleBundlesRepository: Repository<ExerciseExampleBundlesEntity>,
         @Inject('EXERCISE_EXAMPLES_EQUIPMENTS_REPOSITORY') private readonly exerciseExamplesEquipmentsRepository: Repository<ExerciseExamplesEquipmentsEntity>,
@@ -29,8 +29,7 @@ export class ExerciseExampleService {
     }
 
     async getExerciseExamples(user: any, language: SupportedLanguage): Promise<ExerciseExampleWithStatsResponse[]> {
-        const userId = typeof user?.id === 'string' && user.id.length > 0 ? user.id : null;
-        if (!userId) throw new BadRequestException('User not authenticated');
+        const profileId = await this.resolveProfileId(user);
 
         const entities = await this.exerciseExamplesRepository
             .createQueryBuilder('exercise_examples')
@@ -54,7 +53,7 @@ export class ExerciseExampleService {
             .addSelect('COUNT(ex.id)', 'usageCount')
             .addSelect('MAX(ex.createdAt)', 'lastUsed')
             .where('ex.exerciseExampleId IN (:...ids)', {ids})
-            .andWhere('t.userId = :userId', {userId})
+            .andWhere('t.profileId = :profileId', {profileId})
             .groupBy('ex.exerciseExampleId')
             .getRawMany<{ example_id: string; usageCount: string; lastUsed: Date | null }>();
 
@@ -76,8 +75,7 @@ export class ExerciseExampleService {
     }
 
     async getExerciseExampleById(id: string, user: any, language: SupportedLanguage): Promise<ExerciseExampleWithStatsResponse | null> {
-        const userId = typeof user?.id === 'string' && user.id.length > 0 ? user.id : null;
-        if (!userId) throw new BadRequestException('User not authenticated');
+        const profileId = await this.resolveProfileId(user);
 
         const entity = await this.exerciseExamplesRepository
             .createQueryBuilder('exercise_examples')
@@ -97,7 +95,7 @@ export class ExerciseExampleService {
             .select('COUNT(ex.id)', 'usageCount')
             .addSelect('MAX(ex.createdAt)', 'lastUsed')
             .where('ex.exerciseExampleId = :id', {id})
-            .andWhere('t.userId = :userId', {userId})
+            .andWhere('t.profileId = :profileId', {profileId})
             .getRawOne<{ usageCount: string; lastUsed: Date | null }>();
 
         this.exerciseExampleI18nService.translateExample(entity, language);
@@ -239,13 +237,13 @@ export class ExerciseExampleService {
      */
     async deleteExerciseExample(id: string): Promise<void> {
         // Check existence
-        const existing = await this.exerciseExamplesRepository.findOne({ where: { id } });
+        const existing = await this.exerciseExamplesRepository.findOne({where: {id}});
         if (!existing) {
             throw new NotFoundException(`Exercise example with id ${id} not found`);
         }
 
         // Guard: example is used by exercises -> block deletion
-        const usageCount = await this.exercisesRepository.count({ where: { exerciseExampleId: id } });
+        const usageCount = await this.exercisesRepository.count({where: {exerciseExampleId: id}});
         if (usageCount > 0) {
             throw new ConflictException(
                 `Cannot delete exercise example ${id}: referenced by ${usageCount} exercise(s).`
@@ -254,11 +252,11 @@ export class ExerciseExampleService {
 
         // Transactionally delete direct relations, then the example itself
         await this.exerciseExamplesRepository.manager.transaction(async (manager) => {
-            await manager.delete(ExerciseExampleBundlesEntity, { exerciseExampleId: id });
-            await manager.delete(ExerciseExamplesEquipmentsEntity, { exerciseExampleId: id });
-            await manager.delete(ExerciseExamplesEntity, { id });
+            await manager.delete(ExerciseExampleBundlesEntity, {exerciseExampleId: id});
+            await manager.delete(ExerciseExamplesEquipmentsEntity, {exerciseExampleId: id});
+            await manager.delete(ExerciseExamplesEntity, {id});
         });
-}
+    }
 
     private prepareTranslationInput(
         items?: ExerciseExampleLocalizedTextDto[],
@@ -299,5 +297,19 @@ export class ExerciseExampleService {
         }
 
         return trimmed;
+    }
+
+    private async resolveProfileId(user: any): Promise<string> {
+        const userId = typeof user?.id === 'string' && user.id.length > 0 ? user.id : null;
+        if (!userId) {
+            throw new BadRequestException('User not authenticated');
+        }
+
+        const profile = await this.userProfilesRepository.findOne({where: {user: {id: userId}}});
+        if (!profile) {
+            throw new BadRequestException('User profile not created yet');
+        }
+
+        return profile.id;
     }
 }

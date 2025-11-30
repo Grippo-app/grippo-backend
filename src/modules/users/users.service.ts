@@ -1,4 +1,4 @@
-import {Inject, Injectable, NotFoundException,} from '@nestjs/common';
+import {BadRequestException, Inject, Injectable, NotFoundException,} from '@nestjs/common';
 import {In, Repository} from 'typeorm';
 import {UsersEntity} from '../../entities/users.entity';
 import {WeightHistoryEntity} from '../../entities/weight-history.entity';
@@ -11,12 +11,16 @@ import {MuscleResponse} from "../muscles/dto/muscle-response";
 import {AdminUserResponse} from "./dto/admin-user.response";
 import {UserRoleEnum} from "../../lib/user-role.enum";
 import {AdminSetRoleRequest} from "./dto/admin-set-role.request";
+import {CreateUserProfileRequest} from "./dto/create-user-profile.request";
+import {UserProfilesEntity} from "../../entities/user-profiles.entity";
 
 @Injectable()
 export class UsersService {
     constructor(
         @Inject('USERS_REPOSITORY')
         private readonly usersRepository: Repository<UsersEntity>,
+        @Inject('USER_PROFILES_REPOSITORY')
+        private readonly userProfilesRepository: Repository<UserProfilesEntity>,
         @Inject('WEIGHT_HISTORY_REPOSITORY')
         private readonly weightHistoryRepository: Repository<WeightHistoryEntity>,
         @Inject('EXCLUDED_MUSCLES_REPOSITORY')
@@ -30,18 +34,79 @@ export class UsersService {
     ) {
     }
 
+    async createProfile(userId: string, dto: CreateUserProfileRequest) {
+        const manager = this.usersRepository.manager;
+
+        await manager.transaction(async transactionalEntityManager => {
+            const usersRepo = transactionalEntityManager.getRepository(UsersEntity);
+            const profilesRepo = transactionalEntityManager.getRepository(UserProfilesEntity);
+            const weightRepo = transactionalEntityManager.getRepository(WeightHistoryEntity);
+            const excludedMusclesRepo = transactionalEntityManager.getRepository(ExcludedMusclesEntity);
+            const excludedEquipmentsRepo = transactionalEntityManager.getRepository(ExcludedEquipmentsEntity);
+
+            const user = await usersRepo.findOne({where: {id: userId}});
+            if (!user) {
+                throw new NotFoundException(`User with id ${userId} not found`);
+            }
+
+            const existingProfile = await profilesRepo.findOne({where: {user: {id: user.id}}});
+            if (existingProfile) {
+                throw new BadRequestException('User profile already created');
+            }
+
+            const profile = profilesRepo.create({
+                user,
+                name: dto.name,
+                height: dto.height,
+                experience: dto.experience,
+            });
+            await profilesRepo.save(profile);
+
+            await weightRepo.save({
+                profile: {id: profile.id},
+                weight: dto.weight,
+            });
+
+            await excludedMusclesRepo.delete({profile: {id: profile.id}});
+            if (dto.excludeMuscleIds?.length) {
+                const muscles = dto.excludeMuscleIds.map(muscleId =>
+                    excludedMusclesRepo.create({
+                        profile: {id: profile.id},
+                        muscleId,
+                    }),
+                );
+                await excludedMusclesRepo.save(muscles);
+            }
+
+            await excludedEquipmentsRepo.delete({profile: {id: profile.id}});
+            if (dto.excludeEquipmentIds?.length) {
+                const equipments = dto.excludeEquipmentIds.map(equipmentId =>
+                    excludedEquipmentsRepo.create({
+                        profile: {id: profile.id},
+                        equipmentId,
+                    }),
+                );
+                await excludedEquipmentsRepo.save(equipments);
+            }
+        });
+
+        return this.getUser(userId);
+    }
+
     async getUser(id: string) {
         const user = await this.usersRepository
             .createQueryBuilder('users')
+            .leftJoinAndSelect('users.profile', 'profile')
             .select([
                 'users.id',
                 'users.email',
-                'users.name',
-                'users.experience',
-                'users.height',
                 'users.role',
                 'users.createdAt',
                 'users.updatedAt',
+                'profile.id',
+                'profile.name',
+                'profile.height',
+                'profile.experience',
             ])
             .where('users.id = :id', {id})
             .getOne();
@@ -50,23 +115,34 @@ export class UsersService {
             throw new NotFoundException(`User with id ${id} not found`);
         }
 
-        const weight = await this.weightHistoryRepository
-            .createQueryBuilder('weights')
-            .select(['weights.weight'])
-            .where('weights.user_id = :userId', {userId: id})
-            .orderBy('weights.createdAt', 'DESC')
-            .limit(1)
-            .getOne();
+        let latestWeight = null;
+        if (user.profile?.id) {
+            latestWeight = await this.weightHistoryRepository
+                .createQueryBuilder('weights')
+                .select(['weights.weight'])
+                .where('weights.profile_id = :profileId', {profileId: user.profile.id})
+                .orderBy('weights.createdAt', 'DESC')
+                .limit(1)
+                .getOne();
+        }
 
         return {
-            ...user,
-            weight: weight?.weight ?? null,
+            id: user.id,
+            email: user.email,
+            role: user.role,
+            createdAt: user.createdAt,
+            updatedAt: user.updatedAt,
+            name: user.profile?.name ?? null,
+            height: user.profile?.height ?? null,
+            experience: user.profile?.experience ?? null,
+            weight: latestWeight?.weight ?? null,
         };
     }
 
     async getExcludedMuscles(user: UsersEntity): Promise<MuscleResponse[]> {
+        const profile = await this.requireProfile(user.id);
         const excluded = await this.excludedMusclesRepository.find({
-            where: {user: {id: user.id}},
+            where: {profile: {id: profile.id}},
             relations: ['muscle', 'muscle.muscleGroup'],
         });
 
@@ -87,16 +163,17 @@ export class UsersService {
     }
 
     async updateExcludedMuscles(user: UsersEntity, muscleIds: string[]): Promise<{ ids: string[] }> {
+        const profile = await this.requireProfile(user.id);
         const existingMuscles = await this.musclesRepository.findBy({id: In(muscleIds)});
         if (existingMuscles.length !== muscleIds.length) {
             throw new NotFoundException('One or more muscle IDs are invalid');
         }
 
-        await this.excludedMusclesRepository.delete({user: {id: user.id}});
+        await this.excludedMusclesRepository.delete({profile: {id: profile.id}});
 
         const entities = muscleIds.map((id) =>
             this.excludedMusclesRepository.create({
-                user: {id: user.id},
+                profile: {id: profile.id},
                 muscleId: id,
             }),
         );
@@ -106,16 +183,17 @@ export class UsersService {
     }
 
     async updateExcludedEquipments(user: UsersEntity, equipmentIds: string[]): Promise<{ ids: string[] }> {
+        const profile = await this.requireProfile(user.id);
         const existingEquipments = await this.equipmentsRepository.findBy({id: In(equipmentIds)});
         if (existingEquipments.length !== equipmentIds.length) {
             throw new NotFoundException('One or more equipment IDs are invalid');
         }
 
-        await this.excludedEquipmentsRepository.delete({user: {id: user.id}});
+        await this.excludedEquipmentsRepository.delete({profile: {id: profile.id}});
 
         const entities = equipmentIds.map((id) =>
             this.excludedEquipmentsRepository.create({
-                user: {id: user.id},
+                profile: {id: profile.id},
                 equipmentId: id,
             }),
         );
@@ -125,8 +203,9 @@ export class UsersService {
     }
 
     async getExcludedEquipments(user: UsersEntity): Promise<EquipmentResponse[]> {
+        const profile = await this.requireProfile(user.id);
         const excluded = await this.excludedEquipmentsRepository.find({
-            where: {user: {id: user.id}},
+            where: {profile: {id: profile.id}},
             relations: ['equipment', 'equipment.equipmentGroup'],
         });
 
@@ -146,31 +225,42 @@ export class UsersService {
     }
 
     async makeUserAdminByEmail(email: string): Promise<AdminUserResponse> {
-        const user = await this.usersRepository.findOne({where: {email}});
+        const user = await this.usersRepository.findOne({where: {email}, relations: ['profile']});
         if (!user) {
             throw new NotFoundException(`User with email ${email} not found`);
         }
 
         if (user.role !== UserRoleEnum.ADMIN) {
             user.role = UserRoleEnum.ADMIN;
-            const updated = await this.usersRepository.save(user);
-            return this.toAdminUserResponse(updated);
+            await this.usersRepository.save(user);
         }
 
         return this.toAdminUserResponse(user);
     }
 
     async getAllUsers(): Promise<AdminUserResponse[]> {
-        const users = await this.usersRepository.find({
-            select: ['id', 'email', 'name', 'height', 'experience', 'role', 'createdAt', 'updatedAt'],
-            order: {createdAt: 'DESC'},
-        });
+        const users = await this.usersRepository
+            .createQueryBuilder('users')
+            .leftJoinAndSelect('users.profile', 'profile')
+            .select([
+                'users.id',
+                'users.email',
+                'users.role',
+                'users.createdAt',
+                'users.updatedAt',
+                'profile.id',
+                'profile.name',
+                'profile.height',
+                'profile.experience',
+            ])
+            .orderBy('users.createdAt', 'DESC')
+            .getMany();
 
         return users.map(user => this.toAdminUserResponse(user));
     }
 
     async setUserRole(id: string, dto: AdminSetRoleRequest): Promise<AdminUserResponse> {
-        const user = await this.usersRepository.findOne({where: {id}});
+        const user = await this.usersRepository.findOne({where: {id}, relations: ['profile']});
         if (!user) {
             throw new NotFoundException(`User with id ${id} not found`);
         }
@@ -180,8 +270,8 @@ export class UsersService {
         }
 
         user.role = dto.role;
-        const saved = await this.usersRepository.save(user);
-        return this.toAdminUserResponse(saved);
+        await this.usersRepository.save(user);
+        return this.toAdminUserResponse(user);
     }
 
     async deleteUser(id: string): Promise<void> {
@@ -195,12 +285,20 @@ export class UsersService {
         const dto = new AdminUserResponse();
         dto.id = user.id;
         dto.email = user.email;
-        dto.name = user.name;
-        dto.height = user.height;
-        dto.experience = user.experience ?? null;
+        dto.name = user.profile?.name ?? null;
+        dto.height = user.profile?.height ?? null;
+        dto.experience = user.profile?.experience ?? null;
         dto.role = user.role;
         dto.createdAt = user.createdAt;
         dto.updatedAt = user.updatedAt;
         return dto;
+    }
+
+    private async requireProfile(userId: string): Promise<UserProfilesEntity> {
+        const profile = await this.userProfilesRepository.findOne({where: {user: {id: userId}}});
+        if (!profile) {
+            throw new BadRequestException('User profile not created yet');
+        }
+        return profile;
     }
 }
