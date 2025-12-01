@@ -22,10 +22,9 @@ source "$LOGGER_SCRIPT"
 log_step_start "🔐 Checking permissions"
 
 if [[ "$EUID" -ne 0 ]]; then
-  log_error "This script must be run with sudo (root privileges)"
-  log_info "Try: sudo $0"
+  log_warn "Script is not running as root – attempting to re-run with sudo"
   log_step_end
-  exit 1
+  exec sudo -E bash "$0" "$@"
 fi
 
 log_success "Running as root – OK"
