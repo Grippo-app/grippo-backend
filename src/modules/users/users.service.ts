@@ -294,6 +294,16 @@ export class UsersService {
         dto.name = user.profile?.name ?? null;
         dto.height = user.profile?.height ?? null;
         dto.experience = user.profile?.experience ?? null;
+        dto.profileId = user.profile?.id ?? null;
+        dto.profile = user.profile?.id
+            ? {
+                id: user.profile.id,
+                name: user.profile.name,
+                height: user.profile.height,
+                experience: user.profile.experience,
+                weight: null,
+            }
+            : null;
         dto.role = user.role;
         dto.createdAt = user.createdAt;
         dto.updatedAt = user.updatedAt;

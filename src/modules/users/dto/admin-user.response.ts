@@ -1,6 +1,7 @@
 import {ApiProperty} from '@nestjs/swagger';
 import {ExperienceEnum} from '../../../lib/experience.enum';
 import {UserRoleEnum} from '../../../lib/user-role.enum';
+import {UserProfileResponse} from './user.response';
 
 export class AdminUserResponse {
     @ApiProperty({example: '3b828d2f-797f-4a45-9d1d-1d3efe38fb54'})
@@ -18,6 +19,9 @@ export class AdminUserResponse {
     @ApiProperty({example: ExperienceEnum.PRO, enum: ExperienceEnum, nullable: true})
     experience: ExperienceEnum | null;
 
+    @ApiProperty({example: '72a0317f-e321-4da7-9869-91bf23d655bb', nullable: true})
+    profileId: string | null;
+
     @ApiProperty({example: UserRoleEnum.DEFAULT, enum: UserRoleEnum})
     role: UserRoleEnum;
 
@@ -26,4 +30,7 @@ export class AdminUserResponse {
 
     @ApiProperty({example: new Date().toISOString()})
     updatedAt: Date;
+
+    @ApiProperty({type: () => UserProfileResponse, nullable: true})
+    profile: UserProfileResponse | null;
 }
