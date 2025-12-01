@@ -1,20 +1,21 @@
-import { DataSource, EntityTarget } from 'typeorm';
+import {DataSource, EntityTarget} from 'typeorm';
 
-import { UsersEntity } from '../entities/users.entity';
-import { ExercisesEntity } from '../entities/exercises.entity';
-import { IterationsEntity } from '../entities/iterations.entity';
-import { TrainingsEntity } from '../entities/trainings.entity';
-import { ExerciseExampleBundlesEntity } from '../entities/exercise-example-bundles.entity';
-import { MusclesEntity } from '../entities/muscles.entity';
-import { ExerciseExamplesEntity } from '../entities/exercise-examples.entity';
-import { MuscleGroupsEntity } from '../entities/muscle-groups.entity';
-import { WeightHistoryEntity } from '../entities/weight-history.entity';
-import { ExcludedMusclesEntity } from '../entities/excluded-muscles.entity';
-import { EquipmentsEntity } from '../entities/equipments.entity';
-import { ExcludedEquipmentsEntity } from '../entities/excluded-equipments.entity';
-import { EquipmentGroupsEntity } from '../entities/equipment-groups.entity';
-import { ExerciseExamplesEquipmentsEntity } from '../entities/exercise-examples-equipments.entity';
-import { ExerciseExampleTranslationEntity } from '../entities/exercise-example-translation.entity';
+import {UsersEntity} from '../entities/users.entity';
+import {ExercisesEntity} from '../entities/exercises.entity';
+import {IterationsEntity} from '../entities/iterations.entity';
+import {TrainingsEntity} from '../entities/trainings.entity';
+import {ExerciseExampleBundlesEntity} from '../entities/exercise-example-bundles.entity';
+import {MusclesEntity} from '../entities/muscles.entity';
+import {ExerciseExamplesEntity} from '../entities/exercise-examples.entity';
+import {MuscleGroupsEntity} from '../entities/muscle-groups.entity';
+import {WeightHistoryEntity} from '../entities/weight-history.entity';
+import {ExcludedMusclesEntity} from '../entities/excluded-muscles.entity';
+import {EquipmentsEntity} from '../entities/equipments.entity';
+import {ExcludedEquipmentsEntity} from '../entities/excluded-equipments.entity';
+import {EquipmentGroupsEntity} from '../entities/equipment-groups.entity';
+import {ExerciseExamplesEquipmentsEntity} from '../entities/exercise-examples-equipments.entity';
+import {ExerciseExampleTranslationEntity} from '../entities/exercise-example-translation.entity';
+import {UserProfilesEntity} from '../entities/user-profiles.entity';
 
 /**
  * 📦 Creates a repository provider for a given entity and token
@@ -32,6 +33,7 @@ function createRepositoryProvider(token: string, entity: EntityTarget<any>) {
  */
 export const repositoryProviders = [
     createRepositoryProvider('USERS_REPOSITORY', UsersEntity),
+    createRepositoryProvider('USER_PROFILES_REPOSITORY', UserProfilesEntity),
     createRepositoryProvider('WEIGHT_HISTORY_REPOSITORY', WeightHistoryEntity),
     createRepositoryProvider('EXERCISES_REPOSITORY', ExercisesEntity),
     createRepositoryProvider('ITERATIONS_REPOSITORY', IterationsEntity),

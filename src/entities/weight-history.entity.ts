@@ -8,7 +8,7 @@ import {
     PrimaryGeneratedColumn,
     UpdateDateColumn,
 } from 'typeorm';
-import {UsersEntity} from './users.entity';
+import {UserProfilesEntity} from './user-profiles.entity';
 
 @Entity({name: 'weight_history'})
 @Check(`"weight" >= 30 AND "weight" <= 300`)
@@ -39,10 +39,10 @@ export class WeightHistoryEntity {
     })
     updatedAt: Date;
 
-    @ManyToOne(() => UsersEntity, (user) => user.weights, {
+    @ManyToOne(() => UserProfilesEntity, (profile) => profile.weights, {
         onDelete: 'CASCADE',
         orphanedRowAction: 'delete',
     })
-    @JoinColumn({name: 'user_id'})
-    user: UsersEntity;
+    @JoinColumn({name: 'profile_id'})
+    profile: UserProfilesEntity;
 }

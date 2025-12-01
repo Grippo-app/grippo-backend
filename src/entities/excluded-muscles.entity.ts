@@ -8,7 +8,7 @@ import {
     UpdateDateColumn,
 } from 'typeorm';
 import {MusclesEntity} from "./muscles.entity";
-import {UsersEntity} from "./users.entity";
+import {UserProfilesEntity} from "./user-profiles.entity";
 
 @Entity({name: 'excluded_muscles'})
 export class ExcludedMusclesEntity {
@@ -18,8 +18,8 @@ export class ExcludedMusclesEntity {
     @Column({default: null})
     muscleId: string;
 
-    @Column({default: null})
-    userId: string;
+    @Column({default: null, name: 'profile_id'})
+    profileId: string;
 
     @CreateDateColumn({type: 'timestamp without time zone', name: 'created_at',})
     createdAt: Date;
@@ -34,10 +34,10 @@ export class ExcludedMusclesEntity {
     @JoinColumn({name: 'muscle_id'})
     muscle: MusclesEntity;
 
-    @ManyToOne(() => UsersEntity, (user) => user.excludedMuscles, {
+    @ManyToOne(() => UserProfilesEntity, (profile) => profile.excludedMuscles, {
         onDelete: 'CASCADE',
         orphanedRowAction: 'delete',
     })
-    @JoinColumn({name: 'user_id'})
-    user: UsersEntity;
+    @JoinColumn({name: 'profile_id'})
+    profile: UserProfilesEntity;
 }

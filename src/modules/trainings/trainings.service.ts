@@ -1,5 +1,4 @@
 import {BadRequestException, Inject, Injectable, NotFoundException} from '@nestjs/common';
-import {UsersEntity} from '../../entities/users.entity';
 import {v4} from 'uuid';
 import {Repository} from 'typeorm';
 import {TrainingsRequest} from './dto/trainings.request';
@@ -7,16 +6,17 @@ import {TrainingCreateResponse} from './dto/trainings.response';
 import {TrainingsEntity} from '../../entities/trainings.entity';
 import {ExercisesEntity} from '../../entities/exercises.entity';
 import {IterationsEntity} from '../../entities/iterations.entity';
-import * as moment from 'moment'
+import moment from 'moment';
 import {ExerciseExamplesEntity} from '../../entities/exercise-examples.entity';
 import {ExerciseExampleI18nService} from '../../i18n/exercise-example-i18n.service';
 import {SupportedLanguage} from '../../i18n/i18n.types';
+import {UserProfilesEntity} from '../../entities/user-profiles.entity';
 
 @Injectable()
 export class TrainingsService {
     constructor(
         private readonly exerciseExampleI18nService: ExerciseExampleI18nService,
-        @Inject('USERS_REPOSITORY') private readonly usersRepository: Repository<UsersEntity>,
+        @Inject('USER_PROFILES_REPOSITORY') private readonly userProfilesRepository: Repository<UserProfilesEntity>,
         @Inject('TRAININGS_REPOSITORY') private readonly trainingsRepository: Repository<TrainingsEntity>,
         @Inject('EXERCISES_REPOSITORY') private readonly exercisesRepository: Repository<ExercisesEntity>,
         @Inject('ITERATIONS_REPOSITORY') private readonly iterationsRepository: Repository<IterationsEntity>,
@@ -29,9 +29,11 @@ export class TrainingsService {
             throw new BadRequestException('Wrong date format');
         }
 
+        const profile = await this.requireProfile(user);
+
         const trainings = await this.trainingsRepository
             .createQueryBuilder('trainings')
-            .where('trainings.user_id = :userId', {userId: user.id})
+            .where('trainings.profile_id = :profileId', {profileId: profile.id})
             .andWhere('date(:start) <= date(trainings.created_at) and date(:end) >= date(trainings.created_at)', {
                 start,
                 end,
@@ -65,10 +67,12 @@ export class TrainingsService {
     }
 
     async getTrainingById(id: string, user, language: SupportedLanguage) {
+        const profile = await this.requireProfile(user);
+
         const training = await this.trainingsRepository
             .createQueryBuilder('trainings')
             .where('trainings.id = :id', {id})
-            .andWhere('trainings.user_id = :userId', {userId: user.id})
+            .andWhere('trainings.profile_id = :profileId', {profileId: profile.id})
             .leftJoinAndSelect('trainings.exercises', 'exercises')
             .leftJoinAndSelect('exercises.exerciseExample', 'exerciseExample')
             .leftJoinAndSelect('exerciseExample.exerciseExampleBundles', 'exerciseExampleBundles')
@@ -103,13 +107,15 @@ export class TrainingsService {
      * @returns Object with training ID
      */
     async createTraining(body: TrainingsRequest, user): Promise<TrainingCreateResponse> {
+        const profile = await this.requireProfile(user);
+
         return await this.trainingsRepository.manager.transaction(async (manager) => {
             const {exercises, ...rest} = body;
 
             const training = manager.create(TrainingsEntity, {
                 ...rest,
                 id: v4(),
-                userId: user.id,
+                profileId: profile.id,
             });
 
             await manager.save(training);
@@ -154,10 +160,12 @@ export class TrainingsService {
      * @param user Current user
      */
     async updateTraining(id: string, body: TrainingsRequest, user): Promise<void> {
+        const profile = await this.requireProfile(user);
+
         return await this.trainingsRepository.manager.transaction(async (manager) => {
             // Check if training exists and belongs to the user
             const existingTraining = await this.trainingsRepository.findOne({
-                where: {id, userId: user.id}
+                where: {id, profileId: profile.id}
             });
 
             if (!existingTraining) {
@@ -169,7 +177,7 @@ export class TrainingsService {
             // Update training data
             await manager.update(TrainingsEntity, {id}, {
                 ...rest,
-                userId: user.id,
+                profileId: profile.id,
             });
 
             // Remove existing exercises and iterations (cascade will handle iterations)
@@ -213,9 +221,10 @@ export class TrainingsService {
      * @param user Current user
      */
     async deleteTraining(id: string, user): Promise<void> {
+        const profile = await this.requireProfile(user);
         // Check if training exists and belongs to the user
         const existingTraining = await this.trainingsRepository.findOne({
-            where: {id, userId: user.id}
+            where: {id, profileId: profile.id}
         });
 
         if (!existingTraining) {
@@ -223,6 +232,20 @@ export class TrainingsService {
         }
 
         // Delete the training (cascade will handle exercises and iterations)
-        await this.trainingsRepository.delete({id, userId: user.id});
+        await this.trainingsRepository.delete({id, profileId: profile.id});
+    }
+
+    private async requireProfile(user: any): Promise<UserProfilesEntity> {
+        const userId = typeof user?.id === 'string' ? user.id : null;
+        if (!userId) {
+            throw new BadRequestException('User not authenticated');
+        }
+
+        const profile = await this.userProfilesRepository.findOne({where: {user: {id: userId}}});
+        if (!profile) {
+            throw new BadRequestException('User profile not created yet');
+        }
+
+        return profile;
     }
 }

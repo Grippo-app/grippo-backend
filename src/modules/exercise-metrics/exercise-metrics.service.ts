@@ -2,6 +2,7 @@ import {BadRequestException, Inject, Injectable} from '@nestjs/common';
 import {In, Repository} from 'typeorm';
 import {IterationsEntity} from '../../entities/iterations.entity';
 import {ExercisesEntity} from '../../entities/exercises.entity';
+import {UserProfilesEntity} from '../../entities/user-profiles.entity';
 import {
     BestRepetitionsResponseDto,
     BestTonnageResponseDto,
@@ -16,6 +17,7 @@ export class ExerciseMetricsService {
     constructor(
         @Inject('ITERATIONS_REPOSITORY') private readonly iterationsRepository: Repository<IterationsEntity>,
         @Inject('EXERCISES_REPOSITORY') private readonly exercisesRepository: Repository<ExercisesEntity>,
+        @Inject('USER_PROFILES_REPOSITORY') private readonly userProfilesRepository: Repository<UserProfilesEntity>,
     ) {
     }
 
@@ -27,15 +29,24 @@ export class ExerciseMetricsService {
         return id;
     }
 
-    async getAchievements(exerciseExampleId: string, user: any): Promise<ExerciseAchievementsResponseDto> {
+    private async requireProfileId(user: any): Promise<string> {
         const userId = this.requireUserId(user);
+        const profile = await this.userProfilesRepository.findOne({where: {user: {id: userId}}});
+        if (!profile) {
+            throw new BadRequestException('User profile not created yet');
+        }
+        return profile.id;
+    }
+
+    async getAchievements(exerciseExampleId: string, user: any): Promise<ExerciseAchievementsResponseDto> {
+        const profileId = await this.requireProfileId(user);
 
         const [bestWeight, bestTonnage, maxRepetitions, peakIntensity, lifetimeVolume] = await Promise.all([
-            this.findBestWeight(exerciseExampleId, userId),
-            this.findBestTonnage(exerciseExampleId, userId),
-            this.findMaxRepetitions(exerciseExampleId, userId),
-            this.findPeakIntensity(exerciseExampleId, userId),
-            this.findLifetimeVolume(exerciseExampleId, userId),
+            this.findBestWeight(exerciseExampleId, profileId),
+            this.findBestTonnage(exerciseExampleId, profileId),
+            this.findMaxRepetitions(exerciseExampleId, profileId),
+            this.findPeakIntensity(exerciseExampleId, profileId),
+            this.findLifetimeVolume(exerciseExampleId, profileId),
         ]);
 
         return {
@@ -48,16 +59,16 @@ export class ExerciseMetricsService {
     }
 
     async getRecentExercises(exerciseExampleId: string, user: any): Promise<ExercisesEntity[]> {
-        const userId = this.requireUserId(user);
-        return this.findRecentExercises(exerciseExampleId, userId);
+        const profileId = await this.requireProfileId(user);
+        return this.findRecentExercises(exerciseExampleId, profileId);
     }
 
-    private async findBestWeight(exerciseExampleId: string, userId: string): Promise<BestWeightResponseDto | null> {
+    private async findBestWeight(exerciseExampleId: string, profileId: string): Promise<BestWeightResponseDto | null> {
         const iteration = await this.iterationsRepository
             .createQueryBuilder('iteration')
             .innerJoinAndSelect('iteration.exercise', 'exercise')
             .innerJoin('exercise.training', 'training')
-            .where('training.userId = :userId', {userId})
+            .where('training.profileId = :profileId', {profileId})
             .andWhere('exercise.exerciseExampleId = :exerciseExampleId', {exerciseExampleId})
             .andWhere('iteration.weight IS NOT NULL')
             .orderBy('iteration.weight', 'DESC')
@@ -77,11 +88,11 @@ export class ExerciseMetricsService {
         };
     }
 
-    private async findBestTonnage(exerciseExampleId: string, userId: string): Promise<BestTonnageResponseDto | null> {
+    private async findBestTonnage(exerciseExampleId: string, profileId: string): Promise<BestTonnageResponseDto | null> {
         const exercise = await this.exercisesRepository
             .createQueryBuilder('exercise')
             .innerJoin('exercise.training', 'training')
-            .where('training.userId = :userId', {userId})
+            .where('training.profileId = :profileId', {profileId})
             .andWhere('exercise.exerciseExampleId = :exerciseExampleId', {exerciseExampleId})
             .andWhere('exercise.volume IS NOT NULL')
             .orderBy('exercise.volume', 'DESC')
@@ -100,12 +111,12 @@ export class ExerciseMetricsService {
         };
     }
 
-    private async findMaxRepetitions(exerciseExampleId: string, userId: string): Promise<BestRepetitionsResponseDto | null> {
+    private async findMaxRepetitions(exerciseExampleId: string, profileId: string): Promise<BestRepetitionsResponseDto | null> {
         const iteration = await this.iterationsRepository
             .createQueryBuilder('iteration')
             .innerJoinAndSelect('iteration.exercise', 'exercise')
             .innerJoin('exercise.training', 'training')
-            .where('training.userId = :userId', {userId})
+            .where('training.profileId = :profileId', {profileId})
             .andWhere('exercise.exerciseExampleId = :exerciseExampleId', {exerciseExampleId})
             .andWhere('iteration.repetitions IS NOT NULL')
             .orderBy('iteration.repetitions', 'DESC')
@@ -125,11 +136,11 @@ export class ExerciseMetricsService {
         };
     }
 
-    private async findPeakIntensity(exerciseExampleId: string, userId: string): Promise<PeakIntensityResponseDto | null> {
+    private async findPeakIntensity(exerciseExampleId: string, profileId: string): Promise<PeakIntensityResponseDto | null> {
         const exercise = await this.exercisesRepository
             .createQueryBuilder('exercise')
             .innerJoin('exercise.training', 'training')
-            .where('training.userId = :userId', {userId})
+            .where('training.profileId = :profileId', {profileId})
             .andWhere('exercise.exerciseExampleId = :exerciseExampleId', {exerciseExampleId})
             .andWhere('exercise.intensity IS NOT NULL')
             .orderBy('exercise.intensity', 'DESC')
@@ -148,7 +159,7 @@ export class ExerciseMetricsService {
         };
     }
 
-    private async findLifetimeVolume(exerciseExampleId: string, userId: string): Promise<LifetimeVolumeResponseDto | null> {
+    private async findLifetimeVolume(exerciseExampleId: string, profileId: string): Promise<LifetimeVolumeResponseDto | null> {
         const raw = await this.exercisesRepository
             .createQueryBuilder('exercise')
             .select('COALESCE(SUM(exercise.volume), 0)', 'totalVolume')
@@ -156,9 +167,14 @@ export class ExerciseMetricsService {
             .addSelect('MIN(exercise.createdAt)', 'firstPerformedAt')
             .addSelect('MAX(exercise.createdAt)', 'lastPerformedAt')
             .innerJoin('exercise.training', 'training')
-            .where('training.userId = :userId', {userId})
+            .where('training.profileId = :profileId', {profileId})
             .andWhere('exercise.exerciseExampleId = :exerciseExampleId', {exerciseExampleId})
-            .getRawOne<{ totalVolume: string | null; sessionsCount: string; firstPerformedAt: string | null; lastPerformedAt: string | null }>();
+            .getRawOne<{
+                totalVolume: string | null;
+                sessionsCount: string;
+                firstPerformedAt: string | null;
+                lastPerformedAt: string | null
+            }>();
 
         if (!raw) {
             return null;
@@ -178,11 +194,11 @@ export class ExerciseMetricsService {
         };
     }
 
-    private async findRecentExercises(exerciseExampleId: string, userId: string): Promise<ExercisesEntity[]> {
+    private async findRecentExercises(exerciseExampleId: string, profileId: string): Promise<ExercisesEntity[]> {
         const exercises = await this.exercisesRepository
             .createQueryBuilder('exercise')
             .innerJoin('exercise.training', 'training')
-            .where('training.userId = :userId', {userId})
+            .where('training.profileId = :profileId', {profileId})
             .andWhere('exercise.exerciseExampleId = :exerciseExampleId', {exerciseExampleId})
             .orderBy('exercise.createdAt', 'DESC')
             .take(5)

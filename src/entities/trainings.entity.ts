@@ -1,16 +1,16 @@
 import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  Index,
-  JoinColumn,
-  ManyToOne,
-  OneToMany,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
+    Column,
+    CreateDateColumn,
+    Entity,
+    Index,
+    JoinColumn,
+    ManyToOne,
+    OneToMany,
+    PrimaryGeneratedColumn,
+    UpdateDateColumn,
 } from 'typeorm';
 import {ExercisesEntity} from './exercises.entity';
-import {UsersEntity} from './users.entity';
+import {UserProfilesEntity} from './user-profiles.entity';
 
 @Entity({name: 'trainings'})
 export class TrainingsEntity {
@@ -47,8 +47,8 @@ export class TrainingsEntity {
     })
     intensity: number | null;
 
-    @Column({name: 'user_id', type: 'uuid', nullable: true})
-    userId: string | null;
+    @Column({name: 'profile_id', type: 'uuid', nullable: true})
+    profileId: string | null;
 
     @Index()
     @CreateDateColumn({
@@ -68,10 +68,10 @@ export class TrainingsEntity {
     })
     exercises: ExercisesEntity[];
 
-    @ManyToOne(() => UsersEntity, (user) => user.trainings, {
+    @ManyToOne(() => UserProfilesEntity, (profile) => profile.trainings, {
         onDelete: 'CASCADE',
         orphanedRowAction: 'delete',
     })
-    @JoinColumn({name: 'user_id'})
-    user: UsersEntity;
+    @JoinColumn({name: 'profile_id'})
+    profile: UserProfilesEntity;
 }
