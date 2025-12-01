@@ -30,45 +30,6 @@ export function setupSwagger(app: INestApplication): void {
 
     const doc = SwaggerModule.createDocument(app, config, options);
 
-    const customCss = `
-      :root {
-        color-scheme: dark;
-      }
-      body,
-      .swagger-ui,
-      .swagger-ui .topbar,
-      .swagger-ui .information-container,
-      .swagger-ui .scheme-container {
-        background-color: #0f172a !important;
-        color: #f8fafc !important;
-      }
-      .swagger-ui .topbar {
-        border-bottom: 1px solid #1f2937;
-      }
-      .swagger-ui .topbar .download-url-wrapper .selectize-input,
-      .swagger-ui select,
-      .swagger-ui input,
-      .swagger-ui textarea {
-        background-color: #1e293b !important;
-        color: #f8fafc !important;
-        border-color: #334155 !important;
-      }
-      .topbar-wrapper img {
-        content: url('https://img.icons8.com/color/48/gym.png');
-        width: 40px;
-        height: 40px;
-      }
-      .swagger-ui .swagger-json-link {
-        margin-left: 1rem;
-        color: #38bdf8;
-        font-weight: 600;
-        text-decoration: none;
-      }
-      .swagger-ui .swagger-json-link:hover {
-        text-decoration: underline;
-      }
-    `;
-
     const jsonLinkScript = `
       window.addEventListener('load', () => {
         const topbar = document.querySelector('.topbar');
@@ -108,7 +69,6 @@ export function setupSwagger(app: INestApplication): void {
             tryItOutEnabled: true,
         },
         customSiteTitle: `📘 Grippo API Docs (${isProd ? 'PROD' : 'DEV'})`,
-        customCss,
         customJs: '/swagger-custom.js',
     });
 }
