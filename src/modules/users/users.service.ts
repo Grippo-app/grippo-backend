@@ -13,6 +13,7 @@ import {UserRoleEnum} from "../../lib/user-role.enum";
 import {AdminSetRoleRequest} from "./dto/admin-set-role.request";
 import {CreateUserProfileRequest} from "./dto/create-user-profile.request";
 import {UserProfilesEntity} from "../../entities/user-profiles.entity";
+import {UserProfileResponse, UserResponse} from "./dto/user.response";
 
 @Injectable()
 export class UsersService {
@@ -34,7 +35,7 @@ export class UsersService {
     ) {
     }
 
-    async createProfile(userId: string, dto: CreateUserProfileRequest) {
+    async createProfile(userId: string, dto: CreateUserProfileRequest): Promise<UserResponse> {
         const manager = this.usersRepository.manager;
 
         await manager.transaction(async transactionalEntityManager => {
@@ -93,7 +94,7 @@ export class UsersService {
         return this.getUser(userId);
     }
 
-    async getUser(id: string) {
+    async getUser(id: string): Promise<UserResponse> {
         const user = await this.usersRepository
             .createQueryBuilder('users')
             .leftJoinAndSelect('users.profile', 'profile')
@@ -115,15 +116,23 @@ export class UsersService {
             throw new NotFoundException(`User with id ${id} not found`);
         }
 
-        let latestWeight = null;
+        let profile: UserProfileResponse | null = null;
         if (user.profile?.id) {
-            latestWeight = await this.weightHistoryRepository
+            const latestWeight = await this.weightHistoryRepository
                 .createQueryBuilder('weights')
                 .select(['weights.weight'])
                 .where('weights.profile_id = :profileId', {profileId: user.profile.id})
                 .orderBy('weights.createdAt', 'DESC')
                 .limit(1)
                 .getOne();
+
+            profile = {
+                id: user.profile.id,
+                name: user.profile.name,
+                height: user.profile.height,
+                experience: user.profile.experience,
+                weight: latestWeight?.weight ?? null,
+            };
         }
 
         return {
@@ -132,10 +141,7 @@ export class UsersService {
             role: user.role,
             createdAt: user.createdAt,
             updatedAt: user.updatedAt,
-            name: user.profile?.name ?? null,
-            height: user.profile?.height ?? null,
-            experience: user.profile?.experience ?? null,
-            weight: latestWeight?.weight ?? null,
+            profile,
         };
     }
 
