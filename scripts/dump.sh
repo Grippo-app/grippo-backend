@@ -2,12 +2,15 @@
 set -Eeuo pipefail
 IFS=$'\n\t'
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+LOGGER_SCRIPT="$SCRIPT_DIR/internal/logger.sh"
+
 # =========================
 # Logger (fallback)
 # =========================
-if [[ -f "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/logger.sh" ]]; then
-  # If you have your own logger with log_* functions
-  source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/logger.sh"
+if [[ -f "$LOGGER_SCRIPT" ]]; then
+  # shellcheck source=./internal/logger.sh
+  source "$LOGGER_SCRIPT"
 else
   log_info()    { printf '%s\n' "$*"; }
   log_warn()    { printf '%s\n' "$*"; }
@@ -49,7 +52,6 @@ file_size_h() {
 # =========================
 # Paths
 # =========================
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 ENV_FILE="${ROOT_DIR}/.env"
 SQL_TARGET="${ROOT_DIR}/${DB_DUMP_FILE:-scripts/dump.sql}"

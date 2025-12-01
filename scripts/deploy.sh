@@ -7,12 +7,14 @@ set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
+LOGGER_SCRIPT="$SCRIPT_DIR/internal/logger.sh"
 
-if [ ! -f "$SCRIPT_DIR/logger.sh" ]; then
-  echo "❌ Missing logger.sh"
+if [ ! -f "$LOGGER_SCRIPT" ]; then
+  echo "❌ Missing logger script at $LOGGER_SCRIPT"
   exit 1
 fi
-source "$SCRIPT_DIR/logger.sh"
+# shellcheck source=./internal/logger.sh
+source "$LOGGER_SCRIPT"
 
 ENV_FILE="$ROOT_DIR/.env"
 COMPOSE_FILE="$ROOT_DIR/${DOCKER_COMPOSE_FILE:-docker-compose.yml}"

@@ -6,13 +6,14 @@ set -euo pipefail
 # ─────────────────────────────────────────────
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+LOGGER_SCRIPT="$SCRIPT_DIR/internal/logger.sh"
 
-if [ ! -f "$SCRIPT_DIR/logger.sh" ]; then
-  echo "❌ Missing logger.sh next to cleanup_space.sh"
+if [ ! -f "$LOGGER_SCRIPT" ]; then
+  echo "❌ Missing logger script at $LOGGER_SCRIPT"
   exit 1
 fi
-# shellcheck source=/dev/null
-source "$SCRIPT_DIR/logger.sh"
+# shellcheck source=./internal/logger.sh
+source "$LOGGER_SCRIPT"
 
 # ─────────────────────────────────────────────
 # 🔐 Root check
