@@ -291,9 +291,6 @@ export class UsersService {
         const dto = new AdminUserResponse();
         dto.id = user.id;
         dto.email = user.email;
-        dto.name = user.profile?.name ?? null;
-        dto.height = user.profile?.height ?? null;
-        dto.experience = user.profile?.experience ?? null;
         dto.profileId = user.profile?.id ?? null;
         dto.profile = user.profile?.id
             ? {

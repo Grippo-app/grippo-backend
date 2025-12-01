@@ -1,5 +1,4 @@
 import {ApiProperty} from '@nestjs/swagger';
-import {ExperienceEnum} from '../../../lib/experience.enum';
 import {UserRoleEnum} from '../../../lib/user-role.enum';
 import {UserProfileResponse} from './user.response';
 
@@ -9,15 +8,6 @@ export class AdminUserResponse {
 
     @ApiProperty({example: 'user@example.com'})
     email: string;
-
-    @ApiProperty({example: 'John Doe'})
-    name: string;
-
-    @ApiProperty({example: 180})
-    height: number;
-
-    @ApiProperty({example: ExperienceEnum.PRO, enum: ExperienceEnum, nullable: true})
-    experience: ExperienceEnum | null;
 
     @ApiProperty({example: '72a0317f-e321-4da7-9869-91bf23d655bb', nullable: true})
     profileId: string | null;
