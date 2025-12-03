@@ -4,6 +4,7 @@ import {AuthService} from './auth.service';
 import {LoginRequest} from './dto/login.request';
 import {LoginResponse} from './dto/login.response';
 import {RegisterRequest} from './dto/register.request';
+import {GoogleLoginRequest} from './dto/google-login.request';
 
 @Controller('auth')
 @ApiTags('auth')
@@ -29,6 +30,16 @@ export class AuthController {
     @ApiResponse({status: 400, description: 'Email already taken / validation error'})
     register(@Body() dto: RegisterRequest): Promise<LoginResponse> {
         return this.authService.register(dto);
+    }
+
+    @Post('google')
+    @HttpCode(200)
+    @ApiOperation({summary: 'Login/Register with Google ID token'})
+    @ApiBody({type: GoogleLoginRequest})
+    @ApiResponse({status: 200, description: 'Google login success', type: LoginResponse})
+    @ApiResponse({status: 401, description: 'Invalid Google token'})
+    google(@Body() dto: GoogleLoginRequest): Promise<LoginResponse> {
+        return this.authService.loginWithGoogle(dto);
     }
 
     @Post('refresh')

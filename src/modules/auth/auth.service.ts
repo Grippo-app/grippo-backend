@@ -1,12 +1,14 @@
 import {BadRequestException, Inject, Injectable, Logger, UnauthorizedException,} from '@nestjs/common';
 import {Repository} from 'typeorm';
 import {JwtService} from '@nestjs/jwt';
+import {OAuth2Client, TokenPayload} from 'google-auth-library';
 
 import {UsersEntity} from '../../entities/users.entity';
 
 import {LoginResponse} from './dto/login.response';
 import {LoginRequest} from './dto/login.request';
 import {RegisterRequest} from './dto/register.request';
+import {GoogleLoginRequest} from './dto/google-login.request';
 import {Hash} from '../../lib/hash';
 import {ConfigService} from "@nestjs/config";
 import {UserRoleEnum} from '../../lib/user-role.enum';
@@ -14,6 +16,7 @@ import {UserRoleEnum} from '../../lib/user-role.enum';
 @Injectable()
 export class AuthService {
     private readonly logger = new Logger(AuthService.name);
+    private readonly googleClient = new OAuth2Client();
 
     constructor(
         private readonly jwtService: JwtService,
@@ -29,25 +32,13 @@ export class AuthService {
             select: ['id', 'email', 'password'],
         });
 
-        if (!user || !Hash.compare(dto.password, user.password)) {
+        if (!user || !user.password || !Hash.compare(dto.password, user.password)) {
             this.logger.warn(`Login failed for ${dto.email}`);
             throw new UnauthorizedException('Invalid credentials');
         }
 
-        const payload: { id: string } = {id: user.id};
-
-        const accessToken = await this.jwtService.signAsync(payload, {
-            secret: this.config.get<string>('JWT_SECRET_KEY'),
-            expiresIn: this.config.get<string>('JWT_EXPIRATION_TIME'),
-        });
-
-        const refreshToken = await this.jwtService.signAsync(payload, {
-            secret: this.config.get<string>('JWT_REFRESH_SECRET'),
-            expiresIn: this.config.get<string>('JWT_REFRESH_EXPIRATION_TIME'),
-        });
-
         this.logger.log(`User logged in: ${user.id}`);
-        return {id: user.id, accessToken, refreshToken};
+        return this.buildLoginResponse(user.id);
     }
 
     async register(dto: RegisterRequest): Promise<LoginResponse> {
@@ -63,8 +54,88 @@ export class AuthService {
         });
 
         await this.usersRepository.save(user);
+        this.logger.log(`New user registered: ${user.id}`);
+        return this.buildLoginResponse(user.id);
+    }
 
-        const payload = {id: user.id};
+    async loginWithGoogle(dto: GoogleLoginRequest): Promise<LoginResponse> {
+        const clientId = this.config.get<string>('GOOGLE_CLIENT_ID');
+        if (!clientId) {
+            throw new BadRequestException('Google auth is not configured');
+        }
+
+        let payload: TokenPayload | undefined;
+        try {
+            const ticket = await this.googleClient.verifyIdToken({
+                idToken: dto.idToken,
+                audience: clientId,
+            });
+            payload = ticket.getPayload();
+        } catch (error) {
+            this.logger.warn(`Google token verification failed: ${error.message}`);
+            throw new UnauthorizedException('Invalid Google token');
+        }
+
+        if (!payload?.email || !payload.sub) {
+            throw new UnauthorizedException('Google token payload is incomplete');
+        }
+
+        const emailVerified = payload.email_verified ?? false;
+        if (!emailVerified) {
+            throw new UnauthorizedException('Google email is not verified');
+        }
+
+        const googleId = payload.sub;
+
+        let user = await this.usersRepository.findOne({
+            where: [
+                {googleId},
+                {email: payload.email},
+            ],
+        });
+
+        if (!user) {
+            user = this.usersRepository.create({
+                email: payload.email,
+                googleId,
+                password: null,
+                role: UserRoleEnum.DEFAULT,
+            });
+            await this.usersRepository.save(user);
+            this.logger.log(`New user registered via Google: ${user.id}`);
+        } else if (!user.googleId) {
+            await this.usersRepository.update(user.id, {googleId});
+        }
+
+        this.logger.log(`User logged in via Google: ${user.id}`);
+        return this.buildLoginResponse(user.id);
+    }
+
+    async refresh(refreshToken: string): Promise<LoginResponse> {
+        try {
+            const payload = await this.jwtService.verifyAsync<{ id: string }>(refreshToken, {
+                secret: this.config.get<string>('JWT_REFRESH_SECRET'),
+            });
+
+            const tokens = await this.createTokens(payload.id);
+
+            return {
+                id: payload.id,
+                ...tokens,
+            };
+        } catch (e) {
+            // this.logger.warn(`Refresh token failed: ${e.message}`);
+            throw new UnauthorizedException('Invalid or expired refresh token');
+        }
+    }
+
+    private async buildLoginResponse(userId: string): Promise<LoginResponse> {
+        const tokens = await this.createTokens(userId);
+        return {id: userId, ...tokens};
+    }
+
+    private async createTokens(userId: string): Promise<{ accessToken: string; refreshToken: string }> {
+        const payload = {id: userId};
 
         const accessToken = await this.jwtService.signAsync(payload, {
             secret: this.config.get<string>('JWT_SECRET_KEY'),
@@ -76,36 +147,6 @@ export class AuthService {
             expiresIn: this.config.get<string>('JWT_REFRESH_EXPIRATION_TIME'),
         });
 
-        this.logger.log(`New user registered: ${user.id}`);
-        return {id: user.id, accessToken, refreshToken};
-    }
-
-    async refresh(refreshToken: string): Promise<LoginResponse> {
-        try {
-            const payload = await this.jwtService.verifyAsync<{ id: string }>(refreshToken, {
-                secret: this.config.get<string>('JWT_REFRESH_SECRET'),
-            });
-
-            const newPayload = {id: payload.id};
-
-            const accessToken = await this.jwtService.signAsync(newPayload, {
-                secret: this.config.get<string>('JWT_SECRET_KEY'),
-                expiresIn: this.config.get<string>('JWT_EXPIRATION_TIME'),
-            });
-
-            const newRefreshToken = await this.jwtService.signAsync(newPayload, {
-                secret: this.config.get<string>('JWT_REFRESH_SECRET'),
-                expiresIn: this.config.get<string>('JWT_REFRESH_EXPIRATION_TIME'),
-            });
-
-            return {
-                id: payload.id,
-                accessToken,
-                refreshToken: newRefreshToken,
-            };
-        } catch (e) {
-            // this.logger.warn(`Refresh token failed: ${e.message}`);
-            throw new UnauthorizedException('Invalid or expired refresh token');
-        }
+        return {accessToken, refreshToken};
     }
 }

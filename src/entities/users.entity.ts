@@ -11,8 +11,11 @@ export class UsersEntity {
     @Column({unique: true})
     email: string;
 
-    @Column({select: false})
-    password: string;
+    @Column({select: false, nullable: true})
+    password: string | null;
+
+    @Column({name: 'google_id', nullable: true, unique: true})
+    googleId?: string;
 
     @Column({type: 'enum', enum: UserRoleEnum, default: UserRoleEnum.DEFAULT})
     role: UserRoleEnum;
