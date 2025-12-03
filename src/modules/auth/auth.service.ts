@@ -59,7 +59,7 @@ export class AuthService {
     }
 
     async loginWithGoogle(dto: GoogleLoginRequest): Promise<LoginResponse> {
-        const clientId = this.config.get<string>('GOOGLE_CLIENT_ID');
+        const clientId = this.config.get<string>('GOOGLE_CLIENT_ID_WEB');
         if (!clientId) {
             throw new BadRequestException('Google auth is not configured');
         }
