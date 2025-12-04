@@ -59,8 +59,13 @@ export class AuthService {
     }
 
     async loginWithGoogle(dto: GoogleLoginRequest): Promise<LoginResponse> {
-        const clientId = this.config.get<string>('GOOGLE_CLIENT_ID_WEB');
-        if (!clientId) {
+        const clientIds = [
+            this.config.get<string>('GOOGLE_CLIENT_ID_WEB'),
+            this.config.get<string>('GOOGLE_CLIENT_ID_ANDROID'),
+            this.config.get<string>('GOOGLE_CLIENT_ID_IOS'),
+        ].filter((id): id is string => Boolean(id));
+
+        if (!clientIds.length) {
             throw new BadRequestException('Google auth is not configured');
         }
 
@@ -68,7 +73,7 @@ export class AuthService {
         try {
             const ticket = await this.googleClient.verifyIdToken({
                 idToken: dto.idToken,
-                audience: clientId,
+                audience: clientIds.length === 1 ? clientIds[0] : clientIds,
             });
             payload = ticket.getPayload();
         } catch (error) {
