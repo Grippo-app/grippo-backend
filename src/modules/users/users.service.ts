@@ -8,7 +8,7 @@ import {EquipmentsEntity} from "../../entities/equipments.entity";
 import {ExcludedEquipmentsEntity} from "../../entities/excluded-equipments.entity";
 import {EquipmentResponse} from "../equipments/dto/equipment-response";
 import {MuscleResponse} from "../muscles/dto/muscle-response";
-import {AdminUserResponse} from "./dto/admin-user.response";
+import {AdminAuthTypeEnum, AdminUserResponse} from "./dto/admin-user.response";
 import {UserRoleEnum} from "../../lib/user-role.enum";
 import {AdminSetRoleRequest} from "./dto/admin-set-role.request";
 import {CreateUserProfileRequest} from "./dto/create-user-profile.request";
@@ -101,6 +101,7 @@ export class UsersService {
             .select([
                 'users.id',
                 'users.email',
+                'users.googleId',
                 'users.role',
                 'users.createdAt',
                 'users.updatedAt',
@@ -251,6 +252,7 @@ export class UsersService {
             .select([
                 'users.id',
                 'users.email',
+                'users.googleId',
                 'users.role',
                 'users.createdAt',
                 'users.updatedAt',
@@ -302,6 +304,7 @@ export class UsersService {
             }
             : null;
         dto.role = user.role;
+        dto.authType = user.googleId ? AdminAuthTypeEnum.GOOGLE : AdminAuthTypeEnum.EMAIL;
         dto.createdAt = user.createdAt;
         dto.updatedAt = user.updatedAt;
         return dto;
