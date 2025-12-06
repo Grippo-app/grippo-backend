@@ -42,9 +42,19 @@ export class AuthService {
     }
 
     async register(dto: RegisterRequest): Promise<LoginResponse> {
-        const exists = await this.usersRepository.findOne({where: {email: dto.email}});
+        const exists = await this.usersRepository.findOne({
+            where: {email: dto.email},
+            select: ['id', 'password'],
+        });
+
         if (exists) {
-            throw new BadRequestException('This email is already taken');
+            if (exists.password) {
+                throw new BadRequestException('This email is already taken');
+            }
+
+            await this.usersRepository.update(exists.id, {password: Hash.make(dto.password)});
+            this.logger.log(`Password added to Google account: ${exists.id}`);
+            return this.buildLoginResponse(exists.id);
         }
 
         const user = this.usersRepository.create({
@@ -92,12 +102,11 @@ export class AuthService {
 
         const googleId = payload.sub;
 
-        let user = await this.usersRepository.findOne({
-            where: [
-                {googleId},
-                {email: payload.email},
-            ],
-        });
+        let user = await this.usersRepository.findOne({where: {googleId}});
+
+        if (!user) {
+            user = await this.usersRepository.findOne({where: {email: payload.email}});
+        }
 
         if (!user) {
             user = this.usersRepository.create({
