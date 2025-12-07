@@ -126,21 +126,27 @@ export class AuthService {
     }
 
     async refresh(refreshToken: string): Promise<LoginResponse> {
+        let payload: { id: string };
         try {
-            const payload = await this.jwtService.verifyAsync<{ id: string }>(refreshToken, {
+            payload = await this.jwtService.verifyAsync<{ id: string }>(refreshToken, {
                 secret: this.config.get<string>('JWT_REFRESH_SECRET'),
             });
-
-            const tokens = await this.createTokens(payload.id);
-
-            return {
-                id: payload.id,
-                ...tokens,
-            };
         } catch (e) {
             // this.logger.warn(`Refresh token failed: ${e.message}`);
             throw new UnauthorizedException('Invalid or expired refresh token');
         }
+
+        const userExists = await this.usersRepository.existsBy({id: payload.id});
+        if (!userExists) {
+            throw new UnauthorizedException('Invalid or expired refresh token');
+        }
+
+        const tokens = await this.createTokens(payload.id);
+
+        return {
+            id: payload.id,
+            ...tokens,
+        };
     }
 
     private async buildLoginResponse(userId: string): Promise<LoginResponse> {
