@@ -14,6 +14,7 @@ import {AdminSetRoleRequest} from "./dto/admin-set-role.request";
 import {CreateUserProfileRequest} from "./dto/create-user-profile.request";
 import {UserProfilesEntity} from "../../entities/user-profiles.entity";
 import {UserProfileResponse, UserResponse} from "./dto/user.response";
+import {ExperienceEnum} from "../../lib/experience.enum";
 
 @Injectable()
 export class UsersService {
@@ -90,6 +91,17 @@ export class UsersService {
                 await excludedEquipmentsRepo.save(equipments);
             }
         });
+
+        return this.getUser(userId);
+    }
+
+    async updateExperience(userId: string, experience: ExperienceEnum): Promise<UserResponse> {
+        const profile = await this.requireProfile(userId);
+
+        if (profile.experience !== experience) {
+            profile.experience = experience;
+            await this.userProfilesRepository.save(profile);
+        }
 
         return this.getUser(userId);
     }

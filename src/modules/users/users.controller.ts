@@ -5,6 +5,7 @@ import {JwtAuthGuard} from '../../common/jwt-auth.guard';
 import {UpdateExcludedIdsDto} from "./dto/update-excluded-ids.dto";
 import {CreateUserProfileRequest} from "./dto/create-user-profile.request";
 import {UserResponse} from "./dto/user.response";
+import {UpdateExperienceRequest} from "./dto/update-experience.request";
 
 @ApiTags('users')
 @ApiBearerAuth('access-token')
@@ -37,6 +38,18 @@ export class UsersController {
         @Body() dto: CreateUserProfileRequest,
     ): Promise<UserResponse> {
         return this.usersService.createProfile(req.user.id, dto);
+    }
+
+    @Post('experience')
+    @HttpCode(HttpStatus.OK)
+    @ApiOperation({summary: 'Update user experience level'})
+    @ApiResponse({status: 200, description: 'Experience updated', type: UserResponse})
+    @ApiResponse({status: HttpStatus.BAD_REQUEST, description: 'Profile does not exist'})
+    async updateExperience(
+        @Req() req,
+        @Body() dto: UpdateExperienceRequest,
+    ): Promise<UserResponse> {
+        return this.usersService.updateExperience(req.user.id, dto.experience);
     }
 
     @Get('excluded-muscles')
