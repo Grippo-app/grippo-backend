@@ -1,5 +1,5 @@
-import {Body, Controller, Get, HttpCode, HttpStatus, Post, Req, UseGuards,} from '@nestjs/common';
-import {ApiBearerAuth, ApiBody, ApiOperation, ApiResponse, ApiTags,} from '@nestjs/swagger';
+import {Body, Controller, Delete, Get, HttpCode, HttpStatus, Post, Req, UseGuards,} from '@nestjs/common';
+import {ApiBearerAuth, ApiBody, ApiNoContentResponse, ApiOperation, ApiResponse, ApiTags,} from '@nestjs/swagger';
 import {UsersService} from './users.service';
 import {JwtAuthGuard} from '../../common/jwt-auth.guard';
 import {UpdateExcludedIdsDto} from "./dto/update-excluded-ids.dto";
@@ -88,5 +88,14 @@ export class UsersController {
         @Body() body: UpdateExcludedIdsDto
     ): Promise<{ ids: string[] }> {
         return this.usersService.updateExcludedEquipments(req.user, body.ids);
+    }
+
+    @Delete()
+    @HttpCode(HttpStatus.NO_CONTENT)
+    @ApiOperation({summary: 'Delete current user account'})
+    @ApiNoContentResponse({description: 'Account deleted'})
+    @ApiResponse({status: HttpStatus.UNAUTHORIZED, description: 'Unauthorized'})
+    async deleteAccount(@Req() req): Promise<void> {
+        await this.usersService.deleteUser(req.user.id);
     }
 }
