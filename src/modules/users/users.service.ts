@@ -173,7 +173,8 @@ export class UsersService {
             dto.name = m.name;
             dto.muscleGroupId = m.muscleGroup.id;
             dto.type = m.type;
-            dto.recoveryTimeHours = m.recoveryTimeHours;
+            dto.recovery = m.recovery;
+            dto.size = m.size;
             dto.createdAt = m.createdAt;
             dto.updatedAt = m.updatedAt;
 

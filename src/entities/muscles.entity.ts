@@ -16,7 +16,7 @@ import {MuscleEnum} from '../lib/muscle.enum';
 import {ExcludedMusclesEntity} from './excluded-muscles.entity';
 
 @Entity({name: 'muscles'})
-@Check(`"recovery_time_hours" IS NULL OR "recovery_time_hours" >= 0`)
+@Check(`"recovery" IS NULL OR "recovery" >= 0`)
 export class MusclesEntity {
     @PrimaryGeneratedColumn('uuid')
     id: string;
@@ -30,9 +30,18 @@ export class MusclesEntity {
     @Column({
         type: 'integer',
         nullable: true,
-        name: 'recovery_time_hours'
+        name: 'recovery'
     })
-    recoveryTimeHours: number;
+    recovery: number;
+
+    @Column({
+        type: 'numeric',
+        precision: 5,
+        scale: 2,
+        nullable: true,
+        name: 'size'
+    })
+    size: number;
 
     @CreateDateColumn({
         type: 'timestamp without time zone',

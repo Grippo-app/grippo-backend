@@ -13,7 +13,10 @@ export class MuscleResponse {
     muscleGroupId: string;
 
     @ApiProperty({ type: Number, example: 48, required: false })
-    recoveryTimeHours: number;
+    recovery: number;
+
+    @ApiProperty({ type: Number, example: 1.10, required: false })
+    size: number;
 
     @ApiProperty({enum: MuscleEnum, example: MuscleEnum.BICEPS})
     type: MuscleEnum;
