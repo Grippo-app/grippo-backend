@@ -417,7 +417,8 @@ CREATE TABLE public.muscles (
     updated_at timestamp without time zone DEFAULT now() NOT NULL,
     type public.muscles_type_enum,
     recovery integer,
-    size numeric(5,2)
+    size numeric(5,2),
+    sensitivity numeric(5,2)
 );
 
 
@@ -3463,27 +3464,27 @@ INSERT INTO public.muscle_groups VALUES ('e1117068-06cd-4330-a4f9-93b485165805',
 -- Data for Name: muscles; Type: TABLE DATA; Schema: public; Owner: -
 --
 
-INSERT INTO public.muscles VALUES ('2e0faf2b-31a5-4c63-ac15-454be132796f', 'Trapezius', '4289bf91-51d8-40b0-9aca-66780584a4eb', '2023-11-12 00:44:51.190921', '2023-11-12 00:44:51.190921', 'trapezius', 48, 1.10);
-INSERT INTO public.muscles VALUES ('af854064-078a-4f50-af1d-8744e866751e', 'Rhomboids', '4289bf91-51d8-40b0-9aca-66780584a4eb', '2023-11-12 00:44:51.190921', '2023-11-12 00:44:51.190921', 'rhomboids', 48, 0.85);
-INSERT INTO public.muscles VALUES ('1ddbb748-37a6-4d66-a7d4-4957bdbc647f', 'Obliques', 'e1f1e456-3f8d-46f6-b7ba-75bb4b8c3802', '2023-11-12 00:49:49.921299', '2023-11-12 00:49:49.921299', 'obliques', 48, 0.95);
-INSERT INTO public.muscles VALUES ('9e69205f-6c6e-44a7-8ee6-89215e28a28e', 'Rectus Abdominis', 'e1f1e456-3f8d-46f6-b7ba-75bb4b8c3802', '2023-11-12 00:49:49.921299', '2023-11-12 00:49:49.921299', 'rectus_abdominis', 48, 1.00);
-INSERT INTO public.muscles VALUES ('57559b71-b757-468a-983d-a1b3cec4acef', 'Quadriceps', '255efc07-6c7e-42ab-97e5-01c06d60b5a3', '2023-11-12 00:51:12.539967', '2023-11-12 00:51:12.539967', 'quadriceps', 48, 1.25);
-INSERT INTO public.muscles VALUES ('831f39bd-80a8-4d11-9964-bde1788abae1', 'Latissimus Dorsi', '4289bf91-51d8-40b0-9aca-66780584a4eb', '2023-11-12 00:44:51.190921', '2023-11-12 00:44:51.190921', 'latissimus_dorsi', 48, 1.15);
-INSERT INTO public.muscles VALUES ('2da3d8f2-6a28-45ff-90a2-ea3a6bb2afe8', 'Lateral Deltoid', 'e1117068-06cd-4330-a4f9-93b485165805', '2023-11-13 21:03:29.671135', '2023-11-13 21:03:29.671135', 'lateral_deltoid', 48, 0.90);
-INSERT INTO public.muscles VALUES ('d736a513-9d73-47a3-bffc-c14911662ea2', 'Anterior Deltoid', 'e1117068-06cd-4330-a4f9-93b485165805', '2023-11-13 21:03:29.671135', '2023-11-13 21:03:29.671135', 'anterior_deltoid', 48, 0.90);
-INSERT INTO public.muscles VALUES ('97136fa7-622a-49d6-9d09-403a631d253d', 'Posterior Deltoid', 'e1117068-06cd-4330-a4f9-93b485165805', '2023-11-13 21:03:29.671135', '2023-11-13 21:03:29.671135', 'posterior_deltoid', 48, 0.85);
-INSERT INTO public.muscles VALUES ('bba5b66d-9a9c-4b44-8dd6-9574760038ee', 'Calf Muscles', '255efc07-6c7e-42ab-97e5-01c06d60b5a3', '2023-11-12 00:51:12.539967', '2023-11-12 00:51:12.539967', 'calf', 48, 0.95);
-INSERT INTO public.muscles VALUES ('f6e65bfe-0746-4a8f-8210-0e9bf88d9886', 'Gluteal Muscles', '255efc07-6c7e-42ab-97e5-01c06d60b5a3', '2023-11-15 21:31:45.933229', '2023-11-15 21:31:45.933229', 'gluteal', 48, 1.30);
-INSERT INTO public.muscles VALUES ('3eeaa9fa-0847-4780-9d01-185f91252794', 'Hamstrings', '255efc07-6c7e-42ab-97e5-01c06d60b5a3', '2023-11-12 00:51:12.539967', '2023-11-12 00:51:12.539967', 'hamstrings', 48, 1.20);
-INSERT INTO public.muscles VALUES ('9a8024fe-c721-4bea-969c-db88674b5ece', 'Forearm Muscles', '2043a22c-c547-42c2-81bb-81f85693d9cd', '2023-11-13 21:01:37.624512', '2023-11-13 21:01:37.624512', 'forearm', 36, 0.75);
-INSERT INTO public.muscles VALUES ('97a87b01-35e8-490a-94b9-9bdae9c2f965', 'Biceps Brachii', '2043a22c-c547-42c2-81bb-81f85693d9cd', '2023-11-12 00:47:55.131334', '2023-11-12 00:47:55.131334', 'biceps', 36, 0.80);
-INSERT INTO public.muscles VALUES ('0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a', 'Triceps Brachii', '2043a22c-c547-42c2-81bb-81f85693d9cd', '2023-11-13 21:01:37.624512', '2023-11-13 21:01:37.624512', 'triceps', 36, 0.85);
-INSERT INTO public.muscles VALUES ('be38dcef-1bc8-487b-a44f-96df1ab9e68c', 'Teres Major', '4289bf91-51d8-40b0-9aca-66780584a4eb', '2024-07-30 19:46:35.870695', '2024-07-30 19:46:35.870695', 'teres_major', 36, 0.80);
-INSERT INTO public.muscles VALUES ('fa8025e6-e106-475c-8b9d-77831132fb47', 'Adductors', '255efc07-6c7e-42ab-97e5-01c06d60b5a3', '2024-08-31 13:39:50.77308', '2024-08-31 13:39:50.77308', 'adductors', 48, 0.95);
-INSERT INTO public.muscles VALUES ('ab1dbd50-83a4-42c7-a3cd-da1784818ec8', 'Abductors', '255efc07-6c7e-42ab-97e5-01c06d60b5a3', '2024-08-31 13:39:50.77308', '2024-08-31 13:39:50.77308', 'abductors', 48, 0.95);
-INSERT INTO public.muscles VALUES ('b4658891-9713-48c4-864c-8dd907da19b0', 'Pectoralis (sternocostal)', '5fd8ccc9-8630-4357-a234-c2f278d905db', '2023-11-12 00:44:51.190921', '2023-11-12 00:44:51.190921', 'pectoralis_major_sternocostal', 48, 1.10);
-INSERT INTO public.muscles VALUES ('c57aa60c-61ea-4498-b01f-fedcafe8a32a', 'Pectoralis (clavicular)', '5fd8ccc9-8630-4357-a234-c2f278d905db', '2023-11-12 00:44:51.190921', '2023-11-12 00:44:51.190921', 'pectoralis_major_clavicular', 48, 1.05);
-INSERT INTO public.muscles VALUES ('a3a8eae0-6315-4435-8974-f2c07ec3567f', 'Pectoralis (abdominal)', '5fd8ccc9-8630-4357-a234-c2f278d905db', '2024-09-02 11:45:52.106331', '2024-09-02 11:45:52.106331', 'pectoralis_major_abdominal', 48, 1.00);
+INSERT INTO public.muscles VALUES ('2e0faf2b-31a5-4c63-ac15-454be132796f', 'Trapezius', '4289bf91-51d8-40b0-9aca-66780584a4eb', '2023-11-12 00:44:51.190921', '2023-11-12 00:44:51.190921', 'trapezius', 48, 1.10, 0.95);
+INSERT INTO public.muscles VALUES ('af854064-078a-4f50-af1d-8744e866751e', 'Rhomboids', '4289bf91-51d8-40b0-9aca-66780584a4eb', '2023-11-12 00:44:51.190921', '2023-11-12 00:44:51.190921', 'rhomboids', 48, 0.85, 0.95);
+INSERT INTO public.muscles VALUES ('1ddbb748-37a6-4d66-a7d4-4957bdbc647f', 'Obliques', 'e1f1e456-3f8d-46f6-b7ba-75bb4b8c3802', '2023-11-12 00:49:49.921299', '2023-11-12 00:49:49.921299', 'obliques', 48, 0.95, 1.05);
+INSERT INTO public.muscles VALUES ('9e69205f-6c6e-44a7-8ee6-89215e28a28e', 'Rectus Abdominis', 'e1f1e456-3f8d-46f6-b7ba-75bb4b8c3802', '2023-11-12 00:49:49.921299', '2023-11-12 00:49:49.921299', 'rectus_abdominis', 48, 1.00, 1.00);
+INSERT INTO public.muscles VALUES ('57559b71-b757-468a-983d-a1b3cec4acef', 'Quadriceps', '255efc07-6c7e-42ab-97e5-01c06d60b5a3', '2023-11-12 00:51:12.539967', '2023-11-12 00:51:12.539967', 'quadriceps', 48, 1.25, 0.90);
+INSERT INTO public.muscles VALUES ('831f39bd-80a8-4d11-9964-bde1788abae1', 'Latissimus Dorsi', '4289bf91-51d8-40b0-9aca-66780584a4eb', '2023-11-12 00:44:51.190921', '2023-11-12 00:44:51.190921', 'latissimus_dorsi', 48, 1.15, 0.95);
+INSERT INTO public.muscles VALUES ('2da3d8f2-6a28-45ff-90a2-ea3a6bb2afe8', 'Lateral Deltoid', 'e1117068-06cd-4330-a4f9-93b485165805', '2023-11-13 21:03:29.671135', '2023-11-13 21:03:29.671135', 'lateral_deltoid', 48, 0.90, 1.10);
+INSERT INTO public.muscles VALUES ('d736a513-9d73-47a3-bffc-c14911662ea2', 'Anterior Deltoid', 'e1117068-06cd-4330-a4f9-93b485165805', '2023-11-13 21:03:29.671135', '2023-11-13 21:03:29.671135', 'anterior_deltoid', 48, 0.90, 1.10);
+INSERT INTO public.muscles VALUES ('97136fa7-622a-49d6-9d09-403a631d253d', 'Posterior Deltoid', 'e1117068-06cd-4330-a4f9-93b485165805', '2023-11-13 21:03:29.671135', '2023-11-13 21:03:29.671135', 'posterior_deltoid', 48, 0.85, 1.10);
+INSERT INTO public.muscles VALUES ('bba5b66d-9a9c-4b44-8dd6-9574760038ee', 'Calf Muscles', '255efc07-6c7e-42ab-97e5-01c06d60b5a3', '2023-11-12 00:51:12.539967', '2023-11-12 00:51:12.539967', 'calf', 48, 0.95, 1.10);
+INSERT INTO public.muscles VALUES ('f6e65bfe-0746-4a8f-8210-0e9bf88d9886', 'Gluteal Muscles', '255efc07-6c7e-42ab-97e5-01c06d60b5a3', '2023-11-15 21:31:45.933229', '2023-11-15 21:31:45.933229', 'gluteal', 48, 1.30, 0.90);
+INSERT INTO public.muscles VALUES ('3eeaa9fa-0847-4780-9d01-185f91252794', 'Hamstrings', '255efc07-6c7e-42ab-97e5-01c06d60b5a3', '2023-11-12 00:51:12.539967', '2023-11-12 00:51:12.539967', 'hamstrings', 48, 1.20, 0.90);
+INSERT INTO public.muscles VALUES ('9a8024fe-c721-4bea-969c-db88674b5ece', 'Forearm Muscles', '2043a22c-c547-42c2-81bb-81f85693d9cd', '2023-11-13 21:01:37.624512', '2023-11-13 21:01:37.624512', 'forearm', 36, 0.75, 1.15);
+INSERT INTO public.muscles VALUES ('97a87b01-35e8-490a-94b9-9bdae9c2f965', 'Biceps Brachii', '2043a22c-c547-42c2-81bb-81f85693d9cd', '2023-11-12 00:47:55.131334', '2023-11-12 00:47:55.131334', 'biceps', 36, 0.80, 1.00);
+INSERT INTO public.muscles VALUES ('0fd0be35-f933-43b8-a0d7-a4b6adaa9c1a', 'Triceps Brachii', '2043a22c-c547-42c2-81bb-81f85693d9cd', '2023-11-13 21:01:37.624512', '2023-11-13 21:01:37.624512', 'triceps', 36, 0.85, 1.05);
+INSERT INTO public.muscles VALUES ('be38dcef-1bc8-487b-a44f-96df1ab9e68c', 'Teres Major', '4289bf91-51d8-40b0-9aca-66780584a4eb', '2024-07-30 19:46:35.870695', '2024-07-30 19:46:35.870695', 'teres_major', 36, 0.80, 0.95);
+INSERT INTO public.muscles VALUES ('fa8025e6-e106-475c-8b9d-77831132fb47', 'Adductors', '255efc07-6c7e-42ab-97e5-01c06d60b5a3', '2024-08-31 13:39:50.77308', '2024-08-31 13:39:50.77308', 'adductors', 48, 0.95, 1.00);
+INSERT INTO public.muscles VALUES ('ab1dbd50-83a4-42c7-a3cd-da1784818ec8', 'Abductors', '255efc07-6c7e-42ab-97e5-01c06d60b5a3', '2024-08-31 13:39:50.77308', '2024-08-31 13:39:50.77308', 'abductors', 48, 0.95, 1.00);
+INSERT INTO public.muscles VALUES ('b4658891-9713-48c4-864c-8dd907da19b0', 'Pectoralis (sternocostal)', '5fd8ccc9-8630-4357-a234-c2f278d905db', '2023-11-12 00:44:51.190921', '2023-11-12 00:44:51.190921', 'pectoralis_major_sternocostal', 48, 1.10, 1.00);
+INSERT INTO public.muscles VALUES ('c57aa60c-61ea-4498-b01f-fedcafe8a32a', 'Pectoralis (clavicular)', '5fd8ccc9-8630-4357-a234-c2f278d905db', '2023-11-12 00:44:51.190921', '2023-11-12 00:44:51.190921', 'pectoralis_major_clavicular', 48, 1.05, 1.00);
+INSERT INTO public.muscles VALUES ('a3a8eae0-6315-4435-8974-f2c07ec3567f', 'Pectoralis (abdominal)', '5fd8ccc9-8630-4357-a234-c2f278d905db', '2024-09-02 11:45:52.106331', '2024-09-02 11:45:52.106331', 'pectoralis_major_abdominal', 48, 1.00, 1.00);
 
 --
 -- Data for Name: trainings; Type: TABLE DATA; Schema: public; Owner: -

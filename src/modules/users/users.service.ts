@@ -175,6 +175,7 @@ export class UsersService {
             dto.type = m.type;
             dto.recovery = m.recovery;
             dto.size = m.size;
+            dto.sensitivity = m.sensitivity;
             dto.createdAt = m.createdAt;
             dto.updatedAt = m.updatedAt;
 

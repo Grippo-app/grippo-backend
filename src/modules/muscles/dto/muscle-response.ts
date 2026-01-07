@@ -18,6 +18,9 @@ export class MuscleResponse {
     @ApiProperty({ type: Number, example: 1.10, required: false })
     size: number;
 
+    @ApiProperty({ type: Number, example: 0.95, required: false })
+    sensitivity: number;
+
     @ApiProperty({enum: MuscleEnum, example: MuscleEnum.BICEPS})
     type: MuscleEnum;
 

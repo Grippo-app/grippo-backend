@@ -43,6 +43,15 @@ export class MusclesEntity {
     })
     size: number;
 
+    @Column({
+        type: 'numeric',
+        precision: 5,
+        scale: 2,
+        nullable: true,
+        name: 'sensitivity'
+    })
+    sensitivity: number;
+
     @CreateDateColumn({
         type: 'timestamp without time zone',
         name: 'created_at',

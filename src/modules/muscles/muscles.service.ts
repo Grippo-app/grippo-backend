@@ -50,6 +50,7 @@ export class MusclesService {
         response.updatedAt = muscle.updatedAt;
         response.recovery = muscle.recovery;
         response.size = muscle.size;
+        response.sensitivity = muscle.sensitivity;
 
         return response;
     }
