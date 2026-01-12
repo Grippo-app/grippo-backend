@@ -15,7 +15,7 @@ NestJS API with PostgreSQL, packaged for local and production runs via Docker Co
 - Production image is built with the multi-stage `Dockerfile`.
 
 ### Environment variables
-Template based on `.env` (sensitive values removed):
+Template based on `.env`:
 ```env
 # App Info
 # development | staging | test | production
