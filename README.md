@@ -1,46 +1,98 @@
-## 🗂 Project Structure
+## Grippo Backend
 
-### 1. `Dockerfile` — production image builder 📦
+NestJS API with PostgreSQL, packaged for local and production runs via Docker Compose.
 
-Builds a clean, production-ready Docker image for the NestJS backend:
+### Stack
+- Node.js 20 (Docker runtime)
+- NestJS 10 + TypeScript
+- PostgreSQL 15.5
+- TypeORM, JWT auth
+- Docker / Docker Compose
 
-- Installs dependencies via `npm ci`
-- Builds the app using `npm run build`
-- Copies `dist/` and `node_modules` into a minimal runtime image
-- Exposes port `3000`
-- Launches the app using `node dist/main`
+### Runtime model
+- `docker-compose.yml` runs `db` (PostgreSQL) and `backend` (NestJS).
+- Configuration is loaded from `.env`.
+- Production image is built with the multi-stage `Dockerfile`.
 
----
+### Environment variables
+Template based on `.env` (sensitive values removed):
+```env
+# App Info
+# development | staging | test | production
+APP_ENV=production
 
-### 2. `docker-compose.yml` — service orchestration 🧩
+# Backend Container Settings
+BACKEND_PORT=3010
+BACKEND_HOST=backend
+BACKEND_CONTAINER=replace_me
+BACKEND_BUILD_CONTEXT=.
+BACKEND_DOCKERFILE=Dockerfile
 
-Defines and runs multi-container Docker applications:
+# PostgreSQL (Database)
+POSTGRES_HOST=db
+POSTGRES_PORT=5432
+POSTGRES_USERNAME=replace_me
+POSTGRES_PASSWORD=replace_me
+POSTGRES_DATABASE=replace_me
+POSTGRES_CONTAINER_NAME=replace_me
 
-#### 🛢 `db` (PostgreSQL)
+# JWT (Authentication Tokens)
+JWT_SECRET_KEY=replace_me
+JWT_EXPIRATION_TIME=1000m
+JWT_REFRESH_EXPIRATION_TIME=10000m
 
-- Uses the official `postgres:15.5` image
-- Reads credentials and config from `.env`
-- Persists data in a `pgdata` Docker volume
-- Waits for readiness via `pg_isready` healthcheck
+# Google Authentication (Client IDs)
+GOOGLE_CLIENT_ID_IOS=replace_me
+GOOGLE_CLIENT_ID_ANDROID=replace_me
+GOOGLE_CLIENT_ID_WEB=replace_me
 
-#### 🧠 `backend` (NestJS)
+# Database Initialization (Dump)
+DB_DUMP_FILE=scripts/dump.sql
+# set true to drop schema before import
+DROP_SCHEMA_BEFORE_IMPORT=true
 
-- Built from the local `Dockerfile`
-- Waits for the `db` service to become healthy
-- Maps internal port `3000` to `${PORT}` (e.g. `3010`)
-- Automatically restarts on failure (`restart: unless-stopped`)
+# Logging
+LOG_MAX_SIZE=10m
+LOG_MAX_FILE=3
 
----
+# CI/CD & Scripts
+DOCKER_COMPOSE_FILE=docker-compose.yml
+```
 
-### 3. `deploy.sh` — cold start script 🚀
+### Modules
+- `DatabaseModule` — TypeORM configuration, database providers, and shared connection setup.
+- `I18nModule` — locale detection middleware and translation context wiring.
+- `AuthModule` — JWT strategy, token issuance, and auth guards.
+- `UsersModule` — user profiles, persistence, and domain logic.
+- `TrainingsModule` — training plans, sessions, and related persistence logic.
+- `ExerciseExampleModule` — reference catalog of exercises and metadata.
+- `MusclesModule` — muscle groups dictionary and lookups.
+- `WeightHistoryModule` — weight tracking records and aggregation helpers.
+- `ExerciseMetricsModule` — metrics and stats for exercises (history, trends).
+- `EquipmentsModule` — inventory of equipment and related metadata.
+- `AdminModule` — admin-only workflows across users and exercise data.
 
-Automates first-time setup and local initialization:
+### Scripts
 
-- Loads environment variables from `.env`
-- Starts services via `docker compose up --build`
-- Waits 10 seconds for PostgreSQL to initialize
-- If `dump.sql` exists:
-    - Drops and recreates the `public` schema
-    - Imports the SQL dump into the database
-- Waits for the backend to become reachable on `${PORT}`
-- Confirms successful startup via terminal output
+#### `scripts/deploy.sh`
+Cold-start setup via Docker Compose.
+- Loads `.env` and validates required variables:  
+  `BACKEND_HOST`, `BACKEND_PORT`, `POSTGRES_CONTAINER_NAME`, `POSTGRES_DATABASE`, `POSTGRES_USERNAME`, `POSTGRES_PASSWORD`, `POSTGRES_PORT`.
+- Runs `docker compose down -v`, then `up -d --build`.
+- Waits for PostgreSQL readiness (`pg_isready`).
+- If a dump exists (default `scripts/dump.sql`, override with `DB_DUMP_FILE`), it imports it.
+- If `DROP_SCHEMA_BEFORE_IMPORT=true` — recreates `public` before import.
+
+#### `scripts/dump.sh`
+Creates a SQL dump from the PostgreSQL container.
+- Requires `POSTGRES_CONTAINER_NAME`, `POSTGRES_DATABASE`, `POSTGRES_USERNAME`, `POSTGRES_PASSWORD` in `.env`.
+- Uses `pg_dump` inside the container, plain format with `INSERT`s.
+- Stores snapshots in `backups/` and updates the latest `scripts/dump.sql`.
+
+#### `scripts/cleanup.sh`
+Linux host disk cleanup (requires `sudo`).
+- Shows disk usage before/after.
+- Cleans Docker: containers, images, networks, volumes, build cache.
+- Cleans `apt` cache and unused packages.
+- Trims `systemd-journald` logs.
+- Clears `/tmp` and `/var/tmp`.
