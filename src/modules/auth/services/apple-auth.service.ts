@@ -87,11 +87,6 @@ export class AppleAuthService {
     }
 
     private getApplePrivateKey(): string {
-        const rawKey = this.config.get<string>('APPLE_PRIVATE_KEY');
-        if (rawKey) {
-            return this.normalizePrivateKey(rawKey);
-        }
-
         const b64Key = this.config.get<string>('APPLE_PRIVATE_KEY_B64');
         if (b64Key) {
             return this.normalizePrivateKey(Buffer.from(b64Key, 'base64').toString('utf8'));
