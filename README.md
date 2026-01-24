@@ -9,6 +9,10 @@ NestJS API with PostgreSQL, packaged for local and production runs via Docker Co
 - TypeORM, JWT auth
 - Docker / Docker Compose
 
+```
+docker logs -f --tail 200 grippo_backend
+```
+
 ### Runtime model
 - `docker-compose.yml` runs `db` (PostgreSQL) and `backend` (NestJS).
 - Configuration is loaded from `.env`.

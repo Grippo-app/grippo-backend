@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { createPrivateKey } from 'crypto';
+import { createPrivateKey, createPublicKey } from 'crypto';
 import jwt from 'jsonwebtoken';
 import { get as httpsGet, request as httpsRequest } from 'https';
 
@@ -16,7 +16,9 @@ type AppleTokenResponse = {
 
 type AppleJwksKey = {
     kid: string;
-    x5c?: string[];
+    kty: string;
+    n: string;
+    e: string;
 };
 
 type AppleIdTokenPayload = {
@@ -67,7 +69,7 @@ export class AppleAuthService {
             throw new UnauthorizedException('Invalid Apple token header');
         }
 
-        const publicKeyPem = await this.getApplePublicKey(kid);
+        const publicKeyPem = await this.getApplePublicKeyPem(kid);
 
         let payload: AppleIdTokenPayload;
         try {
@@ -171,6 +173,7 @@ export class AppleAuthService {
             const description = response.error_description
                 ? `${response.error}: ${response.error_description}`
                 : response.error;
+
             throw new UnauthorizedException(`Apple code exchange failed (${description})`);
         }
 
@@ -209,23 +212,11 @@ export class AppleAuthService {
         });
     }
 
-    private decodeJwtHeader(token: string): { kid?: string; alg?: string } {
-        const [rawHeader] = token.split('.');
-        if (!rawHeader) {
-            return {};
-        }
-        try {
-            const headerJson = Buffer.from(this.normalizeBase64(rawHeader), 'base64').toString('utf8');
-            const header = JSON.parse(headerJson) as { kid?: string; alg?: string };
-            return { kid: header.kid, alg: header.alg };
-        } catch {
-            return {};
-        }
-    }
-
-    private async getApplePublicKey(kid: string): Promise<string> {
+    private async getApplePublicKeyPem(kid: string): Promise<string> {
         const now = Date.now();
-        const expired = now - this.appleJwksCache.fetchedAt > this.appleJwksTtlMs;
+        const cacheAge = now - this.appleJwksCache.fetchedAt;
+        const expired = cacheAge > this.appleJwksTtlMs;
+
         if (expired || !this.appleJwksCache.keys.length) {
             this.appleJwksCache.keys = await this.fetchAppleJwks();
             this.appleJwksCache.fetchedAt = now;
@@ -238,11 +229,20 @@ export class AppleAuthService {
             key = this.appleJwksCache.keys.find((item) => item.kid === kid);
         }
 
-        if (!key?.x5c?.length) {
+        if (!key) {
             throw new UnauthorizedException('Invalid Apple token (kid not found)');
         }
 
-        return this.appleCertToPem(key.x5c[0]);
+        if (key.kty !== 'RSA' || !key.n || !key.e) {
+            throw new UnauthorizedException('Invalid Apple token (unsupported JWKS key)');
+        }
+
+        const pubKey = createPublicKey({
+            key: { kty: key.kty, n: key.n, e: key.e },
+            format: 'jwk',
+        });
+
+        return pubKey.export({ format: 'pem', type: 'spki' }).toString();
     }
 
     private async fetchAppleJwks(): Promise<AppleJwksKey[]> {
@@ -260,11 +260,12 @@ export class AppleAuthService {
                 response.on('end', () => {
                     try {
                         const parsed = JSON.parse(body) as { keys?: AppleJwksKey[] };
-                        if (!parsed.keys?.length) {
+                        const keys = parsed.keys ?? [];
+                        if (!keys.length) {
                             reject(new Error('Apple JWKS response is empty'));
                             return;
                         }
-                        resolve(parsed.keys);
+                        resolve(keys);
                     } catch (error) {
                         reject(error);
                     }
@@ -275,9 +276,17 @@ export class AppleAuthService {
         });
     }
 
-    private appleCertToPem(cert: string): string {
-        const wrapped = cert.match(/.{1,64}/g)?.join('\n') ?? cert;
-        return `-----BEGIN CERTIFICATE-----\n${wrapped}\n-----END CERTIFICATE-----\n`;
+    private decodeJwtHeader(token: string): { kid?: string; alg?: string } {
+        const [rawHeader] = token.split('.');
+        if (!rawHeader) return {};
+
+        try {
+            const headerJson = Buffer.from(this.normalizeBase64(rawHeader), 'base64').toString('utf8');
+            const header = JSON.parse(headerJson) as { kid?: string; alg?: string };
+            return { kid: header.kid, alg: header.alg };
+        } catch {
+            return {};
+        }
     }
 
     private normalizeBase64(value: string): string {
@@ -295,6 +304,7 @@ export class AppleAuthService {
         const stripped = keyWithNewlines.replace(/\s+/g, '');
         const headerMatch = stripped.match(/-----BEGIN[^-]+-----/);
         const footerMatch = stripped.match(/-----END[^-]+-----/);
+
         if (!headerMatch || !footerMatch) {
             return keyWithNewlines;
         }
@@ -303,6 +313,7 @@ export class AppleAuthService {
         const footer = footerMatch[0];
         const body = stripped.slice(header.length, stripped.length - footer.length);
         const wrapped = body.match(/.{1,64}/g)?.join('\n') ?? body;
+
         return `${header}\n${wrapped}\n${footer}\n`;
     }
 }
