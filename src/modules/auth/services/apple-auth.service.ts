@@ -89,12 +89,12 @@ export class AppleAuthService {
     private getApplePrivateKey(): string {
         const rawKey = this.config.get<string>('APPLE_PRIVATE_KEY');
         if (rawKey) {
-            return rawKey.includes('\\n') ? rawKey.replace(/\\n/g, '\n') : rawKey;
+            return this.normalizePrivateKey(rawKey);
         }
 
         const b64Key = this.config.get<string>('APPLE_PRIVATE_KEY_B64');
         if (b64Key) {
-            return Buffer.from(b64Key, 'base64').toString('utf8');
+            return this.normalizePrivateKey(Buffer.from(b64Key, 'base64').toString('utf8'));
         }
 
         throw new BadRequestException('Apple auth is not configured');
@@ -290,5 +290,25 @@ export class AppleAuthService {
         const normalized = value.replace(/-/g, '+').replace(/_/g, '/');
         const padding = normalized.length % 4 === 0 ? '' : '='.repeat(4 - (normalized.length % 4));
         return normalized + padding;
+    }
+
+    private normalizePrivateKey(rawKey: string): string {
+        const keyWithNewlines = rawKey.includes('\\n') ? rawKey.replace(/\\n/g, '\n') : rawKey;
+        if (keyWithNewlines.includes('\n')) {
+            return keyWithNewlines;
+        }
+
+        const stripped = keyWithNewlines.replace(/\s+/g, '');
+        const headerMatch = stripped.match(/-----BEGIN[^-]+-----/);
+        const footerMatch = stripped.match(/-----END[^-]+-----/);
+        if (!headerMatch || !footerMatch) {
+            return keyWithNewlines;
+        }
+
+        const header = headerMatch[0];
+        const footer = footerMatch[0];
+        const body = stripped.slice(header.length, stripped.length - footer.length);
+        const wrapped = body.match(/.{1,64}/g)?.join('\n') ?? body;
+        return `${header}\n${wrapped}\n${footer}\n`;
     }
 }
