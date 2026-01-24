@@ -1,4 +1,4 @@
-import { DEFAULT_LANGUAGE, SupportedLanguage, SUPPORTED_LANGUAGES } from './i18n.types';
+import { SupportedLanguage, SUPPORTED_LANGUAGES } from './i18n.types';
 
 export const isSupportedLanguage = (value: string): value is SupportedLanguage =>
     SUPPORTED_LANGUAGES.includes(value as SupportedLanguage);
@@ -8,21 +8,12 @@ export const isSupportedLanguage = (value: string): value is SupportedLanguage =
  * Returns `undefined` when the value cannot be mapped to a supported language.
  */
 export const tryNormalizeLocale = (value?: string | null): SupportedLanguage | undefined => {
-    if (!value) {
-        return undefined;
-    }
-
-    const trimmed = value.trim();
-    if (!trimmed) {
-        return undefined;
-    }
-
-    const lowercase = trimmed.toLowerCase();
-    if (isSupportedLanguage(lowercase)) {
-        return lowercase;
-    }
+    const trimmed = value?.trim();
+    if (!trimmed) return undefined;
 
     const normalized = trimmed.replace(/_/g, '-');
+    const lowercase = normalized.toLowerCase();
+    if (isSupportedLanguage(lowercase)) return lowercase;
 
     let locale: Intl.Locale;
     try {
@@ -41,7 +32,7 @@ export const tryNormalizeLocale = (value?: string | null): SupportedLanguage | u
         return primary;
     }
 
-    const maximized = locale.maximize();
+    const maximized = typeof locale.maximize === 'function' ? locale.maximize() : locale;
 
     const maximizedLanguage = maximized.language?.toLowerCase();
     if (maximizedLanguage && isSupportedLanguage(maximizedLanguage)) {
@@ -55,8 +46,3 @@ export const tryNormalizeLocale = (value?: string | null): SupportedLanguage | u
 
     return undefined;
 };
-
-export const normalizeLocale = (
-    value?: string | null,
-    fallback: SupportedLanguage = DEFAULT_LANGUAGE,
-): SupportedLanguage => tryNormalizeLocale(value) ?? fallback;

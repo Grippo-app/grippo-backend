@@ -15,12 +15,9 @@ export class ExerciseExampleI18nService {
             return DEFAULT_LANGUAGE;
         }
 
-        const candidates = header
-            .split(',')
-            .map((part) => part.split(';')[0]?.trim())
-            .filter((part): part is string => Boolean(part));
-
-        for (const candidate of candidates) {
+        for (const part of header.split(',')) {
+            const candidate = part.split(';')[0]?.trim();
+            if (!candidate) continue;
             const normalized = tryNormalizeLocale(candidate);
             if (normalized) {
                 return normalized;
@@ -40,13 +37,18 @@ export class ExerciseExampleI18nService {
 
         const translations = example.translations ?? [];
         const directTranslation = translations.find((t) => t.language === language);
-        const defaultTranslation = translations.find((t) => t.language === DEFAULT_LANGUAGE);
+        const defaultTranslation =
+            language === DEFAULT_LANGUAGE
+                ? directTranslation
+                : translations.find((t) => t.language === DEFAULT_LANGUAGE);
 
+        const selectedTranslation = directTranslation ?? defaultTranslation ?? null;
         const fallbackName = example.name ?? null;
         const fallbackDescription = example.description ?? null;
-
-        example.name = directTranslation?.name ?? defaultTranslation?.name ?? fallbackName;
-        example.description = directTranslation?.description ?? defaultTranslation?.description ?? fallbackDescription;
+        if (selectedTranslation) {
+            example.name = selectedTranslation.name ?? fallbackName;
+            example.description = selectedTranslation.description ?? fallbackDescription;
+        }
 
         if (example.translations) {
             delete (example as any).translations;
