@@ -4,6 +4,7 @@ import {UserProfileResponse} from './user.response';
 
 export enum AdminAuthTypeEnum {
     GOOGLE = 'Google',
+    APPLE = 'Apple',
     EMAIL = 'Email',
 }
 
@@ -20,8 +21,8 @@ export class AdminUserResponse {
     @ApiProperty({example: UserRoleEnum.DEFAULT, enum: UserRoleEnum})
     role: UserRoleEnum;
 
-    @ApiProperty({example: AdminAuthTypeEnum.EMAIL, enum: AdminAuthTypeEnum})
-    authType: AdminAuthTypeEnum;
+    @ApiProperty({example: [AdminAuthTypeEnum.EMAIL], enum: AdminAuthTypeEnum, isArray: true})
+    authTypes: AdminAuthTypeEnum[];
 
     @ApiProperty({example: new Date().toISOString()})
     createdAt: Date;

@@ -5,6 +5,7 @@ import {LoginRequest} from './dto/login.request';
 import {LoginResponse} from './dto/login.response';
 import {RegisterRequest} from './dto/register.request';
 import {GoogleLoginRequest} from './dto/google-login.request';
+import {AppleLoginRequest} from './dto/apple-login.request';
 
 @Controller('auth')
 @ApiTags('auth')
@@ -40,6 +41,16 @@ export class AuthController {
     @ApiResponse({status: 401, description: 'Invalid Google token'})
     google(@Body() dto: GoogleLoginRequest): Promise<LoginResponse> {
         return this.authService.loginWithGoogle(dto);
+    }
+
+    @Post('apple')
+    @HttpCode(200)
+    @ApiOperation({summary: 'Login/Register with Apple authorization code'})
+    @ApiBody({type: AppleLoginRequest})
+    @ApiResponse({status: 200, description: 'Apple login success', type: LoginResponse})
+    @ApiResponse({status: 401, description: 'Invalid Apple token'})
+    apple(@Body() dto: AppleLoginRequest): Promise<LoginResponse> {
+        return this.authService.loginWithApple(dto);
     }
 
     @Post('refresh')

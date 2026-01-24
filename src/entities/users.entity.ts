@@ -17,6 +17,9 @@ export class UsersEntity {
     @Column({name: 'google_id', nullable: true, unique: true})
     googleId?: string;
 
+    @Column({name: 'apple_id', nullable: true, unique: true})
+    appleId?: string;
+
     @Column({type: 'enum', enum: UserRoleEnum, default: UserRoleEnum.DEFAULT})
     role: UserRoleEnum;
 

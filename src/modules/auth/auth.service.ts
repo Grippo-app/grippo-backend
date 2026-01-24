@@ -1,7 +1,6 @@
 import {BadRequestException, Inject, Injectable, Logger, UnauthorizedException,} from '@nestjs/common';
 import {Repository} from 'typeorm';
 import {JwtService} from '@nestjs/jwt';
-import {OAuth2Client, TokenPayload} from 'google-auth-library';
 
 import {UsersEntity} from '../../entities/users.entity';
 
@@ -9,18 +8,24 @@ import {LoginResponse} from './dto/login.response';
 import {LoginRequest} from './dto/login.request';
 import {RegisterRequest} from './dto/register.request';
 import {GoogleLoginRequest} from './dto/google-login.request';
+import {AppleLoginRequest} from './dto/apple-login.request';
 import {Hash} from '../../lib/hash';
 import {ConfigService} from "@nestjs/config";
 import {UserRoleEnum} from '../../lib/user-role.enum';
+import {GoogleAuthService} from './services/google-auth.service';
+import {AppleAuthService} from './services/apple-auth.service';
+import {TokenService} from './services/token.service';
 
 @Injectable()
 export class AuthService {
     private readonly logger = new Logger(AuthService.name);
-    private readonly googleClient = new OAuth2Client();
 
     constructor(
         private readonly jwtService: JwtService,
         private readonly config: ConfigService,
+        private readonly tokenService: TokenService,
+        private readonly googleAuthService: GoogleAuthService,
+        private readonly appleAuthService: AppleAuthService,
         @Inject('USERS_REPOSITORY')
         private readonly usersRepository: Repository<UsersEntity>,
     ) {
@@ -68,27 +73,15 @@ export class AuthService {
         return this.buildLoginResponse(user.id);
     }
 
+    // ----- GOOGLE -----
     async loginWithGoogle(dto: GoogleLoginRequest): Promise<LoginResponse> {
-        const clientIds = [
-            this.config.get<string>('GOOGLE_CLIENT_ID_WEB'),
-            this.config.get<string>('GOOGLE_CLIENT_ID_ANDROID'),
-            this.config.get<string>('GOOGLE_CLIENT_ID_IOS'),
-        ].filter((id): id is string => Boolean(id));
-
-        if (!clientIds.length) {
-            throw new BadRequestException('Google auth is not configured');
-        }
-
-        let payload: TokenPayload | undefined;
+        let payload;
         try {
-            const ticket = await this.googleClient.verifyIdToken({
-                idToken: dto.idToken,
-                audience: clientIds.length === 1 ? clientIds[0] : clientIds,
-            });
-            payload = ticket.getPayload();
+            payload = await this.googleAuthService.verifyIdToken(dto.idToken);
         } catch (error) {
-            this.logger.warn(`Google token verification failed: ${error.message}`);
-            throw new UnauthorizedException('Invalid Google token');
+            const message = error instanceof Error ? error.message : String(error);
+            this.logger.warn(`Google token verification failed: ${message}`);
+            throw error;
         }
 
         if (!payload?.email || !payload.sub) {
@@ -125,6 +118,58 @@ export class AuthService {
         return this.buildLoginResponse(user.id);
     }
 
+    // ----- APPLE -----
+    async loginWithApple(dto: AppleLoginRequest): Promise<LoginResponse> {
+        if (!dto.code) {
+            throw new BadRequestException('Apple authorization code is required');
+        }
+
+        const idToken = await this.appleAuthService.exchangeCodeForIdToken(dto.code);
+        let payload;
+        try {
+            payload = await this.appleAuthService.verifyIdToken(idToken);
+        } catch (error) {
+            const message = error instanceof Error ? error.message : String(error);
+            this.logger.warn(`Apple token verification failed: ${message}`);
+            throw error;
+        }
+
+        const appleId = payload.sub;
+        const resolvedEmail = payload.email ?? null;
+
+        let user = await this.usersRepository.findOne({where: {appleId}});
+
+        if (!user && resolvedEmail) {
+            user = await this.usersRepository.findOne({where: {email: resolvedEmail}});
+        }
+
+        if (!user) {
+            if (!resolvedEmail) {
+                throw new BadRequestException('Apple token does not include email');
+            }
+            user = this.usersRepository.create({
+                email: resolvedEmail,
+                appleId,
+                password: null,
+                role: UserRoleEnum.DEFAULT,
+            });
+            await this.usersRepository.save(user);
+            this.logger.log(`New user registered via Apple: ${user.id}`);
+        } else {
+            const updates: Partial<UsersEntity> = {};
+            if (!user.appleId) {
+                updates.appleId = appleId;
+            }
+            if (Object.keys(updates).length) {
+                await this.usersRepository.update(user.id, updates);
+            }
+        }
+
+        this.logger.log(`User logged in via Apple: ${user.id}`);
+        return this.buildLoginResponse(user.id);
+    }
+
+    // ----- TOKENS -----
     async refresh(refreshToken: string): Promise<LoginResponse> {
         let payload: { id: string };
         try {
@@ -132,7 +177,6 @@ export class AuthService {
                 secret: this.config.get<string>('JWT_REFRESH_SECRET'),
             });
         } catch (e) {
-            // this.logger.warn(`Refresh token failed: ${e.message}`);
             throw new UnauthorizedException('Invalid or expired refresh token');
         }
 
@@ -141,7 +185,7 @@ export class AuthService {
             throw new UnauthorizedException('Invalid or expired refresh token');
         }
 
-        const tokens = await this.createTokens(payload.id);
+        const tokens = await this.tokenService.createTokens(payload.id);
 
         return {
             id: payload.id,
@@ -149,24 +193,12 @@ export class AuthService {
         };
     }
 
+    // ----- JWT HELPERS -----
     private async buildLoginResponse(userId: string): Promise<LoginResponse> {
-        const tokens = await this.createTokens(userId);
-        return {id: userId, ...tokens};
-    }
-
-    private async createTokens(userId: string): Promise<{ accessToken: string; refreshToken: string }> {
-        const payload = {id: userId};
-
-        const accessToken = await this.jwtService.signAsync(payload, {
-            secret: this.config.get<string>('JWT_SECRET_KEY'),
-            expiresIn: this.config.get<string>('JWT_EXPIRATION_TIME'),
-        });
-
-        const refreshToken = await this.jwtService.signAsync(payload, {
-            secret: this.config.get<string>('JWT_REFRESH_SECRET'),
-            expiresIn: this.config.get<string>('JWT_REFRESH_EXPIRATION_TIME'),
-        });
-
-        return {accessToken, refreshToken};
+        const tokens = await this.tokenService.createTokens(userId);
+        return {
+            id: userId,
+            ...tokens,
+        };
     }
 }

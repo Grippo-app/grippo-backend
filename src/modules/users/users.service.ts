@@ -114,6 +114,7 @@ export class UsersService {
                 'users.id',
                 'users.email',
                 'users.googleId',
+                'users.appleId',
                 'users.role',
                 'users.createdAt',
                 'users.updatedAt',
@@ -318,7 +319,17 @@ export class UsersService {
             }
             : null;
         dto.role = user.role;
-        dto.authType = user.googleId ? AdminAuthTypeEnum.GOOGLE : AdminAuthTypeEnum.EMAIL;
+        const authTypes: AdminAuthTypeEnum[] = [];
+        if (user.googleId) {
+            authTypes.push(AdminAuthTypeEnum.GOOGLE);
+        }
+        if (user.appleId) {
+            authTypes.push(AdminAuthTypeEnum.APPLE);
+        }
+        if (user.password) {
+            authTypes.push(AdminAuthTypeEnum.EMAIL);
+        }
+        dto.authTypes = authTypes.length ? authTypes : [AdminAuthTypeEnum.EMAIL];
         dto.createdAt = user.createdAt;
         dto.updatedAt = user.updatedAt;
         return dto;
