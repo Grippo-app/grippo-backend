@@ -2,6 +2,8 @@ import {BadRequestException, Injectable, UnauthorizedException} from '@nestjs/co
 import {JwtService} from '@nestjs/jwt';
 import {ConfigService} from '@nestjs/config';
 import {get as httpsGet, request as httpsRequest} from 'https';
+import { createPrivateKey } from 'crypto';
+
 
 @Injectable()
 export class AppleAuthService {
@@ -87,12 +89,21 @@ export class AppleAuthService {
     }
 
     private getApplePrivateKey(): string {
-        const b64Key = this.config.get<string>('APPLE_PRIVATE_KEY_B64');
-        if (b64Key) {
-            return this.normalizePrivateKey(Buffer.from(b64Key, 'base64').toString('utf8'));
+        const b64KeyRaw = this.config.get<string>('APPLE_PRIVATE_KEY_B64');
+        const b64Key = b64KeyRaw?.trim();
+
+        if (!b64Key) {
+            throw new BadRequestException('Apple auth is not configured');
         }
 
-        throw new BadRequestException('Apple auth is not configured');
+        const decoded = Buffer.from(b64Key, 'base64').toString('utf8');
+        const pem = this.normalizePrivateKey(decoded).trim();
+
+        if (!pem.includes('BEGIN PRIVATE KEY') || !pem.includes('END PRIVATE KEY')) {
+            throw new BadRequestException('APPLE_PRIVATE_KEY_B64 is not a valid PEM private key');
+        }
+
+        return pem + '\n';
     }
 
     private async buildAppleClientSecret(clientId: string): Promise<string> {
@@ -103,18 +114,24 @@ export class AppleAuthService {
             throw new BadRequestException('Apple auth is not configured');
         }
 
-        const privateKey = this.getApplePrivateKey();
+        const privateKeyPem = this.getApplePrivateKey();
+
+        const keyObject = createPrivateKey({
+            key: privateKeyPem,
+            format: 'pem',
+            type: 'pkcs8',
+        });
 
         return this.jwtService.signAsync(
             {},
             {
                 algorithm: 'ES256',
+                header: { kid: keyId, alg: 'ES256' },
                 issuer: teamId,
                 audience: 'https://appleid.apple.com',
                 subject: clientId,
-                expiresIn: '5m',
-                privateKey,
-                header: {kid: keyId, alg: 'ES256'},
+                expiresIn: 300,
+                privateKey: keyObject as unknown as string,
             },
         );
     }
@@ -278,7 +295,7 @@ export class AppleAuthService {
 
     private appleCertToPem(cert: string): string {
         const wrapped = cert.match(/.{1,64}/g)?.join('\n') ?? cert;
-        return `-----BEGIN CERTIFICATE-----\\n${wrapped}\\n-----END CERTIFICATE-----\\n`;
+        return `-----BEGIN CERTIFICATE-----\n${wrapped}\n-----END CERTIFICATE-----\n`;
     }
 
     private normalizeBase64(value: string): string {
