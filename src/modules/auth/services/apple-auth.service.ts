@@ -1,67 +1,81 @@
-import {BadRequestException, Injectable, UnauthorizedException} from '@nestjs/common';
-import {JwtService} from '@nestjs/jwt';
-import {ConfigService} from '@nestjs/config';
-import {get as httpsGet, request as httpsRequest} from 'https';
+import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { createPrivateKey } from 'crypto';
+import jwt from 'jsonwebtoken';
+import { get as httpsGet, request as httpsRequest } from 'https';
 
+type AppleTokenResponse = {
+    access_token?: string;
+    expires_in?: number;
+    id_token?: string;
+    refresh_token?: string;
+    token_type?: string;
+    error?: string;
+    error_description?: string;
+};
+
+type AppleJwksKey = {
+    kid: string;
+    x5c?: string[];
+};
+
+type AppleIdTokenPayload = {
+    sub: string;
+    email?: string;
+    email_verified?: boolean | 'true' | 'false';
+    aud?: string | string[];
+    iss?: string;
+    exp?: number;
+    iat?: number;
+};
 
 @Injectable()
 export class AppleAuthService {
     private readonly appleJwksUrl = 'https://appleid.apple.com/auth/keys';
     private readonly appleTokenUrl = 'https://appleid.apple.com/auth/token';
     private readonly appleJwksTtlMs = 6 * 60 * 60 * 1000;
-    private appleJwksCache: {fetchedAt: number; keys: {kid: string; x5c?: string[]}[]} = {
+
+    private appleJwksCache: { fetchedAt: number; keys: AppleJwksKey[] } = {
         fetchedAt: 0,
         keys: [],
     };
 
-    constructor(
-        private readonly jwtService: JwtService,
-        private readonly config: ConfigService,
-    ) {
-    }
+    constructor(private readonly config: ConfigService) {}
 
-    async exchangeCodeForIdToken(code: string): Promise<string> {
-        const clientIds = this.getAppleClientIds();
-        if (!clientIds.length) {
-            throw new BadRequestException('Apple auth is not configured');
-        }
+    public async exchangeCodeForIdToken(code: string): Promise<string> {
+        const clientId = this.getAppleClientId();
+        const tokenResponse = await this.exchangeAppleCode(code, clientId);
 
-        const tokenResponse = await this.exchangeAppleCode(code, clientIds);
         if (!tokenResponse.id_token) {
-            throw new UnauthorizedException('Apple identity token is missing');
+            const description = tokenResponse.error_description
+                ? `${tokenResponse.error}: ${tokenResponse.error_description}`
+                : tokenResponse.error;
+
+            throw new UnauthorizedException(
+                description ? `Apple identity token is missing (${description})` : 'Apple identity token is missing',
+            );
         }
 
         return tokenResponse.id_token;
     }
 
-    async verifyIdToken(idToken: string): Promise<{ sub: string; email?: string; email_verified?: boolean | 'true' | 'false' }> {
-        const clientIds = this.getAppleClientIds();
-        if (!clientIds.length) {
-            throw new BadRequestException('Apple auth is not configured');
+    public async verifyIdToken(idToken: string): Promise<AppleIdTokenPayload> {
+        const clientId = this.getAppleClientId();
+
+        const { kid, alg } = this.decodeJwtHeader(idToken);
+        if (!kid || alg !== 'RS256') {
+            throw new UnauthorizedException('Invalid Apple token header');
         }
 
-        const {kid, alg} = this.decodeJwtHeader(idToken);
-        if (!kid || (alg && alg !== 'RS256')) {
-            throw new UnauthorizedException('Invalid Apple token');
-        }
+        const publicKeyPem = await this.getApplePublicKey(kid);
 
-        const publicKey = await this.getApplePublicKey(kid);
-
-        let payload:
-            | {
-                  sub: string;
-                  email?: string;
-                  email_verified?: boolean | 'true' | 'false';
-              }
-            | undefined;
+        let payload: AppleIdTokenPayload;
         try {
-            payload = await this.jwtService.verifyAsync(idToken, {
-                secret: publicKey,
+            payload = jwt.verify(idToken, publicKeyPem, {
                 algorithms: ['RS256'],
                 issuer: 'https://appleid.apple.com',
-                audience: clientIds.length === 1 ? clientIds[0] : clientIds,
-            });
+                audience: clientId,
+            }) as AppleIdTokenPayload;
         } catch (error) {
             const message = error instanceof Error ? error.message : String(error);
             throw new UnauthorizedException(`Invalid Apple token: ${message}`);
@@ -81,19 +95,18 @@ export class AppleAuthService {
         return payload;
     }
 
-    private getAppleClientIds(): string[] {
-        const bundleId = this.config.get<string>('APPLE_BUNDLE_ID');
-        const serviceId = this.config.get<string>('APPLE_SERVICE_ID');
-        const clientId = this.config.get<string>('APPLE_CLIENT_ID');
-        return [bundleId, serviceId, clientId].filter((id): id is string => Boolean(id));
+    private getAppleClientId(): string {
+        const bundleId = this.config.get<string>('APPLE_BUNDLE_ID')?.trim();
+        if (!bundleId) {
+            throw new BadRequestException('Apple auth is not configured (APPLE_BUNDLE_ID missing)');
+        }
+        return bundleId;
     }
 
-    private getApplePrivateKey(): string {
-        const b64KeyRaw = this.config.get<string>('APPLE_PRIVATE_KEY_B64');
-        const b64Key = b64KeyRaw?.trim();
-
+    private getApplePrivateKeyPem(): string {
+        const b64Key = this.config.get<string>('APPLE_PRIVATE_KEY_B64')?.trim();
         if (!b64Key) {
-            throw new BadRequestException('Apple auth is not configured');
+            throw new BadRequestException('Apple auth is not configured (APPLE_PRIVATE_KEY_B64 missing)');
         }
 
         const decoded = Buffer.from(b64Key, 'base64').toString('utf8');
@@ -106,15 +119,15 @@ export class AppleAuthService {
         return pem + '\n';
     }
 
-    private async buildAppleClientSecret(clientId: string): Promise<string> {
-        const teamId = this.config.get<string>('APPLE_TEAM_ID');
-        const keyId = this.config.get<string>('APPLE_KEY_ID');
+    private buildAppleClientSecret(clientId: string): string {
+        const teamId = this.config.get<string>('APPLE_TEAM_ID')?.trim();
+        const keyId = this.config.get<string>('APPLE_KEY_ID')?.trim();
 
         if (!teamId || !keyId) {
-            throw new BadRequestException('Apple auth is not configured');
+            throw new BadRequestException('Apple auth is not configured (APPLE_TEAM_ID / APPLE_KEY_ID missing)');
         }
 
-        const privateKeyPem = this.getApplePrivateKey();
+        const privateKeyPem = this.getApplePrivateKeyPem();
 
         const keyObject = createPrivateKey({
             key: privateKeyPem,
@@ -122,73 +135,49 @@ export class AppleAuthService {
             type: 'pkcs8',
         });
 
-        return this.jwtService.signAsync(
-            {},
-            {
-                algorithm: 'ES256',
-                header: { kid: keyId, alg: 'ES256' },
-                issuer: teamId,
-                audience: 'https://appleid.apple.com',
-                subject: clientId,
-                expiresIn: 300,
-                privateKey: keyObject as unknown as string,
-            },
-        );
-    }
-
-    private async exchangeAppleCode(
-        code: string,
-        clientIds: string[],
-    ): Promise<{
-        access_token?: string;
-        expires_in?: number;
-        id_token?: string;
-        refresh_token?: string;
-        token_type?: string;
-        error?: string;
-        error_description?: string;
-    }> {
-        const errors: string[] = [];
-
-        for (const clientId of clientIds) {
-            try {
-                const clientSecret = await this.buildAppleClientSecret(clientId);
-                const body = new URLSearchParams({
-                    client_id: clientId,
-                    client_secret: clientSecret,
-                    code,
-                    grant_type: 'authorization_code',
-                }).toString();
-
-                const response = await this.postAppleToken(body);
-                if (response.error) {
-                    const description = response.error_description
-                        ? `${response.error}: ${response.error_description}`
-                        : response.error;
-                    errors.push(`${clientId}: ${description}`);
-                    continue;
-                }
-                return response;
-            } catch (error) {
-                const message = error instanceof Error ? error.message : String(error);
-                errors.push(`${clientId}: ${message}`);
-            }
+        if (keyObject.asymmetricKeyType !== 'ec') {
+            throw new BadRequestException(`Apple key is not EC (got: ${keyObject.asymmetricKeyType ?? 'unknown'})`);
         }
 
-        throw new UnauthorizedException(
-            errors.length ? `Apple code exchange failed (${errors.join(', ')})` : 'Apple code exchange failed',
-        );
+        const nowSec = Math.floor(Date.now() / 1000);
+
+        const payload = {
+            iss: teamId,
+            iat: nowSec,
+            exp: nowSec + 300,
+            aud: 'https://appleid.apple.com',
+            sub: clientId,
+        };
+
+        return jwt.sign(payload, keyObject, {
+            algorithm: 'ES256',
+            header: { kid: keyId, alg: 'ES256' },
+        });
     }
 
-    private async postAppleToken(body: string): Promise<{
-        access_token?: string;
-        expires_in?: number;
-        id_token?: string;
-        refresh_token?: string;
-        token_type?: string;
-        error?: string;
-        error_description?: string;
-    }> {
+    private async exchangeAppleCode(code: string, clientId: string): Promise<AppleTokenResponse> {
+        const clientSecret = this.buildAppleClientSecret(clientId);
+
+        const body = new URLSearchParams({
+            client_id: clientId,
+            client_secret: clientSecret,
+            code,
+            grant_type: 'authorization_code',
+        }).toString();
+
+        const response = await this.postAppleToken(body);
+
+        if (response.error) {
+            const description = response.error_description
+                ? `${response.error}: ${response.error_description}`
+                : response.error;
+            throw new UnauthorizedException(`Apple code exchange failed (${description})`);
+        }
+
+        return response;
+    }
+
+    private async postAppleToken(body: string): Promise<AppleTokenResponse> {
         return new Promise((resolve, reject) => {
             const request = httpsRequest(
                 this.appleTokenUrl,
@@ -205,15 +194,7 @@ export class AppleAuthService {
                     response.on('data', (chunk) => (data += chunk));
                     response.on('end', () => {
                         try {
-                            const parsed = JSON.parse(data) as {
-                                access_token?: string;
-                                expires_in?: number;
-                                id_token?: string;
-                                refresh_token?: string;
-                                token_type?: string;
-                                error?: string;
-                                error_description?: string;
-                            };
+                            const parsed = JSON.parse(data) as AppleTokenResponse;
                             resolve(parsed);
                         } catch (error) {
                             reject(error);
@@ -228,15 +209,15 @@ export class AppleAuthService {
         });
     }
 
-    private decodeJwtHeader(token: string): {kid?: string; alg?: string} {
+    private decodeJwtHeader(token: string): { kid?: string; alg?: string } {
         const [rawHeader] = token.split('.');
         if (!rawHeader) {
             return {};
         }
         try {
             const headerJson = Buffer.from(this.normalizeBase64(rawHeader), 'base64').toString('utf8');
-            const header = JSON.parse(headerJson);
-            return {kid: header.kid, alg: header.alg};
+            const header = JSON.parse(headerJson) as { kid?: string; alg?: string };
+            return { kid: header.kid, alg: header.alg };
         } catch {
             return {};
         }
@@ -244,7 +225,8 @@ export class AppleAuthService {
 
     private async getApplePublicKey(kid: string): Promise<string> {
         const now = Date.now();
-        if (now - this.appleJwksCache.fetchedAt > this.appleJwksTtlMs || !this.appleJwksCache.keys.length) {
+        const expired = now - this.appleJwksCache.fetchedAt > this.appleJwksTtlMs;
+        if (expired || !this.appleJwksCache.keys.length) {
             this.appleJwksCache.keys = await this.fetchAppleJwks();
             this.appleJwksCache.fetchedAt = now;
         }
@@ -257,13 +239,13 @@ export class AppleAuthService {
         }
 
         if (!key?.x5c?.length) {
-            throw new UnauthorizedException('Invalid Apple token');
+            throw new UnauthorizedException('Invalid Apple token (kid not found)');
         }
 
         return this.appleCertToPem(key.x5c[0]);
     }
 
-    private async fetchAppleJwks(): Promise<{kid: string; x5c?: string[]}[]> {
+    private async fetchAppleJwks(): Promise<AppleJwksKey[]> {
         return new Promise((resolve, reject) => {
             const request = httpsGet(this.appleJwksUrl, (response) => {
                 if (!response.statusCode || response.statusCode >= 400) {
@@ -277,7 +259,7 @@ export class AppleAuthService {
                 response.on('data', (chunk) => (body += chunk));
                 response.on('end', () => {
                     try {
-                        const parsed = JSON.parse(body) as {keys?: {kid: string; x5c?: string[]}[]};
+                        const parsed = JSON.parse(body) as { keys?: AppleJwksKey[] };
                         if (!parsed.keys?.length) {
                             reject(new Error('Apple JWKS response is empty'));
                             return;
