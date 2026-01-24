@@ -53,6 +53,9 @@ export class ExercisesEntity {
     @Column({name: 'exercise_example_id', type: 'uuid', nullable: true})
     exerciseExampleId: string | null;
 
+    @Column({name: 'order_index', type: 'int', default: 0})
+    orderIndex: number;
+
     @CreateDateColumn({
         type: 'timestamp without time zone',
         name: 'created_at',

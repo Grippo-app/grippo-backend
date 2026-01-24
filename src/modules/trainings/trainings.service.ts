@@ -43,7 +43,9 @@ export class TrainingsService {
             .leftJoinAndSelect('exerciseExample.translations', 'exerciseExampleTranslations')
             .leftJoinAndSelect('exercises.iterations', 'iterations')
             .orderBy('trainings.created_at', 'ASC')
+            .addOrderBy('exercises.order_index', 'ASC')
             .addOrderBy('exercises.created_at', 'ASC')
+            .addOrderBy('iterations.order_index', 'ASC')
             .addOrderBy('iterations.created_at', 'ASC')
             .getMany();
 
@@ -56,10 +58,10 @@ export class TrainingsService {
         for (const training of trainings) {
             if (!training.exercises) continue;
             this.exerciseExampleI18nService.translateExercisesCollection(training.exercises, language);
-            training.exercises.sort((a, b) => +a.createdAt - +b.createdAt);
+            training.exercises.sort((a, b) => (a.orderIndex ?? 0) - (b.orderIndex ?? 0) || (+a.createdAt - +b.createdAt));
             for (const exercise of training.exercises) {
                 if (!exercise.iterations) continue;
-                exercise.iterations.sort((a, b) => +a.createdAt - +b.createdAt);
+                exercise.iterations.sort((a, b) => (a.orderIndex ?? 0) - (b.orderIndex ?? 0) || (+a.createdAt - +b.createdAt));
             }
         }
 
@@ -80,7 +82,9 @@ export class TrainingsService {
             .leftJoinAndSelect('exerciseExample.translations', 'exerciseExampleTranslations')
             .leftJoinAndSelect('exercises.iterations', 'iterations')
             .orderBy('trainings.created_at', 'ASC')
+            .addOrderBy('exercises.order_index', 'ASC')
             .addOrderBy('exercises.created_at', 'ASC')
+            .addOrderBy('iterations.order_index', 'ASC')
             .addOrderBy('iterations.created_at', 'ASC')
             .getOne();
 
@@ -90,10 +94,10 @@ export class TrainingsService {
 
         if (training.exercises) {
             this.exerciseExampleI18nService.translateExercisesCollection(training.exercises, language);
-            training.exercises.sort((a, b) => +a.createdAt - +b.createdAt);
+            training.exercises.sort((a, b) => (a.orderIndex ?? 0) - (b.orderIndex ?? 0) || (+a.createdAt - +b.createdAt));
             for (const exercise of training.exercises) {
                 if (!exercise.iterations) continue;
-                exercise.iterations.sort((a, b) => +a.createdAt - +b.createdAt);
+                exercise.iterations.sort((a, b) => (a.orderIndex ?? 0) - (b.orderIndex ?? 0) || (+a.createdAt - +b.createdAt));
             }
         }
 
@@ -120,7 +124,7 @@ export class TrainingsService {
 
             await manager.save(training);
 
-            for (const el of exercises) {
+            for (const [exerciseIndex, el] of exercises.entries()) {
                 const {iterations, exerciseExampleId, ...exerciseData} = el;
 
                 if (exerciseExampleId) {
@@ -135,15 +139,17 @@ export class TrainingsService {
                     id: v4(),
                     trainingId: training.id,
                     exerciseExampleId: exerciseExampleId || null,
+                    orderIndex: exerciseIndex,
                 });
 
                 await manager.save(exercise);
 
-                for (const iter of iterations) {
+                for (const [iterationIndex, iter] of iterations.entries()) {
                     const iteration = manager.create(IterationsEntity, {
                         ...iter,
                         id: v4(),
                         exerciseId: exercise.id,
+                        orderIndex: iterationIndex,
                     });
                     await manager.save(iteration);
                 }
@@ -184,7 +190,7 @@ export class TrainingsService {
             await manager.delete(ExercisesEntity, {trainingId: id});
 
             // Create new exercises and iterations
-            for (const el of exercises) {
+            for (const [exerciseIndex, el] of exercises.entries()) {
                 const {iterations, exerciseExampleId, ...exerciseData} = el;
 
                 if (exerciseExampleId) {
@@ -199,15 +205,17 @@ export class TrainingsService {
                     id: v4(),
                     trainingId: id,
                     exerciseExampleId: exerciseExampleId || null,
+                    orderIndex: exerciseIndex,
                 });
 
                 await manager.save(exercise);
 
-                for (const iter of iterations) {
+                for (const [iterationIndex, iter] of iterations.entries()) {
                     const iteration = manager.create(IterationsEntity, {
                         ...iter,
                         id: v4(),
                         exerciseId: exercise.id,
+                        orderIndex: iterationIndex,
                     });
                     await manager.save(iteration);
                 }

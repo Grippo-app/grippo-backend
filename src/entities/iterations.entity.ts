@@ -32,6 +32,9 @@ export class IterationsEntity {
     @Column({name: 'exercise_id', nullable: true})
     exerciseId: string | null;
 
+    @Column({name: 'order_index', type: 'int', default: 0})
+    orderIndex: number;
+
     @CreateDateColumn({
         type: 'timestamp without time zone',
         name: 'created_at',
