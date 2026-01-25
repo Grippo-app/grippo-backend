@@ -247,7 +247,12 @@ export class UsersService {
     }
 
     async makeUserAdminByEmail(email: string): Promise<AdminUserResponse> {
-        const user = await this.usersRepository.findOne({where: {email}, relations: ['profile']});
+        const user = await this.usersRepository
+            .createQueryBuilder('users')
+            .leftJoinAndSelect('users.profile', 'profile')
+            .addSelect('users.password')
+            .where('users.email = :email', {email})
+            .getOne();
         if (!user) {
             throw new NotFoundException(`User with email ${email} not found`);
         }
@@ -268,6 +273,7 @@ export class UsersService {
                 'users.id',
                 'users.email',
                 'users.googleId',
+                'users.appleId',
                 'users.role',
                 'users.createdAt',
                 'users.updatedAt',
@@ -276,6 +282,7 @@ export class UsersService {
                 'profile.height',
                 'profile.experience',
             ])
+            .addSelect('users.password')
             .orderBy('users.createdAt', 'DESC')
             .getMany();
 
@@ -283,7 +290,12 @@ export class UsersService {
     }
 
     async setUserRole(id: string, dto: AdminSetRoleRequest): Promise<AdminUserResponse> {
-        const user = await this.usersRepository.findOne({where: {id}, relations: ['profile']});
+        const user = await this.usersRepository
+            .createQueryBuilder('users')
+            .leftJoinAndSelect('users.profile', 'profile')
+            .addSelect('users.password')
+            .where('users.id = :id', {id})
+            .getOne();
         if (!user) {
             throw new NotFoundException(`User with id ${id} not found`);
         }
