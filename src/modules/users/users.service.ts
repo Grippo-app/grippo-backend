@@ -15,6 +15,7 @@ import {CreateUserProfileRequest} from "./dto/create-user-profile.request";
 import {UserProfilesEntity} from "../../entities/user-profiles.entity";
 import {UserProfileResponse, UserResponse} from "./dto/user.response";
 import {ExperienceEnum} from "../../lib/experience.enum";
+import {TrainingsEntity} from "../../entities/trainings.entity";
 
 @Injectable()
 export class UsersService {
@@ -266,7 +267,7 @@ export class UsersService {
     }
 
     async getAllUsers(): Promise<AdminUserResponse[]> {
-        const users = await this.usersRepository
+        const {entities, raw} = await this.usersRepository
             .createQueryBuilder('users')
             .leftJoinAndSelect('users.profile', 'profile')
             .select([
@@ -283,10 +284,27 @@ export class UsersService {
                 'profile.experience',
             ])
             .addSelect('users.password')
+            .addSelect(subQuery => {
+                return subQuery
+                    .select('MAX(trainings.created_at)', 'lastActivity')
+                    .from(TrainingsEntity, 'trainings')
+                    .where('trainings.profile_id = profile.id');
+            }, 'lastActivity')
+            .addSelect(subQuery => {
+                return subQuery
+                    .select('COUNT(trainings.id)', 'workoutsCount')
+                    .from(TrainingsEntity, 'trainings')
+                    .where('trainings.profile_id = profile.id');
+            }, 'workoutsCount')
             .orderBy('users.createdAt', 'DESC')
-            .getMany();
+            .getRawAndEntities();
 
-        return users.map(user => this.toAdminUserResponse(user));
+        return entities.map((user, index) => {
+            const rawRow = raw[index] as {lastActivity?: Date | string | null; workoutsCount?: number | string | null};
+            const lastActivity = rawRow?.lastActivity ? new Date(rawRow.lastActivity) : null;
+            const workoutsCount = Number(rawRow?.workoutsCount ?? 0);
+            return this.toAdminUserResponse(user, {lastActivity, workoutsCount});
+        });
     }
 
     async setUserRole(id: string, dto: AdminSetRoleRequest): Promise<AdminUserResponse> {
@@ -316,7 +334,10 @@ export class UsersService {
         }
     }
 
-    private toAdminUserResponse(user: UsersEntity): AdminUserResponse {
+    private toAdminUserResponse(
+        user: UsersEntity,
+        meta?: {lastActivity: Date | null; workoutsCount: number},
+    ): AdminUserResponse {
         const dto = new AdminUserResponse();
         dto.id = user.id;
         dto.email = user.email;
@@ -344,6 +365,8 @@ export class UsersService {
         dto.authTypes = authTypes.length ? authTypes : [AdminAuthTypeEnum.EMAIL];
         dto.createdAt = user.createdAt;
         dto.updatedAt = user.updatedAt;
+        dto.lastActivity = meta?.lastActivity ?? null;
+        dto.workoutsCount = meta?.workoutsCount ?? 0;
         return dto;
     }
 

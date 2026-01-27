@@ -30,6 +30,12 @@ export class AdminUserResponse {
     @ApiProperty({example: new Date().toISOString()})
     updatedAt: Date;
 
+    @ApiProperty({example: new Date().toISOString(), nullable: true})
+    lastActivity: Date | null;
+
+    @ApiProperty({example: 12})
+    workoutsCount: number;
+
     @ApiProperty({type: () => UserProfileResponse, nullable: true})
     profile: UserProfileResponse | null;
 }
