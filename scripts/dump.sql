@@ -369,6 +369,13 @@ CREATE TABLE public.exercise_examples (
     experience public.exercise_examples_experience_enum
 );
 
+--
+-- Name: exercise_examples PK_6ec4db5d5601a567816d4de278b; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.exercise_examples
+    ADD CONSTRAINT "PK_6ec4db5d5601a567816d4de278b" PRIMARY KEY (id);
+
 
 --
 -- Name: exercise_example_rules; Type: TABLE; Schema: public; Owner: -
@@ -4444,13 +4451,6 @@ ALTER TABLE ONLY public.excluded_equipments
 
 
 --
--- Name: exercise_examples PK_6ec4db5d5601a567816d4de278b; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.exercise_examples
-    ADD CONSTRAINT "PK_6ec4db5d5601a567816d4de278b" PRIMARY KEY (id);
-
-
 --
 -- Name: excluded_muscles PK_9557dfb4752d43a0520eaf71ddd; Type: CONSTRAINT; Schema: public; Owner: -
 --
@@ -4757,4 +4757,3 @@ ALTER TABLE ONLY public.exercise_example_translations
 --
 -- PostgreSQL database dump complete
 --
-
