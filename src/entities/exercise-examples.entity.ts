@@ -2,9 +2,8 @@ import {
     Column,
     CreateDateColumn,
     Entity,
-    JoinColumn,
-    ManyToOne,
     OneToMany,
+    OneToOne,
     PrimaryGeneratedColumn,
     UpdateDateColumn,
 } from 'typeorm';
@@ -16,6 +15,9 @@ import {ExerciseExamplesEquipmentsEntity} from "./exercise-examples-equipments.e
 import {ForceTypeEnum} from "../lib/force-type.enum";
 import {ExperienceEnum} from "../lib/experience.enum";
 import {ExerciseExampleTranslationEntity} from "./exercise-example-translation.entity";
+import {ExerciseExampleRulesEntity} from "./exercise-example-rules.entity";
+import {ApiProperty} from "@nestjs/swagger";
+import {ExerciseRulesResponseDto} from "../modules/exercise-examples/dto/exercise-rules.dto";
 
 @Entity({name: 'exercise_examples'})
 export class ExerciseExamplesEntity {
@@ -68,4 +70,12 @@ export class ExerciseExamplesEntity {
         cascade: ['remove']
     })
     translations: ExerciseExampleTranslationEntity[];
+
+    @OneToOne(() => ExerciseExampleRulesEntity, (rules) => rules.exerciseExample, {
+        cascade: true,
+    })
+    rule: ExerciseExampleRulesEntity;
+
+    @ApiProperty({type: () => ExerciseRulesResponseDto})
+    rules: ExerciseRulesResponseDto;
 }

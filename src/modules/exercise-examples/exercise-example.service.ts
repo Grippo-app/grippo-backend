@@ -13,6 +13,9 @@ import {ExercisesEntity} from "../../entities/exercises.entity";
 import {ExerciseExampleI18nService} from "../../i18n/exercise-example-i18n.service";
 import {DEFAULT_LANGUAGE, SupportedLanguage} from "../../i18n/i18n.types";
 import {UserProfilesEntity} from '../../entities/user-profiles.entity';
+import {ExerciseExampleRulesEntity} from "../../entities/exercise-example-rules.entity";
+import {ExerciseRulesRequestDto, ExerciseRulesResponseDto} from "./dto/exercise-rules.dto";
+import {ExerciseRulesEntryTypeEnum, ExerciseRulesLoadTypeEnum} from "../../lib/exercise-rules.enum";
 
 @Injectable()
 export class ExerciseExampleService {
@@ -37,6 +40,7 @@ export class ExerciseExampleService {
             .leftJoinAndSelect('exerciseExampleBundles.muscle', 'muscle')
             .leftJoinAndSelect('exercise_examples.equipmentRefs', 'equipment_refs')
             .leftJoinAndSelect('equipment_refs.equipment', 'equipments')
+            .leftJoinAndSelect('exercise_examples.rule', 'exercise_rules')
             .leftJoinAndSelect('exercise_examples.translations', 'translations')
             .orderBy('exercise_examples.createdAt', 'DESC')
             .getMany();
@@ -66,6 +70,9 @@ export class ExerciseExampleService {
         }
 
         this.exerciseExampleI18nService.translateExamples(entities, language);
+        for (const entity of entities) {
+            this.attachRulesToExerciseExample(entity);
+        }
 
         return entities.map((entity) => ({
             entity,
@@ -84,6 +91,7 @@ export class ExerciseExampleService {
             .leftJoinAndSelect('exercise_example_bundles.muscle', 'muscle')
             .leftJoinAndSelect('exercise_examples.equipmentRefs', 'equipment_refs')
             .leftJoinAndSelect('equipment_refs.equipment', 'equipments')
+            .leftJoinAndSelect('exercise_examples.rule', 'exercise_rules')
             .leftJoinAndSelect('exercise_examples.translations', 'translations')
             .getOne();
 
@@ -99,6 +107,7 @@ export class ExerciseExampleService {
             .getRawOne<{ usageCount: string; lastUsed: Date | null }>();
 
         this.exerciseExampleI18nService.translateExample(entity, language);
+        this.attachRulesToExerciseExample(entity);
 
         return {
             entity,
@@ -118,6 +127,7 @@ export class ExerciseExampleService {
             equipmentRefs,
             name,
             description,
+            rules,
             ...rest
         } = body;
         const id = v4();
@@ -151,11 +161,13 @@ export class ExerciseExampleService {
             return entity;
         });
 
+        const rule = this.buildRulesEntity(id, rules);
 
         await this.exerciseExamplesRepository.manager.transaction(async (manager) => {
             await manager.save(ExerciseExamplesEntity, exerciseExample);
             await manager.save(ExerciseExampleBundlesEntity, bundles);
             await manager.save(ExerciseExamplesEquipmentsEntity, equipmentRefsEntities);
+            await manager.save(ExerciseExampleRulesEntity, rule);
             if (translationEntities.length > 0) {
                 await manager.save(ExerciseExampleTranslationEntity, translationEntities);
             }
@@ -184,6 +196,7 @@ export class ExerciseExampleService {
             equipmentRefs,
             name,
             description,
+            rules,
             ...rest
         } = body;
 
@@ -215,6 +228,7 @@ export class ExerciseExampleService {
             return entity;
         });
 
+        const rule = this.buildRulesEntity(id, rules);
 
         await this.exerciseExamplesRepository.manager.transaction(async (manager) => {
             await manager.delete(ExerciseExampleBundlesEntity, {exerciseExampleId: id});
@@ -224,6 +238,7 @@ export class ExerciseExampleService {
             await manager.save(ExerciseExamplesEntity, exerciseExample);
             await manager.save(ExerciseExampleBundlesEntity, bundles);
             await manager.save(ExerciseExamplesEquipmentsEntity, equipmentRefsEntities);
+            await manager.save(ExerciseExampleRulesEntity, rule);
             if (translationEntities.length > 0) {
                 await manager.save(ExerciseExampleTranslationEntity, translationEntities);
             }
@@ -297,6 +312,83 @@ export class ExerciseExampleService {
         }
 
         return trimmed;
+    }
+
+    private buildRulesEntity(
+        exerciseExampleId: string,
+        rules: ExerciseRulesRequestDto,
+    ): ExerciseExampleRulesEntity {
+        this.validateRules(rules);
+
+        const rule = new ExerciseExampleRulesEntity();
+        rule.id = exerciseExampleId;
+        rule.exerciseExampleId = exerciseExampleId;
+
+        rule.entryType = rules.entry.type;
+        rule.loadType = rules.load.type;
+        rule.bodyWeightMultiplier =
+            rules.load.type === ExerciseRulesLoadTypeEnum.BodyWeightMultiplier
+                ? rules.load.multiplier ?? null
+                : null;
+        rule.canAddExtraWeight = rules.options.canAddExtraWeight;
+        rule.canUseAssistance = rules.options.canUseAssistance;
+        rule.missingBodyWeightBehavior = rules.missingBodyWeightBehavior;
+        rule.weightDisplay = rules.weightDisplay;
+        rule.requiresEquipment = rules.requiresEquipment;
+        return rule;
+    }
+
+    private validateRules(rules: ExerciseRulesRequestDto): void {
+        const entryType = rules.entry?.type;
+        const options = rules.options;
+
+        if (!entryType || !options) {
+            throw new BadRequestException('Rules entry/options combination is invalid');
+        }
+
+        if (options.canUseAssistance && entryType !== ExerciseRulesEntryTypeEnum.RepetitionsWithOptionalExtraAndAssistance) {
+            throw new BadRequestException('Rules entry/options combination is invalid');
+        }
+
+        const allowsExtraWeight =
+            entryType === ExerciseRulesEntryTypeEnum.RepetitionsWithOptionalExtraWeight ||
+            entryType === ExerciseRulesEntryTypeEnum.RepetitionsWithOptionalExtraAndAssistance;
+        if (options.canAddExtraWeight !== allowsExtraWeight) {
+            throw new BadRequestException('Rules entry/options combination is invalid');
+        }
+    }
+
+    private buildRulesResponse(rule: ExerciseExampleRulesEntity): ExerciseRulesResponseDto {
+        const load: ExerciseRulesResponseDto['load'] =
+            rule.loadType === ExerciseRulesLoadTypeEnum.BodyWeightMultiplier
+                ? {type: rule.loadType, multiplier: rule.bodyWeightMultiplier ?? undefined}
+                : {type: rule.loadType};
+
+        return {
+            entry: {type: rule.entryType},
+            load,
+            options: {
+                canAddExtraWeight: rule.canAddExtraWeight,
+                canUseAssistance: rule.canUseAssistance,
+            },
+            missingBodyWeightBehavior: rule.missingBodyWeightBehavior,
+            weightDisplay: rule.weightDisplay,
+            requiresEquipment: rule.requiresEquipment,
+        };
+    }
+
+    private attachRulesToExerciseExample(example: ExerciseExamplesEntity | null | undefined): void {
+        if (!example) {
+            return;
+        }
+
+        if (!example.rule) {
+            throw new BadRequestException('Rules are required for exercise example');
+        }
+
+        const rules = this.buildRulesResponse(example.rule);
+        (example as ExerciseExamplesEntity & { rules: ExerciseRulesResponseDto }).rules = rules;
+        delete (example as ExerciseExamplesEntity & { rule?: ExerciseExampleRulesEntity }).rule;
     }
 
     private async resolveProfileId(user: any): Promise<string> {

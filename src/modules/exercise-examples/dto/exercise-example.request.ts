@@ -3,32 +3,43 @@ import {ExerciseCategoryEnum} from "../../../lib/exercise-category.enum";
 import {WeightTypeEnum} from "../../../lib/weight-type.enum";
 import {ExperienceEnum} from "../../../lib/experience.enum";
 import {ForceTypeEnum} from "../../../lib/force-type.enum";
-import {ArrayNotEmpty, IsArray, IsEnum, IsIn, IsInt, IsOptional, IsString, IsUUID, ValidateNested} from "class-validator";
+import {
+    ArrayNotEmpty,
+    IsArray,
+    IsEnum,
+    IsIn,
+    IsInt,
+    IsOptional,
+    IsString,
+    IsUUID,
+    ValidateNested
+} from "class-validator";
 import {Type} from "class-transformer";
 import {SUPPORTED_LANGUAGES, SupportedLanguage} from "../../../i18n/i18n.types";
+import {ExerciseRulesRequestDto} from "./exercise-rules.dto";
 
 export class ExerciseExampleBundleRequest {
-    @ApiProperty({ type: 'string', example: '3a975ded-af6b-4dd2-9a0e-6e3554e8e6dd' })
+    @ApiProperty({type: 'string', example: '3a975ded-af6b-4dd2-9a0e-6e3554e8e6dd'})
     @IsUUID()
     muscleId: string;
 
-    @ApiProperty({ type: 'int', example: 20, description: 'percentage' })
+    @ApiProperty({type: 'int', example: 20, description: 'percentage'})
     @IsInt()
     percentage: number;
 }
 
 export class ExerciseExampleEquipmentRefsRequest {
-    @ApiProperty({ type: 'string', example: '9896a0c5-0de2-42de-a274-0e3695b1accf' })
+    @ApiProperty({type: 'string', example: '9896a0c5-0de2-42de-a274-0e3695b1accf'})
     @IsUUID()
     equipmentId: string;
 }
 
 export class ExerciseExampleLocalizedTextDto {
-    @ApiProperty({ enum: SUPPORTED_LANGUAGES, example: 'en' })
+    @ApiProperty({enum: SUPPORTED_LANGUAGES, example: 'en'})
     @IsIn(SUPPORTED_LANGUAGES)
     language: SupportedLanguage;
 
-    @ApiProperty({ type: 'string', example: 'Bench press', required: false })
+    @ApiProperty({type: 'string', example: 'Bench press', required: false})
     @IsOptional()
     @IsString()
     value?: string;
@@ -37,8 +48,8 @@ export class ExerciseExampleLocalizedTextDto {
 export class ExerciseExampleRequest {
     id?: string;
 
-    @ApiProperty({ type: () => [ExerciseExampleLocalizedTextDto], example: [{ language: 'en', value: 'Bench press' }] })
-    @ValidateNested({ each: true })
+    @ApiProperty({type: () => [ExerciseExampleLocalizedTextDto], example: [{language: 'en', value: 'Bench press'}]})
+    @ValidateNested({each: true})
     @Type(() => ExerciseExampleLocalizedTextDto)
     @IsArray()
     @ArrayNotEmpty()
@@ -46,27 +57,27 @@ export class ExerciseExampleRequest {
 
     @ApiProperty({
         type: () => [ExerciseExampleLocalizedTextDto],
-        example: [{ language: 'en', value: 'The bench press is a compound strength-training...' }],
+        example: [{language: 'en', value: 'The bench press is a compound strength-training...'}],
     })
-    @ValidateNested({ each: true })
+    @ValidateNested({each: true})
     @Type(() => ExerciseExampleLocalizedTextDto)
     @IsArray()
     @ArrayNotEmpty()
     description: ExerciseExampleLocalizedTextDto[];
 
-    @ApiProperty({ type: 'string', example: WeightTypeEnum.Fixed })
+    @ApiProperty({type: 'string', example: WeightTypeEnum.Fixed})
     @IsEnum(WeightTypeEnum)
     weightType: WeightTypeEnum;
 
-    @ApiProperty({ type: 'string', example: ExerciseCategoryEnum.Compound })
+    @ApiProperty({type: 'string', example: ExerciseCategoryEnum.Compound})
     @IsEnum(ExerciseCategoryEnum)
     category: ExerciseCategoryEnum;
 
-    @ApiProperty({ type: 'string', example: ExperienceEnum.PRO })
+    @ApiProperty({type: 'string', example: ExperienceEnum.PRO})
     @IsEnum(ExperienceEnum)
     experience: ExperienceEnum;
 
-    @ApiProperty({ type: 'string', example: ForceTypeEnum.PUSH })
+    @ApiProperty({type: 'string', example: ForceTypeEnum.PUSH})
     @IsEnum(ForceTypeEnum)
     forceType: ForceTypeEnum;
 
@@ -78,13 +89,18 @@ export class ExerciseExampleRequest {
     @IsString()
     imageUrl: string;
 
-    @ApiProperty({ type: [ExerciseExampleBundleRequest] })
-    @ValidateNested({ each: true })
+    @ApiProperty({type: [ExerciseExampleBundleRequest]})
+    @ValidateNested({each: true})
     @Type(() => ExerciseExampleBundleRequest)
     exerciseExampleBundles: ExerciseExampleBundleRequest[];
 
-    @ApiProperty({ type: [ExerciseExampleEquipmentRefsRequest] })
-    @ValidateNested({ each: true })
+    @ApiProperty({type: [ExerciseExampleEquipmentRefsRequest]})
+    @ValidateNested({each: true})
     @Type(() => ExerciseExampleEquipmentRefsRequest)
     equipmentRefs: ExerciseExampleEquipmentRefsRequest[];
+
+    @ApiProperty({type: () => ExerciseRulesRequestDto})
+    @ValidateNested()
+    @Type(() => ExerciseRulesRequestDto)
+    rules: ExerciseRulesRequestDto;
 }

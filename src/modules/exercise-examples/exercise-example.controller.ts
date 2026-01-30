@@ -22,9 +22,10 @@ import {
 } from '@nestjs/swagger';
 import {ExerciseExampleService} from './exercise-example.service';
 import {JwtAuthGuard} from '../../common/jwt-auth.guard';
-import {ExerciseExampleWithStatsResponse} from "./dto/exercise-example.response";
+import {ExerciseExampleResponseDto, ExerciseExampleWithStatsResponse} from "./dto/exercise-example.response";
 import {ExerciseExamplesEntity} from "../../entities/exercise-examples.entity";
 import {ExerciseExampleI18nService} from "../../i18n/exercise-example-i18n.service";
+import {ExerciseRulesResponseDto} from "./dto/exercise-rules.dto";
 
 @Controller('exercise-examples')
 @ApiTags('exercise-examples')
@@ -43,7 +44,7 @@ export class ExerciseExampleController {
     @ApiOkResponse({status: 200, description: 'List returned successfully', type: [ExerciseExampleWithStatsResponse]})
     @ApiUnauthorizedResponse({description: 'Unauthorized'})
     @ApiBearerAuth('access-token')
-    @ApiExtraModels(ExerciseExamplesEntity, ExerciseExampleWithStatsResponse)
+    @ApiExtraModels(ExerciseExamplesEntity, ExerciseExampleWithStatsResponse, ExerciseExampleResponseDto, ExerciseRulesResponseDto)
     async getExerciseExamples(
         @Req() req: any,
     ): Promise<ExerciseExampleWithStatsResponse[]> {
@@ -60,7 +61,7 @@ export class ExerciseExampleController {
     @ApiNotFoundResponse({description: 'Exercise example not found'})
     @ApiUnauthorizedResponse({description: 'Unauthorized'})
     @ApiBearerAuth('access-token')
-    @ApiExtraModels(ExerciseExamplesEntity, ExerciseExampleWithStatsResponse)
+    @ApiExtraModels(ExerciseExamplesEntity, ExerciseExampleWithStatsResponse, ExerciseExampleResponseDto, ExerciseRulesResponseDto)
     async getExerciseExampleById(
         @Req() req: any,
         @Param('id', new ParseUUIDPipe()) id: string,
@@ -70,5 +71,4 @@ export class ExerciseExampleController {
         if (!result) throw new NotFoundException(`Exercise example with id ${id} not found`);
         return result;
     }
-
 }

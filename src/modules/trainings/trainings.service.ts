@@ -11,6 +11,9 @@ import {ExerciseExamplesEntity} from '../../entities/exercise-examples.entity';
 import {ExerciseExampleI18nService} from '../../i18n/exercise-example-i18n.service';
 import {SupportedLanguage} from '../../i18n/i18n.types';
 import {UserProfilesEntity} from '../../entities/user-profiles.entity';
+import {ExerciseExampleRulesEntity} from '../../entities/exercise-example-rules.entity';
+import {ExerciseRulesResponseDto} from '../exercise-examples/dto/exercise-rules.dto';
+import {ExerciseRulesLoadTypeEnum} from '../../lib/exercise-rules.enum';
 
 @Injectable()
 export class TrainingsService {
@@ -40,6 +43,7 @@ export class TrainingsService {
             })
             .leftJoinAndSelect('trainings.exercises', 'exercises')
             .leftJoinAndSelect('exercises.exerciseExample', 'exerciseExample')
+            .leftJoinAndSelect('exerciseExample.rule', 'exercise_rules')
             .leftJoinAndSelect('exerciseExample.translations', 'exerciseExampleTranslations')
             .leftJoinAndSelect('exercises.iterations', 'iterations')
             .orderBy('trainings.created_at', 'ASC')
@@ -60,6 +64,7 @@ export class TrainingsService {
             this.exerciseExampleI18nService.translateExercisesCollection(training.exercises, language);
             training.exercises.sort((a, b) => (a.orderIndex ?? 0) - (b.orderIndex ?? 0) || (+a.createdAt - +b.createdAt));
             for (const exercise of training.exercises) {
+                this.attachRulesToExerciseExample(exercise.exerciseExample);
                 if (!exercise.iterations) continue;
                 exercise.iterations.sort((a, b) => (a.orderIndex ?? 0) - (b.orderIndex ?? 0) || (+a.createdAt - +b.createdAt));
             }
@@ -79,6 +84,7 @@ export class TrainingsService {
             .leftJoinAndSelect('exercises.exerciseExample', 'exerciseExample')
             .leftJoinAndSelect('exerciseExample.exerciseExampleBundles', 'exerciseExampleBundles')
             .leftJoinAndSelect('exerciseExampleBundles.muscle', 'muscle')
+            .leftJoinAndSelect('exerciseExample.rule', 'exercise_rules')
             .leftJoinAndSelect('exerciseExample.translations', 'exerciseExampleTranslations')
             .leftJoinAndSelect('exercises.iterations', 'iterations')
             .orderBy('trainings.created_at', 'ASC')
@@ -96,6 +102,7 @@ export class TrainingsService {
             this.exerciseExampleI18nService.translateExercisesCollection(training.exercises, language);
             training.exercises.sort((a, b) => (a.orderIndex ?? 0) - (b.orderIndex ?? 0) || (+a.createdAt - +b.createdAt));
             for (const exercise of training.exercises) {
+                this.attachRulesToExerciseExample(exercise.exerciseExample);
                 if (!exercise.iterations) continue;
                 exercise.iterations.sort((a, b) => (a.orderIndex ?? 0) - (b.orderIndex ?? 0) || (+a.createdAt - +b.createdAt));
             }
@@ -221,6 +228,39 @@ export class TrainingsService {
                 }
             }
         });
+    }
+
+    private buildRulesResponse(rule: ExerciseExampleRulesEntity): ExerciseRulesResponseDto {
+        const load: ExerciseRulesResponseDto['load'] =
+            rule.loadType === ExerciseRulesLoadTypeEnum.BodyWeightMultiplier
+                ? {type: rule.loadType, multiplier: rule.bodyWeightMultiplier ?? undefined}
+                : {type: rule.loadType};
+
+        return {
+            entry: {type: rule.entryType},
+            load,
+            options: {
+                canAddExtraWeight: rule.canAddExtraWeight,
+                canUseAssistance: rule.canUseAssistance,
+            },
+            missingBodyWeightBehavior: rule.missingBodyWeightBehavior,
+            weightDisplay: rule.weightDisplay,
+            requiresEquipment: rule.requiresEquipment,
+        };
+    }
+
+    private attachRulesToExerciseExample(example: ExerciseExamplesEntity | null | undefined): void {
+        if (!example) {
+            return;
+        }
+
+        if (!example.rule) {
+            throw new BadRequestException('Rules are required for exercise example');
+        }
+
+        const rules = this.buildRulesResponse(example.rule);
+        (example as ExerciseExamplesEntity & { rules: ExerciseRulesResponseDto }).rules = rules;
+        delete (example as ExerciseExamplesEntity & { rule?: ExerciseExampleRulesEntity }).rule;
     }
 
     /**
