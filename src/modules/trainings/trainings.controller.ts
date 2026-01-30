@@ -29,12 +29,29 @@ import {ExerciseExampleI18nService} from '../../i18n/exercise-example-i18n.servi
 import {TrainingsEntity} from '../../entities/trainings.entity';
 import {ExercisesEntity} from '../../entities/exercises.entity';
 import {ExerciseExamplesEntity} from '../../entities/exercise-examples.entity';
-import {ExerciseRulesResponseDto} from '../exercise-examples/dto/exercise-rules.dto';
+import {
+    ExerciseRulesInputAssistanceDto,
+    ExerciseRulesInputBodyWeightDto,
+    ExerciseRulesInputExternalWeightDto,
+    ExerciseRulesInputExtraWeightDto,
+    ExerciseRulesInputsDto,
+    ExerciseRulesResponseDto,
+} from '../exercise-examples/dto/exercise-rules.dto';
 
 @ApiTags('trainings')
 @ApiBearerAuth('access-token')
 @UseGuards(JwtAuthGuard)
-@ApiExtraModels(TrainingsEntity, ExercisesEntity, ExerciseExamplesEntity, ExerciseRulesResponseDto)
+@ApiExtraModels(
+    TrainingsEntity,
+    ExercisesEntity,
+    ExerciseExamplesEntity,
+    ExerciseRulesResponseDto,
+    ExerciseRulesInputsDto,
+    ExerciseRulesInputExternalWeightDto,
+    ExerciseRulesInputBodyWeightDto,
+    ExerciseRulesInputExtraWeightDto,
+    ExerciseRulesInputAssistanceDto,
+)
 @Controller('trainings')
 export class TrainingsController {
     constructor(

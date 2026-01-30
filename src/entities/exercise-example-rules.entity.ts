@@ -8,11 +8,6 @@ import {
     UpdateDateColumn,
 } from 'typeorm';
 import {ExerciseExamplesEntity} from './exercise-examples.entity';
-import {
-    ExerciseRulesEntryTypeEnum,
-    ExerciseRulesLoadTypeEnum,
-    ExerciseRulesMissingBodyWeightBehaviorEnum,
-} from '../lib/exercise-rules.enum';
 
 @Entity({name: 'exercise_example_rules'})
 export class ExerciseExampleRulesEntity {
@@ -22,22 +17,12 @@ export class ExerciseExampleRulesEntity {
     @Column({type: 'uuid', unique: true})
     exerciseExampleId: string;
 
-    @Column({
-        type: 'enum',
-        enum: ExerciseRulesEntryTypeEnum,
-        enumName: 'exercise_example_rules_entry_type_enum',
-    })
-    entryType: ExerciseRulesEntryTypeEnum;
-
-    @Column({
-        type: 'enum',
-        enum: ExerciseRulesLoadTypeEnum,
-        enumName: 'exercise_example_rules_load_type_enum',
-    })
-    loadType: ExerciseRulesLoadTypeEnum;
+    @Column({type: 'boolean', name: 'external_weight_required', nullable: true})
+    externalWeightRequired: boolean | null;
 
     @Column({
         type: 'numeric',
+        name: 'body_weight_multiplier',
         precision: 4,
         scale: 2,
         nullable: true,
@@ -48,22 +33,11 @@ export class ExerciseExampleRulesEntity {
     })
     bodyWeightMultiplier: number | null;
 
-    @Column({type: 'boolean', default: false})
-    canAddExtraWeight: boolean;
+    @Column({type: 'boolean', name: 'extra_weight_required', nullable: true})
+    extraWeightRequired: boolean | null;
 
-    @Column({type: 'boolean', default: false})
-    canUseAssistance: boolean;
-
-    @Column({
-        type: 'enum',
-        enum: ExerciseRulesMissingBodyWeightBehaviorEnum,
-        enumName: 'exercise_example_rules_missing_body_weight_behavior_enum',
-        default: ExerciseRulesMissingBodyWeightBehaviorEnum.SaveAsRepetitionsOnly,
-    })
-    missingBodyWeightBehavior: ExerciseRulesMissingBodyWeightBehaviorEnum;
-
-    @Column({type: 'boolean', default: false})
-    requiresEquipment: boolean;
+    @Column({type: 'boolean', name: 'assistance_required', nullable: true})
+    assistanceRequired: boolean | null;
 
     @CreateDateColumn({type: 'timestamp without time zone', name: 'created_at'})
     createdAt: Date;

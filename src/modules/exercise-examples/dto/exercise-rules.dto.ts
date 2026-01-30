@@ -1,83 +1,97 @@
-import {IsBoolean, IsEmpty, IsEnum, IsNumber, Max, Min, ValidateIf, ValidateNested,} from 'class-validator';
-import {ApiProperty, ApiPropertyOptional} from '@nestjs/swagger';
-import {Type} from 'class-transformer';
 import {
-    ExerciseRulesEntryTypeEnum,
-    ExerciseRulesLoadTypeEnum,
-    ExerciseRulesMissingBodyWeightBehaviorEnum,
-} from '../../../lib/exercise-rules.enum';
+    Equals,
+    IsBoolean,
+    IsDefined,
+    IsNumber,
+    Max,
+    Min,
+    ValidateIf,
+    ValidateNested,
+} from 'class-validator';
+import {ApiProperty, ApiPropertyOptional, getSchemaPath} from '@nestjs/swagger';
+import {Type} from 'class-transformer';
 
-export class ExerciseRulesEntryDto {
-    @ApiProperty({enum: ExerciseRulesEntryTypeEnum})
-    @IsEnum(ExerciseRulesEntryTypeEnum)
-    type: ExerciseRulesEntryTypeEnum;
+export class ExerciseRulesInputExternalWeightDto {
+    @ApiProperty({type: 'boolean'})
+    @IsBoolean()
+    required: boolean;
 }
 
-export class ExerciseRulesLoadDto {
-    @ApiProperty({enum: ExerciseRulesLoadTypeEnum})
-    @IsEnum(ExerciseRulesLoadTypeEnum)
-    type: ExerciseRulesLoadTypeEnum;
+export class ExerciseRulesInputBodyWeightDto {
+    @ApiProperty({type: 'boolean', example: true})
+    @Equals(true)
+    participates: true;
 
-    @ApiPropertyOptional({type: 'number', example: 1.0})
-    @ValidateIf((obj: ExerciseRulesLoadDto) => obj.type === ExerciseRulesLoadTypeEnum.BodyWeightMultiplier)
+    @ApiProperty({type: 'number', example: 1.0})
     @IsNumber({allowInfinity: false, allowNaN: false})
     @Min(0.05)
     @Max(2.0)
-    @ValidateIf((obj: ExerciseRulesLoadDto) => obj.type !== ExerciseRulesLoadTypeEnum.BodyWeightMultiplier)
-    @IsEmpty()
-    multiplier?: number;
+    multiplier: number;
 }
 
-export class ExerciseRulesOptionsDto {
-    @ApiProperty({type: 'boolean', example: false})
+export class ExerciseRulesInputExtraWeightDto {
+    @ApiProperty({type: 'boolean'})
     @IsBoolean()
-    canAddExtraWeight: boolean;
+    required: boolean;
+}
 
-    @ApiProperty({type: 'boolean', example: false})
+export class ExerciseRulesInputAssistanceDto {
+    @ApiProperty({type: 'boolean'})
     @IsBoolean()
-    canUseAssistance: boolean;
+    required: boolean;
+}
+
+export class ExerciseRulesInputsDto {
+    @ApiPropertyOptional({
+        oneOf: [{type: 'null'}, {$ref: getSchemaPath(ExerciseRulesInputExternalWeightDto)}],
+        nullable: true,
+    })
+    @IsDefined()
+    @ValidateIf((_, value) => value !== null)
+    @ValidateNested()
+    @Type(() => ExerciseRulesInputExternalWeightDto)
+    externalWeight: ExerciseRulesInputExternalWeightDto | null;
+
+    @ApiPropertyOptional({
+        oneOf: [{type: 'null'}, {$ref: getSchemaPath(ExerciseRulesInputBodyWeightDto)}],
+        nullable: true,
+    })
+    @IsDefined()
+    @ValidateIf((_, value) => value !== null)
+    @ValidateNested()
+    @Type(() => ExerciseRulesInputBodyWeightDto)
+    bodyWeight: ExerciseRulesInputBodyWeightDto | null;
+
+    @ApiPropertyOptional({
+        oneOf: [{type: 'null'}, {$ref: getSchemaPath(ExerciseRulesInputExtraWeightDto)}],
+        nullable: true,
+    })
+    @IsDefined()
+    @ValidateIf((_, value) => value !== null)
+    @ValidateNested()
+    @Type(() => ExerciseRulesInputExtraWeightDto)
+    extraWeight: ExerciseRulesInputExtraWeightDto | null;
+
+    @ApiPropertyOptional({
+        oneOf: [{type: 'null'}, {$ref: getSchemaPath(ExerciseRulesInputAssistanceDto)}],
+        nullable: true,
+    })
+    @IsDefined()
+    @ValidateIf((_, value) => value !== null)
+    @ValidateNested()
+    @Type(() => ExerciseRulesInputAssistanceDto)
+    assistance: ExerciseRulesInputAssistanceDto | null;
 }
 
 export class ExerciseRulesRequestDto {
-    @ApiProperty({type: () => ExerciseRulesEntryDto})
+    @ApiProperty({type: () => ExerciseRulesInputsDto})
+    @IsDefined()
     @ValidateNested()
-    @Type(() => ExerciseRulesEntryDto)
-    entry: ExerciseRulesEntryDto;
-
-    @ApiProperty({type: () => ExerciseRulesLoadDto})
-    @ValidateNested()
-    @Type(() => ExerciseRulesLoadDto)
-    load: ExerciseRulesLoadDto;
-
-    @ApiProperty({type: () => ExerciseRulesOptionsDto})
-    @ValidateNested()
-    @Type(() => ExerciseRulesOptionsDto)
-    options: ExerciseRulesOptionsDto;
-
-    @ApiProperty({enum: ExerciseRulesMissingBodyWeightBehaviorEnum})
-    @IsEnum(ExerciseRulesMissingBodyWeightBehaviorEnum)
-    missingBodyWeightBehavior: ExerciseRulesMissingBodyWeightBehaviorEnum;
-
-
-    @ApiProperty({type: 'boolean'})
-    @IsBoolean()
-    requiresEquipment: boolean;
+    @Type(() => ExerciseRulesInputsDto)
+    inputs: ExerciseRulesInputsDto;
 }
 
 export class ExerciseRulesResponseDto {
-    @ApiProperty({type: () => ExerciseRulesEntryDto})
-    entry: ExerciseRulesEntryDto;
-
-    @ApiProperty({type: () => ExerciseRulesLoadDto})
-    load: ExerciseRulesLoadDto;
-
-    @ApiProperty({type: () => ExerciseRulesOptionsDto})
-    options: ExerciseRulesOptionsDto;
-
-    @ApiProperty({enum: ExerciseRulesMissingBodyWeightBehaviorEnum})
-    missingBodyWeightBehavior: ExerciseRulesMissingBodyWeightBehaviorEnum;
-
-
-    @ApiProperty({type: 'boolean'})
-    requiresEquipment: boolean;
+    @ApiProperty({type: () => ExerciseRulesInputsDto})
+    inputs: ExerciseRulesInputsDto;
 }

@@ -13,7 +13,6 @@ import {SupportedLanguage} from '../../i18n/i18n.types';
 import {UserProfilesEntity} from '../../entities/user-profiles.entity';
 import {ExerciseExampleRulesEntity} from '../../entities/exercise-example-rules.entity';
 import {ExerciseRulesResponseDto} from '../exercise-examples/dto/exercise-rules.dto';
-import {ExerciseRulesLoadTypeEnum} from '../../lib/exercise-rules.enum';
 
 @Injectable()
 export class TrainingsService {
@@ -231,20 +230,15 @@ export class TrainingsService {
     }
 
     private buildRulesResponse(rule: ExerciseExampleRulesEntity): ExerciseRulesResponseDto {
-        const load: ExerciseRulesResponseDto['load'] =
-            rule.loadType === ExerciseRulesLoadTypeEnum.BodyWeightMultiplier
-                ? {type: rule.loadType, multiplier: rule.bodyWeightMultiplier ?? undefined}
-                : {type: rule.loadType};
-
         return {
-            entry: {type: rule.entryType},
-            load,
-            options: {
-                canAddExtraWeight: rule.canAddExtraWeight,
-                canUseAssistance: rule.canUseAssistance,
+            inputs: {
+                externalWeight: rule.externalWeightRequired === null ? null : {required: rule.externalWeightRequired},
+                bodyWeight: rule.bodyWeightMultiplier === null
+                    ? null
+                    : {participates: true, multiplier: rule.bodyWeightMultiplier},
+                extraWeight: rule.extraWeightRequired === null ? null : {required: rule.extraWeightRequired},
+                assistance: rule.assistanceRequired === null ? null : {required: rule.assistanceRequired},
             },
-            missingBodyWeightBehavior: rule.missingBodyWeightBehavior,
-            requiresEquipment: rule.requiresEquipment,
         };
     }
 

@@ -15,7 +15,6 @@ import {DEFAULT_LANGUAGE, SupportedLanguage} from "../../i18n/i18n.types";
 import {UserProfilesEntity} from '../../entities/user-profiles.entity';
 import {ExerciseExampleRulesEntity} from "../../entities/exercise-example-rules.entity";
 import {ExerciseRulesRequestDto, ExerciseRulesResponseDto} from "./dto/exercise-rules.dto";
-import {ExerciseRulesEntryTypeEnum, ExerciseRulesLoadTypeEnum} from "../../lib/exercise-rules.enum";
 
 @Injectable()
 export class ExerciseExampleService {
@@ -324,54 +323,67 @@ export class ExerciseExampleService {
         rule.id = exerciseExampleId;
         rule.exerciseExampleId = exerciseExampleId;
 
-        rule.entryType = rules.entry.type;
-        rule.loadType = rules.load.type;
-        rule.bodyWeightMultiplier =
-            rules.load.type === ExerciseRulesLoadTypeEnum.BodyWeightMultiplier
-                ? rules.load.multiplier ?? null
-                : null;
-        rule.canAddExtraWeight = rules.options.canAddExtraWeight;
-        rule.canUseAssistance = rules.options.canUseAssistance;
-        rule.missingBodyWeightBehavior = rules.missingBodyWeightBehavior;
-        rule.requiresEquipment = rules.requiresEquipment;
+        rule.externalWeightRequired = rules.inputs.externalWeight?.required ?? null;
+        rule.bodyWeightMultiplier = rules.inputs.bodyWeight?.multiplier ?? null;
+        rule.extraWeightRequired = rules.inputs.extraWeight?.required ?? null;
+        rule.assistanceRequired = rules.inputs.assistance?.required ?? null;
         return rule;
     }
 
     private validateRules(rules: ExerciseRulesRequestDto): void {
-        const entryType = rules.entry?.type;
-        const options = rules.options;
+        const inputs = rules.inputs;
 
-        if (!entryType || !options) {
-            throw new BadRequestException('Rules entry/options combination is invalid');
+        if (!inputs) {
+            throw new BadRequestException('Rules inputs are required');
         }
 
-        if (options.canUseAssistance && entryType !== ExerciseRulesEntryTypeEnum.RepetitionsWithOptionalExtraAndAssistance) {
-            throw new BadRequestException('Rules entry/options combination is invalid');
+        const {
+            externalWeight,
+            bodyWeight,
+            extraWeight,
+            assistance,
+        } = inputs;
+
+        if (externalWeight !== null && bodyWeight !== null) {
+            throw new BadRequestException('Rules inputs externalWeight/bodyWeight are mutually exclusive');
         }
 
-        const allowsExtraWeight =
-            entryType === ExerciseRulesEntryTypeEnum.RepetitionsWithOptionalExtraWeight ||
-            entryType === ExerciseRulesEntryTypeEnum.RepetitionsWithOptionalExtraAndAssistance;
-        if (options.canAddExtraWeight !== allowsExtraWeight) {
-            throw new BadRequestException('Rules entry/options combination is invalid');
+        if (extraWeight !== null && bodyWeight === null) {
+            throw new BadRequestException('Rules inputs extraWeight require bodyWeight');
         }
+
+        if (assistance !== null && bodyWeight === null) {
+            throw new BadRequestException('Rules inputs assistance require bodyWeight');
+        }
+
+        if (externalWeight !== null && (extraWeight !== null || assistance !== null)) {
+            throw new BadRequestException('Rules inputs externalWeight cannot be combined with extraWeight or assistance');
+        }
+
+        if (bodyWeight !== null) {
+            if (bodyWeight.participates !== true) {
+                throw new BadRequestException('Rules inputs bodyWeight participates must be true');
+            }
+            if (typeof bodyWeight.multiplier !== 'number') {
+                throw new BadRequestException('Rules inputs bodyWeight multiplier is required');
+            }
+            if (bodyWeight.multiplier < 0.05 || bodyWeight.multiplier > 2.0) {
+                throw new BadRequestException('Rules inputs bodyWeight multiplier out of range');
+            }
+        }
+
     }
 
     private buildRulesResponse(rule: ExerciseExampleRulesEntity): ExerciseRulesResponseDto {
-        const load: ExerciseRulesResponseDto['load'] =
-            rule.loadType === ExerciseRulesLoadTypeEnum.BodyWeightMultiplier
-                ? {type: rule.loadType, multiplier: rule.bodyWeightMultiplier ?? undefined}
-                : {type: rule.loadType};
-
         return {
-            entry: {type: rule.entryType},
-            load,
-            options: {
-                canAddExtraWeight: rule.canAddExtraWeight,
-                canUseAssistance: rule.canUseAssistance,
+            inputs: {
+                externalWeight: rule.externalWeightRequired === null ? null : {required: rule.externalWeightRequired},
+                bodyWeight: rule.bodyWeightMultiplier === null
+                    ? null
+                    : {participates: true, multiplier: rule.bodyWeightMultiplier},
+                extraWeight: rule.extraWeightRequired === null ? null : {required: rule.extraWeightRequired},
+                assistance: rule.assistanceRequired === null ? null : {required: rule.assistanceRequired},
             },
-            missingBodyWeightBehavior: rule.missingBodyWeightBehavior,
-            requiresEquipment: rule.requiresEquipment,
         };
     }
 

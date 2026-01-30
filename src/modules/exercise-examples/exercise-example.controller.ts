@@ -25,7 +25,14 @@ import {JwtAuthGuard} from '../../common/jwt-auth.guard';
 import {ExerciseExampleResponseDto, ExerciseExampleWithStatsResponse} from "./dto/exercise-example.response";
 import {ExerciseExamplesEntity} from "../../entities/exercise-examples.entity";
 import {ExerciseExampleI18nService} from "../../i18n/exercise-example-i18n.service";
-import {ExerciseRulesResponseDto} from "./dto/exercise-rules.dto";
+import {
+    ExerciseRulesInputAssistanceDto,
+    ExerciseRulesInputBodyWeightDto,
+    ExerciseRulesInputExternalWeightDto,
+    ExerciseRulesInputExtraWeightDto,
+    ExerciseRulesInputsDto,
+    ExerciseRulesResponseDto,
+} from "./dto/exercise-rules.dto";
 
 @Controller('exercise-examples')
 @ApiTags('exercise-examples')
@@ -44,7 +51,17 @@ export class ExerciseExampleController {
     @ApiOkResponse({status: 200, description: 'List returned successfully', type: [ExerciseExampleWithStatsResponse]})
     @ApiUnauthorizedResponse({description: 'Unauthorized'})
     @ApiBearerAuth('access-token')
-    @ApiExtraModels(ExerciseExamplesEntity, ExerciseExampleWithStatsResponse, ExerciseExampleResponseDto, ExerciseRulesResponseDto)
+    @ApiExtraModels(
+        ExerciseExamplesEntity,
+        ExerciseExampleWithStatsResponse,
+        ExerciseExampleResponseDto,
+        ExerciseRulesResponseDto,
+        ExerciseRulesInputsDto,
+        ExerciseRulesInputExternalWeightDto,
+        ExerciseRulesInputBodyWeightDto,
+        ExerciseRulesInputExtraWeightDto,
+        ExerciseRulesInputAssistanceDto,
+    )
     async getExerciseExamples(
         @Req() req: any,
     ): Promise<ExerciseExampleWithStatsResponse[]> {
@@ -61,7 +78,17 @@ export class ExerciseExampleController {
     @ApiNotFoundResponse({description: 'Exercise example not found'})
     @ApiUnauthorizedResponse({description: 'Unauthorized'})
     @ApiBearerAuth('access-token')
-    @ApiExtraModels(ExerciseExamplesEntity, ExerciseExampleWithStatsResponse, ExerciseExampleResponseDto, ExerciseRulesResponseDto)
+    @ApiExtraModels(
+        ExerciseExamplesEntity,
+        ExerciseExampleWithStatsResponse,
+        ExerciseExampleResponseDto,
+        ExerciseRulesResponseDto,
+        ExerciseRulesInputsDto,
+        ExerciseRulesInputExternalWeightDto,
+        ExerciseRulesInputBodyWeightDto,
+        ExerciseRulesInputExtraWeightDto,
+        ExerciseRulesInputAssistanceDto,
+    )
     async getExerciseExampleById(
         @Req() req: any,
         @Param('id', new ParseUUIDPipe()) id: string,
