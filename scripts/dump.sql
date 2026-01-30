@@ -155,6 +155,42 @@ CREATE TYPE public.exercise_examples_weight_type_enum AS ENUM (
 
 
 --
+-- Name: exercise_example_rules_entry_type_enum; Type: TYPE; Schema: public; Owner: -
+--
+
+CREATE TYPE public.exercise_example_rules_entry_type_enum AS ENUM (
+    'RepetitionsAndWeight',
+    'RepetitionsOnly',
+    'RepetitionsWithOptionalExtraWeight',
+    'RepetitionsWithOptionalExtraAndAssistance'
+);
+
+
+--
+-- Name: exercise_example_rules_load_type_enum; Type: TYPE; Schema: public; Owner: -
+--
+
+CREATE TYPE public.exercise_example_rules_load_type_enum AS ENUM (
+    'DirectWeight',
+    'BodyWeightFull',
+    'NoWeight',
+    'BodyWeightMultiplier'
+);
+
+
+--
+-- Name: exercise_example_rules_missing_body_weight_behavior_enum; Type: TYPE; Schema: public; Owner: -
+--
+
+CREATE TYPE public.exercise_example_rules_missing_body_weight_behavior_enum AS ENUM (
+    'BlockSaving',
+    'SaveAsRepetitionsOnly',
+    'SaveWithZeroWeight'
+);
+
+
+
+--
 -- Name: muscle_groups_type_enum; Type: TYPE; Schema: public; Owner: -
 --
 
@@ -332,6 +368,52 @@ CREATE TABLE public.exercise_examples (
     force_type public.exercise_examples_force_type_enum,
     experience public.exercise_examples_experience_enum
 );
+
+
+--
+-- Name: exercise_example_rules; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.exercise_example_rules (
+    id uuid NOT NULL,
+    exercise_example_id uuid NOT NULL,
+    entry_type public.exercise_example_rules_entry_type_enum NOT NULL,
+    load_type public.exercise_example_rules_load_type_enum NOT NULL,
+    body_weight_multiplier numeric(4,2),
+    can_add_extra_weight boolean DEFAULT false NOT NULL,
+    can_use_assistance boolean DEFAULT false NOT NULL,
+    missing_body_weight_behavior public.exercise_example_rules_missing_body_weight_behavior_enum DEFAULT 'SaveAsRepetitionsOnly'::public.exercise_example_rules_missing_body_weight_behavior_enum NOT NULL,
+    requires_equipment boolean DEFAULT false NOT NULL,
+    created_at timestamp without time zone DEFAULT now() NOT NULL,
+    updated_at timestamp without time zone DEFAULT now() NOT NULL
+);
+
+
+--
+-- Name: exercise_example_rules PK/constraints; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.exercise_example_rules
+    ADD CONSTRAINT exercise_example_rules_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY public.exercise_example_rules
+    ADD CONSTRAINT exercise_example_rules_exercise_example_id_key UNIQUE (exercise_example_id);
+
+ALTER TABLE ONLY public.exercise_example_rules
+    ADD CONSTRAINT exercise_example_rules_exercise_example_id_fkey FOREIGN KEY (exercise_example_id) REFERENCES public.exercise_examples(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY public.exercise_example_rules
+    ADD CONSTRAINT chk_exercise_example_rules_multiplier_presence CHECK ((load_type = 'BodyWeightMultiplier'::public.exercise_example_rules_load_type_enum AND body_weight_multiplier IS NOT NULL) OR (load_type <> 'BodyWeightMultiplier'::public.exercise_example_rules_load_type_enum AND body_weight_multiplier IS NULL));
+
+ALTER TABLE ONLY public.exercise_example_rules
+    ADD CONSTRAINT chk_exercise_example_rules_multiplier_range CHECK (body_weight_multiplier IS NULL OR (body_weight_multiplier >= 0.05 AND body_weight_multiplier <= 2.0));
+
+ALTER TABLE ONLY public.exercise_example_rules
+    ADD CONSTRAINT chk_exercise_example_rules_assistance_entry CHECK (can_use_assistance = false OR entry_type = 'RepetitionsWithOptionalExtraAndAssistance'::public.exercise_example_rules_entry_type_enum);
+
+ALTER TABLE ONLY public.exercise_example_rules
+    ADD CONSTRAINT chk_exercise_example_rules_add_weight_entry CHECK (can_add_extra_weight = true OR entry_type <> ALL (ARRAY['RepetitionsWithOptionalExtraWeight'::public.exercise_example_rules_entry_type_enum, 'RepetitionsWithOptionalExtraAndAssistance'::public.exercise_example_rules_entry_type_enum]));
+
 
 
 --
@@ -550,12 +632,57 @@ INSERT INTO public.equipments VALUES ('dec9f53a-7dac-4199-b4ff-ab0624090b8b', 'W
 -- Data for Name: excluded_equipments; Type: TABLE DATA; Schema: public; Owner: -
 --
 
+INSERT INTO public.excluded_equipments VALUES ('f97c76e8-4a7f-467e-a612-c8f121c88c10', '9d66ac93-3a48-429d-aeaa-54302856e204', '4fe1e344-5eba-44de-aab9-0c0251b6eeec', '2026-01-28 09:35:17.553422', '2026-01-28 09:35:17.553422');
+INSERT INTO public.excluded_equipments VALUES ('2aedfad7-9e03-4b5f-a79f-b5a0dd7d4da3', 'b17ae8af-2d78-4e77-b45b-39253c28247a', '4fe1e344-5eba-44de-aab9-0c0251b6eeec', '2026-01-28 09:35:17.553422', '2026-01-28 09:35:17.553422');
+INSERT INTO public.excluded_equipments VALUES ('e76daa16-ad99-47f0-b3f1-6d9cbf296388', 'ad130932-4b2f-4e7b-b3a4-c20b4a6b85ae', '4fe1e344-5eba-44de-aab9-0c0251b6eeec', '2026-01-28 09:35:17.553422', '2026-01-28 09:35:17.553422');
+INSERT INTO public.excluded_equipments VALUES ('9785cbe5-80f8-4017-beff-cf7b90c3a5f3', '21aad68b-b21b-4452-9ebf-7407be8e613d', '4fe1e344-5eba-44de-aab9-0c0251b6eeec', '2026-01-28 09:35:17.553422', '2026-01-28 09:35:17.553422');
+INSERT INTO public.excluded_equipments VALUES ('c7734fd8-2716-4b29-b28c-c9968a4a48e1', '15495639-2adb-41b8-899c-493ac0172f57', '4fe1e344-5eba-44de-aab9-0c0251b6eeec', '2026-01-28 09:35:17.553422', '2026-01-28 09:35:17.553422');
+INSERT INTO public.excluded_equipments VALUES ('1b30c96f-8b91-4be2-8024-91bfc8aeff4f', '331a0c35-f5a5-478d-ba7c-9f14ba2ee0fa', '4fe1e344-5eba-44de-aab9-0c0251b6eeec', '2026-01-28 09:35:17.553422', '2026-01-28 09:35:17.553422');
+INSERT INTO public.excluded_equipments VALUES ('2872f334-b014-4bd2-a053-37c40f7446cf', 'af38ec0a-1465-45a8-99ba-a394224530dc', '4fe1e344-5eba-44de-aab9-0c0251b6eeec', '2026-01-28 09:35:17.553422', '2026-01-28 09:35:17.553422');
+INSERT INTO public.excluded_equipments VALUES ('f5ca29ce-9f80-4361-b0cf-7116d987ed6a', '524da8cf-0303-4c53-8761-832a5fdb54ed', '4fe1e344-5eba-44de-aab9-0c0251b6eeec', '2026-01-28 09:35:17.553422', '2026-01-28 09:35:17.553422');
+INSERT INTO public.excluded_equipments VALUES ('24f0a999-eaa2-40b0-953f-d8e45931d53c', 'c7c51826-c595-4ae8-9ac4-4421b2afc4ad', '4fe1e344-5eba-44de-aab9-0c0251b6eeec', '2026-01-28 09:35:17.553422', '2026-01-28 09:35:17.553422');
+INSERT INTO public.excluded_equipments VALUES ('135d8d47-af2c-43e1-b652-469129f024bf', 'dec9f53a-7dac-4199-b4ff-ab0624090b8b', '4fe1e344-5eba-44de-aab9-0c0251b6eeec', '2026-01-28 09:35:17.553422', '2026-01-28 09:35:17.553422');
+INSERT INTO public.excluded_equipments VALUES ('c8b8da20-2ece-4a9e-9d57-8213ffa73a42', '527227fe-8182-4aec-949a-66335c5ce25e', '4fe1e344-5eba-44de-aab9-0c0251b6eeec', '2026-01-28 09:35:17.553422', '2026-01-28 09:35:17.553422');
+INSERT INTO public.excluded_equipments VALUES ('5e8d446e-7d1f-4019-8ede-5de76bd1263c', '3f2fb6e0-df68-4881-a735-f07ea083aaa7', '4fe1e344-5eba-44de-aab9-0c0251b6eeec', '2026-01-28 09:35:17.553422', '2026-01-28 09:35:17.553422');
+INSERT INTO public.excluded_equipments VALUES ('1ad4c9ff-db21-4c58-9d87-74a286a97046', '526347a3-ee32-473d-9b5d-049f526ae48e', '4fe1e344-5eba-44de-aab9-0c0251b6eeec', '2026-01-28 09:35:17.553422', '2026-01-28 09:35:17.553422');
+INSERT INTO public.excluded_equipments VALUES ('1ff1ea5a-5f0b-48d2-81d3-7ca4e30bdf11', 'c74a2236-739f-476b-96d9-a11487d4049f', '4fe1e344-5eba-44de-aab9-0c0251b6eeec', '2026-01-28 09:35:17.553422', '2026-01-28 09:35:17.553422');
+INSERT INTO public.excluded_equipments VALUES ('2036134d-12a6-41f0-be63-4868b7d33bfc', 'a8a80e95-9165-4200-af80-cd7608099307', '4fe1e344-5eba-44de-aab9-0c0251b6eeec', '2026-01-28 09:35:17.553422', '2026-01-28 09:35:17.553422');
+INSERT INTO public.excluded_equipments VALUES ('e0088024-dbf7-4bf3-82a4-86e645ac3f64', '79e4532a-afda-421f-9b5f-8c2de5f63ec0', '4fe1e344-5eba-44de-aab9-0c0251b6eeec', '2026-01-28 09:35:17.553422', '2026-01-28 09:35:17.553422');
+INSERT INTO public.excluded_equipments VALUES ('fd4d2e77-190c-4727-9663-965e35cb81fc', '0d0f8242-be68-4086-b665-0a11ff6a0dcd', '4fe1e344-5eba-44de-aab9-0c0251b6eeec', '2026-01-28 09:35:17.553422', '2026-01-28 09:35:17.553422');
+INSERT INTO public.excluded_equipments VALUES ('21e2b559-179c-4499-b3d6-81845de59d57', '623e0be7-870a-4bca-b053-76e99c9ea7e0', '4fe1e344-5eba-44de-aab9-0c0251b6eeec', '2026-01-28 09:35:17.553422', '2026-01-28 09:35:17.553422');
+INSERT INTO public.excluded_equipments VALUES ('f7621454-51c3-4627-8ce9-09b3d7449bc3', '20e225dd-68d7-409b-9b7d-5ef6d4224d02', '4fe1e344-5eba-44de-aab9-0c0251b6eeec', '2026-01-28 09:35:17.553422', '2026-01-28 09:35:17.553422');
+INSERT INTO public.excluded_equipments VALUES ('d1f7965a-80e1-4856-97ab-51332f72cafa', '6ba064c9-68b3-4b76-af61-6a81eee230c8', '4fe1e344-5eba-44de-aab9-0c0251b6eeec', '2026-01-28 09:35:17.553422', '2026-01-28 09:35:17.553422');
+INSERT INTO public.excluded_equipments VALUES ('ae0294ca-bf8f-4cad-a29a-f524d08c02ae', '6c587294-e384-4941-b90d-e6ec64b8731d', '4fe1e344-5eba-44de-aab9-0c0251b6eeec', '2026-01-28 09:35:17.553422', '2026-01-28 09:35:17.553422');
+INSERT INTO public.excluded_equipments VALUES ('2c8a3001-bfb0-447a-98ab-ddbfa24f51f0', '0268b0d7-f8e4-47ea-b9da-969427b43adf', '4fe1e344-5eba-44de-aab9-0c0251b6eeec', '2026-01-28 09:35:17.553422', '2026-01-28 09:35:17.553422');
+INSERT INTO public.excluded_equipments VALUES ('d79df9e1-f6a1-4ff8-aaf1-777bff8c7d6e', 'f3166b1f-125f-4fb9-a443-e1fc2b1c0f8f', '4fe1e344-5eba-44de-aab9-0c0251b6eeec', '2026-01-28 09:35:17.553422', '2026-01-28 09:35:17.553422');
+INSERT INTO public.excluded_equipments VALUES ('c5e01a3d-9cfe-4ef5-8a87-3ffce411c426', '7752a881-139d-4cf4-98b2-e92e9de0e2e5', '4fe1e344-5eba-44de-aab9-0c0251b6eeec', '2026-01-28 09:35:17.553422', '2026-01-28 09:35:17.553422');
+INSERT INTO public.excluded_equipments VALUES ('8028e303-b335-4d2c-bc07-9da03ecc83a3', 'f3dadde9-6213-4a90-8fc0-12bd7bf7ea6b', '4fe1e344-5eba-44de-aab9-0c0251b6eeec', '2026-01-28 09:35:17.553422', '2026-01-28 09:35:17.553422');
+INSERT INTO public.excluded_equipments VALUES ('d9509ca2-4154-4277-aa52-4a55d9cb4264', '9a4df37b-9fdb-4c19-93b3-d99393d9e605', '4fe1e344-5eba-44de-aab9-0c0251b6eeec', '2026-01-28 09:35:17.553422', '2026-01-28 09:35:17.553422');
+INSERT INTO public.excluded_equipments VALUES ('b54b4a7a-25b2-4228-991e-aa003ef76045', '32bed80a-1512-4945-9654-8d710618ef81', '4fe1e344-5eba-44de-aab9-0c0251b6eeec', '2026-01-28 09:35:17.553422', '2026-01-28 09:35:17.553422');
+INSERT INTO public.excluded_equipments VALUES ('ef2a4c85-901d-4fef-8c8a-29d34c79bf0c', '1959d942-75fb-4ece-b501-b7cf8884d479', '4fe1e344-5eba-44de-aab9-0c0251b6eeec', '2026-01-28 09:35:17.553422', '2026-01-28 09:35:17.553422');
+INSERT INTO public.excluded_equipments VALUES ('899dba47-3e9a-4222-a4b0-e89bbda22986', '18995b62-6971-4750-84fe-0c2bc712f352', '4fe1e344-5eba-44de-aab9-0c0251b6eeec', '2026-01-28 09:35:17.553422', '2026-01-28 09:35:17.553422');
+INSERT INTO public.excluded_equipments VALUES ('b836e15c-d50c-41b9-ab26-7ba838f31980', '752ee7ba-ae88-46f0-95fb-e0a316212f16', '4fe1e344-5eba-44de-aab9-0c0251b6eeec', '2026-01-28 09:35:17.553422', '2026-01-28 09:35:17.553422');
+INSERT INTO public.excluded_equipments VALUES ('282c1bee-f55b-4c88-8ebc-3ccca68791b8', 'a6628e7c-1488-4268-82ee-5174f3a5a2a5', '4fe1e344-5eba-44de-aab9-0c0251b6eeec', '2026-01-28 09:35:17.553422', '2026-01-28 09:35:17.553422');
+INSERT INTO public.excluded_equipments VALUES ('b16e3c6f-0998-418f-b1d5-06d94757c887', '373d04ea-8079-439a-82a3-d118da6253b1', '4fe1e344-5eba-44de-aab9-0c0251b6eeec', '2026-01-28 09:35:17.553422', '2026-01-28 09:35:17.553422');
+INSERT INTO public.excluded_equipments VALUES ('01ca47da-5020-4076-b7e5-3d675d472fb4', 'afe516f8-6dc9-45ca-b95e-81142c336878', '4fe1e344-5eba-44de-aab9-0c0251b6eeec', '2026-01-28 09:35:17.553422', '2026-01-28 09:35:17.553422');
+INSERT INTO public.excluded_equipments VALUES ('7fca58b6-0b56-4209-b1a2-425a22271e50', '306270ba-834e-461e-81ce-45fd5a77c99f', '4fe1e344-5eba-44de-aab9-0c0251b6eeec', '2026-01-28 09:35:17.553422', '2026-01-28 09:35:17.553422');
+INSERT INTO public.excluded_equipments VALUES ('5987f1cb-ff19-4cef-814c-32ca7e63405f', '85dbccf6-454e-4440-8905-50a90d91dbcc', '4fe1e344-5eba-44de-aab9-0c0251b6eeec', '2026-01-28 09:35:17.553422', '2026-01-28 09:35:17.553422');
+INSERT INTO public.excluded_equipments VALUES ('f2a49e24-6e8d-462f-8b04-b3c1f92f8511', '6215cbaf-6065-4534-a9d5-a588c1b3dc28', '4fe1e344-5eba-44de-aab9-0c0251b6eeec', '2026-01-28 09:35:17.553422', '2026-01-28 09:35:17.553422');
+INSERT INTO public.excluded_equipments VALUES ('008f3647-0bdd-4fc8-a661-eba1bb312833', 'c4d5e6fe-30fd-4f16-8646-634102d1bf1b', '4fe1e344-5eba-44de-aab9-0c0251b6eeec', '2026-01-28 09:35:17.553422', '2026-01-28 09:35:17.553422');
+INSERT INTO public.excluded_equipments VALUES ('2c62846e-07d5-4430-a18e-95062b625cc3', 'e7fc1da0-48df-4338-b03f-1cea01cd12d5', '4fe1e344-5eba-44de-aab9-0c0251b6eeec', '2026-01-28 09:35:17.553422', '2026-01-28 09:35:17.553422');
+INSERT INTO public.excluded_equipments VALUES ('bf5ada7f-2871-499a-ba80-75fe86199747', '6345b70f-6e3f-46e2-9d51-3be51250ed99', '4fe1e344-5eba-44de-aab9-0c0251b6eeec', '2026-01-28 09:35:17.553422', '2026-01-28 09:35:17.553422');
+INSERT INTO public.excluded_equipments VALUES ('5b4837be-6b2c-42be-88a4-dd069a9acdf2', '9677e942-8a9b-4754-a27f-7e4d945681a1', '4fe1e344-5eba-44de-aab9-0c0251b6eeec', '2026-01-28 09:35:17.553422', '2026-01-28 09:35:17.553422');
+INSERT INTO public.excluded_equipments VALUES ('960d4d3b-7180-49c0-8ac5-a1cd5423426a', 'a025ec57-670e-45ea-962e-9c9430786666', '4fe1e344-5eba-44de-aab9-0c0251b6eeec', '2026-01-28 09:35:17.553422', '2026-01-28 09:35:17.553422');
+INSERT INTO public.excluded_equipments VALUES ('0b6919fc-fb57-4fde-9aed-e7110dca2d3f', '061ad8e2-77aa-4ba8-9a41-51788e7803c7', '4fe1e344-5eba-44de-aab9-0c0251b6eeec', '2026-01-28 09:35:17.553422', '2026-01-28 09:35:17.553422');
+INSERT INTO public.excluded_equipments VALUES ('c3bb1491-dc04-4a79-977c-14332cf0ab6c', '0eda801d-e31d-4943-8a73-68c702f3d3d2', '4fe1e344-5eba-44de-aab9-0c0251b6eeec', '2026-01-28 09:35:17.553422', '2026-01-28 09:35:17.553422');
+INSERT INTO public.excluded_equipments VALUES ('a052a8f9-825f-40bb-bc5a-326096589ba4', 'b17ae8af-2d78-4e77-b45b-39253c28247a', '5700942a-c39d-46bd-9d37-12e4385d8e48', '2026-01-28 20:41:46.882342', '2026-01-28 20:41:46.882342');
 
 
 --
 -- Data for Name: excluded_muscles; Type: TABLE DATA; Schema: public; Owner: -
 --
 
+INSERT INTO public.excluded_muscles VALUES ('b75cd185-6697-4a22-993e-e4cd680487c5', '57559b71-b757-468a-983d-a1b3cec4acef', '2026-01-28 20:41:46.882342', '5700942a-c39d-46bd-9d37-12e4385d8e48', '2026-01-28 20:41:46.882342');
 
 
 --
@@ -2679,6 +2806,237 @@ INSERT INTO public.exercise_examples VALUES ('b790c6a6-ecd1-4b3a-afbc-22cd82e556
 Bend only at the elbows to lower the dumbbells beside the head until they reach about ear level. Pause while keeping elbows tucked, then extend the elbows to return to the start without hyperextending. Maintain a steady tempo and avoid letting the dumbbells drift toward the chest.
 Repeat for the desired reps.', 'isolation', 'free', 'push', 'beginner');
 INSERT INTO public.exercise_examples VALUES ('855bd9e5-3546-4cfd-b048-e8017f01bfeb', 'Dumbbell Tricep Kickback', '2024-08-27 17:37:27.234715', '2026-01-21 10:24:51.173834', 'https://dsikfdo0rac0e.cloudfront.net/example-images/dumbbell_tricep_kickback.png', 'Place a dumbbell next to a flat bench. Set up with your right knee and right hand on the bench, left foot on the floor, torso nearly parallel to the ground, and a neutral spine. Hold the dumbbell in your left hand with a neutral grip. Tuck the left upper arm close to your torso and keep it in line with your body; start around 90° of elbow flexion. Moving only at the elbow, extend until the arm is straight without swinging the shoulder. Pause briefly, then lower under control to the start. Complete reps and switch sides.', 'isolation', 'free', 'push', 'beginner');
+--
+-- Data for Name: exercise_example_rules; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+INSERT INTO public.exercise_example_rules VALUES ('275097d4-3c8d-4040-9b2e-5f294919df04', '275097d4-3c8d-4040-9b2e-5f294919df04', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('d6743870-0d5a-4180-9671-181b8f65e03e', 'd6743870-0d5a-4180-9671-181b8f65e03e', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('7517ae2f-c198-4a33-8a1d-1dc7327d1430', '7517ae2f-c198-4a33-8a1d-1dc7327d1430', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('faf6674c-2a2a-4b03-ab8b-7a033052b572', 'faf6674c-2a2a-4b03-ab8b-7a033052b572', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('650e9725-d36c-4688-bcab-adf93dfe9e5d', '650e9725-d36c-4688-bcab-adf93dfe9e5d', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('5985d847-0473-444e-8fe0-9da5341ef986', '5985d847-0473-444e-8fe0-9da5341ef986', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('e21344ff-b825-4a99-bf8b-a778bf1964d1', 'e21344ff-b825-4a99-bf8b-a778bf1964d1', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('6a312bde-cc33-450b-8f1d-6091ccffe9cc', '6a312bde-cc33-450b-8f1d-6091ccffe9cc', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('89f423d0-315f-4d93-b346-dcb468a97045', '89f423d0-315f-4d93-b346-dcb468a97045', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('11644e17-247a-46b0-a391-b3b2a2a6bba8', '11644e17-247a-46b0-a391-b3b2a2a6bba8', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('9f0c8916-a08b-4fe5-9f24-e1680ef627a8', '9f0c8916-a08b-4fe5-9f24-e1680ef627a8', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('7fd82f79-1f5f-4bae-8f2d-b94ecae595d5', '7fd82f79-1f5f-4bae-8f2d-b94ecae595d5', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('547f1f7e-3ee1-4b39-99eb-3462b1ec13af', '547f1f7e-3ee1-4b39-99eb-3462b1ec13af', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('490df80e-d34c-42cf-bfe5-c27ddd2cd734', '490df80e-d34c-42cf-bfe5-c27ddd2cd734', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('47f00a63-05df-4db7-b2c7-68000c72be9b', '47f00a63-05df-4db7-b2c7-68000c72be9b', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('ee8cc366-d33b-45a6-84b0-4ab416585ad1', 'ee8cc366-d33b-45a6-84b0-4ab416585ad1', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('2522a61a-2190-43e9-ae52-ca6bb023815e', '2522a61a-2190-43e9-ae52-ca6bb023815e', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('bbfbcfe2-1f56-492e-afa6-75e595b84fde', 'bbfbcfe2-1f56-492e-afa6-75e595b84fde', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('ddc2e877-7197-42fa-ae1e-59706d209774', 'ddc2e877-7197-42fa-ae1e-59706d209774', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('53defdc5-bfec-4af4-bfba-60440e3493cc', '53defdc5-bfec-4af4-bfba-60440e3493cc', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('a90f4822-63c5-42b9-943c-ff0ceacad1eb', 'a90f4822-63c5-42b9-943c-ff0ceacad1eb', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('9a4eec3b-3f0b-4b36-a2b5-0f544376cf78', '9a4eec3b-3f0b-4b36-a2b5-0f544376cf78', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('748e0a60-9429-4a9d-8a6b-3ba76a7fc4b2', '748e0a60-9429-4a9d-8a6b-3ba76a7fc4b2', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('4de0744d-0a78-4052-aa1b-e5340959d9fe', '4de0744d-0a78-4052-aa1b-e5340959d9fe', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('cfd086be-f452-4f1d-b0cc-3988d677a8b4', 'cfd086be-f452-4f1d-b0cc-3988d677a8b4', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('b99df7e8-eb44-4be1-be81-701347580781', 'b99df7e8-eb44-4be1-be81-701347580781', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('da809d98-950b-4ca0-a71b-c67d21fd66da', 'da809d98-950b-4ca0-a71b-c67d21fd66da', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('7e0566c6-eefb-4992-a673-d19902933c26', '7e0566c6-eefb-4992-a673-d19902933c26', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('6d5dc164-3c35-4719-85f1-5c75558f0125', '6d5dc164-3c35-4719-85f1-5c75558f0125', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('d7abed66-3c4a-490b-91cc-8e714336f9fa', 'd7abed66-3c4a-490b-91cc-8e714336f9fa', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('3d6e76b5-b409-4f5b-bba4-c22cb10cfbd4', '3d6e76b5-b409-4f5b-bba4-c22cb10cfbd4', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('04a13a1c-de2b-46f4-be62-3fa6b4655d0d', '04a13a1c-de2b-46f4-be62-3fa6b4655d0d', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('101f365e-5c84-438a-84b4-c8e798bd0aff', '101f365e-5c84-438a-84b4-c8e798bd0aff', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('ff188494-a871-4721-9d1e-26742539080c', 'ff188494-a871-4721-9d1e-26742539080c', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('4f1c3655-21e7-4225-a39e-944774f59f76', '4f1c3655-21e7-4225-a39e-944774f59f76', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('a9545ccb-3ec7-4646-95c9-f3a708d0d968', 'a9545ccb-3ec7-4646-95c9-f3a708d0d968', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('5e3c933f-7511-463e-88b1-a139c8276e69', '5e3c933f-7511-463e-88b1-a139c8276e69', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('8a39b1e7-986c-41e7-a0b9-44a4efb46360', '8a39b1e7-986c-41e7-a0b9-44a4efb46360', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('816440ad-f8f2-4ef7-a11f-b6a2bd63fcef', '816440ad-f8f2-4ef7-a11f-b6a2bd63fcef', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('48191b99-06fa-4218-b61b-c9b9abd73278', '48191b99-06fa-4218-b61b-c9b9abd73278', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('12221e5c-0208-48fc-8c56-62c266932f74', '12221e5c-0208-48fc-8c56-62c266932f74', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('8d2a9df4-af32-4943-b74b-ae901e866b32', '8d2a9df4-af32-4943-b74b-ae901e866b32', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('7a933584-128c-4b82-8e5b-5e7312cadfdf', '7a933584-128c-4b82-8e5b-5e7312cadfdf', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('b22e5ada-86c1-4104-828b-b7e06a7f5d16', 'b22e5ada-86c1-4104-828b-b7e06a7f5d16', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('ed5db0ac-4343-4e68-a884-d5f84e4020c1', 'ed5db0ac-4343-4e68-a884-d5f84e4020c1', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('b8fa1238-0f58-4daa-ade8-0f8c6fa2d1b1', 'b8fa1238-0f58-4daa-ade8-0f8c6fa2d1b1', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('8ca7bf65-0ddb-4c64-ba64-f71f25c85d7c', '8ca7bf65-0ddb-4c64-ba64-f71f25c85d7c', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('7e80becf-491c-4b48-a98a-a36fff26e29c', '7e80becf-491c-4b48-a98a-a36fff26e29c', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('e1361643-e92a-419b-8eb8-fe2a188016e0', 'e1361643-e92a-419b-8eb8-fe2a188016e0', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('fff561d6-3738-4360-a110-f93dcb3c8c10', 'fff561d6-3738-4360-a110-f93dcb3c8c10', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('d20646b6-efd1-49fc-8ffa-180461aea5ab', 'd20646b6-efd1-49fc-8ffa-180461aea5ab', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('ac45c513-55f3-437f-a10f-ba3c0763a746', 'ac45c513-55f3-437f-a10f-ba3c0763a746', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('68381c41-b015-4218-93cb-2bcb64bee255', '68381c41-b015-4218-93cb-2bcb64bee255', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('6e4bc8b2-33ab-46da-9b79-9fff2266cd27', '6e4bc8b2-33ab-46da-9b79-9fff2266cd27', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('4353173b-93b2-4fb1-b462-fc8330b15ce5', '4353173b-93b2-4fb1-b462-fc8330b15ce5', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('a8f9abc7-4515-4f5e-a4f5-095b1b17b9e1', 'a8f9abc7-4515-4f5e-a4f5-095b1b17b9e1', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('1b8fe6fc-9ede-4f28-b4a0-30504db61fed', '1b8fe6fc-9ede-4f28-b4a0-30504db61fed', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('ff2d84fc-ff6d-4637-8128-91c1495c98e8', 'ff2d84fc-ff6d-4637-8128-91c1495c98e8', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('2780e6d9-a86f-4038-b96f-ef59f961cb4b', '2780e6d9-a86f-4038-b96f-ef59f961cb4b', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('3a70ce9c-b1f0-43a7-8775-7d3e7c109c5d', '3a70ce9c-b1f0-43a7-8775-7d3e7c109c5d', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('90b8d661-a9ef-47e5-8c98-b0599874a972', '90b8d661-a9ef-47e5-8c98-b0599874a972', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('89ffca84-73f0-4a69-871f-9d9c96521a05', '89ffca84-73f0-4a69-871f-9d9c96521a05', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('e1511aa4-1d34-4984-aa54-88f88029a96e', 'e1511aa4-1d34-4984-aa54-88f88029a96e', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('ff20bd08-57ae-465f-aa54-d1ba0f7862a9', 'ff20bd08-57ae-465f-aa54-d1ba0f7862a9', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('21370a0a-b01b-4e32-8f43-8648a54cd35c', '21370a0a-b01b-4e32-8f43-8648a54cd35c', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('46b1efa3-a4f8-4492-a81c-9e48c650dd3d', '46b1efa3-a4f8-4492-a81c-9e48c650dd3d', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('f11c8751-e5ca-413e-b30d-2b387ec14733', 'f11c8751-e5ca-413e-b30d-2b387ec14733', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('c5864272-ae27-4363-add6-7ead1b7b3379', 'c5864272-ae27-4363-add6-7ead1b7b3379', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('c2059aab-d7b5-4532-a8a7-ad15a4054b33', 'c2059aab-d7b5-4532-a8a7-ad15a4054b33', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('f467d244-5568-40f6-bd7a-b3bdcad82398', 'f467d244-5568-40f6-bd7a-b3bdcad82398', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('b720265e-a3ce-48d3-8e8e-87e05c07b8a3', 'b720265e-a3ce-48d3-8e8e-87e05c07b8a3', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('3d0c8e76-37a9-4f4c-84fa-47a6a07aaacc', '3d0c8e76-37a9-4f4c-84fa-47a6a07aaacc', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('e68781f2-7021-4907-af54-de18b80d181a', 'e68781f2-7021-4907-af54-de18b80d181a', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('f2cf498f-d991-4b85-b08e-58c5f9ff563e', 'f2cf498f-d991-4b85-b08e-58c5f9ff563e', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('be3c01a7-3bd0-448c-844b-583bd824c90b', 'be3c01a7-3bd0-448c-844b-583bd824c90b', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('b35c5710-3c80-4f48-8ee4-295e5a15999f', 'b35c5710-3c80-4f48-8ee4-295e5a15999f', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('d806b4f1-399c-4ceb-bb91-663ec0350e6d', 'd806b4f1-399c-4ceb-bb91-663ec0350e6d', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('7d823dc8-8303-4ddd-a25d-935569c662b7', '7d823dc8-8303-4ddd-a25d-935569c662b7', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('b515dd55-701a-45f4-938f-fdb26d2d5cba', 'b515dd55-701a-45f4-938f-fdb26d2d5cba', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('60bd8dbc-6bb8-4be0-9ee7-f4c5a295c5b4', '60bd8dbc-6bb8-4be0-9ee7-f4c5a295c5b4', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('8324ae75-08e9-48de-a00b-55d229085712', '8324ae75-08e9-48de-a00b-55d229085712', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('b53daf0a-c7b6-4be8-9230-b33695eb5340', 'b53daf0a-c7b6-4be8-9230-b33695eb5340', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('f4041256-a9ac-430d-b611-d8a957e2aeb0', 'f4041256-a9ac-430d-b611-d8a957e2aeb0', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('bb9c756b-0c9e-4e87-826f-bb2cbd16d86b', 'bb9c756b-0c9e-4e87-826f-bb2cbd16d86b', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('676f21e5-7b5a-4c11-a505-4545822673de', '676f21e5-7b5a-4c11-a505-4545822673de', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('f11ef4dd-cc6b-42ad-844d-0e94cef691f0', 'f11ef4dd-cc6b-42ad-844d-0e94cef691f0', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('ca38bcba-658f-4c7a-be54-b2c3f845fbe0', 'ca38bcba-658f-4c7a-be54-b2c3f845fbe0', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('379d64cd-24bf-4a81-9b97-936c9a088e17', '379d64cd-24bf-4a81-9b97-936c9a088e17', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('7545289f-f7c8-456b-98e9-f7b15600254c', '7545289f-f7c8-456b-98e9-f7b15600254c', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('10870aab-3086-462e-a64e-14710e3fbffe', '10870aab-3086-462e-a64e-14710e3fbffe', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('d59d340d-774d-4c81-8b3d-251175936221', 'd59d340d-774d-4c81-8b3d-251175936221', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('13826a3e-6b12-464c-95c8-5790f0e13947', '13826a3e-6b12-464c-95c8-5790f0e13947', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('baa3f656-0ad7-422b-ba8b-e5e9f5d4cd63', 'baa3f656-0ad7-422b-ba8b-e5e9f5d4cd63', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('950cd0cd-fc3b-442f-aba9-3c48bfc6cda9', '950cd0cd-fc3b-442f-aba9-3c48bfc6cda9', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('c1ca2c25-9148-4977-99fe-3acda0b4ad33', 'c1ca2c25-9148-4977-99fe-3acda0b4ad33', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('85a317d2-6cf2-4155-a6ea-a271afc4a803', '85a317d2-6cf2-4155-a6ea-a271afc4a803', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('c25a5f07-d65f-4ba9-9b0d-cb4d5b426455', 'c25a5f07-d65f-4ba9-9b0d-cb4d5b426455', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('e84c6031-9d71-41a1-ae2c-6c9901ea1d6b', 'e84c6031-9d71-41a1-ae2c-6c9901ea1d6b', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('9b3f9b20-544d-49e1-880e-879e24e81581', '9b3f9b20-544d-49e1-880e-879e24e81581', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('b5c6e6a6-6eec-422c-ad4a-8dca82287312', 'b5c6e6a6-6eec-422c-ad4a-8dca82287312', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('f451289a-6d35-4926-981d-8ebae71741a2', 'f451289a-6d35-4926-981d-8ebae71741a2', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('cae7b841-a7f8-4973-baf0-4aadbbdcd0ca', 'cae7b841-a7f8-4973-baf0-4aadbbdcd0ca', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('5de5124e-8ebb-4477-b4b3-e1122cc80496', '5de5124e-8ebb-4477-b4b3-e1122cc80496', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('6bb0675d-eba0-496c-bd20-5fd11a4a0282', '6bb0675d-eba0-496c-bd20-5fd11a4a0282', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('abe543c6-ec69-49ad-b9ca-ef959ffa10f2', 'abe543c6-ec69-49ad-b9ca-ef959ffa10f2', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('77aa5752-a586-4dfe-b69d-4da16fff0b79', '77aa5752-a586-4dfe-b69d-4da16fff0b79', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('6da53baf-d357-4392-927f-7da1bf7449dc', '6da53baf-d357-4392-927f-7da1bf7449dc', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('7976a83a-f4db-4cc5-9cac-7f16f2bc430f', '7976a83a-f4db-4cc5-9cac-7f16f2bc430f', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('8cccb149-8553-494d-bcb5-ffa9b06e7c0f', '8cccb149-8553-494d-bcb5-ffa9b06e7c0f', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('0be1c49c-d742-4881-b014-360bc297af34', '0be1c49c-d742-4881-b014-360bc297af34', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('3488eaaa-a999-43c5-acd6-b177b8a3df8a', '3488eaaa-a999-43c5-acd6-b177b8a3df8a', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('cbb152c0-ba9c-47ea-a8a3-28ad88f56eb6', 'cbb152c0-ba9c-47ea-a8a3-28ad88f56eb6', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('eaf575b3-2cb6-45a3-914f-81838c4c7e4d', 'eaf575b3-2cb6-45a3-914f-81838c4c7e4d', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('978f906a-8584-4cdf-9d7f-f96d60865e3b', '978f906a-8584-4cdf-9d7f-f96d60865e3b', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('a4bf88ee-8865-4b1f-88a3-28cf59d28739', 'a4bf88ee-8865-4b1f-88a3-28cf59d28739', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('a40b23bf-bd6d-41d0-adbe-254bce002c2d', 'a40b23bf-bd6d-41d0-adbe-254bce002c2d', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('1e51b837-215d-4069-9d14-c9510c1b1b61', '1e51b837-215d-4069-9d14-c9510c1b1b61', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('5ab252b3-204d-4846-80e8-a7629f2d2e25', '5ab252b3-204d-4846-80e8-a7629f2d2e25', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('4da455c2-c154-4da7-b9c5-6195bd137eec', '4da455c2-c154-4da7-b9c5-6195bd137eec', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('ddaf509f-3c99-437c-b872-a4651a91601f', 'ddaf509f-3c99-437c-b872-a4651a91601f', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('7b006564-2c61-4661-ab8c-d4cf60fdb3ed', '7b006564-2c61-4661-ab8c-d4cf60fdb3ed', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('ad76d69c-5e90-4643-b507-9e9226d8b5cd', 'ad76d69c-5e90-4643-b507-9e9226d8b5cd', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('24c43903-d3a7-4a39-9231-5bc7d5cec5da', '24c43903-d3a7-4a39-9231-5bc7d5cec5da', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('395bb56a-d4af-4f4a-abb3-51a9ef1dc686', '395bb56a-d4af-4f4a-abb3-51a9ef1dc686', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('4dc80274-2d3e-482e-a736-9f9399330c76', '4dc80274-2d3e-482e-a736-9f9399330c76', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('88baf661-c550-4ecd-b15a-0d1ca4d41116', '88baf661-c550-4ecd-b15a-0d1ca4d41116', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('10f8ff0e-38c6-465d-b99a-26c4026d22c6', '10f8ff0e-38c6-465d-b99a-26c4026d22c6', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('21d5ce50-6ffa-44d9-869f-abcfeb518018', '21d5ce50-6ffa-44d9-869f-abcfeb518018', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('ea89fe55-c50f-4bbf-acc1-96e7df46101a', 'ea89fe55-c50f-4bbf-acc1-96e7df46101a', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('4ef87c39-b004-4c4c-82a8-ddd0338de8c8', '4ef87c39-b004-4c4c-82a8-ddd0338de8c8', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('64406a09-56a6-43da-9329-ff0fb0d83e4f', '64406a09-56a6-43da-9329-ff0fb0d83e4f', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('22df24eb-6bb7-45bc-ab46-9d6022eec774', '22df24eb-6bb7-45bc-ab46-9d6022eec774', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('d180a698-a12e-4731-8234-b96e8f3ca7d9', 'd180a698-a12e-4731-8234-b96e8f3ca7d9', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('738d7264-00af-48dd-a475-3c4d12e28188', '738d7264-00af-48dd-a475-3c4d12e28188', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('d3f54e1c-6333-4a15-b09b-0264ec0b68fe', 'd3f54e1c-6333-4a15-b09b-0264ec0b68fe', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('6115df45-ddad-4fa6-bfb0-1c0cd72de766', '6115df45-ddad-4fa6-bfb0-1c0cd72de766', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('3edb750e-4725-4338-a079-d48dc8797917', '3edb750e-4725-4338-a079-d48dc8797917', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('ad98534e-b2d9-4fef-9983-578ef12b28f7', 'ad98534e-b2d9-4fef-9983-578ef12b28f7', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('b2e39ab6-118d-46bd-ad8c-8acf9864af6c', 'b2e39ab6-118d-46bd-ad8c-8acf9864af6c', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('1dcd59ab-674e-49d8-9a06-9c17c2a05730', '1dcd59ab-674e-49d8-9a06-9c17c2a05730', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('b39cc5b5-8335-4918-a504-f9cdfb85ceba', 'b39cc5b5-8335-4918-a504-f9cdfb85ceba', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('f5f03cc7-c2bc-4367-9042-107114d634ce', 'f5f03cc7-c2bc-4367-9042-107114d634ce', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('a2f8dd49-606e-4d86-ae04-8af61c0b40e9', 'a2f8dd49-606e-4d86-ae04-8af61c0b40e9', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('d7871e0c-5e1b-4ffd-a9ab-951028246a01', 'd7871e0c-5e1b-4ffd-a9ab-951028246a01', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('61a31a0d-a736-48b5-b03e-44aa1ad7f3eb', '61a31a0d-a736-48b5-b03e-44aa1ad7f3eb', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('de4e9652-b068-4558-9fd3-38d45e5aa0d9', 'de4e9652-b068-4558-9fd3-38d45e5aa0d9', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('13fcd794-54fb-413f-8bbf-44353cd29869', '13fcd794-54fb-413f-8bbf-44353cd29869', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('2bc37dec-7b06-404c-af63-99bf3f60fb68', '2bc37dec-7b06-404c-af63-99bf3f60fb68', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('ec09f8c7-04cf-4219-8033-3dd17ea5c1d9', 'ec09f8c7-04cf-4219-8033-3dd17ea5c1d9', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('9572d666-227a-4639-9ea3-defd67123fbc', '9572d666-227a-4639-9ea3-defd67123fbc', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('de763854-d06d-43e9-9973-f4ca8839201b', 'de763854-d06d-43e9-9973-f4ca8839201b', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('2fd70951-2d44-407e-a7ee-daa94bf6af87', '2fd70951-2d44-407e-a7ee-daa94bf6af87', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('14dbd276-30fe-4558-9cf0-104751b58f2d', '14dbd276-30fe-4558-9cf0-104751b58f2d', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('98791e1d-6029-4cb2-bcaf-611a337208ef', '98791e1d-6029-4cb2-bcaf-611a337208ef', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('afd7f719-5789-48a0-a5d9-77e9cb1669bb', 'afd7f719-5789-48a0-a5d9-77e9cb1669bb', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('7470e789-9509-4e22-9078-67857074867d', '7470e789-9509-4e22-9078-67857074867d', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('194fa2ee-7f92-4982-903e-3db80293d773', '194fa2ee-7f92-4982-903e-3db80293d773', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('91f6781b-915e-4bb4-8d8c-e345aa66e42d', '91f6781b-915e-4bb4-8d8c-e345aa66e42d', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('4a2c7160-6cf2-456d-8ef4-80040b720420', '4a2c7160-6cf2-456d-8ef4-80040b720420', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('8e687b8b-0142-49f7-92e9-4d5df9aa86c9', '8e687b8b-0142-49f7-92e9-4d5df9aa86c9', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('bd3338ee-1841-4686-a98c-3493ab9cfa7e', 'bd3338ee-1841-4686-a98c-3493ab9cfa7e', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('c18b086c-b0c3-4d1c-a6a3-2653e36c5dff', 'c18b086c-b0c3-4d1c-a6a3-2653e36c5dff', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('04d3e242-807d-4cba-9be4-e3d11a8efbc4', '04d3e242-807d-4cba-9be4-e3d11a8efbc4', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('05b3842c-2a19-484e-bae3-a12e86c2fa4c', '05b3842c-2a19-484e-bae3-a12e86c2fa4c', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('3a39a222-7b4d-4e0e-9e7e-034d78b5d6bf', '3a39a222-7b4d-4e0e-9e7e-034d78b5d6bf', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('49ef1d62-a375-485a-84bd-289a5548e81b', '49ef1d62-a375-485a-84bd-289a5548e81b', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('78b3c689-0222-46de-a7b3-9bd6c75b920c', '78b3c689-0222-46de-a7b3-9bd6c75b920c', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('d2f28afc-e84c-467c-90d9-c6c2cb63acbc', 'd2f28afc-e84c-467c-90d9-c6c2cb63acbc', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('4d72c2f1-2c10-45a3-9f5e-1f04012c0681', '4d72c2f1-2c10-45a3-9f5e-1f04012c0681', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('f2fb31f0-7f6b-42b6-9a79-c22453ac6a63', 'f2fb31f0-7f6b-42b6-9a79-c22453ac6a63', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('1f28edb2-29ae-467c-ad11-310c3f656fe2', '1f28edb2-29ae-467c-ad11-310c3f656fe2', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('908341ec-de1f-44bd-b84d-74ff8a7162a0', '908341ec-de1f-44bd-b84d-74ff8a7162a0', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('93e6b1c4-0510-41d4-983c-a1fde003881f', '93e6b1c4-0510-41d4-983c-a1fde003881f', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('6cb225d2-be00-461d-9bf0-7f0c87cfea0b', '6cb225d2-be00-461d-9bf0-7f0c87cfea0b', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('4aafe702-f2fc-4fa2-a7fb-c31c279adeda', '4aafe702-f2fc-4fa2-a7fb-c31c279adeda', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('0eaa8980-e29e-4f33-88b0-915db5cf309a', '0eaa8980-e29e-4f33-88b0-915db5cf309a', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('9c029423-aa52-4b90-97c0-f5d4b4574f12', '9c029423-aa52-4b90-97c0-f5d4b4574f12', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('6389ce45-7d30-4372-8c29-e5816d893b1a', '6389ce45-7d30-4372-8c29-e5816d893b1a', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('ab0d7384-444e-446a-911d-f64ac31db8ef', 'ab0d7384-444e-446a-911d-f64ac31db8ef', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('1959abd3-4ab1-42d4-b7e2-45693b899d51', '1959abd3-4ab1-42d4-b7e2-45693b899d51', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('31b8aa6a-448d-4e4c-bd1e-6386060b526e', '31b8aa6a-448d-4e4c-bd1e-6386060b526e', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('8508cffc-1df6-4db2-9447-3bafd74a1325', '8508cffc-1df6-4db2-9447-3bafd74a1325', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('db9ff44c-2e27-42df-8f6a-1b64429999e1', 'db9ff44c-2e27-42df-8f6a-1b64429999e1', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('cfb2d83a-b3dc-44e9-ab08-53f9269752d6', 'cfb2d83a-b3dc-44e9-ab08-53f9269752d6', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('548b3de6-0980-4795-ab86-763c20dbc325', '548b3de6-0980-4795-ab86-763c20dbc325', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('1fdffa53-d9cb-4aa1-9999-5c83fdb9be80', '1fdffa53-d9cb-4aa1-9999-5c83fdb9be80', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('9e348a26-e5d0-4ee0-b3e6-fe58563ac698', '9e348a26-e5d0-4ee0-b3e6-fe58563ac698', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('c5901a9a-580c-411b-85bd-2ec738123e14', 'c5901a9a-580c-411b-85bd-2ec738123e14', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('21e7460d-aa00-448b-8c82-994a73e0164c', '21e7460d-aa00-448b-8c82-994a73e0164c', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('3a41edcb-2c19-4d06-9585-8fe745aba723', '3a41edcb-2c19-4d06-9585-8fe745aba723', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('2f49a8e8-6f42-422c-aa6f-c23e215620e2', '2f49a8e8-6f42-422c-aa6f-c23e215620e2', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('16ba69dc-e99d-4a71-bbcb-0f3ce096a9d9', '16ba69dc-e99d-4a71-bbcb-0f3ce096a9d9', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('506d1cc7-529a-42af-b5bf-4c4d0a9aa409', '506d1cc7-529a-42af-b5bf-4c4d0a9aa409', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('3b828d2f-797f-4a45-9d1d-1d3efe38fb54', '3b828d2f-797f-4a45-9d1d-1d3efe38fb54', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('1f8abb63-8024-46ca-ac1e-2574a839eed6', '1f8abb63-8024-46ca-ac1e-2574a839eed6', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('af39600b-6fc5-435a-a5f8-a1d0a9994030', 'af39600b-6fc5-435a-a5f8-a1d0a9994030', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('1b4402c2-2459-45c1-8d24-356322c71d20', '1b4402c2-2459-45c1-8d24-356322c71d20', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('385fb192-7c2c-405a-b483-f36e32e241c8', '385fb192-7c2c-405a-b483-f36e32e241c8', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('885918a3-5c64-4f15-982e-1b9a91cb3743', '885918a3-5c64-4f15-982e-1b9a91cb3743', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('09386394-e4e1-4a6d-adce-d5f5a518485c', '09386394-e4e1-4a6d-adce-d5f5a518485c', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('9ab8fe00-58de-48c4-942d-b10e8d16f1c1', '9ab8fe00-58de-48c4-942d-b10e8d16f1c1', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('4035dfef-3cc6-4a15-a97f-c167bd274d02', '4035dfef-3cc6-4a15-a97f-c167bd274d02', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('01dff88c-893b-4410-8d54-1e36013b9fdb', '01dff88c-893b-4410-8d54-1e36013b9fdb', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('5b7d739c-d130-466c-a5ac-9e8b318b77ad', '5b7d739c-d130-466c-a5ac-9e8b318b77ad', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('f6dd98f1-ad1d-4ea2-ba97-9939ce0fc028', 'f6dd98f1-ad1d-4ea2-ba97-9939ce0fc028', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('8a73b841-1d4e-4808-8ed7-58c4931e0e96', '8a73b841-1d4e-4808-8ed7-58c4931e0e96', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('0e2fe1e8-f8f1-48e6-b360-8c9d4d9991a6', '0e2fe1e8-f8f1-48e6-b360-8c9d4d9991a6', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('4d3a89ab-70ae-4311-8b40-a058b2f3057b', '4d3a89ab-70ae-4311-8b40-a058b2f3057b', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('414a1891-1a28-4dbe-84e3-a992c6e879bc', '414a1891-1a28-4dbe-84e3-a992c6e879bc', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('cebf4622-c0a9-4759-a070-48c7556da67d', 'cebf4622-c0a9-4759-a070-48c7556da67d', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('9be8d3a0-574b-40dc-a42c-06ab42af7e66', '9be8d3a0-574b-40dc-a42c-06ab42af7e66', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('984e5dac-f3a8-4980-bfc9-da370cf45e46', '984e5dac-f3a8-4980-bfc9-da370cf45e46', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('50774526-c91f-4d71-82a8-456526b0fbd0', '50774526-c91f-4d71-82a8-456526b0fbd0', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('c21d3b0f-c8a8-4b7f-92ea-90dc567a1183', 'c21d3b0f-c8a8-4b7f-92ea-90dc567a1183', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('aada0f37-1f30-4d61-a284-8003027bc871', 'aada0f37-1f30-4d61-a284-8003027bc871', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('82890348-a566-4762-b9b4-f89e52534936', '82890348-a566-4762-b9b4-f89e52534936', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('118eab6d-cae9-4c0b-b8e6-57f3e5541f1a', '118eab6d-cae9-4c0b-b8e6-57f3e5541f1a', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('f2868e11-6e1d-4ce4-a1a8-eb0384a60b71', 'f2868e11-6e1d-4ce4-a1a8-eb0384a60b71', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('4f9bdd10-28bc-447e-8cf5-fbf47cd9af79', '4f9bdd10-28bc-447e-8cf5-fbf47cd9af79', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('a2736a56-04b3-4437-835e-1e2dc8029c9e', 'a2736a56-04b3-4437-835e-1e2dc8029c9e', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('92d77415-1f9a-430b-ba52-0a09ec07b3a1', '92d77415-1f9a-430b-ba52-0a09ec07b3a1', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('9fc5ae4d-2868-4576-bb67-9c83663fc005', '9fc5ae4d-2868-4576-bb67-9c83663fc005', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('04d275d8-71df-4695-ace9-899ce6e41b29', '04d275d8-71df-4695-ace9-899ce6e41b29', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('7227c8f6-cf65-4134-97de-d5e64cb5ff1b', '7227c8f6-cf65-4134-97de-d5e64cb5ff1b', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('b790c6a6-ecd1-4b3a-afbc-22cd82e55658', 'b790c6a6-ecd1-4b3a-afbc-22cd82e55658', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+INSERT INTO public.exercise_example_rules VALUES ('855bd9e5-3546-4cfd-b048-e8017f01bfeb', '855bd9e5-3546-4cfd-b048-e8017f01bfeb', 'RepetitionsAndWeight', 'DirectWeight', NULL, false, false, 'SaveAsRepetitionsOnly', false, now(), now());
+
 
 
 --
@@ -3196,6 +3554,54 @@ INSERT INTO public.exercises VALUES ('5ff69c07-dd48-405a-b609-87afdabf8972', 'П
 INSERT INTO public.exercises VALUES ('9d4a4971-fb80-4b36-a206-f87318d7175a', 'Випади в тренажері Сміта', 50.0, 5, 10.00, '8eb1e059-d9b3-4c99-9d06-0c63e58830f1', '1e51b837-215d-4069-9d14-c9510c1b1b61', 0, '2026-01-27 22:52:43.214816', '2026-01-27 22:52:43.214816');
 INSERT INTO public.exercises VALUES ('cc61ef6d-2d9e-426e-bec4-6993ce46072a', 'Підйом на ікри сидячи з гантелями', 200.0, 10, 20.00, '540da3a8-2e26-4130-bce7-9e173df2c621', '01dff88c-893b-4410-8d54-1e36013b9fdb', 0, '2026-01-27 23:00:52.891716', '2026-01-27 23:00:52.891716');
 INSERT INTO public.exercises VALUES ('2aa10663-37a6-4d3b-9223-211e7b32d13a', 'Армійський жим (жим над головою)', 570.0, 9, 63.33, 'c9d46415-1af0-40ad-b2f3-2706c95b23bd', '1959abd3-4ab1-42d4-b7e2-45693b899d51', 0, '2026-01-27 23:19:12.309598', '2026-01-27 23:19:12.309598');
+INSERT INTO public.exercises VALUES ('52cf6daa-fced-48ed-9426-1e4241bc5c2b', 'Отжимания', 40.0, 40, 1.00, '1caf02c3-3e3a-4d5d-87d6-72306adbe449', 'ff20bd08-57ae-465f-aa54-d1ba0f7862a9', 0, '2026-01-28 09:36:17.629469', '2026-01-28 09:36:17.629469');
+INSERT INTO public.exercises VALUES ('be6f411f-165d-4f00-a498-4055f4dfa935', 'Отжимания', 40.0, 40, 1.00, '0e0c6ada-b0a4-496f-8a4d-0dcbe9ff65da', 'ff20bd08-57ae-465f-aa54-d1ba0f7862a9', 0, '2026-01-28 09:37:26.762196', '2026-01-28 09:37:26.762196');
+INSERT INTO public.exercises VALUES ('e722ad9d-4c01-40c6-8ad0-d9a4bbda83c9', 'Приседание «лягушка»', 30.0, 30, 1.00, '0e0c6ada-b0a4-496f-8a4d-0dcbe9ff65da', '5ab252b3-204d-4846-80e8-a7629f2d2e25', 1, '2026-01-28 09:37:26.762196', '2026-01-28 09:37:26.762196');
+INSERT INTO public.exercises VALUES ('d9e6fa26-0486-4958-ad2b-3b87d70c81d1', 'Жим Арнольда сидя', 300.0, 10, 30.00, '2b58839c-2507-4605-9607-d6f804fb6334', '9ab8fe00-58de-48c4-942d-b10e8d16f1c1', 0, '2026-01-28 09:37:44.459129', '2026-01-28 09:37:44.459129');
+INSERT INTO public.exercises VALUES ('29c6e2e1-6ffb-4d01-9ea6-40925b718561', 'Боковые наклоны с гантелью', 600.0, 60, 10.00, 'ae70d0da-501b-4a2e-855e-cdb903e5df5b', '7e80becf-491c-4b48-a98a-a36fff26e29c', 0, '2026-01-28 09:50:07.384963', '2026-01-28 09:50:07.384963');
+INSERT INTO public.exercises VALUES ('8459aa3e-d9b1-42c1-850b-12e67dd58d01', 'Присед Зерчера в тренажёре Смита', 1200.0, 60, 20.00, 'ae70d0da-501b-4a2e-855e-cdb903e5df5b', '9572d666-227a-4639-9ea3-defd67123fbc', 1, '2026-01-28 09:50:07.384963', '2026-01-28 09:50:07.384963');
+INSERT INTO public.exercises VALUES ('47049d66-b121-4ea0-ab31-70fd14450248', 'Армійський жим (жим над головою)', 120.0, 8, 15.00, '976ffe5a-7cd4-44e3-8fe2-c99423565cca', '1959abd3-4ab1-42d4-b7e2-45693b899d51', 0, '2026-01-28 12:57:29.958449', '2026-01-28 12:57:29.958449');
+INSERT INTO public.exercises VALUES ('6b588ba2-6487-4d08-acac-a81f5ebf6443', 'Barbell Hip Thrust', 990.0, 33, 30.00, '6b021833-8ade-46e2-a38e-3c4f509d0760', '78b3c689-0222-46de-a7b3-9bd6c75b920c', 0, '2026-01-28 14:06:42.864043', '2026-01-28 14:06:42.864043');
+INSERT INTO public.exercises VALUES ('c73ef789-39ac-4fa4-9df5-33a8fe4d025a', 'Боковые наклоны с гантелью', 20.0, 2, 10.00, '8570c40b-29b6-43d7-8fa1-05cb08411de4', '7e80becf-491c-4b48-a98a-a36fff26e29c', 0, '2026-01-28 14:38:40.206926', '2026-01-28 14:38:40.206926');
+INSERT INTO public.exercises VALUES ('f8014524-95cb-4f48-be21-78b628c2537b', 'Bent Over Barbell Row', 2640.0, 24, 110.00, 'df04999e-c49b-4123-ace0-15b6132a4500', '950cd0cd-fc3b-442f-aba9-3c48bfc6cda9', 0, '2026-01-28 19:12:27.610459', '2026-01-28 19:12:27.610459');
+INSERT INTO public.exercises VALUES ('c66d783c-d873-463c-b414-fb138ebebaf7', 'Lat Pulldown', 2205.0, 21, 105.00, 'df04999e-c49b-4123-ace0-15b6132a4500', '4a2c7160-6cf2-456d-8ef4-80040b720420', 1, '2026-01-28 19:12:27.610459', '2026-01-28 19:12:27.610459');
+INSERT INTO public.exercises VALUES ('0d35aa60-8435-435a-b5f5-c4c72c39c078', 'Rope Straight Arm Pulldown', 1760.0, 24, 73.33, 'df04999e-c49b-4123-ace0-15b6132a4500', 'eaf575b3-2cb6-45a3-914f-81838c4c7e4d', 2, '2026-01-28 19:12:27.610459', '2026-01-28 19:12:27.610459');
+INSERT INTO public.exercises VALUES ('5aa0030a-3df2-4288-9ca4-3ee705d238eb', 'Straight Bar Tricep Extension', 2880.0, 32, 90.00, 'df04999e-c49b-4123-ace0-15b6132a4500', '6cb225d2-be00-461d-9bf0-7f0c87cfea0b', 3, '2026-01-28 19:12:27.610459', '2026-01-28 19:12:27.610459');
+INSERT INTO public.exercises VALUES ('b4afa361-84df-42d8-a080-aa03bb2feecd', 'High Pulley Overhead Tricep Extension (Rope Extension)', 2020.0, 33, 61.21, 'df04999e-c49b-4123-ace0-15b6132a4500', '748e0a60-9429-4a9d-8a6b-3ba76a7fc4b2', 4, '2026-01-28 19:12:27.610459', '2026-01-28 19:12:27.610459');
+INSERT INTO public.exercises VALUES ('39f023f3-4fb8-44b4-9da0-d36388e80856', 'Dumbbell Shrugs', 3600.0, 36, 100.00, 'df04999e-c49b-4123-ace0-15b6132a4500', '5de5124e-8ebb-4477-b4b3-e1122cc80496', 5, '2026-01-28 19:12:27.610459', '2026-01-28 19:12:27.610459');
+INSERT INTO public.exercises VALUES ('a721c043-5c71-466b-9079-9d4f26e64c2f', 'Hanging Knee Raise', 2720.0, 34, 80.00, 'df04999e-c49b-4123-ace0-15b6132a4500', 'c5901a9a-580c-411b-85bd-2ec738123e14', 6, '2026-01-28 19:12:27.610459', '2026-01-28 19:12:27.610459');
+INSERT INTO public.exercises VALUES ('b2a0d733-247b-4bd3-859b-cb89ea29f8cc', '45 Degree Leg Press Calf Raise', 3510.0, 39, 90.00, 'df04999e-c49b-4123-ace0-15b6132a4500', 'd2f28afc-e84c-467c-90d9-c6c2cb63acbc', 7, '2026-01-28 19:12:27.610459', '2026-01-28 19:12:27.610459');
+INSERT INTO public.exercises VALUES ('a4dfac00-a190-4289-a284-37f912e01523', 'Chin Up', 210.0, 3, 70.00, 'ba9b9e11-4fdf-479c-8060-b1605c0b4710', '738d7264-00af-48dd-a475-3c4d12e28188', 0, '2026-01-28 20:42:46.390445', '2026-01-28 20:42:46.390445');
+INSERT INTO public.exercises VALUES ('852b9081-bbfb-4e37-8cce-b0a9b9ad9331', 'Cable Crunch', 129.0, 10, 12.90, '5fc4bfe0-9768-4653-8bad-3effc2d9a8f3', 'e1361643-e92a-419b-8eb8-fe2a188016e0', 0, '2026-01-28 21:02:19.093144', '2026-01-28 21:02:19.093144');
+INSERT INTO public.exercises VALUES ('97a9ee3a-614a-4598-9e39-8fd69633eba4', 'Floor Crunch (Legs on Bench)', 93.0, 6, 15.50, '5fc4bfe0-9768-4653-8bad-3effc2d9a8f3', 'f2868e11-6e1d-4ce4-a1a8-eb0384a60b71', 1, '2026-01-28 21:02:19.093144', '2026-01-28 21:02:19.093144');
+INSERT INTO public.exercises VALUES ('9847b70d-9fa3-444d-b1cb-ac489dc593b0', 'Cable Crunch', 30.0, 3, 10.00, '0034d93c-a89f-49fa-95e4-be8a7d567846', 'e1361643-e92a-419b-8eb8-fe2a188016e0', 0, '2026-01-28 21:29:20.384059', '2026-01-28 21:29:20.384059');
+INSERT INTO public.exercises VALUES ('261266b0-828b-4113-a691-a8d98217a68a', 'Выпад назад с гантелями', 490.0, 5, 98.00, '753b7877-75b6-4ce5-aeb3-a019ef0ac4b3', '14dbd276-30fe-4558-9cf0-104751b58f2d', 0, '2026-01-28 22:24:54.827043', '2026-01-28 22:24:54.827043');
+INSERT INTO public.exercises VALUES ('c1742618-a7fa-471d-91dc-ddbec9539a74', '45-Degree Leg Press', 3630.0, 66, 55.00, 'ed3040a3-94b2-4f0e-bc66-65ed47cc39c5', '64406a09-56a6-43da-9329-ff0fb0d83e4f', 0, '2026-01-28 22:25:32.121172', '2026-01-28 22:25:32.121172');
+INSERT INTO public.exercises VALUES ('0e8d615c-de51-45d6-aa8c-807f5ca27306', 'Chin Up', 7600.0, 10, 760.00, '1aca55bf-3552-4b15-b006-3a9aa612f970', '738d7264-00af-48dd-a475-3c4d12e28188', 0, '2026-01-29 05:04:52.978176', '2026-01-29 05:04:52.978176');
+INSERT INTO public.exercises VALUES ('35172e9f-a2ef-4f5c-8510-5b913c880be5', 'Подтягивание обратным хватом', 675.0, 45, 15.00, '0a8d417b-d6cf-4a55-a710-2e404cfc825f', '738d7264-00af-48dd-a475-3c4d12e28188', 0, '2026-01-29 05:11:53.866455', '2026-01-29 05:11:53.866455');
+INSERT INTO public.exercises VALUES ('37a1ab64-8ca6-4dc7-9937-057195428155', 'Отжимания', 50.0, 50, 1.00, '5bd3ecaa-7731-4962-a6ed-728195c70969', 'ff20bd08-57ae-465f-aa54-d1ba0f7862a9', 0, '2026-01-29 06:25:35.843103', '2026-01-29 06:25:35.843103');
+INSERT INTO public.exercises VALUES ('784cb302-5f4f-42cd-bdfa-b8cd6ba5b305', 'Отжимания на брусьях (грудной акцент)', 50.0, 25, 2.00, '5bd3ecaa-7731-4962-a6ed-728195c70969', 'db9ff44c-2e27-42df-8f6a-1b64429999e1', 1, '2026-01-29 06:25:35.843103', '2026-01-29 06:25:35.843103');
+INSERT INTO public.exercises VALUES ('336eb286-82fa-4647-a92a-6f3e54ed419b', 'Подтягивание обратным хватом', 20.0, 10, 2.00, 'd902bce6-4c62-48c5-b401-d1bfd342fbc0', '738d7264-00af-48dd-a475-3c4d12e28188', 0, '2026-01-29 12:25:41.09983', '2026-01-29 12:25:41.09983');
+INSERT INTO public.exercises VALUES ('65539175-bcbe-4af1-99cc-8c42e789ce2e', 'Alternating Bent-Over Dumbbell Kickback', 144.0, 12, 12.00, 'ff2bffb9-00a1-4fa6-a629-cf564bc45eab', 'faf6674c-2a2a-4b03-ab8b-7a033052b572', 0, '2026-01-29 14:00:50.441791', '2026-01-29 14:00:50.441791');
+INSERT INTO public.exercises VALUES ('70b8b806-824b-42c8-b9b5-570be25fe0fc', 'Floor Crunch (Legs on Bench)', 20.0, 5, 4.00, 'cfd35329-688b-4474-ad31-b0cfa6903ecd', 'f2868e11-6e1d-4ce4-a1a8-eb0384a60b71', 0, '2026-01-29 16:08:38.002791', '2026-01-29 16:08:38.002791');
+INSERT INTO public.exercises VALUES ('9e8ea8e6-84cd-4197-97c8-a1fa3eb2223a', 'Гоблет сплит-присед с гантелью', 50.0, 5, 10.00, '394ca52d-0e7e-4848-85c2-2354c8d4f33a', '21d5ce50-6ffa-44d9-869f-abcfeb518018', 0, '2026-01-29 17:48:08.869892', '2026-01-29 17:48:08.869892');
+INSERT INTO public.exercises VALUES ('f9bcd5c7-6747-4c91-95ea-f627fd35b7da', 'Жим гантелей на наклонной скамье лёжа', 50.0, 5, 10.00, '910a0c49-a3bb-4a14-badf-d54191253353', '47f00a63-05df-4db7-b2c7-68000c72be9b', 0, '2026-01-29 17:51:00.821015', '2026-01-29 17:51:00.821015');
+INSERT INTO public.exercises VALUES ('cf5a6e46-68b8-4aa9-a49a-2285b20306d7', 'Айрон Кросс на кроссовере', 50.0, 5, 10.00, 'bb98dc7b-21af-4b92-a926-68da98d9a1e5', '13fcd794-54fb-413f-8bbf-44353cd29869', 0, '2026-01-29 17:51:47.897661', '2026-01-29 17:51:47.897661');
+INSERT INTO public.exercises VALUES ('9f9d81cc-c08c-488c-bb9f-c990623eba93', 'Выпады в тренажёре Смита', 25.0, 5, 5.00, 'ec1fc629-73c5-4af0-8d99-cd06292fcb18', '1e51b837-215d-4069-9d14-c9510c1b1b61', 0, '2026-01-29 17:54:15.088856', '2026-01-29 17:54:15.088856');
+INSERT INTO public.exercises VALUES ('8fcba113-c4fc-4252-a227-a515295bbc16', '45 Degree Lying Tricep Extension (EZ Bar)', 275.0, 5, 55.00, 'f816825c-9315-4e61-8b48-155e689fd795', '7517ae2f-c198-4a33-8a1d-1dc7327d1430', 0, '2026-01-29 19:30:00.894664', '2026-01-29 19:30:00.894664');
+INSERT INTO public.exercises VALUES ('7f71da5a-0765-4ae1-a23e-8bffaa4e59c5', 'Выпад назад с гантелями', 275.0, 5, 55.00, '689d02f3-ba70-4ebd-bf12-5a3949ebab0c', '14dbd276-30fe-4558-9cf0-104751b58f2d', 0, '2026-01-29 19:30:19.136249', '2026-01-29 19:30:19.136249');
+INSERT INTO public.exercises VALUES ('5d16f7cb-6612-44cb-a545-1280defdb789', '45 Degree Leg Press Calf Raise', 275.0, 5, 55.00, '7d7e4b64-f0ce-4891-832a-27aad3109cd4', 'd2f28afc-e84c-467c-90d9-c6c2cb63acbc', 0, '2026-01-29 20:32:15.811033', '2026-01-29 20:32:15.811033');
+INSERT INTO public.exercises VALUES ('d453460d-ea4e-4ce1-b36f-f201891a12db', '45 Degree Lying Tricep Extension (EZ Bar)', 396.0, 6, 66.00, '7ed83324-24aa-4597-8a33-db79f6c01d21', '7517ae2f-c198-4a33-8a1d-1dc7327d1430', 0, '2026-01-29 20:40:33.84258', '2026-01-29 20:40:33.84258');
+INSERT INTO public.exercises VALUES ('26a66f1d-e54d-48f2-99c3-523f27c1b56f', '45 Degree Leg Press Calf Raise', 1476.0, 12, 123.00, 'd197544d-511c-472d-b6b3-604272daaf13', 'd2f28afc-e84c-467c-90d9-c6c2cb63acbc', 0, '2026-01-29 21:01:24.220247', '2026-01-29 21:01:24.220247');
+INSERT INTO public.exercises VALUES ('cce8aa1e-7f5a-442a-88d7-19ac52d27c8a', '45 Degree Leg Press Calf Raise', 1476.0, 12, 123.00, '064619de-c7a9-4c82-816f-7f9a71c3cfac', 'd2f28afc-e84c-467c-90d9-c6c2cb63acbc', 0, '2026-01-29 21:04:05.942594', '2026-01-29 21:04:05.942594');
+INSERT INTO public.exercises VALUES ('e9bce71e-c4b3-4b72-8431-7622ac1b49cf', 'Подтягивание обратным хватом', 120.0, 60, 2.00, '843666fd-71d5-490b-8c36-fd90da21f44e', '738d7264-00af-48dd-a475-3c4d12e28188', 0, '2026-01-30 06:54:53.68796', '2026-01-30 06:54:53.68796');
+INSERT INTO public.exercises VALUES ('f54e1acf-d95d-4f60-bfba-90ec07f31f2e', 'Приседание «лягушка»', 4500.0, 25, 180.00, '843666fd-71d5-490b-8c36-fd90da21f44e', '5ab252b3-204d-4846-80e8-a7629f2d2e25', 1, '2026-01-30 06:54:53.68796', '2026-01-30 06:54:53.68796');
+INSERT INTO public.exercises VALUES ('098db1c8-bdb2-41f3-862e-6bb83794a72e', 'Отжимания на брусьях с отягощением (трицепс)', 1500.0, 50, 30.00, '843666fd-71d5-490b-8c36-fd90da21f44e', '3b828d2f-797f-4a45-9d1d-1d3efe38fb54', 2, '2026-01-30 06:54:53.68796', '2026-01-30 06:54:53.68796');
+INSERT INTO public.exercises VALUES ('78f6b8c3-29f5-45ff-802c-adf0db0801df', 'Отжимания на брусьях с отягощением (трицепс)', 300.0, 60, 5.00, '843666fd-71d5-490b-8c36-fd90da21f44e', '3b828d2f-797f-4a45-9d1d-1d3efe38fb54', 3, '2026-01-30 06:54:53.68796', '2026-01-30 06:54:53.68796');
+INSERT INTO public.exercises VALUES ('4f473054-6b33-452f-9c51-87bc55fa842c', 'Подтягивание обратным хватом', 225.0, 15, 15.00, '5d1edd3a-6fa1-4aaa-9818-8f40282ad72b', '738d7264-00af-48dd-a475-3c4d12e28188', 0, '2026-01-30 07:19:28.661983', '2026-01-30 07:19:28.661983');
+INSERT INTO public.exercises VALUES ('0a144779-5006-4c84-8ccb-b875eda41b86', 'Подтягивание обратным хватом', 230.0, 6, 38.33, '5d1edd3a-6fa1-4aaa-9818-8f40282ad72b', '738d7264-00af-48dd-a475-3c4d12e28188', 1, '2026-01-30 07:19:28.661983', '2026-01-30 07:19:28.661983');
+INSERT INTO public.exercises VALUES ('3c6f2be6-7180-4902-9085-533773c32794', 'Айрон Кросс на кроссовере', 250.0, 5, 50.00, 'e72a1a45-9c4c-41ef-80d4-beb24fec6fb5', '13fcd794-54fb-413f-8bbf-44353cd29869', 0, '2026-01-30 11:05:11.473285', '2026-01-30 11:05:11.473285');
+INSERT INTO public.exercises VALUES ('7f91ea30-9c63-4c50-a566-d06bccd22e9c', 'Chin Up', 2420.0, 55, 44.00, 'f56223eb-a7c4-4504-9a3f-f555e55050f0', '738d7264-00af-48dd-a475-3c4d12e28188', 0, '2026-01-30 11:25:13.20737', '2026-01-30 11:25:13.20737');
 
 
 --
@@ -3738,6 +4144,93 @@ INSERT INTO public.iterations VALUES ('fd4f2a1d-1d13-4a2e-8574-b94f06fb0fd3', 10
 INSERT INTO public.iterations VALUES ('8f8f6f68-9677-422f-9680-26f5a80681c0', 20.0, 10, 'cc61ef6d-2d9e-426e-bec4-6993ce46072a', 0, '2026-01-27 23:00:52.891716', '2026-01-27 23:00:52.891716');
 INSERT INTO public.iterations VALUES ('9e776205-f094-4ef0-a2a7-effe8455b3ba', 50.0, 5, '2aa10663-37a6-4d3b-9223-211e7b32d13a', 0, '2026-01-27 23:19:12.309598', '2026-01-27 23:19:12.309598');
 INSERT INTO public.iterations VALUES ('473a2b99-03f3-40c9-8322-3270e35ed928', 80.0, 4, '2aa10663-37a6-4d3b-9223-211e7b32d13a', 1, '2026-01-27 23:19:12.309598', '2026-01-27 23:19:12.309598');
+INSERT INTO public.iterations VALUES ('ee74a7bc-8802-49e5-baed-4da57a20e764', 1.0, 20, '52cf6daa-fced-48ed-9426-1e4241bc5c2b', 0, '2026-01-28 09:36:17.629469', '2026-01-28 09:36:17.629469');
+INSERT INTO public.iterations VALUES ('02747284-f124-43ea-82fc-68eb7bdb9784', 1.0, 20, '52cf6daa-fced-48ed-9426-1e4241bc5c2b', 1, '2026-01-28 09:36:17.629469', '2026-01-28 09:36:17.629469');
+INSERT INTO public.iterations VALUES ('e6917622-5b8c-4097-a05e-b709386f95a4', 1.0, 20, 'be6f411f-165d-4f00-a498-4055f4dfa935', 0, '2026-01-28 09:37:26.762196', '2026-01-28 09:37:26.762196');
+INSERT INTO public.iterations VALUES ('e63da9c0-c669-43b6-9ab1-ac5904cae7dd', 1.0, 20, 'be6f411f-165d-4f00-a498-4055f4dfa935', 1, '2026-01-28 09:37:26.762196', '2026-01-28 09:37:26.762196');
+INSERT INTO public.iterations VALUES ('951586cb-fd5d-41b5-a59f-96a0cbf4e51f', 1.0, 30, 'e722ad9d-4c01-40c6-8ad0-d9a4bbda83c9', 0, '2026-01-28 09:37:26.762196', '2026-01-28 09:37:26.762196');
+INSERT INTO public.iterations VALUES ('d14c42de-a19b-4706-868f-fcf05fcd7911', 30.0, 10, 'd9e6fa26-0486-4958-ad2b-3b87d70c81d1', 0, '2026-01-28 09:37:44.459129', '2026-01-28 09:37:44.459129');
+INSERT INTO public.iterations VALUES ('4411dcb5-0b0a-463e-b1ff-813f53690a28', 10.0, 15, '29c6e2e1-6ffb-4d01-9ea6-40925b718561', 0, '2026-01-28 09:50:07.384963', '2026-01-28 09:50:07.384963');
+INSERT INTO public.iterations VALUES ('ba1c9c4a-c5ad-4854-a4af-1476cd9ed81a', 10.0, 15, '29c6e2e1-6ffb-4d01-9ea6-40925b718561', 1, '2026-01-28 09:50:07.384963', '2026-01-28 09:50:07.384963');
+INSERT INTO public.iterations VALUES ('fcda5a61-e649-4187-b43d-e1cc1789e4fb', 10.0, 15, '29c6e2e1-6ffb-4d01-9ea6-40925b718561', 2, '2026-01-28 09:50:07.384963', '2026-01-28 09:50:07.384963');
+INSERT INTO public.iterations VALUES ('3a92a6d9-fa33-4067-90ce-c82d7bd15b3a', 10.0, 15, '29c6e2e1-6ffb-4d01-9ea6-40925b718561', 3, '2026-01-28 09:50:07.384963', '2026-01-28 09:50:07.384963');
+INSERT INTO public.iterations VALUES ('c36b152b-51e3-4e76-8454-8bf295cebf74', 20.0, 15, '8459aa3e-d9b1-42c1-850b-12e67dd58d01', 0, '2026-01-28 09:50:07.384963', '2026-01-28 09:50:07.384963');
+INSERT INTO public.iterations VALUES ('7cb13391-8ece-43df-9645-b33d1c35e70e', 20.0, 15, '8459aa3e-d9b1-42c1-850b-12e67dd58d01', 1, '2026-01-28 09:50:07.384963', '2026-01-28 09:50:07.384963');
+INSERT INTO public.iterations VALUES ('1ef019ec-c0b5-438f-9c73-96b70b6cdfbe', 20.0, 15, '8459aa3e-d9b1-42c1-850b-12e67dd58d01', 2, '2026-01-28 09:50:07.384963', '2026-01-28 09:50:07.384963');
+INSERT INTO public.iterations VALUES ('4d59b5b9-2747-43eb-8bc5-3c501525c3d5', 20.0, 15, '8459aa3e-d9b1-42c1-850b-12e67dd58d01', 3, '2026-01-28 09:50:07.384963', '2026-01-28 09:50:07.384963');
+INSERT INTO public.iterations VALUES ('05e65f6c-0620-4088-8955-1174fb47ddc3', 15.0, 8, '47049d66-b121-4ea0-ab31-70fd14450248', 0, '2026-01-28 12:57:29.958449', '2026-01-28 12:57:29.958449');
+INSERT INTO public.iterations VALUES ('818288dc-96f7-49e7-bdb5-51416dd3ff87', 30.0, 11, '6b588ba2-6487-4d08-acac-a81f5ebf6443', 0, '2026-01-28 14:06:42.864043', '2026-01-28 14:06:42.864043');
+INSERT INTO public.iterations VALUES ('6b903e3c-cf36-4651-b9d5-34c49c6383eb', 30.0, 11, '6b588ba2-6487-4d08-acac-a81f5ebf6443', 1, '2026-01-28 14:06:42.864043', '2026-01-28 14:06:42.864043');
+INSERT INTO public.iterations VALUES ('77377f0f-0d75-4c53-94ba-d56a46ac4ce5', 30.0, 11, '6b588ba2-6487-4d08-acac-a81f5ebf6443', 2, '2026-01-28 14:06:42.864043', '2026-01-28 14:06:42.864043');
+INSERT INTO public.iterations VALUES ('670328f4-40db-4166-b4ad-2a81ae370cf1', 10.0, 2, 'c73ef789-39ac-4fa4-9df5-33a8fe4d025a', 0, '2026-01-28 14:38:40.206926', '2026-01-28 14:38:40.206926');
+INSERT INTO public.iterations VALUES ('af47cd85-deb8-4216-afbd-62b17992022c', 110.0, 8, 'f8014524-95cb-4f48-be21-78b628c2537b', 0, '2026-01-28 19:12:27.610459', '2026-01-28 19:12:27.610459');
+INSERT INTO public.iterations VALUES ('4f198aa7-6ed0-4042-a044-7a5c46d71fcf', 110.0, 8, 'f8014524-95cb-4f48-be21-78b628c2537b', 1, '2026-01-28 19:12:27.610459', '2026-01-28 19:12:27.610459');
+INSERT INTO public.iterations VALUES ('c2e8e001-3b60-4700-b410-3196d62b2732', 110.0, 8, 'f8014524-95cb-4f48-be21-78b628c2537b', 2, '2026-01-28 19:12:27.610459', '2026-01-28 19:12:27.610459');
+INSERT INTO public.iterations VALUES ('eae2da4b-9136-432d-ba96-7a006a53b424', 105.0, 7, 'c66d783c-d873-463c-b414-fb138ebebaf7', 0, '2026-01-28 19:12:27.610459', '2026-01-28 19:12:27.610459');
+INSERT INTO public.iterations VALUES ('ce00bcb4-96f3-4fc1-b147-736e863684eb', 105.0, 7, 'c66d783c-d873-463c-b414-fb138ebebaf7', 1, '2026-01-28 19:12:27.610459', '2026-01-28 19:12:27.610459');
+INSERT INTO public.iterations VALUES ('e4dea58b-e347-410a-9dcf-1026f3514788', 105.0, 7, 'c66d783c-d873-463c-b414-fb138ebebaf7', 2, '2026-01-28 19:12:27.610459', '2026-01-28 19:12:27.610459');
+INSERT INTO public.iterations VALUES ('0ab91d93-f8d5-47bd-820c-0559d4ccc6a6', 70.0, 8, '0d35aa60-8435-435a-b5f5-c4c72c39c078', 0, '2026-01-28 19:12:27.610459', '2026-01-28 19:12:27.610459');
+INSERT INTO public.iterations VALUES ('9f0d2654-aa16-4d6e-81f3-5eec9eb50a2b', 75.0, 8, '0d35aa60-8435-435a-b5f5-c4c72c39c078', 1, '2026-01-28 19:12:27.610459', '2026-01-28 19:12:27.610459');
+INSERT INTO public.iterations VALUES ('10039752-70aa-4332-922d-7f71df0fb44e', 75.0, 8, '0d35aa60-8435-435a-b5f5-c4c72c39c078', 2, '2026-01-28 19:12:27.610459', '2026-01-28 19:12:27.610459');
+INSERT INTO public.iterations VALUES ('51329342-1a0e-4b19-a05b-8c67523ee5de', 90.0, 8, '5aa0030a-3df2-4288-9ca4-3ee705d238eb', 0, '2026-01-28 19:12:27.610459', '2026-01-28 19:12:27.610459');
+INSERT INTO public.iterations VALUES ('dfc4d9ce-2c78-4e2a-8262-dca17ddc6ec6', 90.0, 8, '5aa0030a-3df2-4288-9ca4-3ee705d238eb', 1, '2026-01-28 19:12:27.610459', '2026-01-28 19:12:27.610459');
+INSERT INTO public.iterations VALUES ('b86fae0e-d501-4862-a337-f5365a8570c7', 90.0, 8, '5aa0030a-3df2-4288-9ca4-3ee705d238eb', 2, '2026-01-28 19:12:27.610459', '2026-01-28 19:12:27.610459');
+INSERT INTO public.iterations VALUES ('f73b9ac9-9cce-4b58-94ab-95880444c57d', 90.0, 8, '5aa0030a-3df2-4288-9ca4-3ee705d238eb', 3, '2026-01-28 19:12:27.610459', '2026-01-28 19:12:27.610459');
+INSERT INTO public.iterations VALUES ('44c7b28b-ad11-4e9e-bd7b-5210d3f7d2ed', 60.0, 8, 'b4afa361-84df-42d8-a080-aa03bb2feecd', 0, '2026-01-28 19:12:27.610459', '2026-01-28 19:12:27.610459');
+INSERT INTO public.iterations VALUES ('1cc6149b-26a1-43cf-a8be-6e737d34d4ad', 60.0, 8, 'b4afa361-84df-42d8-a080-aa03bb2feecd', 1, '2026-01-28 19:12:27.610459', '2026-01-28 19:12:27.610459');
+INSERT INTO public.iterations VALUES ('b3d5aa8a-449d-451b-b29f-3a79f17ec619', 60.0, 9, 'b4afa361-84df-42d8-a080-aa03bb2feecd', 2, '2026-01-28 19:12:27.610459', '2026-01-28 19:12:27.610459');
+INSERT INTO public.iterations VALUES ('37f849f2-7f1e-492f-9cf5-7ca0580e420e', 65.0, 8, 'b4afa361-84df-42d8-a080-aa03bb2feecd', 3, '2026-01-28 19:12:27.610459', '2026-01-28 19:12:27.610459');
+INSERT INTO public.iterations VALUES ('b50f0f5f-8e6e-48dc-a59f-db0498cc43dc', 100.0, 12, '39f023f3-4fb8-44b4-9da0-d36388e80856', 0, '2026-01-28 19:12:27.610459', '2026-01-28 19:12:27.610459');
+INSERT INTO public.iterations VALUES ('0a7bebc0-45f6-4c3c-b9e7-f21392192af8', 100.0, 12, '39f023f3-4fb8-44b4-9da0-d36388e80856', 1, '2026-01-28 19:12:27.610459', '2026-01-28 19:12:27.610459');
+INSERT INTO public.iterations VALUES ('eb98e8e0-ec07-4f0c-96bc-f0bcfc5f3b45', 100.0, 12, '39f023f3-4fb8-44b4-9da0-d36388e80856', 2, '2026-01-28 19:12:27.610459', '2026-01-28 19:12:27.610459');
+INSERT INTO public.iterations VALUES ('ff9c26b8-9571-4bf1-8339-a9e2877cadeb', 80.0, 8, 'a721c043-5c71-466b-9079-9d4f26e64c2f', 0, '2026-01-28 19:12:27.610459', '2026-01-28 19:12:27.610459');
+INSERT INTO public.iterations VALUES ('92e6af87-c7f0-4f2e-a94e-4de25e059886', 80.0, 10, 'a721c043-5c71-466b-9079-9d4f26e64c2f', 1, '2026-01-28 19:12:27.610459', '2026-01-28 19:12:27.610459');
+INSERT INTO public.iterations VALUES ('40f1b6e6-ad0f-4049-a2e4-47f587f3ae6f', 80.0, 8, 'a721c043-5c71-466b-9079-9d4f26e64c2f', 2, '2026-01-28 19:12:27.610459', '2026-01-28 19:12:27.610459');
+INSERT INTO public.iterations VALUES ('6d59f205-08c4-41b2-ac5c-300ad71c8718', 80.0, 8, 'a721c043-5c71-466b-9079-9d4f26e64c2f', 3, '2026-01-28 19:12:27.610459', '2026-01-28 19:12:27.610459');
+INSERT INTO public.iterations VALUES ('3c7e0643-1f9a-4190-b3ef-1d2ae50a124d', 90.0, 15, 'b2a0d733-247b-4bd3-859b-cb89ea29f8cc', 0, '2026-01-28 19:12:27.610459', '2026-01-28 19:12:27.610459');
+INSERT INTO public.iterations VALUES ('d0bae4f4-b69d-4422-897e-e5962a7723d2', 90.0, 12, 'b2a0d733-247b-4bd3-859b-cb89ea29f8cc', 1, '2026-01-28 19:12:27.610459', '2026-01-28 19:12:27.610459');
+INSERT INTO public.iterations VALUES ('8ced81ff-94a2-4409-9a5f-a00a4ed7f6f1', 90.0, 12, 'b2a0d733-247b-4bd3-859b-cb89ea29f8cc', 2, '2026-01-28 19:12:27.610459', '2026-01-28 19:12:27.610459');
+INSERT INTO public.iterations VALUES ('79da7443-50ef-4193-87f8-3a0e984aad4f', 70.0, 3, 'a4dfac00-a190-4289-a284-37f912e01523', 0, '2026-01-28 20:42:46.390445', '2026-01-28 20:42:46.390445');
+INSERT INTO public.iterations VALUES ('7c360cf8-8e8b-4c5c-9a7b-c726e46b4da4', 10.0, 3, '852b9081-bbfb-4e37-8cce-b0a9b9ad9331', 0, '2026-01-28 21:02:19.093144', '2026-01-28 21:02:19.093144');
+INSERT INTO public.iterations VALUES ('afbf943b-ef0e-44d1-9058-bf5f4c36ebd9', 30.0, 1, '852b9081-bbfb-4e37-8cce-b0a9b9ad9331', 1, '2026-01-28 21:02:19.093144', '2026-01-28 21:02:19.093144');
+INSERT INTO public.iterations VALUES ('e79b9b2e-c896-45e2-bb97-98da6a801311', 13.0, 3, '852b9081-bbfb-4e37-8cce-b0a9b9ad9331', 2, '2026-01-28 21:02:19.093144', '2026-01-28 21:02:19.093144');
+INSERT INTO public.iterations VALUES ('4293580a-6f40-41c9-96cd-8fe84683b7b6', 10.0, 3, '852b9081-bbfb-4e37-8cce-b0a9b9ad9331', 3, '2026-01-28 21:02:19.093144', '2026-01-28 21:02:19.093144');
+INSERT INTO public.iterations VALUES ('eb984875-4432-40ac-a729-2053342fcfd0', 30.0, 3, '97a9ee3a-614a-4598-9e39-8fd69633eba4', 0, '2026-01-28 21:02:19.093144', '2026-01-28 21:02:19.093144');
+INSERT INTO public.iterations VALUES ('2591f3f9-bf17-4c17-ba58-644e8fde4c9d', 1.0, 3, '97a9ee3a-614a-4598-9e39-8fd69633eba4', 1, '2026-01-28 21:02:19.093144', '2026-01-28 21:02:19.093144');
+INSERT INTO public.iterations VALUES ('f289bac2-89b7-4d27-b367-cc708d091559', 10.0, 3, '9847b70d-9fa3-444d-b1cb-ac489dc593b0', 0, '2026-01-28 21:29:20.384059', '2026-01-28 21:29:20.384059');
+INSERT INTO public.iterations VALUES ('ca4d99f9-0a26-4d12-b219-cf53dba11b13', 98.0, 5, '261266b0-828b-4113-a691-a8d98217a68a', 0, '2026-01-28 22:24:54.827043', '2026-01-28 22:24:54.827043');
+INSERT INTO public.iterations VALUES ('7c0af108-4dc6-4c02-93ef-558baf1725bc', 55.0, 66, 'c1742618-a7fa-471d-91dc-ddbec9539a74', 0, '2026-01-28 22:25:32.121172', '2026-01-28 22:25:32.121172');
+INSERT INTO public.iterations VALUES ('9af8c81e-386e-44b8-a311-922f94f095be', 521.0, 5, '0e8d615c-de51-45d6-aa8c-807f5ca27306', 0, '2026-01-29 05:04:52.978176', '2026-01-29 05:04:52.978176');
+INSERT INTO public.iterations VALUES ('3e9608d2-c01f-4dee-b779-ce65b2eb2311', 999.0, 5, '0e8d615c-de51-45d6-aa8c-807f5ca27306', 1, '2026-01-29 05:04:52.978176', '2026-01-29 05:04:52.978176');
+INSERT INTO public.iterations VALUES ('c8c28bea-79b9-4752-b9d3-e6a6251e99de', 15.0, 15, '35172e9f-a2ef-4f5c-8510-5b913c880be5', 0, '2026-01-29 05:11:53.866455', '2026-01-29 05:11:53.866455');
+INSERT INTO public.iterations VALUES ('625ddc89-892c-45cf-b42d-67ec724cfe8b', 15.0, 15, '35172e9f-a2ef-4f5c-8510-5b913c880be5', 1, '2026-01-29 05:11:53.866455', '2026-01-29 05:11:53.866455');
+INSERT INTO public.iterations VALUES ('18cf2074-f1c0-4b9a-ba9f-fe52f3a15bf1', 15.0, 15, '35172e9f-a2ef-4f5c-8510-5b913c880be5', 2, '2026-01-29 05:11:53.866455', '2026-01-29 05:11:53.866455');
+INSERT INTO public.iterations VALUES ('cc5d89da-92d1-4b03-b39f-8ebecce000a4', 1.0, 25, '37a1ab64-8ca6-4dc7-9937-057195428155', 0, '2026-01-29 06:25:35.843103', '2026-01-29 06:25:35.843103');
+INSERT INTO public.iterations VALUES ('cbcb6fe4-871b-42f0-b776-869bc9a72455', 1.0, 25, '37a1ab64-8ca6-4dc7-9937-057195428155', 1, '2026-01-29 06:25:35.843103', '2026-01-29 06:25:35.843103');
+INSERT INTO public.iterations VALUES ('8734570f-2f63-402c-b643-84c1d380aed7', 2.0, 25, '784cb302-5f4f-42cd-bdfa-b8cd6ba5b305', 0, '2026-01-29 06:25:35.843103', '2026-01-29 06:25:35.843103');
+INSERT INTO public.iterations VALUES ('f554643c-0ea3-4089-975c-c637b196dc1c', 2.0, 5, '336eb286-82fa-4647-a92a-6f3e54ed419b', 0, '2026-01-29 12:25:41.09983', '2026-01-29 12:25:41.09983');
+INSERT INTO public.iterations VALUES ('6a8678c4-26ec-48bf-85b9-9bfea2f9fd15', 2.0, 5, '336eb286-82fa-4647-a92a-6f3e54ed419b', 1, '2026-01-29 12:25:41.09983', '2026-01-29 12:25:41.09983');
+INSERT INTO public.iterations VALUES ('d259254f-f9cd-4a64-921d-4469e48c9069', 12.0, 12, '65539175-bcbe-4af1-99cc-8c42e789ce2e', 0, '2026-01-29 14:00:50.441791', '2026-01-29 14:00:50.441791');
+INSERT INTO public.iterations VALUES ('5c56263f-323b-49ad-9868-228134a30763', 4.0, 5, '70b8b806-824b-42c8-b9b5-570be25fe0fc', 0, '2026-01-29 16:08:38.002791', '2026-01-29 16:08:38.002791');
+INSERT INTO public.iterations VALUES ('7221b958-052a-4022-a381-14bded0b240c', 10.0, 5, '9e8ea8e6-84cd-4197-97c8-a1fa3eb2223a', 0, '2026-01-29 17:48:08.869892', '2026-01-29 17:48:08.869892');
+INSERT INTO public.iterations VALUES ('55bebe6c-14d3-49de-82e0-3e7da5f6ba43', 10.0, 5, 'f9bcd5c7-6747-4c91-95ea-f627fd35b7da', 0, '2026-01-29 17:51:00.821015', '2026-01-29 17:51:00.821015');
+INSERT INTO public.iterations VALUES ('6695bf34-b1e3-4fbd-90a7-b4c0db4fd468', 10.0, 5, 'cf5a6e46-68b8-4aa9-a49a-2285b20306d7', 0, '2026-01-29 17:51:47.897661', '2026-01-29 17:51:47.897661');
+INSERT INTO public.iterations VALUES ('d6613809-dfc6-4a52-adc8-d3b099aef9bd', 5.0, 5, '9f9d81cc-c08c-488c-bb9f-c990623eba93', 0, '2026-01-29 17:54:15.088856', '2026-01-29 17:54:15.088856');
+INSERT INTO public.iterations VALUES ('e1321d67-10b5-4d8b-827b-3976845cc701', 55.0, 5, '8fcba113-c4fc-4252-a227-a515295bbc16', 0, '2026-01-29 19:30:00.894664', '2026-01-29 19:30:00.894664');
+INSERT INTO public.iterations VALUES ('36c26f72-d6eb-4cd6-b817-d490a221a351', 55.0, 5, '7f71da5a-0765-4ae1-a23e-8bffaa4e59c5', 0, '2026-01-29 19:30:19.136249', '2026-01-29 19:30:19.136249');
+INSERT INTO public.iterations VALUES ('90ef3663-bd4d-4f84-9386-f67d4b4a3701', 55.0, 5, '5d16f7cb-6612-44cb-a545-1280defdb789', 0, '2026-01-29 20:32:15.811033', '2026-01-29 20:32:15.811033');
+INSERT INTO public.iterations VALUES ('6c6159b5-7255-47ac-bcb0-013695802346', 66.0, 6, 'd453460d-ea4e-4ce1-b36f-f201891a12db', 0, '2026-01-29 20:40:33.84258', '2026-01-29 20:40:33.84258');
+INSERT INTO public.iterations VALUES ('2f2de585-5fb6-4287-a803-d3f4ed503405', 123.0, 12, '26a66f1d-e54d-48f2-99c3-523f27c1b56f', 0, '2026-01-29 21:01:24.220247', '2026-01-29 21:01:24.220247');
+INSERT INTO public.iterations VALUES ('ee82448e-322c-4586-82c1-99c8f34ce41b', 123.0, 12, 'cce8aa1e-7f5a-442a-88d7-19ac52d27c8a', 0, '2026-01-29 21:04:05.942594', '2026-01-29 21:04:05.942594');
+INSERT INTO public.iterations VALUES ('37813abb-1d41-4fff-a058-e23e57157a69', 2.0, 60, 'e9bce71e-c4b3-4b72-8431-7622ac1b49cf', 0, '2026-01-30 06:54:53.68796', '2026-01-30 06:54:53.68796');
+INSERT INTO public.iterations VALUES ('4bd3f626-168e-42c8-95dc-20cce6b7db68', 180.0, 25, 'f54e1acf-d95d-4f60-bfba-90ec07f31f2e', 0, '2026-01-30 06:54:53.68796', '2026-01-30 06:54:53.68796');
+INSERT INTO public.iterations VALUES ('d4d5ccb3-3864-4de9-b487-abfd56cf9448', 30.0, 50, '098db1c8-bdb2-41f3-862e-6bb83794a72e', 0, '2026-01-30 06:54:53.68796', '2026-01-30 06:54:53.68796');
+INSERT INTO public.iterations VALUES ('dc5e64ba-2a5d-4f31-beb7-c12698cbb632', 5.0, 60, '78f6b8c3-29f5-45ff-802c-adf0db0801df', 0, '2026-01-30 06:54:53.68796', '2026-01-30 06:54:53.68796');
+INSERT INTO public.iterations VALUES ('2456ea30-d3bd-4651-9e19-14a0fb7425fb', 15.0, 15, '4f473054-6b33-452f-9c51-87bc55fa842c', 0, '2026-01-30 07:19:28.661983', '2026-01-30 07:19:28.661983');
+INSERT INTO public.iterations VALUES ('59cdb7b7-e1fd-48eb-9336-9b4805596b27', 20.0, 1, '0a144779-5006-4c84-8ccb-b875eda41b86', 0, '2026-01-30 07:19:28.661983', '2026-01-30 07:19:28.661983');
+INSERT INTO public.iterations VALUES ('096b2e5a-851e-46bc-a7f5-e6806f188d5f', 42.0, 5, '0a144779-5006-4c84-8ccb-b875eda41b86', 1, '2026-01-30 07:19:28.661983', '2026-01-30 07:19:28.661983');
+INSERT INTO public.iterations VALUES ('fa63a06e-cc3d-4805-b62b-859e6b12c40f', 50.0, 5, '3c6f2be6-7180-4902-9085-533773c32794', 0, '2026-01-30 11:05:11.473285', '2026-01-30 11:05:11.473285');
+INSERT INTO public.iterations VALUES ('13ff9268-3f46-4bbf-96d5-e9d1e8b33538', 44.0, 55, '7f91ea30-9c63-4c50-a566-d06bccd22e9c', 0, '2026-01-30 11:25:13.20737', '2026-01-30 11:25:13.20737');
 
 
 --
@@ -3819,6 +4312,39 @@ INSERT INTO public.trainings VALUES ('dc2adb0a-4e76-4898-b1b3-8ec323ba32b9', 0, 
 INSERT INTO public.trainings VALUES ('8eb1e059-d9b3-4c99-9d06-0c63e58830f1', 0, 50.0, 5, 10.00, 'd4b742ef-34dd-441a-ab9f-5a77bc6ba81d', '2026-01-27 22:52:43.214816', '2026-01-27 22:52:43.214816');
 INSERT INTO public.trainings VALUES ('540da3a8-2e26-4130-bce7-9e173df2c621', 0, 200.0, 10, 20.00, 'd4b742ef-34dd-441a-ab9f-5a77bc6ba81d', '2026-01-27 23:00:52.891716', '2026-01-27 23:00:52.891716');
 INSERT INTO public.trainings VALUES ('c9d46415-1af0-40ad-b2f3-2706c95b23bd', 0, 570.0, 9, 63.33, 'd4b742ef-34dd-441a-ab9f-5a77bc6ba81d', '2026-01-27 23:19:12.309598', '2026-01-27 23:19:12.309598');
+INSERT INTO public.trainings VALUES ('1caf02c3-3e3a-4d5d-87d6-72306adbe449', 0, 40.0, 40, 1.00, '4fe1e344-5eba-44de-aab9-0c0251b6eeec', '2026-01-28 09:36:17.629469', '2026-01-28 09:36:17.629469');
+INSERT INTO public.trainings VALUES ('0e0c6ada-b0a4-496f-8a4d-0dcbe9ff65da', 0, 70.0, 70, 1.00, '4fe1e344-5eba-44de-aab9-0c0251b6eeec', '2026-01-28 09:37:26.762196', '2026-01-28 09:37:26.762196');
+INSERT INTO public.trainings VALUES ('2b58839c-2507-4605-9607-d6f804fb6334', 0, 300.0, 10, 30.00, '8133d1d8-f585-4815-8222-b379e1d3d5ba', '2026-01-28 09:37:44.459129', '2026-01-28 09:37:44.459129');
+INSERT INTO public.trainings VALUES ('ae70d0da-501b-4a2e-855e-cdb903e5df5b', 1, 1800.0, 120, 15.00, '64846ff6-425e-4887-a296-4fdb5eea0c54', '2026-01-28 09:50:07.384963', '2026-01-28 09:50:07.384963');
+INSERT INTO public.trainings VALUES ('976ffe5a-7cd4-44e3-8fe2-c99423565cca', 0, 120.0, 8, 15.00, 'd7295bd9-7079-4eb2-aba9-5eaf09129760', '2026-01-28 12:57:29.958449', '2026-01-28 12:57:29.958449');
+INSERT INTO public.trainings VALUES ('6b021833-8ade-46e2-a38e-3c4f509d0760', 0, 990.0, 33, 30.00, '54527a0f-0482-4c9c-9b2b-bdcaab0059d0', '2026-01-28 14:06:42.864043', '2026-01-28 14:06:42.864043');
+INSERT INTO public.trainings VALUES ('8570c40b-29b6-43d7-8fa1-05cb08411de4', 1, 20.0, 2, 10.00, '8d42cbf5-e10d-496a-8c1e-3c7e17a4136b', '2026-01-28 14:38:40.206926', '2026-01-28 14:38:40.206926');
+INSERT INTO public.trainings VALUES ('df04999e-c49b-4123-ace0-15b6132a4500', 110, 21335.0, 243, 87.80, 'c493d83c-15a8-47ce-bc70-07fed56a49d1', '2026-01-28 19:12:27.610459', '2026-01-28 19:12:27.610459');
+INSERT INTO public.trainings VALUES ('ba9b9e11-4fdf-479c-8060-b1605c0b4710', 0, 210.0, 3, 70.00, '5700942a-c39d-46bd-9d37-12e4385d8e48', '2026-01-28 20:42:46.390445', '2026-01-28 20:42:46.390445');
+INSERT INTO public.trainings VALUES ('5fc4bfe0-9768-4653-8bad-3effc2d9a8f3', 2, 222.0, 16, 13.88, '5700942a-c39d-46bd-9d37-12e4385d8e48', '2026-01-28 21:02:19.093144', '2026-01-28 21:02:19.093144');
+INSERT INTO public.trainings VALUES ('0034d93c-a89f-49fa-95e4-be8a7d567846', 0, 30.0, 3, 10.00, '5700942a-c39d-46bd-9d37-12e4385d8e48', '2026-01-28 21:29:20.384059', '2026-01-28 21:29:20.384059');
+INSERT INTO public.trainings VALUES ('753b7877-75b6-4ce5-aeb3-a019ef0ac4b3', 0, 490.0, 5, 98.00, '5e8f6b16-5fa6-48a2-b00c-1d741ccd7dff', '2026-01-28 22:24:54.827043', '2026-01-28 22:24:54.827043');
+INSERT INTO public.trainings VALUES ('ed3040a3-94b2-4f0e-bc66-65ed47cc39c5', 0, 3630.0, 66, 55.00, '8e4d059e-2c67-418d-b6b4-864287638b77', '2026-01-28 22:25:32.121172', '2026-01-28 22:25:32.121172');
+INSERT INTO public.trainings VALUES ('1aca55bf-3552-4b15-b006-3a9aa612f970', 0, 7600.0, 10, 760.00, '5700942a-c39d-46bd-9d37-12e4385d8e48', '2026-01-29 05:04:52.978176', '2026-01-29 05:04:52.978176');
+INSERT INTO public.trainings VALUES ('0a8d417b-d6cf-4a55-a710-2e404cfc825f', 0, 675.0, 45, 15.00, '64846ff6-425e-4887-a296-4fdb5eea0c54', '2026-01-29 05:11:53.866455', '2026-01-29 05:11:53.866455');
+INSERT INTO public.trainings VALUES ('5bd3ecaa-7731-4962-a6ed-728195c70969', 0, 100.0, 75, 1.33, '4fe1e344-5eba-44de-aab9-0c0251b6eeec', '2026-01-29 06:25:35.843103', '2026-01-29 06:25:35.843103');
+INSERT INTO public.trainings VALUES ('d902bce6-4c62-48c5-b401-d1bfd342fbc0', 0, 20.0, 10, 2.00, '4fe1e344-5eba-44de-aab9-0c0251b6eeec', '2026-01-29 12:25:41.09983', '2026-01-29 12:25:41.09983');
+INSERT INTO public.trainings VALUES ('ff2bffb9-00a1-4fa6-a629-cf564bc45eab', 0, 144.0, 12, 12.00, '76b7cdff-04e4-49c6-87e5-faea4ec246bc', '2026-01-29 14:00:50.441791', '2026-01-29 14:00:50.441791');
+INSERT INTO public.trainings VALUES ('cfd35329-688b-4474-ad31-b0cfa6903ecd', 0, 20.0, 5, 4.00, '5700942a-c39d-46bd-9d37-12e4385d8e48', '2026-01-29 16:08:38.002791', '2026-01-29 16:08:38.002791');
+INSERT INTO public.trainings VALUES ('394ca52d-0e7e-4848-85c2-2354c8d4f33a', 1, 50.0, 5, 10.00, '8d42cbf5-e10d-496a-8c1e-3c7e17a4136b', '2026-01-29 17:48:08.869892', '2026-01-29 17:48:08.869892');
+INSERT INTO public.trainings VALUES ('910a0c49-a3bb-4a14-badf-d54191253353', 1, 50.0, 5, 10.00, '8d42cbf5-e10d-496a-8c1e-3c7e17a4136b', '2026-01-29 17:51:00.821015', '2026-01-29 17:51:00.821015');
+INSERT INTO public.trainings VALUES ('bb98dc7b-21af-4b92-a926-68da98d9a1e5', 0, 50.0, 5, 10.00, '8d42cbf5-e10d-496a-8c1e-3c7e17a4136b', '2026-01-29 17:51:47.897661', '2026-01-29 17:51:47.897661');
+INSERT INTO public.trainings VALUES ('ec1fc629-73c5-4af0-8d99-cd06292fcb18', 1, 25.0, 5, 5.00, '8d42cbf5-e10d-496a-8c1e-3c7e17a4136b', '2026-01-29 17:54:15.088856', '2026-01-29 17:54:15.088856');
+INSERT INTO public.trainings VALUES ('f816825c-9315-4e61-8b48-155e689fd795', 0, 275.0, 5, 55.00, '91e5b785-fad0-49f7-a045-42bf2d47496a', '2026-01-29 19:30:00.894664', '2026-01-29 19:30:00.894664');
+INSERT INTO public.trainings VALUES ('689d02f3-ba70-4ebd-bf12-5a3949ebab0c', 0, 275.0, 5, 55.00, '148cfad2-3bd1-4a6b-bdb4-be66cf0fbc9e', '2026-01-29 19:30:19.136249', '2026-01-29 19:30:19.136249');
+INSERT INTO public.trainings VALUES ('7d7e4b64-f0ce-4891-832a-27aad3109cd4', 0, 275.0, 5, 55.00, '91e5b785-fad0-49f7-a045-42bf2d47496a', '2026-01-29 20:32:15.811033', '2026-01-29 20:32:15.811033');
+INSERT INTO public.trainings VALUES ('7ed83324-24aa-4597-8a33-db79f6c01d21', 0, 396.0, 6, 66.00, '91e5b785-fad0-49f7-a045-42bf2d47496a', '2026-01-29 20:40:33.84258', '2026-01-29 20:40:33.84258');
+INSERT INTO public.trainings VALUES ('d197544d-511c-472d-b6b3-604272daaf13', 0, 1476.0, 12, 123.00, '5e8f6b16-5fa6-48a2-b00c-1d741ccd7dff', '2026-01-29 21:01:24.220247', '2026-01-29 21:01:24.220247');
+INSERT INTO public.trainings VALUES ('064619de-c7a9-4c82-816f-7f9a71c3cfac', 0, 1476.0, 12, 123.00, '5e8f6b16-5fa6-48a2-b00c-1d741ccd7dff', '2026-01-29 21:04:05.942594', '2026-01-29 21:04:05.942594');
+INSERT INTO public.trainings VALUES ('843666fd-71d5-490b-8c36-fd90da21f44e', 1, 6420.0, 195, 32.92, '4fe1e344-5eba-44de-aab9-0c0251b6eeec', '2026-01-30 06:54:53.68796', '2026-01-30 06:54:53.68796');
+INSERT INTO public.trainings VALUES ('5d1edd3a-6fa1-4aaa-9818-8f40282ad72b', 0, 455.0, 21, 21.67, '64846ff6-425e-4887-a296-4fdb5eea0c54', '2026-01-30 07:19:28.661983', '2026-01-30 07:19:28.661983');
+INSERT INTO public.trainings VALUES ('e72a1a45-9c4c-41ef-80d4-beb24fec6fb5', 0, 250.0, 5, 50.00, '8133d1d8-f585-4815-8222-b379e1d3d5ba', '2026-01-30 11:05:11.473285', '2026-01-30 11:05:11.473285');
+INSERT INTO public.trainings VALUES ('f56223eb-a7c4-4504-9a3f-f555e55050f0', 0, 2420.0, 55, 44.00, '5700942a-c39d-46bd-9d37-12e4385d8e48', '2026-01-30 11:25:13.20737', '2026-01-30 11:25:13.20737');
 
 
 --
@@ -3833,6 +4359,16 @@ INSERT INTO public.user_profiles VALUES ('5e8f6b16-5fa6-48a2-b00c-1d741ccd7dff',
 INSERT INTO public.user_profiles VALUES ('8e4d059e-2c67-418d-b6b4-864287638b77', 'efc082fa-50e1-4f98-aaa5-8f3ffcc55d06', 'Realme', 175, 'pro', '2026-01-27 21:20:08.625577', '2026-01-27 21:20:08.625577');
 INSERT INTO public.user_profiles VALUES ('d7295bd9-7079-4eb2-aba9-5eaf09129760', 'b5dec608-5e31-4505-81bb-3c0ead3f4ca0', 'Klouser', 175, 'intermediate', '2026-01-27 22:49:18.294967', '2026-01-27 22:49:18.294967');
 INSERT INTO public.user_profiles VALUES ('d4b742ef-34dd-441a-ab9f-5a77bc6ba81d', '61dc44af-9a04-453f-bf09-1ecddddc7c0f', 'Наприклад Олексій', 175, 'intermediate', '2026-01-27 22:48:10.152986', '2026-01-27 22:53:09.717794');
+INSERT INTO public.user_profiles VALUES ('4fe1e344-5eba-44de-aab9-0c0251b6eeec', '3471dd75-6b6a-4ee8-82de-0995976e1c2d', 'Кирилл', 180, 'advanced', '2026-01-28 09:35:17.553422', '2026-01-28 09:35:17.553422');
+INSERT INTO public.user_profiles VALUES ('8133d1d8-f585-4815-8222-b379e1d3d5ba', 'cee717bb-180a-4dcf-a3e8-04fed2c81d2e', 'Алах', 182, 'advanced', '2026-01-28 09:37:20.136104', '2026-01-28 09:37:20.136104');
+INSERT INTO public.user_profiles VALUES ('54527a0f-0482-4c9c-9b2b-bdcaab0059d0', '8097b33d-ff48-4dca-a8bf-dbee6080b13a', 'Maria', 155, 'intermediate', '2026-01-28 09:44:54.132976', '2026-01-28 09:44:54.132976');
+INSERT INTO public.user_profiles VALUES ('64846ff6-425e-4887-a296-4fdb5eea0c54', '9579e5b7-7404-4608-8621-ac1f3e2e6250', 'Адекс', 181, 'intermediate', '2026-01-28 09:48:12.99652', '2026-01-28 09:48:12.99652');
+INSERT INTO public.user_profiles VALUES ('8d42cbf5-e10d-496a-8c1e-3c7e17a4136b', 'f821442f-e678-4bef-8666-8da5a7966fe9', 'Olena', 175, 'beginner', '2026-01-28 14:36:52.68345', '2026-01-28 14:36:52.68345');
+INSERT INTO public.user_profiles VALUES ('5700942a-c39d-46bd-9d37-12e4385d8e48', 'beea304b-d371-41aa-b071-26cff07d5924', 'Illia', 170, 'beginner', '2026-01-28 20:41:46.882342', '2026-01-28 20:41:46.882342');
+INSERT INTO public.user_profiles VALUES ('76b7cdff-04e4-49c6-87e5-faea4ec246bc', '8587dc0a-62bd-4e65-92fc-9fbd101b1308', 'MxMaxTest', 175, 'advanced', '2026-01-29 14:00:36.571482', '2026-01-29 14:00:36.571482');
+INSERT INTO public.user_profiles VALUES ('054d10d1-892e-4084-a0c8-6e6d77b63d66', 'a72f4cca-cfd5-41b2-8a97-7e5e3cbddc05', 'Glasha', 175, 'advanced', '2026-01-29 16:50:42.413214', '2026-01-29 16:50:42.413214');
+INSERT INTO public.user_profiles VALUES ('148cfad2-3bd1-4a6b-bdb4-be66cf0fbc9e', '6f784d82-776a-4fa5-b4f6-df5895ea32dd', 'Hdhdjd', 175, 'intermediate', '2026-01-29 19:25:26.038548', '2026-01-29 19:25:26.038548');
+INSERT INTO public.user_profiles VALUES ('91e5b785-fad0-49f7-a045-42bf2d47496a', '9d910be5-71de-42a3-b94a-239c436cefe5', 'Hhhgghhhhhh', 175, 'intermediate', '2026-01-29 19:29:42.570866', '2026-01-29 19:29:42.570866');
 
 
 --
@@ -3847,6 +4383,16 @@ INSERT INTO public.users VALUES ('e86eb4ce-64e7-4ea4-b41b-e730d8350627', 'xiaomi
 INSERT INTO public.users VALUES ('efc082fa-50e1-4f98-aaa5-8f3ffcc55d06', 'realme@mail.com', '$2a$10$6iAdwY8yVV06MqnyDYB3ueaWHa4.Y5.xqibZl46rXNnnsTnN51uZu', NULL, NULL, 'default', '2026-01-27 21:19:59.495484', '2026-01-27 21:19:59.495484');
 INSERT INTO public.users VALUES ('61dc44af-9a04-453f-bf09-1ecddddc7c0f', 'oleh.cherednik@gmail.com', '$2a$10$jm1aw94C.PaHgSAOc/KsK.mHv2.J9aY.vSZGO.jlbUR8PHL1p09/e', NULL, NULL, 'default', '2026-01-27 22:45:30.537787', '2026-01-27 22:45:30.537787');
 INSERT INTO public.users VALUES ('b5dec608-5e31-4505-81bb-3c0ead3f4ca0', 'klo@mail.com', '$2a$10$3af1RsRjmm8e1emP6hh7w.fLx.DB6EB0cgSRWmiZdlz1.1UekpMpq', NULL, NULL, 'default', '2026-01-27 22:48:54.17493', '2026-01-27 22:48:54.17493');
+INSERT INTO public.users VALUES ('3471dd75-6b6a-4ee8-82de-0995976e1c2d', 'pokypki02@gmail.com', '$2a$10$yu664ULOSEU.XbS4sVwMNOCGz/KLwDsbxQIy2j5b5X7EctRR1jjry', NULL, NULL, 'default', '2026-01-28 09:33:49.527656', '2026-01-28 09:33:49.527656');
+INSERT INTO public.users VALUES ('cee717bb-180a-4dcf-a3e8-04fed2c81d2e', 'bogdanglovo@gmail.com', '$2a$10$6sIiZ4ViCp.Zga.9c8wrcOal1RLdom/NAyRiSCDjiJEg9vYqibA32', NULL, NULL, 'default', '2026-01-28 09:36:44.067912', '2026-01-28 09:36:44.067912');
+INSERT INTO public.users VALUES ('8097b33d-ff48-4dca-a8bf-dbee6080b13a', 'gideon.flax@gmail.com', '$2a$10$VnfwWkzwXDb6PruSc.4P9u2CNAvAYgPFJbkhrJ3yNw76Iap50bTIm', NULL, NULL, 'default', '2026-01-28 09:43:59.611499', '2026-01-28 09:43:59.611499');
+INSERT INTO public.users VALUES ('9579e5b7-7404-4608-8621-ac1f3e2e6250', 'alexey.bychek94@gmail.com', '$2a$10$x14sLKG6Q4oSZYNMqg4JoOBZvRZSWHzMh66jjD0x7OerfATXiltqa', NULL, NULL, 'default', '2026-01-28 09:47:07.730137', '2026-01-28 09:47:07.730137');
+INSERT INTO public.users VALUES ('f821442f-e678-4bef-8666-8da5a7966fe9', 'lenavoitenko66@gmail.com', '$2a$10$CW9KcQOD2c/HAvwXJhBdS.w/My8WMSNCxRo28bPQq62UlojfFOJjG', NULL, NULL, 'default', '2026-01-28 14:36:05.533899', '2026-01-28 14:36:05.533899');
+INSERT INTO public.users VALUES ('beea304b-d371-41aa-b071-26cff07d5924', 'donrivol10@gmail.com', '$2a$10$bN38E5bMYLX61zd/nLVc5.x45vSlhAPgX3P9FDdzeHOabaGLlU0Fu', NULL, NULL, 'default', '2026-01-28 20:36:34.361157', '2026-01-28 20:36:34.361157');
+INSERT INTO public.users VALUES ('8587dc0a-62bd-4e65-92fc-9fbd101b1308', 'test@test.test', '$2a$10$09qwzDB0AW547zt6H.rP.eOBGUPktNBEIx0YMMMxSu6sKUAdzK8PS', NULL, NULL, 'default', '2026-01-29 14:00:24.659334', '2026-01-29 14:00:24.659334');
+INSERT INTO public.users VALUES ('6f784d82-776a-4fa5-b4f6-df5895ea32dd', 'mainvoitenko@gmail.com', NULL, '111416408180198489747', NULL, 'default', '2026-01-29 19:25:15.846129', '2026-01-29 19:25:15.846129');
+INSERT INTO public.users VALUES ('9d910be5-71de-42a3-b94a-239c436cefe5', 'm.voitenko@monosoft.dev', NULL, '118417615292702784927', NULL, 'default', '2026-01-29 19:29:33.415602', '2026-01-29 19:29:33.415602');
+INSERT INTO public.users VALUES ('a72f4cca-cfd5-41b2-8a97-7e5e3cbddc05', 'gladkovskiy97@gmail.com', '$2a$10$.J7nBSAf9K/cyaqidhL3Je6AS7ogptggOCANXn2Jthr68fLWFl/.a', '109434745454317338146', NULL, 'default', '2026-01-29 16:50:13.683198', '2026-01-30 10:58:13.762364');
 
 
 --
@@ -3861,6 +4407,16 @@ INSERT INTO public.weight_history VALUES ('4a1794e3-8140-4b15-bc1f-74edc5117f22'
 INSERT INTO public.weight_history VALUES ('0d1b0ee4-4e91-49d6-957b-ce9675ea5fb3', '8e4d059e-2c67-418d-b6b4-864287638b77', 70.0, '2026-01-27 21:20:08.625577', '2026-01-27 21:20:08.625577');
 INSERT INTO public.weight_history VALUES ('d40106c7-abc4-4832-aa95-33c70657a0d8', 'd4b742ef-34dd-441a-ab9f-5a77bc6ba81d', 70.0, '2026-01-27 22:48:10.152986', '2026-01-27 22:48:10.152986');
 INSERT INTO public.weight_history VALUES ('d944c4fc-04b0-4d47-b8f0-ddd56ce7d74a', 'd7295bd9-7079-4eb2-aba9-5eaf09129760', 70.0, '2026-01-27 22:49:18.294967', '2026-01-27 22:49:18.294967');
+INSERT INTO public.weight_history VALUES ('9ead8be1-a50f-431e-accf-8ee50e035968', '4fe1e344-5eba-44de-aab9-0c0251b6eeec', 75.0, '2026-01-28 09:35:17.553422', '2026-01-28 09:35:17.553422');
+INSERT INTO public.weight_history VALUES ('dcc52fdd-be5c-4de2-abb8-483754a6dd0f', '8133d1d8-f585-4815-8222-b379e1d3d5ba', 79.6, '2026-01-28 09:37:20.136104', '2026-01-28 09:37:20.136104');
+INSERT INTO public.weight_history VALUES ('98f42b9a-5dd4-404c-9048-f3a0b3f95f24', '54527a0f-0482-4c9c-9b2b-bdcaab0059d0', 56.9, '2026-01-28 09:44:54.132976', '2026-01-28 09:44:54.132976');
+INSERT INTO public.weight_history VALUES ('6ed8cb8c-8129-449e-a312-d23213e5e8df', '64846ff6-425e-4887-a296-4fdb5eea0c54', 85.0, '2026-01-28 09:48:12.99652', '2026-01-28 09:48:12.99652');
+INSERT INTO public.weight_history VALUES ('8dafac22-4248-48e0-ad19-68891525e438', '8d42cbf5-e10d-496a-8c1e-3c7e17a4136b', 70.0, '2026-01-28 14:36:52.68345', '2026-01-28 14:36:52.68345');
+INSERT INTO public.weight_history VALUES ('e5b9e973-1f1a-45c6-91a5-f42e975a7b1d', '5700942a-c39d-46bd-9d37-12e4385d8e48', 75.0, '2026-01-28 20:41:46.882342', '2026-01-28 20:41:46.882342');
+INSERT INTO public.weight_history VALUES ('acb867a0-d50b-48cd-9dca-06d2c4b57df3', '76b7cdff-04e4-49c6-87e5-faea4ec246bc', 70.0, '2026-01-29 14:00:36.571482', '2026-01-29 14:00:36.571482');
+INSERT INTO public.weight_history VALUES ('2fb221ea-65f0-496b-8f2a-164c96607d7d', '054d10d1-892e-4084-a0c8-6e6d77b63d66', 82.2, '2026-01-29 16:50:42.413214', '2026-01-29 16:50:42.413214');
+INSERT INTO public.weight_history VALUES ('d9193434-49fd-4ab1-bc0c-fbbc0f0521fe', '148cfad2-3bd1-4a6b-bdb4-be66cf0fbc9e', 70.0, '2026-01-29 19:25:26.038548', '2026-01-29 19:25:26.038548');
+INSERT INTO public.weight_history VALUES ('836aa8e9-32ad-4408-b1f1-67796f91e54f', '91e5b785-fad0-49f7-a045-42bf2d47496a', 70.0, '2026-01-29 19:29:42.570866', '2026-01-29 19:29:42.570866');
 
 
 --

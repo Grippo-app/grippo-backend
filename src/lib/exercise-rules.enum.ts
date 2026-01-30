@@ -17,10 +17,3 @@ export enum ExerciseRulesMissingBodyWeightBehaviorEnum {
     SaveAsRepetitionsOnly = 'SaveAsRepetitionsOnly',
     SaveWithZeroWeight = 'SaveWithZeroWeight',
 }
-
-export enum ExerciseRulesWeightDisplayEnum {
-    Kilograms = 'Kilograms',
-    BodyWeight = 'BodyWeight',
-    BodyWeightPlusExtraWeight = 'BodyWeightPlusExtraWeight',
-    Hidden = 'Hidden',
-}

@@ -244,7 +244,6 @@ export class TrainingsService {
                 canUseAssistance: rule.canUseAssistance,
             },
             missingBodyWeightBehavior: rule.missingBodyWeightBehavior,
-            weightDisplay: rule.weightDisplay,
             requiresEquipment: rule.requiresEquipment,
         };
     }

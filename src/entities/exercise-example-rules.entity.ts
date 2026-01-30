@@ -12,7 +12,6 @@ import {
     ExerciseRulesEntryTypeEnum,
     ExerciseRulesLoadTypeEnum,
     ExerciseRulesMissingBodyWeightBehaviorEnum,
-    ExerciseRulesWeightDisplayEnum,
 } from '../lib/exercise-rules.enum';
 
 @Entity({name: 'exercise_example_rules'})
@@ -62,14 +61,6 @@ export class ExerciseExampleRulesEntity {
         default: ExerciseRulesMissingBodyWeightBehaviorEnum.SaveAsRepetitionsOnly,
     })
     missingBodyWeightBehavior: ExerciseRulesMissingBodyWeightBehaviorEnum;
-
-    @Column({
-        type: 'enum',
-        enum: ExerciseRulesWeightDisplayEnum,
-        enumName: 'exercise_example_rules_weight_display_enum',
-        default: ExerciseRulesWeightDisplayEnum.Kilograms,
-    })
-    weightDisplay: ExerciseRulesWeightDisplayEnum;
 
     @Column({type: 'boolean', default: false})
     requiresEquipment: boolean;

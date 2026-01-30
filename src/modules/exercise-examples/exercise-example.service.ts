@@ -333,7 +333,6 @@ export class ExerciseExampleService {
         rule.canAddExtraWeight = rules.options.canAddExtraWeight;
         rule.canUseAssistance = rules.options.canUseAssistance;
         rule.missingBodyWeightBehavior = rules.missingBodyWeightBehavior;
-        rule.weightDisplay = rules.weightDisplay;
         rule.requiresEquipment = rules.requiresEquipment;
         return rule;
     }
@@ -372,7 +371,6 @@ export class ExerciseExampleService {
                 canUseAssistance: rule.canUseAssistance,
             },
             missingBodyWeightBehavior: rule.missingBodyWeightBehavior,
-            weightDisplay: rule.weightDisplay,
             requiresEquipment: rule.requiresEquipment,
         };
     }

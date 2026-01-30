@@ -5,7 +5,6 @@ import {
     ExerciseRulesEntryTypeEnum,
     ExerciseRulesLoadTypeEnum,
     ExerciseRulesMissingBodyWeightBehaviorEnum,
-    ExerciseRulesWeightDisplayEnum,
 } from '../../../lib/exercise-rules.enum';
 
 export class ExerciseRulesEntryDto {
@@ -59,9 +58,6 @@ export class ExerciseRulesRequestDto {
     @IsEnum(ExerciseRulesMissingBodyWeightBehaviorEnum)
     missingBodyWeightBehavior: ExerciseRulesMissingBodyWeightBehaviorEnum;
 
-    @ApiProperty({enum: ExerciseRulesWeightDisplayEnum})
-    @IsEnum(ExerciseRulesWeightDisplayEnum)
-    weightDisplay: ExerciseRulesWeightDisplayEnum;
 
     @ApiProperty({type: 'boolean'})
     @IsBoolean()
@@ -81,8 +77,6 @@ export class ExerciseRulesResponseDto {
     @ApiProperty({enum: ExerciseRulesMissingBodyWeightBehaviorEnum})
     missingBodyWeightBehavior: ExerciseRulesMissingBodyWeightBehaviorEnum;
 
-    @ApiProperty({enum: ExerciseRulesWeightDisplayEnum})
-    weightDisplay: ExerciseRulesWeightDisplayEnum;
 
     @ApiProperty({type: 'boolean'})
     requiresEquipment: boolean;
