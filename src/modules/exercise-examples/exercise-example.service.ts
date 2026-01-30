@@ -323,52 +323,52 @@ export class ExerciseExampleService {
         rule.id = exerciseExampleId;
         rule.exerciseExampleId = exerciseExampleId;
 
-        rule.externalWeightRequired = rules.inputs.externalWeight?.required ?? null;
-        rule.bodyWeightMultiplier = rules.inputs.bodyWeight?.multiplier ?? null;
-        rule.extraWeightRequired = rules.inputs.extraWeight?.required ?? null;
-        rule.assistanceRequired = rules.inputs.assistance?.required ?? null;
+        rule.externalWeightRequired = rules.components.externalWeight?.required ?? null;
+        rule.bodyWeightMultiplier = rules.components.bodyWeight?.multiplier ?? null;
+        rule.extraWeightRequired = rules.components.extraWeight?.required ?? null;
+        rule.assistWeightRequired = rules.components.assistWeight?.required ?? null;
         return rule;
     }
 
     private validateRules(rules: ExerciseRulesRequestDto): void {
-        const inputs = rules.inputs;
+        const components = rules.components;
 
-        if (!inputs) {
-            throw new BadRequestException('Rules inputs are required');
+        if (!components) {
+            throw new BadRequestException('Rules components are required');
         }
 
         const {
             externalWeight,
             bodyWeight,
             extraWeight,
-            assistance,
-        } = inputs;
+            assistWeight,
+        } = components;
 
         if (externalWeight !== null && bodyWeight !== null) {
-            throw new BadRequestException('Rules inputs externalWeight/bodyWeight are mutually exclusive');
+            throw new BadRequestException('Rules components externalWeight/bodyWeight are mutually exclusive');
         }
 
         if (extraWeight !== null && bodyWeight === null) {
-            throw new BadRequestException('Rules inputs extraWeight require bodyWeight');
+            throw new BadRequestException('Rules components extraWeight require bodyWeight');
         }
 
-        if (assistance !== null && bodyWeight === null) {
-            throw new BadRequestException('Rules inputs assistance require bodyWeight');
+        if (assistWeight !== null && bodyWeight === null) {
+            throw new BadRequestException('Rules components assistWeight require bodyWeight');
         }
 
-        if (externalWeight !== null && (extraWeight !== null || assistance !== null)) {
-            throw new BadRequestException('Rules inputs externalWeight cannot be combined with extraWeight or assistance');
+        if (externalWeight !== null && (extraWeight !== null || assistWeight !== null)) {
+            throw new BadRequestException('Rules components externalWeight cannot be combined with extraWeight or assistWeight');
         }
 
         if (bodyWeight !== null) {
             if (bodyWeight.participates !== true) {
-                throw new BadRequestException('Rules inputs bodyWeight participates must be true');
+                throw new BadRequestException('Rules components bodyWeight participates must be true');
             }
             if (typeof bodyWeight.multiplier !== 'number') {
-                throw new BadRequestException('Rules inputs bodyWeight multiplier is required');
+                throw new BadRequestException('Rules components bodyWeight multiplier is required');
             }
             if (bodyWeight.multiplier < 0.05 || bodyWeight.multiplier > 2.0) {
-                throw new BadRequestException('Rules inputs bodyWeight multiplier out of range');
+                throw new BadRequestException('Rules components bodyWeight multiplier out of range');
             }
         }
 
@@ -376,13 +376,13 @@ export class ExerciseExampleService {
 
     private buildRulesResponse(rule: ExerciseExampleRulesEntity): ExerciseRulesResponseDto {
         return {
-            inputs: {
+            components: {
                 externalWeight: rule.externalWeightRequired === null ? null : {required: rule.externalWeightRequired},
                 bodyWeight: rule.bodyWeightMultiplier === null
                     ? null
                     : {participates: true, multiplier: rule.bodyWeightMultiplier},
                 extraWeight: rule.extraWeightRequired === null ? null : {required: rule.extraWeightRequired},
-                assistance: rule.assistanceRequired === null ? null : {required: rule.assistanceRequired},
+                assistWeight: rule.assistWeightRequired === null ? null : {required: rule.assistWeightRequired},
             },
         };
     }

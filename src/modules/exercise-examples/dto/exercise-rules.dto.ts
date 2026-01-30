@@ -11,13 +11,13 @@ import {
 import {ApiProperty, ApiPropertyOptional, getSchemaPath} from '@nestjs/swagger';
 import {Type} from 'class-transformer';
 
-export class ExerciseRulesInputExternalWeightDto {
+export class ExerciseRulesComponentsExternalWeightDto {
     @ApiProperty({type: 'boolean'})
     @IsBoolean()
     required: boolean;
 }
 
-export class ExerciseRulesInputBodyWeightDto {
+export class ExerciseRulesComponentsBodyWeightDto {
     @ApiProperty({type: 'boolean', example: true})
     @Equals(true)
     participates: true;
@@ -29,69 +29,69 @@ export class ExerciseRulesInputBodyWeightDto {
     multiplier: number;
 }
 
-export class ExerciseRulesInputExtraWeightDto {
+export class ExerciseRulesComponentsExtraWeightDto {
     @ApiProperty({type: 'boolean'})
     @IsBoolean()
     required: boolean;
 }
 
-export class ExerciseRulesInputAssistanceDto {
+export class ExerciseRulesComponentsAssistWeightDto {
     @ApiProperty({type: 'boolean'})
     @IsBoolean()
     required: boolean;
 }
 
-export class ExerciseRulesInputsDto {
+export class ExerciseRulesComponentsDto {
     @ApiPropertyOptional({
-        oneOf: [{type: 'null'}, {$ref: getSchemaPath(ExerciseRulesInputExternalWeightDto)}],
+        oneOf: [{type: 'null'}, {$ref: getSchemaPath(ExerciseRulesComponentsExternalWeightDto)}],
         nullable: true,
     })
     @IsDefined()
     @ValidateIf((_, value) => value !== null)
     @ValidateNested()
-    @Type(() => ExerciseRulesInputExternalWeightDto)
-    externalWeight: ExerciseRulesInputExternalWeightDto | null;
+    @Type(() => ExerciseRulesComponentsExternalWeightDto)
+    externalWeight: ExerciseRulesComponentsExternalWeightDto | null;
 
     @ApiPropertyOptional({
-        oneOf: [{type: 'null'}, {$ref: getSchemaPath(ExerciseRulesInputBodyWeightDto)}],
+        oneOf: [{type: 'null'}, {$ref: getSchemaPath(ExerciseRulesComponentsBodyWeightDto)}],
         nullable: true,
     })
     @IsDefined()
     @ValidateIf((_, value) => value !== null)
     @ValidateNested()
-    @Type(() => ExerciseRulesInputBodyWeightDto)
-    bodyWeight: ExerciseRulesInputBodyWeightDto | null;
+    @Type(() => ExerciseRulesComponentsBodyWeightDto)
+    bodyWeight: ExerciseRulesComponentsBodyWeightDto | null;
 
     @ApiPropertyOptional({
-        oneOf: [{type: 'null'}, {$ref: getSchemaPath(ExerciseRulesInputExtraWeightDto)}],
+        oneOf: [{type: 'null'}, {$ref: getSchemaPath(ExerciseRulesComponentsExtraWeightDto)}],
         nullable: true,
     })
     @IsDefined()
     @ValidateIf((_, value) => value !== null)
     @ValidateNested()
-    @Type(() => ExerciseRulesInputExtraWeightDto)
-    extraWeight: ExerciseRulesInputExtraWeightDto | null;
+    @Type(() => ExerciseRulesComponentsExtraWeightDto)
+    extraWeight: ExerciseRulesComponentsExtraWeightDto | null;
 
     @ApiPropertyOptional({
-        oneOf: [{type: 'null'}, {$ref: getSchemaPath(ExerciseRulesInputAssistanceDto)}],
+        oneOf: [{type: 'null'}, {$ref: getSchemaPath(ExerciseRulesComponentsAssistWeightDto)}],
         nullable: true,
     })
     @IsDefined()
     @ValidateIf((_, value) => value !== null)
     @ValidateNested()
-    @Type(() => ExerciseRulesInputAssistanceDto)
-    assistance: ExerciseRulesInputAssistanceDto | null;
+    @Type(() => ExerciseRulesComponentsAssistWeightDto)
+    assistWeight: ExerciseRulesComponentsAssistWeightDto | null;
 }
 
 export class ExerciseRulesRequestDto {
-    @ApiProperty({type: () => ExerciseRulesInputsDto})
+    @ApiProperty({type: () => ExerciseRulesComponentsDto})
     @IsDefined()
     @ValidateNested()
-    @Type(() => ExerciseRulesInputsDto)
-    inputs: ExerciseRulesInputsDto;
+    @Type(() => ExerciseRulesComponentsDto)
+    components: ExerciseRulesComponentsDto;
 }
 
 export class ExerciseRulesResponseDto {
-    @ApiProperty({type: () => ExerciseRulesInputsDto})
-    inputs: ExerciseRulesInputsDto;
+    @ApiProperty({type: () => ExerciseRulesComponentsDto})
+    components: ExerciseRulesComponentsDto;
 }

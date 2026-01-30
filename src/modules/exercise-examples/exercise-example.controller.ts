@@ -26,11 +26,11 @@ import {ExerciseExampleResponseDto, ExerciseExampleWithStatsResponse} from "./dt
 import {ExerciseExamplesEntity} from "../../entities/exercise-examples.entity";
 import {ExerciseExampleI18nService} from "../../i18n/exercise-example-i18n.service";
 import {
-    ExerciseRulesInputAssistanceDto,
-    ExerciseRulesInputBodyWeightDto,
-    ExerciseRulesInputExternalWeightDto,
-    ExerciseRulesInputExtraWeightDto,
-    ExerciseRulesInputsDto,
+    ExerciseRulesComponentsAssistWeightDto,
+    ExerciseRulesComponentsBodyWeightDto,
+    ExerciseRulesComponentsExternalWeightDto,
+    ExerciseRulesComponentsExtraWeightDto,
+    ExerciseRulesComponentsDto,
     ExerciseRulesResponseDto,
 } from "./dto/exercise-rules.dto";
 
@@ -56,11 +56,11 @@ export class ExerciseExampleController {
         ExerciseExampleWithStatsResponse,
         ExerciseExampleResponseDto,
         ExerciseRulesResponseDto,
-        ExerciseRulesInputsDto,
-        ExerciseRulesInputExternalWeightDto,
-        ExerciseRulesInputBodyWeightDto,
-        ExerciseRulesInputExtraWeightDto,
-        ExerciseRulesInputAssistanceDto,
+        ExerciseRulesComponentsDto,
+        ExerciseRulesComponentsExternalWeightDto,
+        ExerciseRulesComponentsBodyWeightDto,
+        ExerciseRulesComponentsExtraWeightDto,
+        ExerciseRulesComponentsAssistWeightDto,
     )
     async getExerciseExamples(
         @Req() req: any,
@@ -83,11 +83,11 @@ export class ExerciseExampleController {
         ExerciseExampleWithStatsResponse,
         ExerciseExampleResponseDto,
         ExerciseRulesResponseDto,
-        ExerciseRulesInputsDto,
-        ExerciseRulesInputExternalWeightDto,
-        ExerciseRulesInputBodyWeightDto,
-        ExerciseRulesInputExtraWeightDto,
-        ExerciseRulesInputAssistanceDto,
+        ExerciseRulesComponentsDto,
+        ExerciseRulesComponentsExternalWeightDto,
+        ExerciseRulesComponentsBodyWeightDto,
+        ExerciseRulesComponentsExtraWeightDto,
+        ExerciseRulesComponentsAssistWeightDto,
     )
     async getExerciseExampleById(
         @Req() req: any,

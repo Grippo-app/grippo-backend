@@ -30,11 +30,11 @@ import {TrainingsEntity} from '../../entities/trainings.entity';
 import {ExercisesEntity} from '../../entities/exercises.entity';
 import {ExerciseExamplesEntity} from '../../entities/exercise-examples.entity';
 import {
-    ExerciseRulesInputAssistanceDto,
-    ExerciseRulesInputBodyWeightDto,
-    ExerciseRulesInputExternalWeightDto,
-    ExerciseRulesInputExtraWeightDto,
-    ExerciseRulesInputsDto,
+    ExerciseRulesComponentsAssistWeightDto,
+    ExerciseRulesComponentsBodyWeightDto,
+    ExerciseRulesComponentsExternalWeightDto,
+    ExerciseRulesComponentsExtraWeightDto,
+    ExerciseRulesComponentsDto,
     ExerciseRulesResponseDto,
 } from '../exercise-examples/dto/exercise-rules.dto';
 
@@ -46,11 +46,11 @@ import {
     ExercisesEntity,
     ExerciseExamplesEntity,
     ExerciseRulesResponseDto,
-    ExerciseRulesInputsDto,
-    ExerciseRulesInputExternalWeightDto,
-    ExerciseRulesInputBodyWeightDto,
-    ExerciseRulesInputExtraWeightDto,
-    ExerciseRulesInputAssistanceDto,
+        ExerciseRulesComponentsDto,
+        ExerciseRulesComponentsExternalWeightDto,
+        ExerciseRulesComponentsBodyWeightDto,
+        ExerciseRulesComponentsExtraWeightDto,
+        ExerciseRulesComponentsAssistWeightDto,
 )
 @Controller('trainings')
 export class TrainingsController {

@@ -1,4 +1,5 @@
 import {
+    Check,
     Column,
     CreateDateColumn,
     Entity,
@@ -10,12 +11,34 @@ import {
 import {ExerciseExamplesEntity} from './exercise-examples.entity';
 
 @Entity({name: 'exercise_example_rules'})
+@Check(`
+    ("body_weight_multiplier" IS NULL)
+    OR ("body_weight_multiplier" >= 0.05 AND "body_weight_multiplier" <= 2.0)
+`)
+@Check(`
+    ("external_weight_required" IS NULL)
+    OR ("body_weight_multiplier" IS NULL)
+`)
+@Check(`
+    ("body_weight_multiplier" IS NOT NULL)
+    OR ("extra_weight_required" IS NULL AND "assist_weight_required" IS NULL)
+`)
+@Check(`
+    ("external_weight_required" IS NULL)
+    OR ("extra_weight_required" IS NULL AND "assist_weight_required" IS NULL)
+`)
 export class ExerciseExampleRulesEntity {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
-    @Column({type: 'uuid', unique: true})
+    @Column({type: 'uuid', name: 'exercise_example_id', unique: true})
     exerciseExampleId: string;
+
+    @OneToOne(() => ExerciseExamplesEntity, (exerciseExample) => exerciseExample.rule, {
+        onDelete: 'CASCADE',
+    })
+    @JoinColumn({name: 'exercise_example_id'})
+    exerciseExample: ExerciseExamplesEntity;
 
     @Column({type: 'boolean', name: 'external_weight_required', nullable: true})
     externalWeightRequired: boolean | null;
@@ -28,7 +51,7 @@ export class ExerciseExampleRulesEntity {
         nullable: true,
         transformer: {
             to: (value: number | null) => value,
-            from: (value: string | null) => (value === null ? null : parseFloat(value)),
+            from: (value: string | null) => (value === null ? null : Number(value)),
         },
     })
     bodyWeightMultiplier: number | null;
@@ -36,18 +59,12 @@ export class ExerciseExampleRulesEntity {
     @Column({type: 'boolean', name: 'extra_weight_required', nullable: true})
     extraWeightRequired: boolean | null;
 
-    @Column({type: 'boolean', name: 'assistance_required', nullable: true})
-    assistanceRequired: boolean | null;
+    @Column({type: 'boolean', name: 'assist_weight_required', nullable: true})
+    assistWeightRequired: boolean | null;
 
     @CreateDateColumn({type: 'timestamp without time zone', name: 'created_at'})
     createdAt: Date;
 
     @UpdateDateColumn({type: 'timestamp without time zone', name: 'updated_at'})
     updatedAt: Date;
-
-    @OneToOne(() => ExerciseExamplesEntity, (exerciseExample) => exerciseExample.rule, {
-        onDelete: 'CASCADE',
-    })
-    @JoinColumn({name: 'exercise_example_id'})
-    exerciseExample: ExerciseExamplesEntity;
 }

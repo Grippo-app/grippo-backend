@@ -231,13 +231,13 @@ export class TrainingsService {
 
     private buildRulesResponse(rule: ExerciseExampleRulesEntity): ExerciseRulesResponseDto {
         return {
-            inputs: {
+            components: {
                 externalWeight: rule.externalWeightRequired === null ? null : {required: rule.externalWeightRequired},
                 bodyWeight: rule.bodyWeightMultiplier === null
                     ? null
                     : {participates: true, multiplier: rule.bodyWeightMultiplier},
                 extraWeight: rule.extraWeightRequired === null ? null : {required: rule.extraWeightRequired},
-                assistance: rule.assistanceRequired === null ? null : {required: rule.assistanceRequired},
+                assistWeight: rule.assistWeightRequired === null ? null : {required: rule.assistWeightRequired},
             },
         };
     }

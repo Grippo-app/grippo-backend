@@ -311,12 +311,12 @@ CREATE TABLE public.exercise_example_rules (
     external_weight_required boolean,
     body_weight_multiplier numeric(4,2),
     extra_weight_required boolean,
-    assistance_required boolean,
+    assist_weight_required boolean,
     created_at timestamp without time zone DEFAULT now() NOT NULL,
     updated_at timestamp without time zone DEFAULT now() NOT NULL,
-    CONSTRAINT chk_exercise_example_rules_assistance_requires_body CHECK (((assistance_required IS NULL) OR (body_weight_multiplier IS NOT NULL))),
+    CONSTRAINT chk_exercise_example_rules_assist_weight_requires_body CHECK (((assist_weight_required IS NULL) OR (body_weight_multiplier IS NOT NULL))),
     CONSTRAINT chk_exercise_example_rules_external_body_exclusive CHECK ((NOT ((external_weight_required IS NOT NULL) AND (body_weight_multiplier IS NOT NULL)))),
-    CONSTRAINT chk_exercise_example_rules_external_no_extra_assistance CHECK (((external_weight_required IS NULL) OR ((extra_weight_required IS NULL) AND (assistance_required IS NULL)))),
+    CONSTRAINT chk_exercise_example_rules_external_no_extra_assist_weight CHECK (((external_weight_required IS NULL) OR ((extra_weight_required IS NULL) AND (assist_weight_required IS NULL)))),
     CONSTRAINT chk_exercise_example_rules_extra_requires_body CHECK (((extra_weight_required IS NULL) OR (body_weight_multiplier IS NOT NULL))),
     CONSTRAINT chk_exercise_example_rules_multiplier_range CHECK (((body_weight_multiplier IS NULL) OR ((body_weight_multiplier >= 0.05) AND (body_weight_multiplier <= 2.0))))
 );
@@ -4759,4 +4759,3 @@ ALTER TABLE ONLY public.exercise_example_translations
 --
 -- PostgreSQL database dump complete
 --
-
