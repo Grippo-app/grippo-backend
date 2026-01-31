@@ -30,13 +30,12 @@ import {TrainingsEntity} from '../../entities/trainings.entity';
 import {ExercisesEntity} from '../../entities/exercises.entity';
 import {ExerciseExamplesEntity} from '../../entities/exercise-examples.entity';
 import {
-    ExerciseRulesComponentsAssistWeightDto,
-    ExerciseRulesComponentsBodyWeightDto,
-    ExerciseRulesComponentsExternalWeightDto,
-    ExerciseRulesComponentsExtraWeightDto,
-    ExerciseRulesComponentsDto,
-    ExerciseRulesResponseDto,
-} from '../exercise-examples/dto/exercise-rules.dto';
+    ExerciseComponentsAssistWeightDto,
+    ExerciseComponentsBodyWeightDto,
+    ExerciseComponentsDto,
+    ExerciseComponentsExternalWeightDto,
+    ExerciseComponentsExtraWeightDto,
+} from '../exercise-examples/dto/exercise-components.dto';
 
 @ApiTags('trainings')
 @ApiBearerAuth('access-token')
@@ -45,12 +44,11 @@ import {
     TrainingsEntity,
     ExercisesEntity,
     ExerciseExamplesEntity,
-    ExerciseRulesResponseDto,
-        ExerciseRulesComponentsDto,
-        ExerciseRulesComponentsExternalWeightDto,
-        ExerciseRulesComponentsBodyWeightDto,
-        ExerciseRulesComponentsExtraWeightDto,
-        ExerciseRulesComponentsAssistWeightDto,
+    ExerciseComponentsDto,
+    ExerciseComponentsExternalWeightDto,
+    ExerciseComponentsBodyWeightDto,
+    ExerciseComponentsExtraWeightDto,
+    ExerciseComponentsAssistWeightDto,
 )
 @Controller('trainings')
 export class TrainingsController {

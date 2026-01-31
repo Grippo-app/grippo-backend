@@ -13,8 +13,8 @@ import {ExercisesEntity} from "../../entities/exercises.entity";
 import {ExerciseExampleI18nService} from "../../i18n/exercise-example-i18n.service";
 import {DEFAULT_LANGUAGE, SupportedLanguage} from "../../i18n/i18n.types";
 import {UserProfilesEntity} from '../../entities/user-profiles.entity';
-import {ExerciseExampleRulesEntity} from "../../entities/exercise-example-rules.entity";
-import {ExerciseRulesRequestDto, ExerciseRulesResponseDto} from "./dto/exercise-rules.dto";
+import {ExerciseExampleComponentsEntity} from "../../entities/exercise-example-components.entity";
+import {ExerciseComponentsDto} from "./dto/exercise-components.dto";
 
 @Injectable()
 export class ExerciseExampleService {
@@ -39,7 +39,7 @@ export class ExerciseExampleService {
             .leftJoinAndSelect('exerciseExampleBundles.muscle', 'muscle')
             .leftJoinAndSelect('exercise_examples.equipmentRefs', 'equipment_refs')
             .leftJoinAndSelect('equipment_refs.equipment', 'equipments')
-            .leftJoinAndSelect('exercise_examples.rule', 'exercise_rules')
+            .leftJoinAndSelect('exercise_examples.componentsEntity', 'exercise_example_components')
             .leftJoinAndSelect('exercise_examples.translations', 'translations')
             .orderBy('exercise_examples.createdAt', 'DESC')
             .getMany();
@@ -70,7 +70,7 @@ export class ExerciseExampleService {
 
         this.exerciseExampleI18nService.translateExamples(entities, language);
         for (const entity of entities) {
-            this.attachRulesToExerciseExample(entity);
+            this.attachComponentsToExerciseExample(entity);
         }
 
         return entities.map((entity) => ({
@@ -90,7 +90,7 @@ export class ExerciseExampleService {
             .leftJoinAndSelect('exercise_example_bundles.muscle', 'muscle')
             .leftJoinAndSelect('exercise_examples.equipmentRefs', 'equipment_refs')
             .leftJoinAndSelect('equipment_refs.equipment', 'equipments')
-            .leftJoinAndSelect('exercise_examples.rule', 'exercise_rules')
+            .leftJoinAndSelect('exercise_examples.componentsEntity', 'exercise_example_components')
             .leftJoinAndSelect('exercise_examples.translations', 'translations')
             .getOne();
 
@@ -106,7 +106,7 @@ export class ExerciseExampleService {
             .getRawOne<{ usageCount: string; lastUsed: Date | null }>();
 
         this.exerciseExampleI18nService.translateExample(entity, language);
-        this.attachRulesToExerciseExample(entity);
+        this.attachComponentsToExerciseExample(entity);
 
         return {
             entity,
@@ -126,7 +126,7 @@ export class ExerciseExampleService {
             equipmentRefs,
             name,
             description,
-            rules,
+            components,
             ...rest
         } = body;
         const id = v4();
@@ -160,13 +160,13 @@ export class ExerciseExampleService {
             return entity;
         });
 
-        const rule = this.buildRulesEntity(id, rules);
+        const componentsEntity = this.buildComponentsEntity(id, components);
 
         await this.exerciseExamplesRepository.manager.transaction(async (manager) => {
             await manager.save(ExerciseExamplesEntity, exerciseExample);
             await manager.save(ExerciseExampleBundlesEntity, bundles);
             await manager.save(ExerciseExamplesEquipmentsEntity, equipmentRefsEntities);
-            await manager.save(ExerciseExampleRulesEntity, rule);
+            await manager.save(ExerciseExampleComponentsEntity, componentsEntity);
             if (translationEntities.length > 0) {
                 await manager.save(ExerciseExampleTranslationEntity, translationEntities);
             }
@@ -195,7 +195,7 @@ export class ExerciseExampleService {
             equipmentRefs,
             name,
             description,
-            rules,
+            components,
             ...rest
         } = body;
 
@@ -227,7 +227,7 @@ export class ExerciseExampleService {
             return entity;
         });
 
-        const rule = this.buildRulesEntity(id, rules);
+        const componentsEntity = this.buildComponentsEntity(id, components);
 
         await this.exerciseExamplesRepository.manager.transaction(async (manager) => {
             await manager.delete(ExerciseExampleBundlesEntity, {exerciseExampleId: id});
@@ -237,7 +237,7 @@ export class ExerciseExampleService {
             await manager.save(ExerciseExamplesEntity, exerciseExample);
             await manager.save(ExerciseExampleBundlesEntity, bundles);
             await manager.save(ExerciseExamplesEquipmentsEntity, equipmentRefsEntities);
-            await manager.save(ExerciseExampleRulesEntity, rule);
+            await manager.save(ExerciseExampleComponentsEntity, componentsEntity);
             if (translationEntities.length > 0) {
                 await manager.save(ExerciseExampleTranslationEntity, translationEntities);
             }
@@ -313,28 +313,26 @@ export class ExerciseExampleService {
         return trimmed;
     }
 
-    private buildRulesEntity(
+    private buildComponentsEntity(
         exerciseExampleId: string,
-        rules: ExerciseRulesRequestDto,
-    ): ExerciseExampleRulesEntity {
-        this.validateRules(rules);
+        components: ExerciseComponentsDto,
+    ): ExerciseExampleComponentsEntity {
+        this.validateComponents(components);
 
-        const rule = new ExerciseExampleRulesEntity();
-        rule.id = exerciseExampleId;
-        rule.exerciseExampleId = exerciseExampleId;
+        const componentsEntity = new ExerciseExampleComponentsEntity();
+        componentsEntity.id = exerciseExampleId;
+        componentsEntity.exerciseExampleId = exerciseExampleId;
 
-        rule.externalWeightRequired = rules.components.externalWeight?.required ?? null;
-        rule.bodyWeightMultiplier = rules.components.bodyWeight?.multiplier ?? null;
-        rule.extraWeightRequired = rules.components.extraWeight?.required ?? null;
-        rule.assistWeightRequired = rules.components.assistWeight?.required ?? null;
-        return rule;
+        componentsEntity.externalWeightRequired = components.externalWeight?.required ?? null;
+        componentsEntity.bodyWeightMultiplier = components.bodyWeight?.multiplier ?? null;
+        componentsEntity.extraWeightRequired = components.extraWeight?.required ?? null;
+        componentsEntity.assistWeightRequired = components.assistWeight?.required ?? null;
+        return componentsEntity;
     }
 
-    private validateRules(rules: ExerciseRulesRequestDto): void {
-        const components = rules.components;
-
+    private validateComponents(components: ExerciseComponentsDto): void {
         if (!components) {
-            throw new BadRequestException('Rules components are required');
+            throw new BadRequestException('Components are required');
         }
 
         const {
@@ -345,60 +343,60 @@ export class ExerciseExampleService {
         } = components;
 
         if (externalWeight !== null && bodyWeight !== null) {
-            throw new BadRequestException('Rules components externalWeight/bodyWeight are mutually exclusive');
+            throw new BadRequestException('Components externalWeight/bodyWeight are mutually exclusive');
         }
 
         if (extraWeight !== null && bodyWeight === null) {
-            throw new BadRequestException('Rules components extraWeight require bodyWeight');
+            throw new BadRequestException('Components extraWeight require bodyWeight');
         }
 
         if (assistWeight !== null && bodyWeight === null) {
-            throw new BadRequestException('Rules components assistWeight require bodyWeight');
+            throw new BadRequestException('Components assistWeight require bodyWeight');
         }
 
         if (externalWeight !== null && (extraWeight !== null || assistWeight !== null)) {
-            throw new BadRequestException('Rules components externalWeight cannot be combined with extraWeight or assistWeight');
+            throw new BadRequestException('Components externalWeight cannot be combined with extraWeight or assistWeight');
         }
 
         if (bodyWeight !== null) {
             if (bodyWeight.required !== true) {
-                throw new BadRequestException('Rules components bodyWeight required must be true');
+                throw new BadRequestException('Components bodyWeight required must be true');
             }
             if (typeof bodyWeight.multiplier !== 'number') {
-                throw new BadRequestException('Rules components bodyWeight multiplier is required');
+                throw new BadRequestException('Components bodyWeight multiplier is required');
             }
             if (bodyWeight.multiplier < 0.05 || bodyWeight.multiplier > 2.0) {
-                throw new BadRequestException('Rules components bodyWeight multiplier out of range');
+                throw new BadRequestException('Components bodyWeight multiplier out of range');
             }
         }
 
     }
 
-    private buildRulesResponse(rule: ExerciseExampleRulesEntity): ExerciseRulesResponseDto {
+    private buildComponentsResponse(componentsEntity: ExerciseExampleComponentsEntity): ExerciseComponentsDto {
         return {
-            components: {
-                externalWeight: rule.externalWeightRequired === null ? null : {required: rule.externalWeightRequired},
-                bodyWeight: rule.bodyWeightMultiplier === null
-                    ? null
-                    : {required: true, multiplier: rule.bodyWeightMultiplier},
-                extraWeight: rule.extraWeightRequired === null ? null : {required: rule.extraWeightRequired},
-                assistWeight: rule.assistWeightRequired === null ? null : {required: rule.assistWeightRequired},
-            },
+            externalWeight: componentsEntity.externalWeightRequired === null ? null : {required: componentsEntity.externalWeightRequired},
+            bodyWeight: componentsEntity.bodyWeightMultiplier === null
+                ? null
+                : {required: true, multiplier: componentsEntity.bodyWeightMultiplier},
+            extraWeight: componentsEntity.extraWeightRequired === null ? null : {required: componentsEntity.extraWeightRequired},
+            assistWeight: componentsEntity.assistWeightRequired === null ? null : {required: componentsEntity.assistWeightRequired},
         };
     }
 
-    private attachRulesToExerciseExample(example: ExerciseExamplesEntity | null | undefined): void {
+    private attachComponentsToExerciseExample(example: ExerciseExamplesEntity | null | undefined): void {
         if (!example) {
             return;
         }
 
-        if (!example.rule) {
-            throw new BadRequestException('Rules are required for exercise example');
+        if (!example.componentsEntity) {
+            throw new BadRequestException('Components are required for exercise example');
         }
 
-        const rules = this.buildRulesResponse(example.rule);
-        (example as ExerciseExamplesEntity & { rules: ExerciseRulesResponseDto }).rules = rules;
-        delete (example as ExerciseExamplesEntity & { rule?: ExerciseExampleRulesEntity }).rule;
+        const components = this.buildComponentsResponse(example.componentsEntity);
+        (example as ExerciseExamplesEntity & { components: ExerciseComponentsDto }).components = components;
+        delete (example as ExerciseExamplesEntity & {
+            componentsEntity?: ExerciseExampleComponentsEntity
+        }).componentsEntity;
     }
 
     private async resolveProfileId(user: any): Promise<string> {

@@ -10,7 +10,7 @@ import {
 } from 'typeorm';
 import {ExerciseExamplesEntity} from './exercise-examples.entity';
 
-@Entity({name: 'exercise_example_rules'})
+@Entity({name: 'exercise_example_components'})
 @Check(`
     ("body_weight_multiplier" IS NULL)
     OR ("body_weight_multiplier" >= 0.05 AND "body_weight_multiplier" <= 2.0)
@@ -27,14 +27,14 @@ import {ExerciseExamplesEntity} from './exercise-examples.entity';
     ("external_weight_required" IS NULL)
     OR ("extra_weight_required" IS NULL AND "assist_weight_required" IS NULL)
 `)
-export class ExerciseExampleRulesEntity {
+export class ExerciseExampleComponentsEntity {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
     @Column({type: 'uuid', name: 'exercise_example_id', unique: true})
     exerciseExampleId: string;
 
-    @OneToOne(() => ExerciseExamplesEntity, (exerciseExample) => exerciseExample.rule, {
+    @OneToOne(() => ExerciseExamplesEntity, (exerciseExample) => exerciseExample.componentsEntity, {
         onDelete: 'CASCADE',
     })
     @JoinColumn({name: 'exercise_example_id'})

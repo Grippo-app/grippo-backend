@@ -26,13 +26,12 @@ import {ExerciseExampleResponseDto, ExerciseExampleWithStatsResponse} from "./dt
 import {ExerciseExamplesEntity} from "../../entities/exercise-examples.entity";
 import {ExerciseExampleI18nService} from "../../i18n/exercise-example-i18n.service";
 import {
-    ExerciseRulesComponentsAssistWeightDto,
-    ExerciseRulesComponentsBodyWeightDto,
-    ExerciseRulesComponentsExternalWeightDto,
-    ExerciseRulesComponentsExtraWeightDto,
-    ExerciseRulesComponentsDto,
-    ExerciseRulesResponseDto,
-} from "./dto/exercise-rules.dto";
+    ExerciseComponentsAssistWeightDto,
+    ExerciseComponentsBodyWeightDto,
+    ExerciseComponentsDto,
+    ExerciseComponentsExternalWeightDto,
+    ExerciseComponentsExtraWeightDto,
+} from "./dto/exercise-components.dto";
 
 @Controller('exercise-examples')
 @ApiTags('exercise-examples')
@@ -55,12 +54,11 @@ export class ExerciseExampleController {
         ExerciseExamplesEntity,
         ExerciseExampleWithStatsResponse,
         ExerciseExampleResponseDto,
-        ExerciseRulesResponseDto,
-        ExerciseRulesComponentsDto,
-        ExerciseRulesComponentsExternalWeightDto,
-        ExerciseRulesComponentsBodyWeightDto,
-        ExerciseRulesComponentsExtraWeightDto,
-        ExerciseRulesComponentsAssistWeightDto,
+        ExerciseComponentsDto,
+        ExerciseComponentsExternalWeightDto,
+        ExerciseComponentsBodyWeightDto,
+        ExerciseComponentsExtraWeightDto,
+        ExerciseComponentsAssistWeightDto,
     )
     async getExerciseExamples(
         @Req() req: any,
@@ -82,12 +80,11 @@ export class ExerciseExampleController {
         ExerciseExamplesEntity,
         ExerciseExampleWithStatsResponse,
         ExerciseExampleResponseDto,
-        ExerciseRulesResponseDto,
-        ExerciseRulesComponentsDto,
-        ExerciseRulesComponentsExternalWeightDto,
-        ExerciseRulesComponentsBodyWeightDto,
-        ExerciseRulesComponentsExtraWeightDto,
-        ExerciseRulesComponentsAssistWeightDto,
+        ExerciseComponentsDto,
+        ExerciseComponentsExternalWeightDto,
+        ExerciseComponentsBodyWeightDto,
+        ExerciseComponentsExtraWeightDto,
+        ExerciseComponentsAssistWeightDto,
     )
     async getExerciseExampleById(
         @Req() req: any,

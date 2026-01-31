@@ -15,9 +15,9 @@ import {ExerciseExamplesEquipmentsEntity} from "./exercise-examples-equipments.e
 import {ForceTypeEnum} from "../lib/force-type.enum";
 import {ExperienceEnum} from "../lib/experience.enum";
 import {ExerciseExampleTranslationEntity} from "./exercise-example-translation.entity";
-import {ExerciseExampleRulesEntity} from "./exercise-example-rules.entity";
+import {ExerciseExampleComponentsEntity} from "./exercise-example-components.entity";
 import {ApiProperty} from "@nestjs/swagger";
-import {ExerciseRulesResponseDto} from "../modules/exercise-examples/dto/exercise-rules.dto";
+import {ExerciseComponentsDto} from "../modules/exercise-examples/dto/exercise-components.dto";
 
 @Entity({name: 'exercise_examples'})
 export class ExerciseExamplesEntity {
@@ -71,11 +71,11 @@ export class ExerciseExamplesEntity {
     })
     translations: ExerciseExampleTranslationEntity[];
 
-    @OneToOne(() => ExerciseExampleRulesEntity, (rules) => rules.exerciseExample, {
+    @OneToOne(() => ExerciseExampleComponentsEntity, (components) => components.exerciseExample, {
         cascade: true,
     })
-    rule: ExerciseExampleRulesEntity;
+    componentsEntity: ExerciseExampleComponentsEntity;
 
-    @ApiProperty({type: () => ExerciseRulesResponseDto})
-    rules: ExerciseRulesResponseDto;
+    @ApiProperty({type: () => ExerciseComponentsDto})
+    components: ExerciseComponentsDto;
 }

@@ -11,8 +11,8 @@ import {ExerciseExamplesEntity} from '../../entities/exercise-examples.entity';
 import {ExerciseExampleI18nService} from '../../i18n/exercise-example-i18n.service';
 import {SupportedLanguage} from '../../i18n/i18n.types';
 import {UserProfilesEntity} from '../../entities/user-profiles.entity';
-import {ExerciseExampleRulesEntity} from '../../entities/exercise-example-rules.entity';
-import {ExerciseRulesResponseDto} from '../exercise-examples/dto/exercise-rules.dto';
+import {ExerciseExampleComponentsEntity} from '../../entities/exercise-example-components.entity';
+import {ExerciseComponentsDto} from '../exercise-examples/dto/exercise-components.dto';
 
 @Injectable()
 export class TrainingsService {
@@ -42,7 +42,7 @@ export class TrainingsService {
             })
             .leftJoinAndSelect('trainings.exercises', 'exercises')
             .leftJoinAndSelect('exercises.exerciseExample', 'exerciseExample')
-            .leftJoinAndSelect('exerciseExample.rule', 'exercise_rules')
+            .leftJoinAndSelect('exerciseExample.componentsEntity', 'exercise_example_components')
             .leftJoinAndSelect('exerciseExample.translations', 'exerciseExampleTranslations')
             .leftJoinAndSelect('exercises.iterations', 'iterations')
             .orderBy('trainings.created_at', 'ASC')
@@ -63,7 +63,7 @@ export class TrainingsService {
             this.exerciseExampleI18nService.translateExercisesCollection(training.exercises, language);
             training.exercises.sort((a, b) => (a.orderIndex ?? 0) - (b.orderIndex ?? 0) || (+a.createdAt - +b.createdAt));
             for (const exercise of training.exercises) {
-                this.attachRulesToExerciseExample(exercise.exerciseExample);
+                this.attachComponentsToExerciseExample(exercise.exerciseExample);
                 if (!exercise.iterations) continue;
                 exercise.iterations.sort((a, b) => (a.orderIndex ?? 0) - (b.orderIndex ?? 0) || (+a.createdAt - +b.createdAt));
             }
@@ -83,7 +83,7 @@ export class TrainingsService {
             .leftJoinAndSelect('exercises.exerciseExample', 'exerciseExample')
             .leftJoinAndSelect('exerciseExample.exerciseExampleBundles', 'exerciseExampleBundles')
             .leftJoinAndSelect('exerciseExampleBundles.muscle', 'muscle')
-            .leftJoinAndSelect('exerciseExample.rule', 'exercise_rules')
+            .leftJoinAndSelect('exerciseExample.componentsEntity', 'exercise_example_components')
             .leftJoinAndSelect('exerciseExample.translations', 'exerciseExampleTranslations')
             .leftJoinAndSelect('exercises.iterations', 'iterations')
             .orderBy('trainings.created_at', 'ASC')
@@ -101,7 +101,7 @@ export class TrainingsService {
             this.exerciseExampleI18nService.translateExercisesCollection(training.exercises, language);
             training.exercises.sort((a, b) => (a.orderIndex ?? 0) - (b.orderIndex ?? 0) || (+a.createdAt - +b.createdAt));
             for (const exercise of training.exercises) {
-                this.attachRulesToExerciseExample(exercise.exerciseExample);
+                this.attachComponentsToExerciseExample(exercise.exerciseExample);
                 if (!exercise.iterations) continue;
                 exercise.iterations.sort((a, b) => (a.orderIndex ?? 0) - (b.orderIndex ?? 0) || (+a.createdAt - +b.createdAt));
             }
@@ -229,31 +229,31 @@ export class TrainingsService {
         });
     }
 
-    private buildRulesResponse(rule: ExerciseExampleRulesEntity): ExerciseRulesResponseDto {
+    private buildComponentsResponse(componentsEntity: ExerciseExampleComponentsEntity): ExerciseComponentsDto {
         return {
-            components: {
-                externalWeight: rule.externalWeightRequired === null ? null : {required: rule.externalWeightRequired},
-                bodyWeight: rule.bodyWeightMultiplier === null
-                    ? null
-                    : {participates: true, multiplier: rule.bodyWeightMultiplier},
-                extraWeight: rule.extraWeightRequired === null ? null : {required: rule.extraWeightRequired},
-                assistWeight: rule.assistWeightRequired === null ? null : {required: rule.assistWeightRequired},
-            },
+            externalWeight: componentsEntity.externalWeightRequired === null ? null : {required: componentsEntity.externalWeightRequired},
+            bodyWeight: componentsEntity.bodyWeightMultiplier === null
+                ? null
+                : {required: true, multiplier: componentsEntity.bodyWeightMultiplier},
+            extraWeight: componentsEntity.extraWeightRequired === null ? null : {required: componentsEntity.extraWeightRequired},
+            assistWeight: componentsEntity.assistWeightRequired === null ? null : {required: componentsEntity.assistWeightRequired},
         };
     }
 
-    private attachRulesToExerciseExample(example: ExerciseExamplesEntity | null | undefined): void {
+    private attachComponentsToExerciseExample(example: ExerciseExamplesEntity | null | undefined): void {
         if (!example) {
             return;
         }
 
-        if (!example.rule) {
-            throw new BadRequestException('Rules are required for exercise example');
+        if (!example.componentsEntity) {
+            throw new BadRequestException('Components are required for exercise example');
         }
 
-        const rules = this.buildRulesResponse(example.rule);
-        (example as ExerciseExamplesEntity & { rules: ExerciseRulesResponseDto }).rules = rules;
-        delete (example as ExerciseExamplesEntity & { rule?: ExerciseExampleRulesEntity }).rule;
+        const components = this.buildComponentsResponse(example.componentsEntity);
+        (example as ExerciseExamplesEntity & { components: ExerciseComponentsDto }).components = components;
+        delete (example as ExerciseExamplesEntity & {
+            componentsEntity?: ExerciseExampleComponentsEntity
+        }).componentsEntity;
     }
 
     /**

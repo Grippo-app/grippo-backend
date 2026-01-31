@@ -16,7 +16,7 @@ import {
 } from "class-validator";
 import {Type} from "class-transformer";
 import {SUPPORTED_LANGUAGES, SupportedLanguage} from "../../../i18n/i18n.types";
-import {ExerciseRulesRequestDto} from "./exercise-rules.dto";
+import {ExerciseComponentsDto} from "./exercise-components.dto";
 
 export class ExerciseExampleBundleRequest {
     @ApiProperty({type: 'string', example: '3a975ded-af6b-4dd2-9a0e-6e3554e8e6dd'})
@@ -99,8 +99,8 @@ export class ExerciseExampleRequest {
     @Type(() => ExerciseExampleEquipmentRefsRequest)
     equipmentRefs: ExerciseExampleEquipmentRefsRequest[];
 
-    @ApiProperty({type: () => ExerciseRulesRequestDto})
+    @ApiProperty({type: () => ExerciseComponentsDto})
     @ValidateNested()
-    @Type(() => ExerciseRulesRequestDto)
-    rules: ExerciseRulesRequestDto;
+    @Type(() => ExerciseComponentsDto)
+    components: ExerciseComponentsDto;
 }

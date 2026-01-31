@@ -1,7 +1,7 @@
 import {ApiProperty} from '@nestjs/swagger';
 import {IsUUID} from 'class-validator';
 import {ExerciseExamplesEntity} from "../../../entities/exercise-examples.entity";
-import {ExerciseRulesResponseDto} from "./exercise-rules.dto";
+import {ExerciseComponentsDto} from "./exercise-components.dto";
 
 export class ExerciseExampleCreateResponse {
     @ApiProperty({
@@ -14,8 +14,8 @@ export class ExerciseExampleCreateResponse {
 }
 
 export class ExerciseExampleResponseDto extends ExerciseExamplesEntity {
-    @ApiProperty({type: () => ExerciseRulesResponseDto})
-    rules: ExerciseRulesResponseDto;
+    @ApiProperty({type: () => ExerciseComponentsDto})
+    components: ExerciseComponentsDto;
 }
 
 export class ExerciseExampleWithStatsResponse {
