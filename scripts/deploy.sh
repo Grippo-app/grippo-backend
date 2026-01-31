@@ -69,10 +69,19 @@ docker compose --env-file "$ENV_FILE" -f "$COMPOSE_FILE" down -v > /dev/null || 
 }
 
 log_info "Building and starting containers..."
-docker compose --env-file "$ENV_FILE" -f "$COMPOSE_FILE" up -d --build > /dev/null || {
+
+BUILD_LOG_FILE="$(mktemp)"
+if ! docker compose --env-file "$ENV_FILE" -f "$COMPOSE_FILE" up -d --build >"$BUILD_LOG_FILE" 2>&1; then
   log_error "Failed to start Docker containers"
+  echo ""
+  echo "──── Docker build output (last 200 lines) ────"
+  tail -n 200 "$BUILD_LOG_FILE"
+  echo "──────────────────────────────────────────────"
+  rm -f "$BUILD_LOG_FILE"
   exit 1
-}
+fi
+
+rm -f "$BUILD_LOG_FILE"
 
 log_success "Containers reset and started successfully"
 log_step_end
