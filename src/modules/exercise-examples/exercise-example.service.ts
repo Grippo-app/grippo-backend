@@ -361,8 +361,8 @@ export class ExerciseExampleService {
         }
 
         if (bodyWeight !== null) {
-            if (bodyWeight.participates !== true) {
-                throw new BadRequestException('Rules components bodyWeight participates must be true');
+            if (bodyWeight.required !== true) {
+                throw new BadRequestException('Rules components bodyWeight required must be true');
             }
             if (typeof bodyWeight.multiplier !== 'number') {
                 throw new BadRequestException('Rules components bodyWeight multiplier is required');
@@ -380,7 +380,7 @@ export class ExerciseExampleService {
                 externalWeight: rule.externalWeightRequired === null ? null : {required: rule.externalWeightRequired},
                 bodyWeight: rule.bodyWeightMultiplier === null
                     ? null
-                    : {participates: true, multiplier: rule.bodyWeightMultiplier},
+                    : {required: true, multiplier: rule.bodyWeightMultiplier},
                 extraWeight: rule.extraWeightRequired === null ? null : {required: rule.extraWeightRequired},
                 assistWeight: rule.assistWeightRequired === null ? null : {required: rule.assistWeightRequired},
             },

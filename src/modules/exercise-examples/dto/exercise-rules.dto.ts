@@ -20,7 +20,7 @@ export class ExerciseRulesComponentsExternalWeightDto {
 export class ExerciseRulesComponentsBodyWeightDto {
     @ApiProperty({type: 'boolean', example: true})
     @Equals(true)
-    participates: true;
+    required: true;
 
     @ApiProperty({type: 'number', example: 1.0})
     @IsNumber({allowInfinity: false, allowNaN: false})
