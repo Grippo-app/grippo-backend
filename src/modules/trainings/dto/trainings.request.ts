@@ -1,13 +1,29 @@
 import {ApiProperty} from '@nestjs/swagger';
-import {IsInt, IsNumber, IsOptional, IsString, IsUUID, ValidateNested} from 'class-validator';
+import {IsInt, IsNumber, IsOptional, IsString, IsUUID, ValidateNested,} from 'class-validator';
 import {Type} from 'class-transformer';
 
 export class ExerciseIterationRequest {
     id?: string;
 
-    @ApiProperty({type: 'number', example: 100.5, description: 'Weight in kg (1 decimal)'})
+    @ApiProperty({type: 'number', example: 20, nullable: true, required: false})
     @IsNumber({maxDecimalPlaces: 1})
-    weight: number;
+    @IsOptional()
+    assistWeight?: number | null;
+
+    @ApiProperty({type: 'number', example: 100.5, nullable: true, required: false})
+    @IsNumber({maxDecimalPlaces: 1})
+    @IsOptional()
+    externalWeight?: number | null;
+
+    @ApiProperty({type: 'number', example: 10, nullable: true, required: false})
+    @IsNumber({maxDecimalPlaces: 1})
+    @IsOptional()
+    extraWeight?: number | null;
+
+    @ApiProperty({type: 'number', example: 82.5, nullable: true, required: false})
+    @IsNumber({maxDecimalPlaces: 1})
+    @IsOptional()
+    bodyWeight?: number | null;
 
     @ApiProperty({type: 'number', example: 10})
     @IsInt()

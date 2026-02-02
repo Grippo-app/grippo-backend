@@ -64,14 +64,17 @@ export class ExerciseMetricsService {
     }
 
     private async findBestWeight(exerciseExampleId: string, profileId: string): Promise<BestWeightResponseDto | null> {
+        const weightExpression = 'COALESCE(iteration.externalWeight, 0) + COALESCE(iteration.bodyWeight, 0) + COALESCE(iteration.extraWeight, 0) - COALESCE(iteration.assistWeight, 0)';
+
         const iteration = await this.iterationsRepository
             .createQueryBuilder('iteration')
             .innerJoinAndSelect('iteration.exercise', 'exercise')
             .innerJoin('exercise.training', 'training')
             .where('training.profileId = :profileId', {profileId})
             .andWhere('exercise.exerciseExampleId = :exerciseExampleId', {exerciseExampleId})
-            .andWhere('iteration.weight IS NOT NULL')
-            .orderBy('iteration.weight', 'DESC')
+            .andWhere(`${weightExpression} IS NOT NULL`)
+            .addSelect(weightExpression, 'weight_value')
+            .orderBy('weight_value', 'DESC')
             .addOrderBy('iteration.createdAt', 'DESC')
             .getOne();
 
@@ -79,11 +82,16 @@ export class ExerciseMetricsService {
             return null;
         }
 
+        const weightValue = (iteration.externalWeight ?? 0)
+            + (iteration.bodyWeight ?? 0)
+            + (iteration.extraWeight ?? 0)
+            - (iteration.assistWeight ?? 0);
+
         return {
             iterationId: iteration.id,
             exerciseId: iteration.exercise?.id ?? null,
             exerciseExampleId: iteration.exercise?.exerciseExampleId ?? null,
-            weight: iteration.weight ?? 0,
+            weight: weightValue,
             createdAt: iteration.createdAt,
         };
     }

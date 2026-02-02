@@ -1,11 +1,11 @@
 import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
+    Column,
+    CreateDateColumn,
+    Entity,
+    JoinColumn,
+    ManyToOne,
+    PrimaryGeneratedColumn,
+    UpdateDateColumn,
 } from 'typeorm';
 import {ExercisesEntity} from './exercises.entity';
 
@@ -15,6 +15,7 @@ export class IterationsEntity {
     id: string;
 
     @Column({
+        name: 'assist_weight',
         type: 'decimal',
         precision: 5,
         scale: 1,
@@ -24,7 +25,46 @@ export class IterationsEntity {
             from: (value: string) => parseFloat(value),
         },
     })
-    weight: number | null;
+    assistWeight: number | null;
+
+    @Column({
+        name: 'external_weight',
+        type: 'decimal',
+        precision: 5,
+        scale: 1,
+        nullable: true,
+        transformer: {
+            to: (value: number) => value,
+            from: (value: string) => parseFloat(value),
+        },
+    })
+    externalWeight: number | null;
+
+    @Column({
+        name: 'extra_weight',
+        type: 'decimal',
+        precision: 5,
+        scale: 1,
+        nullable: true,
+        transformer: {
+            to: (value: number) => value,
+            from: (value: string) => parseFloat(value),
+        },
+    })
+    extraWeight: number | null;
+
+    @Column({
+        name: 'body_weight',
+        type: 'decimal',
+        precision: 5,
+        scale: 1,
+        nullable: true,
+        transformer: {
+            to: (value: number) => value,
+            from: (value: string) => parseFloat(value),
+        },
+    })
+    bodyWeight: number | null;
 
     @Column({type: 'int', nullable: true})
     repetitions: number | null;
