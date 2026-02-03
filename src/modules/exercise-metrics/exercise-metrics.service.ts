@@ -64,7 +64,7 @@ export class ExerciseMetricsService {
     }
 
     private async findBestWeight(exerciseExampleId: string, profileId: string): Promise<BestWeightResponseDto | null> {
-        const weightExpression = 'COALESCE(iteration.externalWeight, 0) + COALESCE(iteration.bodyWeight, 0) + COALESCE(iteration.extraWeight, 0) - COALESCE(iteration.assistWeight, 0)';
+        const weightExpression = 'COALESCE(iteration.externalWeight, 0) + (COALESCE(iteration.bodyWeight, 0) * COALESCE(iteration.bodyMultiplier, 1)) + COALESCE(iteration.extraWeight, 0) - COALESCE(iteration.assistWeight, 0)';
 
         const iteration = await this.iterationsRepository
             .createQueryBuilder('iteration')
@@ -83,7 +83,7 @@ export class ExerciseMetricsService {
         }
 
         const weightValue = (iteration.externalWeight ?? 0)
-            + (iteration.bodyWeight ?? 0)
+            + (iteration.bodyWeight ?? 0) * (iteration.bodyMultiplier ?? 0)
             + (iteration.extraWeight ?? 0)
             - (iteration.assistWeight ?? 0);
 

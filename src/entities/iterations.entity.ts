@@ -66,6 +66,19 @@ export class IterationsEntity {
     })
     bodyWeight: number | null;
 
+    @Column({
+        name: 'body_multiplier',
+        type: 'decimal',
+        precision: 4,
+        scale: 2,
+        nullable: true,
+        transformer: {
+            to: (value: number | null) => value,
+            from: (value: string | null) => (value === null ? null : parseFloat(value)),
+        },
+    })
+    bodyMultiplier: number | null;
+
     @Column({type: 'int', nullable: true})
     repetitions: number | null;
 

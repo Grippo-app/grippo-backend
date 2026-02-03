@@ -25,6 +25,11 @@ export class ExerciseIterationRequest {
     @IsOptional()
     bodyWeight?: number | null;
 
+    @ApiProperty({type: 'number', example: 1.0, nullable: true, required: false})
+    @IsNumber({maxDecimalPlaces: 2})
+    @IsOptional()
+    bodyMultiplier?: number | null;
+
     @ApiProperty({type: 'number', example: 10})
     @IsInt()
     repetitions: number;
