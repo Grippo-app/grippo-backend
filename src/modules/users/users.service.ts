@@ -13,7 +13,7 @@ import {UserRoleEnum} from "../../lib/user-role.enum";
 import {AdminSetRoleRequest} from "./dto/admin-set-role.request";
 import {CreateUserProfileRequest} from "./dto/create-user-profile.request";
 import {UserProfilesEntity} from "../../entities/user-profiles.entity";
-import {UserProfileResponse, UserResponse} from "./dto/user.response";
+import {UserProfileResponse, UserResponse, UserTrainingStatsResponse} from "./dto/user.response";
 import {ExperienceEnum} from "../../lib/experience.enum";
 import {TrainingsEntity} from "../../entities/trainings.entity";
 
@@ -132,14 +132,18 @@ export class UsersService {
         }
 
         let profile: UserProfileResponse | null = null;
+        let trainingStats = this.emptyTrainingStats();
         if (user.profile?.id) {
-            const latestWeight = await this.weightHistoryRepository
-                .createQueryBuilder('weights')
-                .select(['weights.weight'])
-                .where('weights.profile_id = :profileId', {profileId: user.profile.id})
-                .orderBy('weights.createdAt', 'DESC')
-                .limit(1)
-                .getOne();
+            const [latestWeight, profileTrainingStats] = await Promise.all([
+                this.weightHistoryRepository
+                    .createQueryBuilder('weights')
+                    .select(['weights.weight'])
+                    .where('weights.profile_id = :profileId', {profileId: user.profile.id})
+                    .orderBy('weights.createdAt', 'DESC')
+                    .limit(1)
+                    .getOne(),
+                this.getTrainingStats(user.profile.id),
+            ]);
 
             profile = {
                 id: user.profile.id,
@@ -148,6 +152,8 @@ export class UsersService {
                 experience: user.profile.experience,
                 weight: latestWeight?.weight ?? null,
             };
+
+            trainingStats = profileTrainingStats;
         }
 
         return {
@@ -157,6 +163,7 @@ export class UsersService {
             createdAt: user.createdAt,
             updatedAt: user.updatedAt,
             profile,
+            trainingStats,
         };
     }
 
@@ -368,6 +375,43 @@ export class UsersService {
         dto.lastActivity = meta?.lastActivity ?? null;
         dto.workoutsCount = meta?.workoutsCount ?? 0;
         return dto;
+    }
+
+    private emptyTrainingStats(): UserTrainingStatsResponse {
+        return {
+            trainingsCount: 0,
+            totalDuration: 0,
+            totalVolume: 0,
+            totalRepetitions: 0,
+        };
+    }
+
+    private async getTrainingStats(profileId: string): Promise<UserTrainingStatsResponse> {
+        const raw = await this.usersRepository.manager
+            .createQueryBuilder()
+            .select('COUNT(trainings.id)', 'trainingsCount')
+            .addSelect('COALESCE(SUM(trainings.duration), 0)', 'totalDuration')
+            .addSelect('COALESCE(SUM(trainings.volume), 0)', 'totalVolume')
+            .addSelect('COALESCE(SUM(trainings.repetitions), 0)', 'totalRepetitions')
+            .from(TrainingsEntity, 'trainings')
+            .where('trainings.profile_id = :profileId', {profileId})
+            .getRawOne<{
+                trainingsCount: string | number | null;
+                totalDuration: string | number | null;
+                totalVolume: string | number | null;
+                totalRepetitions: string | number | null;
+            }>();
+
+        if (!raw) {
+            return this.emptyTrainingStats();
+        }
+
+        return {
+            trainingsCount: Number(raw.trainingsCount ?? 0),
+            totalDuration: Number(raw.totalDuration ?? 0),
+            totalVolume: parseFloat(String(raw.totalVolume ?? 0)) || 0,
+            totalRepetitions: Number(raw.totalRepetitions ?? 0),
+        };
     }
 
     private async requireProfile(userId: string): Promise<UserProfilesEntity> {

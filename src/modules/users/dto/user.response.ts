@@ -23,6 +23,23 @@ export class UserProfileResponse {
     weight: number | null;
 }
 
+export class UserTrainingStatsResponse {
+    @ApiProperty({example: 24})
+    trainingsCount: number;
+
+    @ApiProperty({
+        example: 1080,
+        description: 'Total training duration in the same unit as training.duration',
+    })
+    totalDuration: number;
+
+    @ApiProperty({example: 15432.5})
+    totalVolume: number;
+
+    @ApiProperty({example: 6321})
+    totalRepetitions: number;
+}
+
 export class UserResponse {
     @ApiProperty({example: '3b828d2f-797f-4a45-9d1d-1d3efe38fb54'})
     id: string;
@@ -41,4 +58,7 @@ export class UserResponse {
 
     @ApiProperty({type: () => UserProfileResponse, nullable: true})
     profile: UserProfileResponse | null;
+
+    @ApiProperty({type: () => UserTrainingStatsResponse})
+    trainingStats: UserTrainingStatsResponse;
 }
