@@ -6,6 +6,7 @@ import {UpdateExcludedIdsDto} from "./dto/update-excluded-ids.dto";
 import {CreateUserProfileRequest} from "./dto/create-user-profile.request";
 import {UserResponse} from "./dto/user.response";
 import {UpdateExperienceRequest} from "./dto/update-experience.request";
+import {UpdateHeightRequest} from "./dto/update-height.request";
 
 @ApiTags('users')
 @ApiBearerAuth('access-token')
@@ -50,6 +51,18 @@ export class UsersController {
         @Body() dto: UpdateExperienceRequest,
     ): Promise<UserResponse> {
         return this.usersService.updateExperience(req.user.id, dto.experience);
+    }
+
+    @Post('height')
+    @HttpCode(HttpStatus.OK)
+    @ApiOperation({summary: 'Update user height'})
+    @ApiResponse({status: 200, description: 'Height updated', type: UserResponse})
+    @ApiResponse({status: HttpStatus.BAD_REQUEST, description: 'Profile does not exist'})
+    async updateHeight(
+        @Req() req,
+        @Body() dto: UpdateHeightRequest,
+    ): Promise<UserResponse> {
+        return this.usersService.updateHeight(req.user.id, dto.height);
     }
 
     @Get('excluded-muscles')

@@ -107,6 +107,17 @@ export class UsersService {
         return this.getUser(userId);
     }
 
+    async updateHeight(userId: string, height: number): Promise<UserResponse> {
+        const profile = await this.requireProfile(userId);
+
+        if (profile.height !== height) {
+            profile.height = height;
+            await this.userProfilesRepository.save(profile);
+        }
+
+        return this.getUser(userId);
+    }
+
     async getUser(id: string): Promise<UserResponse> {
         const user = await this.usersRepository
             .createQueryBuilder('users')
@@ -132,7 +143,7 @@ export class UsersService {
         }
 
         let profile: UserProfileResponse | null = null;
-        let trainingStats = this.emptyTrainingStats();
+        let stats = this.emptyTrainingStats();
         if (user.profile?.id) {
             const [latestWeight, profileTrainingStats] = await Promise.all([
                 this.weightHistoryRepository
@@ -153,7 +164,7 @@ export class UsersService {
                 weight: latestWeight?.weight ?? null,
             };
 
-            trainingStats = profileTrainingStats;
+            stats = profileTrainingStats;
         }
 
         return {
@@ -163,7 +174,7 @@ export class UsersService {
             createdAt: user.createdAt,
             updatedAt: user.updatedAt,
             profile,
-            trainingStats,
+            stats,
         };
     }
 

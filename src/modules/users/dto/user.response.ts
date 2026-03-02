@@ -60,5 +60,5 @@ export class UserResponse {
     profile: UserProfileResponse | null;
 
     @ApiProperty({type: () => UserTrainingStatsResponse})
-    trainingStats: UserTrainingStatsResponse;
+    stats: UserTrainingStatsResponse;
 }
