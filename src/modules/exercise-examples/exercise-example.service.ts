@@ -48,17 +48,25 @@ export class ExerciseExampleService {
 
         const ids = entities.map(e => e.id);
 
-        // Aggregate stats for visible example IDs
-        const statsRows = await this.exercisesRepository
-            .createQueryBuilder('ex')
-            .leftJoin('ex.training', 't')
-            .select('ex.exerciseExampleId', 'example_id')
-            .addSelect('COUNT(ex.id)', 'usageCount')
-            .addSelect('MAX(ex.createdAt)', 'lastUsed')
-            .where('ex.exerciseExampleId IN (:...ids)', {ids})
-            .andWhere('t.profileId = :profileId', {profileId})
-            .groupBy('ex.exerciseExampleId')
-            .getRawMany<{ example_id: string; usageCount: string; lastUsed: Date | null }>();
+        const [statsRows, popularityRows] = await Promise.all([
+            this.exercisesRepository
+                .createQueryBuilder('ex')
+                .leftJoin('ex.training', 't')
+                .select('ex.exerciseExampleId', 'example_id')
+                .addSelect('COUNT(ex.id)', 'usageCount')
+                .addSelect('MAX(ex.createdAt)', 'lastUsed')
+                .where('ex.exerciseExampleId IN (:...ids)', {ids})
+                .andWhere('t.profileId = :profileId', {profileId})
+                .groupBy('ex.exerciseExampleId')
+                .getRawMany<{ example_id: string; usageCount: string; lastUsed: Date | null }>(),
+            this.exercisesRepository
+                .createQueryBuilder('ex')
+                .select('ex.exerciseExampleId', 'example_id')
+                .addSelect('COUNT(ex.id)', 'usageCount')
+                .where('ex.exerciseExampleId IN (:...ids)', {ids})
+                .groupBy('ex.exerciseExampleId')
+                .getRawMany<{ example_id: string; usageCount: string }>(),
+        ]);
 
         const statsMap = new Map<string, { usageCount: number; lastUsed: Date | null }>();
         for (const r of statsRows) {
@@ -67,6 +75,20 @@ export class ExerciseExampleService {
                 lastUsed: r.lastUsed ?? null,
             });
         }
+
+        const popularityMap = new Map<string, number>();
+        for (const r of popularityRows) {
+            popularityMap.set(String(r.example_id), Number(r.usageCount) || 0);
+        }
+
+        entities.sort((a, b) => {
+            const popularityDiff = (popularityMap.get(b.id) ?? 0) - (popularityMap.get(a.id) ?? 0);
+            if (popularityDiff !== 0) {
+                return popularityDiff;
+            }
+
+            return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+        });
 
         this.exerciseExampleI18nService.translateExamples(entities, language);
         for (const entity of entities) {
