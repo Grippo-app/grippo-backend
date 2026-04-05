@@ -13,6 +13,7 @@ import {ExerciseMetricsModule} from './modules/exercise-metrics/exercise-metrics
 import {EquipmentsModule} from './modules/equipments/equipments.module';
 import {AdminModule} from './modules/admin/admin.module';
 import {I18nModule} from './i18n/i18n.module';
+import {PushTokensModule} from './modules/push-tokens/push-tokens.module';
 
 @Module({
     imports: [
@@ -35,6 +36,7 @@ import {I18nModule} from './i18n/i18n.module';
         ExerciseMetricsModule,
         EquipmentsModule,
         AdminModule,
+        PushTokensModule,
     ],
 })
 export class AppModule {

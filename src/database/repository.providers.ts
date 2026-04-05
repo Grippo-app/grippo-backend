@@ -16,6 +16,7 @@ import {EquipmentGroupsEntity} from '../entities/equipment-groups.entity';
 import {ExerciseExamplesEquipmentsEntity} from '../entities/exercise-examples-equipments.entity';
 import {ExerciseExampleTranslationEntity} from '../entities/exercise-example-translation.entity';
 import {UserProfilesEntity} from '../entities/user-profiles.entity';
+import {PushTokensEntity} from '../entities/push-tokens.entity';
 
 /**
  * 📦 Creates a repository provider for a given entity and token
@@ -48,4 +49,5 @@ export const repositoryProviders = [
     createRepositoryProvider('EXERCISE_EXAMPLE_BUNDLES_REPOSITORY', ExerciseExampleBundlesEntity),
     createRepositoryProvider('EXERCISE_EXAMPLES_EQUIPMENTS_REPOSITORY', ExerciseExamplesEquipmentsEntity),
     createRepositoryProvider('EXERCISE_EXAMPLE_TRANSLATIONS_REPOSITORY', ExerciseExampleTranslationEntity),
+    createRepositoryProvider('PUSH_TOKENS_REPOSITORY', PushTokensEntity),
 ];
