@@ -1,5 +1,6 @@
 import {
     Controller,
+    DefaultValuePipe,
     Get,
     HttpCode,
     HttpStatus,
@@ -43,7 +44,7 @@ export class ExerciseMetricsController {
     async getRecentExercises(
         @Req() req: any,
         @Param('id', new ParseUUIDPipe()) exerciseExampleId: string,
-        @Query('limit', new ParseIntPipe({optional: true})) limit?: number,
+        @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number,
     ): Promise<ExercisesEntity[]> {
         return this.exerciseMetricsService.getRecentExercises(exerciseExampleId, req.user, limit);
     }
