@@ -1,5 +1,6 @@
 import {BadRequestException, Inject, Injectable, NotFoundException,} from '@nestjs/common';
 import {In, Repository} from 'typeorm';
+import {GoalRequest} from './dto/goal.request';
 import {UsersEntity} from '../../entities/users.entity';
 import {WeightHistoryEntity} from '../../entities/weight-history.entity';
 import {ExcludedMusclesEntity} from '../../entities/excluded-muscles.entity';
@@ -14,8 +15,10 @@ import {AdminSetRoleRequest} from "./dto/admin-set-role.request";
 import {CreateUserProfileRequest} from "./dto/create-user-profile.request";
 import {UserProfilesEntity} from "../../entities/user-profiles.entity";
 import {UserProfileResponse, UserResponse, UserTrainingStatsResponse} from "./dto/user.response";
+import {GoalResponse} from "./dto/goal.response";
 import {ExperienceEnum} from "../../lib/experience.enum";
 import {TrainingsEntity} from "../../entities/trainings.entity";
+import {GoalsEntity} from "../../entities/goals.entity";
 
 @Injectable()
 export class UsersService {
@@ -34,6 +37,8 @@ export class UsersService {
         private readonly equipmentsRepository: Repository<EquipmentsEntity>,
         @Inject('EXCLUDED_EQUIPMENTS_REPOSITORY')
         private readonly excludedEquipmentsRepository: Repository<ExcludedEquipmentsEntity>,
+        @Inject('GOALS_REPOSITORY')
+        private readonly goalsRepository: Repository<GoalsEntity>,
     ) {
     }
 
@@ -122,6 +127,7 @@ export class UsersService {
         const user = await this.usersRepository
             .createQueryBuilder('users')
             .leftJoinAndSelect('users.profile', 'profile')
+            .leftJoinAndSelect('profile.goal', 'goal')
             .select([
                 'users.id',
                 'users.email',
@@ -134,6 +140,15 @@ export class UsersService {
                 'profile.name',
                 'profile.height',
                 'profile.experience',
+                'goal.id',
+                'goal.primaryGoal',
+                'goal.secondaryGoal',
+                'goal.target',
+                'goal.personalizations',
+                'goal.confidence',
+                'goal.createdAt',
+                'goal.updatedAt',
+                'goal.lastConfirmedAt',
             ])
             .where('users.id = :id', {id})
             .getOne();
@@ -174,6 +189,7 @@ export class UsersService {
             createdAt: user.createdAt,
             updatedAt: user.updatedAt,
             profile,
+            goal: user.profile?.goal ? this.toGoalResponse(user.profile.goal) : null,
             stats,
         };
     }
@@ -318,7 +334,10 @@ export class UsersService {
             .getRawAndEntities();
 
         return entities.map((user, index) => {
-            const rawRow = raw[index] as {lastActivity?: Date | string | null; workoutsCount?: number | string | null};
+            const rawRow = raw[index] as {
+                lastActivity?: Date | string | null;
+                workoutsCount?: number | string | null
+            };
             const lastActivity = rawRow?.lastActivity ? new Date(rawRow.lastActivity) : null;
             const workoutsCount = Number(rawRow?.workoutsCount ?? 0);
             return this.toAdminUserResponse(user, {lastActivity, workoutsCount});
@@ -354,7 +373,7 @@ export class UsersService {
 
     private toAdminUserResponse(
         user: UsersEntity,
-        meta?: {lastActivity: Date | null; workoutsCount: number},
+        meta?: { lastActivity: Date | null; workoutsCount: number },
     ): AdminUserResponse {
         const dto = new AdminUserResponse();
         dto.id = user.id;
@@ -397,6 +416,19 @@ export class UsersService {
         };
     }
 
+    private toGoalResponse(goal: GoalsEntity): GoalResponse {
+        return {
+            primaryGoal: goal.primaryGoal,
+            secondaryGoal: goal.secondaryGoal,
+            target: goal.target,
+            personalizations: goal.personalizations,
+            confidence: goal.confidence,
+            createdAt: goal.createdAt,
+            updatedAt: goal.updatedAt,
+            lastConfirmedAt: goal.lastConfirmedAt,
+        };
+    }
+
     private async getTrainingStats(profileId: string): Promise<UserTrainingStatsResponse> {
         const raw = await this.usersRepository.manager
             .createQueryBuilder()
@@ -423,6 +455,49 @@ export class UsersService {
             totalVolume: parseFloat(String(raw.totalVolume ?? 0)) || 0,
             totalRepetitions: Number(raw.totalRepetitions ?? 0),
         };
+    }
+
+    async setGoal(userId: string, dto: GoalRequest): Promise<GoalResponse> {
+        const profile = await this.requireProfile(userId);
+
+        const existing = await this.goalsRepository.findOne({
+            where: {profileId: profile.id},
+        });
+
+        if (existing) {
+            existing.primaryGoal = dto.primaryGoal;
+            existing.secondaryGoal = dto.secondaryGoal ?? null;
+            existing.target = dto.target ? new Date(dto.target) : null;
+            existing.personalizations = dto.personalizations ?? [];
+            existing.confidence = 1.0;
+            const saved = await this.goalsRepository.save(existing);
+            return this.toGoalResponse(saved);
+        }
+
+        const created = this.goalsRepository.create({
+            profileId: profile.id,
+            primaryGoal: dto.primaryGoal,
+            secondaryGoal: dto.secondaryGoal ?? null,
+            target: dto.target ? new Date(dto.target) : null,
+            personalizations: dto.personalizations ?? [],
+            confidence: 1.0,
+        });
+        const saved = await this.goalsRepository.save(created);
+        return this.toGoalResponse(saved);
+    }
+
+    async getGoal(userId: string): Promise<GoalResponse> {
+        const profile = await this.requireProfile(userId);
+
+        const goal = await this.goalsRepository.findOne({
+            where: {profileId: profile.id},
+        });
+
+        if (!goal) {
+            throw new NotFoundException('Goal not found');
+        }
+
+        return this.toGoalResponse(goal);
     }
 
     private async requireProfile(userId: string): Promise<UserProfilesEntity> {

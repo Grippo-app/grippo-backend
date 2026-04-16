@@ -1,6 +1,7 @@
 import {ApiProperty} from '@nestjs/swagger';
 import {ExperienceEnum} from '../../../lib/experience.enum';
 import {UserRoleEnum} from '../../../lib/user-role.enum';
+import {GoalResponse} from './goal.response';
 
 export class UserProfileResponse {
     @ApiProperty({example: '72a0317f-e321-4da7-9869-91bf23d655bb'})
@@ -58,6 +59,9 @@ export class UserResponse {
 
     @ApiProperty({type: () => UserProfileResponse, nullable: true})
     profile: UserProfileResponse | null;
+
+    @ApiProperty({type: () => GoalResponse, nullable: true})
+    goal: GoalResponse | null;
 
     @ApiProperty({type: () => UserTrainingStatsResponse})
     stats: UserTrainingStatsResponse;

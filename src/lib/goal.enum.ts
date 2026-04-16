@@ -1,0 +1,78 @@
+export enum GoalPrimaryGoalEnum {
+    BUILD_MUSCLE = 'build_muscle',
+    GET_STRONGER = 'get_stronger',
+    LOSE_FAT = 'lose_fat',
+    RETURN_TO_TRAINING = 'return_to_training',
+    MAINTAIN = 'maintain',
+    GENERAL_FITNESS = 'general_fitness',
+}
+
+export enum GoalSecondaryGoalEnum {
+    BUILD_MUSCLE = 'build_muscle',
+    GET_STRONGER = 'get_stronger',
+    LOSE_FAT = 'lose_fat',
+    RETURN_TO_TRAINING = 'return_to_training',
+    MAINTAIN = 'maintain',
+    GENERAL_FITNESS = 'general_fitness',
+    CONSISTENCY = 'consistency',
+}
+
+export enum GoalPersonalizationKeyEnum {
+    LOW_FREQUENCY = 'low_frequency',
+    MODERATE_FREQUENCY = 'moderate_frequency',
+    HIGH_FREQUENCY = 'high_frequency',
+    WEEKENDS_ONLY = 'weekends_only',
+    WEEKDAYS_ONLY = 'weekdays_only',
+    FLEXIBLE_SCHEDULE = 'flexible_schedule',
+    INCONSISTENT_SCHEDULE = 'inconsistent_schedule',
+
+    MINUTES_30_45 = 'minutes_30_45',
+    MINUTES_45_60 = 'minutes_45_60',
+    MINUTES_60_90 = 'minutes_60_90',
+    MINUTES_90_120 = 'minutes_90_120',
+    MINUTES_120_PLUS = 'minutes_120_plus',
+    FLEXIBLE_DURATION = 'flexible_duration',
+
+    LOW_ENERGY_DAYS = 'low_energy_days',
+    STRESSFUL_PERIOD = 'stressful_period',
+    POOR_SLEEP = 'poor_sleep',
+    TRAVELS_OFTEN = 'travels_often',
+
+    JOINT_FRIENDLY = 'joint_friendly',
+    LOW_IMPACT = 'low_impact',
+    BACK_CARE = 'back_care',
+    KNEE_CARE = 'knee_care',
+    SHOULDER_CARE = 'shoulder_care',
+    WRIST_CARE = 'wrist_care',
+    RETURNING_AFTER_BREAK = 'returning_after_break',
+    RECOVERING_FROM_INJURY = 'recovering_from_injury',
+    RECOVERY_FOCUS = 'recovery_focus',
+    MOBILITY_FOCUS = 'mobility_focus',
+    WARMUP_FOCUS = 'warmup_focus',
+    LIMITED_RANGE_OF_MOTION = 'limited_range_of_motion',
+    FATIGUE_MANAGEMENT = 'fatigue_management',
+    AVOID_HIGH_INTENSITY = 'avoid_high_intensity',
+    AVOID_HEAVY_LOADING = 'avoid_heavy_loading',
+
+    AVOID_DEEP_SQUATS = 'avoid_deep_squats',
+    AVOID_LUNGES = 'avoid_lunges',
+    AVOID_OVERHEAD_WORK = 'avoid_overhead_work',
+    AVOID_HEAVY_SPINAL_LOADING = 'avoid_heavy_spinal_loading',
+    AVOID_TWISTING = 'avoid_twisting',
+    AVOID_FLOOR_WORK = 'avoid_floor_work',
+    NEEDS_SUPPORTED_MOVEMENTS = 'needs_supported_movements',
+
+    SIMPLE_PLAN = 'simple_plan',
+    MORE_VARIETY = 'more_variety',
+    LOWER_VOLUME = 'lower_volume',
+    HIGHER_VOLUME = 'higher_volume',
+    GRADUAL_PROGRESSION = 'gradual_progression',
+    AGGRESSIVE_PROGRESSION = 'aggressive_progression',
+    BEGINNER_FRIENDLY = 'beginner_friendly',
+
+    EASY_TO_FOLLOW = 'easy_to_follow',
+    NO_COMPLEX_MOVEMENTS = 'no_complex_movements',
+    FULL_BODY_PREFERENCE = 'full_body_preference',
+    SPLIT_ROUTINE_PREFERENCE = 'split_routine_preference',
+    UPPER_LOWER_PREFERENCE = 'upper_lower_preference',
+}

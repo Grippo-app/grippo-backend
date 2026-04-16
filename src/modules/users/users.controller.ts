@@ -2,11 +2,13 @@ import {Body, Controller, Delete, Get, HttpCode, HttpStatus, Post, Req, UseGuard
 import {ApiBearerAuth, ApiBody, ApiNoContentResponse, ApiOperation, ApiResponse, ApiTags,} from '@nestjs/swagger';
 import {UsersService} from './users.service';
 import {JwtAuthGuard} from '../../common/jwt-auth.guard';
-import {UpdateExcludedIdsDto} from "./dto/update-excluded-ids.dto";
-import {CreateUserProfileRequest} from "./dto/create-user-profile.request";
-import {UserResponse} from "./dto/user.response";
-import {UpdateExperienceRequest} from "./dto/update-experience.request";
-import {UpdateHeightRequest} from "./dto/update-height.request";
+import {UpdateExcludedIdsDto} from './dto/update-excluded-ids.dto';
+import {CreateUserProfileRequest} from './dto/create-user-profile.request';
+import {UserResponse} from './dto/user.response';
+import {UpdateExperienceRequest} from './dto/update-experience.request';
+import {UpdateHeightRequest} from './dto/update-height.request';
+import {GoalRequest} from './dto/goal.request';
+import {GoalResponse} from './dto/goal.response';
 
 @ApiTags('users')
 @ApiBearerAuth('access-token')
@@ -101,6 +103,31 @@ export class UsersController {
         @Body() body: UpdateExcludedIdsDto
     ): Promise<{ ids: string[] }> {
         return this.usersService.updateExcludedEquipments(req.user, body.ids);
+    }
+
+    @Post('goal')
+    @HttpCode(HttpStatus.OK)
+    @ApiOperation({summary: 'Set or update goal profile'})
+    @ApiBody({type: GoalRequest})
+    @ApiResponse({status: 200, description: 'Goal set/updated', type: GoalResponse})
+    @ApiResponse({status: HttpStatus.BAD_REQUEST, description: 'User profile not created yet'})
+    @ApiResponse({status: HttpStatus.UNAUTHORIZED, description: 'Unauthorized'})
+    async setGoal(
+        @Req() req,
+        @Body() dto: GoalRequest,
+    ): Promise<GoalResponse> {
+        return this.usersService.setGoal(req.user.id, dto);
+    }
+
+    @Get('goal')
+    @HttpCode(HttpStatus.OK)
+    @ApiOperation({summary: 'Get current goal profile'})
+    @ApiResponse({status: 200, description: 'Goal returned', type: GoalResponse})
+    @ApiResponse({status: HttpStatus.NOT_FOUND, description: 'No goal set yet'})
+    @ApiResponse({status: HttpStatus.BAD_REQUEST, description: 'User profile not created yet'})
+    @ApiResponse({status: HttpStatus.UNAUTHORIZED, description: 'Unauthorized'})
+    async getGoal(@Req() req): Promise<GoalResponse> {
+        return this.usersService.getGoal(req.user.id);
     }
 
     @Delete()

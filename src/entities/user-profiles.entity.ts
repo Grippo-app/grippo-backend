@@ -14,6 +14,7 @@ import {TrainingsEntity} from './trainings.entity';
 import {WeightHistoryEntity} from './weight-history.entity';
 import {ExcludedMusclesEntity} from './excluded-muscles.entity';
 import {ExcludedEquipmentsEntity} from './excluded-equipments.entity';
+import {GoalsEntity} from './goals.entity';
 
 @Entity({name: 'user_profiles'})
 export class UserProfilesEntity {
@@ -60,4 +61,9 @@ export class UserProfilesEntity {
         cascade: ['remove'],
     })
     excludedEquipments: ExcludedEquipmentsEntity[];
+
+    @OneToOne(() => GoalsEntity, (goal) => goal.profile, {
+        cascade: ['remove'],
+    })
+    goal?: GoalsEntity;
 }
