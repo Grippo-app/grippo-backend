@@ -17,6 +17,7 @@ import {ExerciseExamplesEquipmentsEntity} from '../entities/exercise-examples-eq
 import {ExerciseExampleTranslationEntity} from '../entities/exercise-example-translation.entity';
 import {UserProfilesEntity} from '../entities/user-profiles.entity';
 import {PushTokensEntity} from '../entities/push-tokens.entity';
+import {GoalsEntity} from '../entities/goals.entity';
 
 /**
  * 📦 Creates a repository provider for a given entity and token
@@ -35,6 +36,7 @@ function createRepositoryProvider(token: string, entity: EntityTarget<any>) {
 export const repositoryProviders = [
     createRepositoryProvider('USERS_REPOSITORY', UsersEntity),
     createRepositoryProvider('USER_PROFILES_REPOSITORY', UserProfilesEntity),
+    createRepositoryProvider('GOALS_REPOSITORY', GoalsEntity),
     createRepositoryProvider('WEIGHT_HISTORY_REPOSITORY', WeightHistoryEntity),
     createRepositoryProvider('EXERCISES_REPOSITORY', ExercisesEntity),
     createRepositoryProvider('ITERATIONS_REPOSITORY', IterationsEntity),
