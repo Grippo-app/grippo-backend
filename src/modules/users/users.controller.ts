@@ -1,5 +1,13 @@
 import {Body, Controller, Delete, Get, HttpCode, HttpStatus, Post, Req, UseGuards,} from '@nestjs/common';
-import {ApiBearerAuth, ApiBody, ApiNoContentResponse, ApiOperation, ApiResponse, ApiTags,} from '@nestjs/swagger';
+import {
+    ApiBearerAuth,
+    ApiBody,
+    ApiNoContentResponse,
+    ApiOkResponse,
+    ApiOperation,
+    ApiResponse,
+    ApiTags,
+} from '@nestjs/swagger';
 import {UsersService} from './users.service';
 import {JwtAuthGuard} from '../../common/jwt-auth.guard';
 import {UpdateExcludedIdsDto} from './dto/update-excluded-ids.dto';
@@ -122,11 +130,10 @@ export class UsersController {
     @Get('goal')
     @HttpCode(HttpStatus.OK)
     @ApiOperation({summary: 'Get current goal profile'})
-    @ApiResponse({status: 200, description: 'Goal returned', type: GoalResponse})
-    @ApiResponse({status: HttpStatus.NOT_FOUND, description: 'No goal set yet'})
+    @ApiOkResponse({description: 'Goal returned or null if not set', type: GoalResponse})
     @ApiResponse({status: HttpStatus.BAD_REQUEST, description: 'User profile not created yet'})
     @ApiResponse({status: HttpStatus.UNAUTHORIZED, description: 'Unauthorized'})
-    async getGoal(@Req() req): Promise<GoalResponse> {
+    async getGoal(@Req() req): Promise<GoalResponse | null> {
         return this.usersService.getGoal(req.user.id);
     }
 

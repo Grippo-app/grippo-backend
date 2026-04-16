@@ -58,9 +58,10 @@ export class ExerciseMetricsService {
         };
     }
 
-    async getRecentExercises(exerciseExampleId: string, user: any): Promise<ExercisesEntity[]> {
+    async getRecentExercises(exerciseExampleId: string, user: any, limit: number = 10): Promise<ExercisesEntity[]> {
         const profileId = await this.requireProfileId(user);
-        return this.findRecentExercises(exerciseExampleId, profileId);
+        const safeLimit = Math.min(Math.max(limit, 1), 100);
+        return this.findRecentExercises(exerciseExampleId, profileId, safeLimit);
     }
 
     private async findBestWeight(exerciseExampleId: string, profileId: string): Promise<BestWeightResponseDto | null> {
@@ -72,7 +73,6 @@ export class ExerciseMetricsService {
             .innerJoin('exercise.training', 'training')
             .where('training.profileId = :profileId', {profileId})
             .andWhere('exercise.exerciseExampleId = :exerciseExampleId', {exerciseExampleId})
-            .andWhere(`${weightExpression} IS NOT NULL`)
             .addSelect(weightExpression, 'weight_value')
             .orderBy('weight_value', 'DESC')
             .addOrderBy('iteration.createdAt', 'DESC')
@@ -83,7 +83,7 @@ export class ExerciseMetricsService {
         }
 
         const weightValue = (iteration.externalWeight ?? 0)
-            + (iteration.bodyWeight ?? 0) * (iteration.bodyMultiplier ?? 0)
+            + (iteration.bodyWeight ?? 0) * (iteration.bodyMultiplier ?? 1)
             + (iteration.extraWeight ?? 0)
             - (iteration.assistWeight ?? 0);
 
@@ -202,14 +202,14 @@ export class ExerciseMetricsService {
         };
     }
 
-    private async findRecentExercises(exerciseExampleId: string, profileId: string): Promise<ExercisesEntity[]> {
+    private async findRecentExercises(exerciseExampleId: string, profileId: string, limit: number = 10): Promise<ExercisesEntity[]> {
         const exercises = await this.exercisesRepository
             .createQueryBuilder('exercise')
             .innerJoin('exercise.training', 'training')
             .where('training.profileId = :profileId', {profileId})
             .andWhere('exercise.exerciseExampleId = :exerciseExampleId', {exerciseExampleId})
             .orderBy('exercise.createdAt', 'DESC')
-            .take(5)
+            .take(limit)
             .getMany();
 
         if (exercises.length === 0) {
@@ -220,7 +220,7 @@ export class ExerciseMetricsService {
 
         const iterations = await this.iterationsRepository.find({
             where: {exerciseId: In(exercises.map((exercise) => exercise.id))},
-            order: {createdAt: 'DESC'},
+            order: {orderIndex: 'ASC', createdAt: 'ASC'},
         });
 
         for (const iteration of iterations) {
@@ -231,7 +231,8 @@ export class ExerciseMetricsService {
         }
 
         for (const exercise of exercises) {
-            exercise.iterations = iterationMap.get(exercise.id) ?? [];
+            exercise.iterations = (iterationMap.get(exercise.id) ?? [])
+                .sort((a, b) => (a.orderIndex ?? 0) - (b.orderIndex ?? 0) || (+a.createdAt - +b.createdAt));
         }
 
         return exercises;

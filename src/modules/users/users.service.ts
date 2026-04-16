@@ -127,7 +127,6 @@ export class UsersService {
         const user = await this.usersRepository
             .createQueryBuilder('users')
             .leftJoinAndSelect('users.profile', 'profile')
-            .leftJoinAndSelect('profile.goal', 'goal')
             .select([
                 'users.id',
                 'users.email',
@@ -140,15 +139,6 @@ export class UsersService {
                 'profile.name',
                 'profile.height',
                 'profile.experience',
-                'goal.id',
-                'goal.primaryGoal',
-                'goal.secondaryGoal',
-                'goal.target',
-                'goal.personalizations',
-                'goal.confidence',
-                'goal.createdAt',
-                'goal.updatedAt',
-                'goal.lastConfirmedAt',
             ])
             .where('users.id = :id', {id})
             .getOne();
@@ -189,7 +179,6 @@ export class UsersService {
             createdAt: user.createdAt,
             updatedAt: user.updatedAt,
             profile,
-            goal: user.profile?.goal ? this.toGoalResponse(user.profile.goal) : null,
             stats,
         };
     }
@@ -486,18 +475,14 @@ export class UsersService {
         return this.toGoalResponse(saved);
     }
 
-    async getGoal(userId: string): Promise<GoalResponse> {
+    async getGoal(userId: string): Promise<GoalResponse | null> {
         const profile = await this.requireProfile(userId);
 
         const goal = await this.goalsRepository.findOne({
             where: {profileId: profile.id},
         });
 
-        if (!goal) {
-            throw new NotFoundException('Goal not found');
-        }
-
-        return this.toGoalResponse(goal);
+        return goal ? this.toGoalResponse(goal) : null;
     }
 
     private async requireProfile(userId: string): Promise<UserProfilesEntity> {

@@ -1,4 +1,15 @@
-import {Controller, Get, HttpCode, HttpStatus, Param, ParseUUIDPipe, Req, UseGuards} from '@nestjs/common';
+import {
+    Controller,
+    Get,
+    HttpCode,
+    HttpStatus,
+    Param,
+    ParseIntPipe,
+    ParseUUIDPipe,
+    Query,
+    Req,
+    UseGuards
+} from '@nestjs/common';
 import {ApiBearerAuth, ApiExtraModels, ApiOkResponse, ApiOperation, ApiTags} from '@nestjs/swagger';
 import {JwtAuthGuard} from '../../common/jwt-auth.guard';
 import {ExerciseMetricsService} from './exercise-metrics.service';
@@ -27,12 +38,13 @@ export class ExerciseMetricsController {
 
     @Get('exercise-example/:id/recent')
     @HttpCode(HttpStatus.OK)
-    @ApiOperation({summary: 'Get five most recent exercises for the exercise example'})
-    @ApiOkResponse({description: 'Array of exercises with iterations limited to recent 5'})
+    @ApiOperation({summary: 'Get most recent exercises for the exercise example'})
+    @ApiOkResponse({description: 'Array of recent exercises with iterations. Default limit is 10.'})
     async getRecentExercises(
         @Req() req: any,
         @Param('id', new ParseUUIDPipe()) exerciseExampleId: string,
+        @Query('limit', new ParseIntPipe({optional: true})) limit?: number,
     ): Promise<ExercisesEntity[]> {
-        return this.exerciseMetricsService.getRecentExercises(exerciseExampleId, req.user);
+        return this.exerciseMetricsService.getRecentExercises(exerciseExampleId, req.user, limit);
     }
 }
