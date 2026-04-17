@@ -1,4 +1,4 @@
-import {Body, Controller, Delete, Get, HttpCode, HttpStatus, Post, Req, UseGuards,} from '@nestjs/common';
+import {Body, Controller, Delete, Get, HttpCode, HttpStatus, Post, Req, Res, UseGuards,} from '@nestjs/common';
 import {
     ApiBearerAuth,
     ApiBody,
@@ -17,6 +17,7 @@ import {UpdateExperienceRequest} from './dto/update-experience.request';
 import {UpdateHeightRequest} from './dto/update-height.request';
 import {GoalRequest} from './dto/goal.request';
 import {GoalResponse} from './dto/goal.response';
+import {Response} from 'express';
 
 @ApiTags('users')
 @ApiBearerAuth('access-token')
@@ -133,8 +134,9 @@ export class UsersController {
     @ApiOkResponse({description: 'Goal returned or null if not set', type: GoalResponse})
     @ApiResponse({status: HttpStatus.BAD_REQUEST, description: 'User profile not created yet'})
     @ApiResponse({status: HttpStatus.UNAUTHORIZED, description: 'Unauthorized'})
-    async getGoal(@Req() req): Promise<GoalResponse | null> {
-        return this.usersService.getGoal(req.user.id);
+    async getGoal(@Req() req, @Res({ passthrough: true }) res: Response): Promise<void> {
+        const goal = await this.usersService.getGoal(req.user.id);
+        res.json(goal);
     }
 
     @Delete()
