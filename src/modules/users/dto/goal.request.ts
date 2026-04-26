@@ -26,7 +26,7 @@ export class GoalRequest {
     target?: string | null;
 
     @ApiProperty({
-        example: ['low_frequency', 'joint_friendly'],
+        example: ['low_frequency', 'sport_grappling', 'lower_back_care'],
         enum: GoalPersonalizationKeyEnum,
         isArray: true,
         required: false,
