@@ -19,7 +19,7 @@ export class GoalResponse {
     target: Date | null;
 
     @ApiProperty({
-        example: [GoalPersonalizationKeyEnum.MINUTES_90_120],
+        example: [GoalPersonalizationKeyEnum.MINUTES_45_TO_90],
         enum: GoalPersonalizationKeyEnum,
         isArray: true,
     })
