@@ -11,8 +11,10 @@ import {
     Put,
     Query,
     Req,
+    Res,
     UseGuards,
 } from '@nestjs/common';
+import {Response} from 'express';
 import {
     ApiBadRequestResponse,
     ApiBearerAuth,
@@ -156,8 +158,12 @@ export class AdminController {
     @ApiUnauthorizedResponse({description: 'Unauthorized'})
     async getUserGoal(
         @Param('id', new ParseUUIDPipe()) id: string,
-    ): Promise<GoalResponse | null> {
-        return this.usersService.getGoalByUserId(id);
+        @Res({passthrough: true}) res: Response,
+    ): Promise<void> {
+        // Mirrors `users.getGoal`: NestJS sends an empty body for `null` returns,
+        // so we explicitly serialize via `res.json` to keep the JSON contract stable.
+        const goal = await this.usersService.getGoalByUserId(id);
+        res.json(goal);
     }
 
     @Get('users/:id/trainings')
