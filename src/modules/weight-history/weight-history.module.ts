@@ -7,7 +7,8 @@ import {DatabaseModule} from '../../database/database.module';
 @Module({
     imports: [DatabaseModule],
     providers: [WeightHistoryService, ...repositoryProviders],
-    controllers: [WeightHistoryController]
+    controllers: [WeightHistoryController],
+    exports: [WeightHistoryService],
 })
 export class WeightHistoryModule {
 }

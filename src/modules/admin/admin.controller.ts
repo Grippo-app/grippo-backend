@@ -10,6 +10,7 @@ import {
     Post,
     Put,
     Query,
+    Req,
     UseGuards,
 } from '@nestjs/common';
 import {
@@ -35,6 +36,12 @@ import {UsersService} from '../users/users.service';
 import {AssignAdminRequest} from '../users/dto/assign-admin.request';
 import {AdminUserResponse} from '../users/dto/admin-user.response';
 import {AdminSetRoleRequest} from '../users/dto/admin-set-role.request';
+import {GoalResponse} from '../users/dto/goal.response';
+import {TrainingsService} from '../trainings/trainings.service';
+import {TrainingsEntity} from '../../entities/trainings.entity';
+import {WeightHistoryService} from '../weight-history/weight-history.service';
+import {WeightHistoryEntity} from '../../entities/weight-history.entity';
+import {ExerciseExampleI18nService} from '../../i18n/exercise-example-i18n.service';
 
 @Controller('admin')
 @ApiTags('admin')
@@ -44,6 +51,9 @@ export class AdminController {
     constructor(
         private readonly exerciseExamplesService: ExerciseExampleService,
         private readonly usersService: UsersService,
+        private readonly trainingsService: TrainingsService,
+        private readonly weightHistoryService: WeightHistoryService,
+        private readonly exerciseExampleI18nService: ExerciseExampleI18nService,
     ) {
     }
 
@@ -135,6 +145,50 @@ export class AdminController {
         @Body() body: AdminSetRoleRequest,
     ): Promise<AdminUserResponse> {
         return this.usersService.setUserRole(id, body);
+    }
+
+    @Get('users/:id/goal')
+    @HttpCode(HttpStatus.OK)
+    @ApiOperation({summary: 'Get goal of any user (admin only)'})
+    @ApiParam({name: 'id', description: 'User ID (UUID)', type: String})
+    @ApiOkResponse({description: 'Goal returned, or null if user has no profile/goal', type: GoalResponse})
+    @ApiNotFoundResponse({description: 'User not found'})
+    @ApiUnauthorizedResponse({description: 'Unauthorized'})
+    async getUserGoal(
+        @Param('id', new ParseUUIDPipe()) id: string,
+    ): Promise<GoalResponse | null> {
+        return this.usersService.getGoalByUserId(id);
+    }
+
+    @Get('users/:id/trainings')
+    @HttpCode(HttpStatus.OK)
+    @ApiOperation({summary: 'Get trainings of any user in date range (admin only)'})
+    @ApiParam({name: 'id', description: 'User ID (UUID)', type: String})
+    @ApiQuery({name: 'start', required: true, example: new Date().toISOString(), description: 'Start date (ISO)'})
+    @ApiQuery({name: 'end', required: true, example: new Date().toISOString(), description: 'End date (ISO)'})
+    @ApiOkResponse({description: 'List of trainings', type: [TrainingsEntity]})
+    @ApiBadRequestResponse({description: 'Invalid date range'})
+    @ApiUnauthorizedResponse({description: 'Unauthorized'})
+    async getUserTrainings(
+        @Param('id', new ParseUUIDPipe()) id: string,
+        @Query('start') start: string,
+        @Query('end') end: string,
+        @Req() req,
+    ): Promise<TrainingsEntity[]> {
+        const language = req.locale ?? this.exerciseExampleI18nService.resolveLanguage();
+        return this.trainingsService.getTrainingsByUserId(id, start, end, language);
+    }
+
+    @Get('users/:id/weight-history')
+    @HttpCode(HttpStatus.OK)
+    @ApiOperation({summary: 'Get full weight history of any user (admin only)'})
+    @ApiParam({name: 'id', description: 'User ID (UUID)', type: String})
+    @ApiOkResponse({description: 'Weight history (ordered DESC)', type: [WeightHistoryEntity]})
+    @ApiUnauthorizedResponse({description: 'Unauthorized'})
+    async getUserWeightHistory(
+        @Param('id', new ParseUUIDPipe()) id: string,
+    ): Promise<WeightHistoryEntity[]> {
+        return this.weightHistoryService.getWeightHistoryByUserId(id);
     }
 
     @Delete('users/:id')

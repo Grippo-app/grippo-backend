@@ -27,15 +27,42 @@ export class TrainingsService {
     }
 
     async getTrainings(user, start, end, language: SupportedLanguage) {
+        const profile = await this.requireProfile(user);
+        return this.fetchTrainingsForProfile(profile.id, start, end, language);
+    }
+
+    /**
+     * Admin variant of {@link getTrainings}: looks up profile by userId and
+     * returns an empty array (instead of throwing) if the user has no profile.
+     */
+    async getTrainingsByUserId(
+        userId: string,
+        start: string,
+        end: string,
+        language: SupportedLanguage,
+    ): Promise<TrainingsEntity[]> {
+        const profile = await this.userProfilesRepository.findOne({
+            where: {user: {id: userId}},
+        });
+        if (!profile) {
+            return [];
+        }
+        return this.fetchTrainingsForProfile(profile.id, start, end, language);
+    }
+
+    private async fetchTrainingsForProfile(
+        profileId: string,
+        start: string,
+        end: string,
+        language: SupportedLanguage,
+    ): Promise<TrainingsEntity[]> {
         if (!moment(start).isValid() || !moment(end).isValid()) {
             throw new BadRequestException('Wrong date format');
         }
 
-        const profile = await this.requireProfile(user);
-
         const trainings = await this.trainingsRepository
             .createQueryBuilder('trainings')
-            .where('trainings.profile_id = :profileId', {profileId: profile.id})
+            .where('trainings.profile_id = :profileId', {profileId})
             .andWhere('date(:start) <= date(trainings.created_at) and date(:end) >= date(trainings.created_at)', {
                 start,
                 end,

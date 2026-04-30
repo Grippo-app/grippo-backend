@@ -360,6 +360,29 @@ export class UsersService {
         }
     }
 
+    /**
+     * Admin variant of {@link getGoal}: looks up by userId, returns null
+     * (instead of throwing) if the user has no profile yet.
+     */
+    async getGoalByUserId(userId: string): Promise<GoalResponse | null> {
+        const user = await this.usersRepository.findOne({where: {id: userId}});
+        if (!user) {
+            throw new NotFoundException(`User with id ${userId} not found`);
+        }
+
+        const profile = await this.userProfilesRepository.findOne({
+            where: {user: {id: userId}},
+        });
+        if (!profile) {
+            return null;
+        }
+
+        const goal = await this.goalsRepository.findOne({
+            where: {profileId: profile.id},
+        });
+        return goal ? this.toGoalResponse(goal) : null;
+    }
+
     private toAdminUserResponse(
         user: UsersEntity,
         meta?: { lastActivity: Date | null; workoutsCount: number },

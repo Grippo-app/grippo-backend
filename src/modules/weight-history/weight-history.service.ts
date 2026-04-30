@@ -13,11 +13,29 @@ export class WeightHistoryService {
     ) {
     }
 
-    async getWeightHistory(user) {
+    async getWeightHistory(user): Promise<WeightHistoryEntity[]> {
         const profile = await this.requireProfile(user?.id);
+        return this.fetchWeightHistoryForProfile(profile.id);
+    }
+
+    /**
+     * Admin variant of {@link getWeightHistory}: looks up by userId, returns
+     * an empty array (instead of throwing) if the user has no profile.
+     */
+    async getWeightHistoryByUserId(userId: string): Promise<WeightHistoryEntity[]> {
+        const profile = await this.userProfilesRepository.findOne({
+            where: {user: {id: userId}},
+        });
+        if (!profile) {
+            return [];
+        }
+        return this.fetchWeightHistoryForProfile(profile.id);
+    }
+
+    private async fetchWeightHistoryForProfile(profileId: string): Promise<WeightHistoryEntity[]> {
         return this.weightHistoryRepository
             .createQueryBuilder('weight')
-            .where('weight.profile_id = :profileId', {profileId: profile.id})
+            .where('weight.profile_id = :profileId', {profileId})
             .orderBy('weight.createdAt', 'DESC')
             .getMany();
     }
