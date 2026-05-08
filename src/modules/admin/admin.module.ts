@@ -3,6 +3,7 @@ import {ExerciseExampleModule} from '../exercise-examples/exercise-example.modul
 import {UsersModule} from '../users/users.module';
 import {TrainingsModule} from '../trainings/trainings.module';
 import {WeightHistoryModule} from '../weight-history/weight-history.module';
+import {PushTokensModule} from '../push-tokens/push-tokens.module';
 import {AdminController} from './admin.controller';
 
 @Module({
@@ -11,6 +12,7 @@ import {AdminController} from './admin.controller';
         UsersModule,
         TrainingsModule,
         WeightHistoryModule,
+        PushTokensModule,
     ],
     controllers: [AdminController],
 })

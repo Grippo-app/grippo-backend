@@ -43,6 +43,8 @@ import {TrainingsService} from '../trainings/trainings.service';
 import {TrainingsEntity} from '../../entities/trainings.entity';
 import {WeightHistoryService} from '../weight-history/weight-history.service';
 import {WeightHistoryEntity} from '../../entities/weight-history.entity';
+import {PushTokensService} from '../push-tokens/push-tokens.service';
+import {DeviceTokenResponse} from '../push-tokens/dto/device-token.response';
 import {ExerciseExampleI18nService} from '../../i18n/exercise-example-i18n.service';
 
 @Controller('admin')
@@ -55,6 +57,7 @@ export class AdminController {
         private readonly usersService: UsersService,
         private readonly trainingsService: TrainingsService,
         private readonly weightHistoryService: WeightHistoryService,
+        private readonly pushTokensService: PushTokensService,
         private readonly exerciseExampleI18nService: ExerciseExampleI18nService,
     ) {
     }
@@ -195,6 +198,18 @@ export class AdminController {
         @Param('id', new ParseUUIDPipe()) id: string,
     ): Promise<WeightHistoryEntity[]> {
         return this.weightHistoryService.getWeightHistoryByUserId(id);
+    }
+
+    @Get('users/:id/device-tokens')
+    @HttpCode(HttpStatus.OK)
+    @ApiOperation({summary: 'Get device push tokens of any user (admin only)'})
+    @ApiParam({name: 'id', description: 'User ID (UUID)', type: String})
+    @ApiOkResponse({description: 'Device tokens (ordered DESC)', type: [DeviceTokenResponse]})
+    @ApiUnauthorizedResponse({description: 'Unauthorized'})
+    async getUserDeviceTokens(
+        @Param('id', new ParseUUIDPipe()) id: string,
+    ): Promise<DeviceTokenResponse[]> {
+        return this.pushTokensService.getTokensByUserId(id);
     }
 
     @Delete('users/:id')
