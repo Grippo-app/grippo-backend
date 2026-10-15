@@ -79,8 +79,7 @@ export class AuthService {
         try {
             payload = await this.googleAuthService.verifyIdToken(dto.idToken);
         } catch (error) {
-            const message = error instanceof Error ? error.message : String(error);
-            this.logger.warn(`Google token verification failed: ${message}`);
+            this.logger.warn('Google token verification failed.');
             throw error;
         }
 
@@ -129,8 +128,7 @@ export class AuthService {
         try {
             payload = await this.appleAuthService.verifyIdToken(idToken);
         } catch (error) {
-            const message = error instanceof Error ? error.message : String(error);
-            this.logger.warn(`Apple token verification failed: ${message}`);
+            this.logger.warn('Apple token verification failed.');
             throw error;
         }
 
