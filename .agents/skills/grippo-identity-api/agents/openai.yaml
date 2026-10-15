@@ -1,0 +1,4 @@
+interface:
+  display_name: "Grippo Identity и API"
+  short_description: "Auth, роли, profile, HTTP API и локализация"
+  default_prompt: "Используй $grippo-identity-api для анализа и изменения identity/API потока Grippo с проверкой контрактов и review loop."

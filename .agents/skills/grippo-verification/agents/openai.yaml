@@ -1,0 +1,4 @@
+interface:
+  display_name: "Grippo: проверка результата"
+  short_description: "Команды проверки и честное покрытие изменений Grippo"
+  default_prompt: "Используй $grippo-verification, чтобы проверить изменение Grippo и указать фактическое покрытие."

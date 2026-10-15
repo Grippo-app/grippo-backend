@@ -1,0 +1,4 @@
+interface:
+  display_name: "Grippo: независимое ревью"
+  short_description: "Self-review и независимый review loop изменений Grippo"
+  default_prompt: "Используй $grippo-review для независимого ревью diff Grippo с findings и повторной проверкой исправлений."

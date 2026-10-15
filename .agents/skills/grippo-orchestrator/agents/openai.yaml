@@ -1,0 +1,4 @@
+interface:
+  display_name: "Grippo: оркестратор backend"
+  short_description: "Исследование, агенты, реализация и review loop Grippo"
+  default_prompt: "Используй $grippo-orchestrator для выполнения задачи по Grippo Backend с self-review и независимым review loop."

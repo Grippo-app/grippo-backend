@@ -1,0 +1,4 @@
+interface:
+  display_name: "Grippo: домен и данные"
+  short_description: "Сущности, тренировки, каталог и метрики Grippo"
+  default_prompt: "Используй $grippo-domain-data, чтобы проследить доменные связи Grippo, выполнить изменение и проверить контракты, транзакции и каскады."

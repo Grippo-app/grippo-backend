@@ -1,0 +1,4 @@
+interface:
+  display_name: "Grippo: архитектура и кодстайл"
+  short_description: "Архитектура NestJS, DI и правила изменений Grippo"
+  default_prompt: "Используй $grippo-architecture, чтобы найти место изменения и проверить wiring Grippo Backend."

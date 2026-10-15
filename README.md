@@ -1,102 +1,44 @@
-## Grippo Backend
+# Grippo Backend
 
-NestJS API with PostgreSQL, packaged for local and production runs via Docker Compose.
+REST API для тренировок: NestJS 10 / Express, TypeScript, TypeORM 0.3,
+PostgreSQL 15.5. Docker runtime — Node 20; точные dependencies закреплены lockfile.
 
-### Stack
-- Node.js 20 (Docker runtime)
-- NestJS 10 + TypeScript
-- PostgreSQL 15.5
-- TypeORM, JWT auth
-- Docker / Docker Compose
+Backend содержит auth (email/Google/Apple, access/refresh JWT), users/profile/
+goals/exclusions, trainings/exercises/iterations, каталог упражнений и его
+переводы/components, muscles/equipments, exercise metrics, weight history,
+push token registry и admin API.
 
-```
-docker logs -f --tail 200 grippo_backend
-```
+## Документация
 
-### Runtime model
-- `docker-compose.yml` runs `db` (PostgreSQL) and `backend` (NestJS).
-- Configuration is loaded from `.env`.
-- Production image is built with the multi-stage `Dockerfile`.
+| Нужная информация | Источник |
+|---|---|
+| Правила работы и выбор skill | [AGENTS.md](AGENTS.md) |
+| Архитектура, modules, DI | [architecture](.agents/skills/grippo-architecture/references/architecture.md) |
+| Все исходники и владельцы областей | [source-map](.agents/skills/grippo-architecture/references/source-map.md) |
+| Entities и отношения | [entity-map](.agents/skills/grippo-domain-data/references/entity-map.md) |
+| API и identity | [api-map](.agents/skills/grippo-identity-api/references/api-map.md) |
+| Env keys, порты, Docker и запуск | [configuration-and-containers](.agents/skills/grippo-operations/references/configuration-and-containers.md) |
+| Проверки и границы покрытия | [checks](.agents/skills/grippo-verification/references/checks.md) |
 
-### Environment variables
-Template based on `.env`:
-```env
-# App Info
-# development | staging | test | production
-APP_ENV=production
+Jest содержит focused DTO/controller specs; они подменяют services/guards и
+не проверяют настоящие auth/DB интеграции. Перед запуском приложения установи
+изолированную DB/config: DATA_SOURCE может применить synchronize при bootstrap.
+Swagger paths: /docs, /docs-json; глобального /api prefix и /health route нет.
 
-# Backend Container Settings
-BACKEND_PORT=3010
-BACKEND_HOST=backend
-BACKEND_CONTAINER=replace_me
-BACKEND_BUILD_CONTEXT=.
-BACKEND_DOCKERFILE=Dockerfile
+## Эксплуатация
 
-# PostgreSQL (Database)
-POSTGRES_HOST=db
-POSTGRES_PORT=5432
-POSTGRES_USERNAME=replace_me
-POSTGRES_PASSWORD=replace_me
-POSTGRES_DATABASE=replace_me
-POSTGRES_CONTAINER_NAME=replace_me
+**Деплой только с явного разрешения человека на конкретную попытку. Перед каждым
+деплоем обязателен новый successful dump через scripts/dump.sh.** Dump-only,
+SSH, зелёные checks и review не разрешают rollout или автоматический retry.
 
-# JWT (Authentication Tokens)
-JWT_SECRET_KEY=replace_me
-JWT_EXPIRATION_TIME=1000m
-JWT_REFRESH_EXPIRATION_TIME=10000m
+[Обязательный порядок dump/deploy](.agents/skills/grippo-operations/references/deployment-policy.md)
+и [SSH/remote доступ](.agents/skills/grippo-operations/references/remote-access.md)
+определяют target, backup evidence, допустимые команды и условия остановки.
 
-# Google Authentication (Client IDs)
-GOOGLE_CLIENT_ID_IOS=replace_me
-GOOGLE_CLIENT_ID_ANDROID=replace_me
-GOOGLE_CLIENT_ID_WEB=replace_me
+Текущий deploy.sh удаляет volumes через down -v, запускает backend до import и
+сам не обеспечивает backup/approval gates или проверку восстановления.
+cleanup.sh чистит весь Linux host и вызывает sudo reboot.
+[Разбор scripts и failure branches](.agents/skills/grippo-operations/references/scripts-runbooks.md).
+Примеры в документах не являются разрешением выполнять эти операции.
 
-# Database Initialization (Dump)
-DB_DUMP_FILE=scripts/dump.sql
-# set true to drop schema before import
-DROP_SCHEMA_BEFORE_IMPORT=true
-
-# Logging
-LOG_MAX_SIZE=10m
-LOG_MAX_FILE=3
-
-# CI/CD & Scripts
-DOCKER_COMPOSE_FILE=docker-compose.yml
-```
-
-### Modules
-- `DatabaseModule` — TypeORM configuration, database providers, and shared connection setup.
-- `I18nModule` — locale detection middleware and translation context wiring.
-- `AuthModule` — JWT strategy, token issuance, and auth guards.
-- `UsersModule` — user profiles, persistence, and domain logic.
-- `TrainingsModule` — training plans, sessions, and related persistence logic.
-- `ExerciseExampleModule` — reference catalog of exercises and metadata.
-- `MusclesModule` — muscle groups dictionary and lookups.
-- `WeightHistoryModule` — weight tracking records and aggregation helpers.
-- `ExerciseMetricsModule` — metrics and stats for exercises (history, trends).
-- `EquipmentsModule` — inventory of equipment and related metadata.
-- `AdminModule` — admin-only workflows across users and exercise data.
-
-### Scripts
-
-#### `scripts/deploy.sh`
-Cold-start setup via Docker Compose.
-- Loads `.env` and validates required variables:  
-  `BACKEND_HOST`, `BACKEND_PORT`, `POSTGRES_CONTAINER_NAME`, `POSTGRES_DATABASE`, `POSTGRES_USERNAME`, `POSTGRES_PASSWORD`, `POSTGRES_PORT`.
-- Runs `docker compose down -v`, then `up -d --build`.
-- Waits for PostgreSQL readiness (`pg_isready`).
-- If a dump exists (default `scripts/dump.sql`, override with `DB_DUMP_FILE`), it imports it.
-- If `DROP_SCHEMA_BEFORE_IMPORT=true` — recreates `public` before import.
-
-#### `scripts/dump.sh`
-Creates a SQL dump from the PostgreSQL container.
-- Requires `POSTGRES_CONTAINER_NAME`, `POSTGRES_DATABASE`, `POSTGRES_USERNAME`, `POSTGRES_PASSWORD` in `.env`.
-- Uses `pg_dump` inside the container, plain format with `INSERT`s.
-- Stores snapshots in `backups/` and updates the latest `scripts/dump.sql`.
-
-#### `scripts/cleanup.sh`
-Linux host disk cleanup (requires `sudo`).
-- Shows disk usage before/after.
-- Cleans Docker: containers, images, networks, volumes, build cache.
-- Cleans `apt` cache and unused packages.
-- Trims `systemd-journald` logs.
-- Clears `/tmp` and `/var/tmp`.
+Финальные результаты проверки комплекта: [agent-kit-audit](tasks/agent-kit-audit.md).
