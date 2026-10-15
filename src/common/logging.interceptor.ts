@@ -8,7 +8,7 @@ export class LoggingInterceptor implements NestInterceptor {
     intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
         const start = Date.now();
         const request = context.switchToHttp().getRequest();
-        const {method, url, body, user} = request;
+        const {method, url, user} = request;
 
         return next.handle().pipe(
             tap(() => {
@@ -16,11 +16,9 @@ export class LoggingInterceptor implements NestInterceptor {
                 const statusCode = response.statusCode;
                 const duration = Date.now() - start;
 
-                const shouldLogBody = ['POST', 'PUT'].includes(method);
-                const bodyPart = shouldLogBody ? ` body=${this.safeStringify(body)}` : '';
                 const userIdPart = user?.id ? ` uid=${user.id}` : '';
 
-                this.logger.log(`${method} ${url} ${statusCode}${userIdPart}${bodyPart} - ${duration}ms`);
+                this.logger.log(`${method} ${url} ${statusCode}${userIdPart} - ${duration}ms`);
             }),
             catchError((err) => {
                 const duration = Date.now() - start;
@@ -28,13 +26,5 @@ export class LoggingInterceptor implements NestInterceptor {
                 return throwError(() => err);
             }),
         );
-    }
-
-    private safeStringify(data: unknown): string {
-        try {
-            return JSON.stringify(data);
-        } catch {
-            return '[Unserializable body]';
-        }
     }
 }

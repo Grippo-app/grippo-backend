@@ -5,13 +5,14 @@ import {ExerciseExamplesEntity} from "../../entities/exercise-examples.entity";
 import {ExerciseExampleBundlesEntity} from "../../entities/exercise-example-bundles.entity";
 import {ExerciseExampleLocalizedTextDto, ExerciseExampleRequest} from "./dto/exercise-example.request";
 import {ExerciseExampleCreateResponse, ExerciseExampleWithStatsResponse} from "./dto/exercise-example.response";
+import {ExerciseExampleTranslationsResponse} from './dto/exercise-example-translations.response';
 import {ExerciseExamplesEquipmentsEntity} from "../../entities/exercise-examples-equipments.entity";
 import {ExerciseExampleTranslationEntity} from "../../entities/exercise-example-translation.entity";
 import {ExcludedEquipmentsEntity} from "../../entities/excluded-equipments.entity";
 import {ExcludedMusclesEntity} from "../../entities/excluded-muscles.entity";
 import {ExercisesEntity} from "../../entities/exercises.entity";
 import {ExerciseExampleI18nService} from "../../i18n/exercise-example-i18n.service";
-import {DEFAULT_LANGUAGE, SupportedLanguage} from "../../i18n/i18n.types";
+import {DEFAULT_LANGUAGE, SupportedLanguage, SUPPORTED_LANGUAGES} from "../../i18n/i18n.types";
 import {UserProfilesEntity} from '../../entities/user-profiles.entity';
 import {ExerciseExampleComponentsEntity} from "../../entities/exercise-example-components.entity";
 import {ExerciseComponentsDto} from "./dto/exercise-components.dto";
@@ -137,6 +138,24 @@ export class ExerciseExampleService {
         };
     }
 
+    /** Return stored text without applying locale fallback. */
+    async getExerciseExampleTranslations(id: string): Promise<ExerciseExampleTranslationsResponse> {
+        const example = await this.exerciseExamplesRepository.findOne({
+            where: {id},
+            relations: ['translations'],
+        });
+        if (!example) throw new NotFoundException('Exercise example not found');
+        return {
+            id: example.id,
+            base: {name: example.name ?? null, description: example.description ?? null},
+            translations: (example.translations ?? []).map(translation => ({
+                language: translation.language,
+                name: translation.name ?? null,
+                description: translation.description ?? null,
+            })).sort((a, b) => SUPPORTED_LANGUAGES.indexOf(a.language) - SUPPORTED_LANGUAGES.indexOf(b.language)),
+        };
+    }
+
     /**
      * Create a new exercise example
      * @param body Exercise example data
@@ -170,7 +189,6 @@ export class ExerciseExampleService {
         const bundles = exerciseExampleBundles.map((el) => {
             const entity = new ExerciseExampleBundlesEntity();
             Object.assign(entity, el);
-            entity.id = id;
             entity.exerciseExampleId = id;
             return entity;
         });

@@ -34,6 +34,7 @@ import {AdminOnlyGuard} from '../../common/admin.guard';
 import {ExerciseExampleService} from '../exercise-examples/exercise-example.service';
 import {ExerciseExampleRequest} from '../exercise-examples/dto/exercise-example.request';
 import {ExerciseExampleCreateResponse} from '../exercise-examples/dto/exercise-example.response';
+import {ExerciseExampleTranslationsResponse} from '../exercise-examples/dto/exercise-example-translations.response';
 import {UsersService} from '../users/users.service';
 import {AssignAdminRequest} from '../users/dto/assign-admin.request';
 import {AdminUserResponse} from '../users/dto/admin-user.response';
@@ -63,6 +64,21 @@ export class AdminController {
     }
 
     // Exercise examples
+    @Get('exercise-examples/:id/translations')
+    @HttpCode(HttpStatus.OK)
+    @ApiOperation({summary: 'Get stored exercise translations without language fallback (admin only)'})
+    @ApiParam({name: 'id', description: 'Exercise example ID (UUID)', type: String})
+    @ApiOkResponse({description: 'Untranslated base text and actual stored translation rows', type: ExerciseExampleTranslationsResponse})
+    @ApiBadRequestResponse({description: 'Invalid exercise example ID'})
+    @ApiNotFoundResponse({description: 'Exercise example not found'})
+    @ApiUnauthorizedResponse({description: 'Unauthorized'})
+    @ApiResponse({status: HttpStatus.FORBIDDEN, description: 'Forbidden'})
+    async getExerciseExampleTranslations(
+        @Param('id', new ParseUUIDPipe()) id: string,
+    ): Promise<ExerciseExampleTranslationsResponse> {
+        return this.exerciseExamplesService.getExerciseExampleTranslations(id);
+    }
+
     @Post('exercise-examples')
     @HttpCode(HttpStatus.CREATED)
     @ApiOperation({summary: 'Create a new exercise example (admin only)'})
