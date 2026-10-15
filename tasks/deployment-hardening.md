@@ -1,9 +1,12 @@
-# Локальное исправление deployment и Docker
+# Deployment: hardening и первый production rollout
 
-Актуальное продолжение: «Повторное ревью и публикация» в конце отчёта.
+Актуальный результат — «Первый production rollout» в конце отчёта. Предыдущие
+разделы сохраняют историю подготовки и ограничения соответствующего этапа;
+их NOT_RUN не описывают итог выполненного запуска.
 
-Запрос: исправить scripts/Docker с self-review и независимым review.
-SSH, production dump/deploy и реальные Docker runtime операции запрещены.
+Первоначальный запрос: исправить scripts/Docker с self-review и независимым review.
+На первоначальном этапе SSH, production dump/deploy и реальные Docker runtime
+операции были запрещены.
 Исходный tracked tree чист; пользовательские SQL и .DS_Store сохраняются.
 
 ## Критерии
@@ -292,3 +295,127 @@ private recovery storage: без `fstab`, sysctl, перезапуска DB ил
 Подтверждены ext4, необходимые tools и noninteractive sudo capability.
 Отключение допускается только для собственного файла при достаточной RAM;
 иначе он остаётся active с явным pending cleanup. Swap пока не создан/не включён.
+
+
+## Первый production rollout
+
+Дата: 2026-10-16 Europe/Kiev (2026-10-15 UTC). Пользователь прямо разрешил
+одну подготовленную попытку на `ubuntu@51.21.57.106:22`, root
+`/home/ubuntu/grippo-backend`, revision
+`68465c611e29d01490e136ec14ead573b580934c`. Подтверждены закрытая IDE,
+единственный code writer и остановка HTTP clients/других DB writers до отчёта.
+Ключ использован по согласованному пути; StrictHostKeyChecking не отключался.
+
+План перед выполнением прошёл self-review и независимое APPROVE. Человеческое
+разрешение связано с подготовленным планом SHA256
+`26e7df3ed2bdca6463db4825dd9c731f3acfff3917abf86453cdff9581999f1c`;
+после импорта точной revision independently сверён фактический runtime plan
+`c652b85be5ee0454224f157575d041e5d5dd32daea3575aaa4aaf8cdf87ef01a`.
+Bootstrap attempt `72573d17-6261-45a9-95ad-b1d1d3ac2fc1`, deploy attempt
+`c2c04283-6b12-4383-b118-0762115a5a08`. Это запись состоявшегося запуска,
+не разрешение будущих попыток, повторов, cleanup или recovery.
+
+### Фактический порядок и результат
+
+- На сервере был legacy SFTP checkout без `.git`. До live upload сохранены
+  прежние env/latest, остановлен только старый backend; PostgreSQL оставалась
+  доступна. Неизменённый старый штатный `scripts/dump.sh` завершился exit 0.
+  Его `source .env` и пароль в host argv были явно раскрытым и разрешённым
+  одноразовым исключением; проверены literal env и quote-only изменение пароля.
+  Старый destructive deploy с `down -v` не запускался. Новый workflow dotenv
+  не исполняет и пароль в host argv не передаёт.
+- Свежие snapshot/latest/private recovery copy совпали по size/SHA256.
+  Backup скачан SFTP, сверен локально и повторно на сервере, сохранён с fsync
+  отдельно от checkout; локальный latest заменён атомарно. Прежний local dump
+  сохранён независимо, не перезаписан.
+- Полный backup восстановлен через `psql --single-transaction` и ON_ERROR_STOP
+  в отдельном PG 15.5 container: network none, без опубликованных ports,
+  host binds и named volumes, RAM/no-swap limit 192 MiB, tmpfs PGDATA 128 MiB.
+  Совпали metadata и counts всех **20 таблиц**, **56 constraints**, **221 enum
+  labels**. Собственный test container удалён, cleanup проверен. Source DB
+  не импортировалась и не менялась.
+- После backup/off-host/restore добавлен новый случайный `JWT_REFRESH_SECRET`.
+  Access secret и остальные env values сохранены. Прежние refresh-токены
+  требуют повторного входа; access-токены сохраняют прежний expiry.
+- Проверенный release archive SHA256
+  `856884b4a9138f3dcfe23723ca6da5361b8dbdf2ad7131a99935b4cd1c3bf801`
+  содержит 183 tracked файла точной revision. До overwrite сохранены 120
+  прежних code files и code archive SHA256
+  `aabd3410489292ed83cc4298b1f770d4aa6476ef06eb25d25e7a6a7c0e114eea`.
+  Импортирован Git checkout; `.env`, dumps/backups и чужие files сохранены.
+- Новый `deploy.sh --execute` сделал **ещё один новый штатный dump**, проверил
+  independent recovery copy, построил image и пересоздал только backend.
+  Никаких `down`, DB restart/recreate/upgrade, volume removal, SQL import,
+  synchronize или migrations не выполнялось. Execute exit 0, status healthy.
+- Backend container
+  `9a0cb0a147011b8142045abebdbe702e693eca793712cdeded878e57d13add72`
+  использует image
+  `sha256:54cc1dd7a7abdca5d95a6af801235a90bb99e71ddef6a81bc5b8ccf991ee24ed`
+  с label разрешённой revision. Проверены healthy, restartCount 0, OOM false,
+  nonroot `node`, init, cap_drop ALL/no-new-privileges, production и schema
+  flags false, exact DB endpoint/credentials match без вывода values.
+  Git tracked tree после импорта чист. Старый immutable backend image сохранён.
+- PostgreSQL container ID/image и `grippo-backend_pgdata` остались прежними;
+  DB healthy, restartCount 0. Новые DB-specific hardening settings Compose
+  к работающему старому DB container этим backend-only deploy не применялись.
+- Actual runtime: Node major 20, `proxy-addr@2.0.8`, `sha.js@2.4.12`.
+  Read-only smoke **13/13 PASS**: `/health` HTTP 200; actual TokenService
+  выпускает synthetic access/refresh с проверенными signatures/claims/TTL,
+  cross-secret verification отклоняется; missing Bearer, отсутствующий synthetic
+  user и refresh-as-access возвращают точные 401/error/WWW-Authenticate contracts.
+  Секреты/JWT остаются в памяти, user creation/DB writes/provider calls отсутствуют.
+
+### Backup на сервере и ПК
+
+Оба новых dump побайтно совпадают: **4 427 736 bytes**, SHA256
+`7f71cb7156b435e3bf1b2748c0d5e67cfe61be52c389d575494f4bbb4298d6d6`.
+Именно этот payload прошёл полный isolated restore drill. После execute повторно
+проверены three distinct regular private copies, checksum/size и healthy source.
+Финальная off-host copy сохранена и локальный latest снова обновлён атомарно:
+
+- `/Users/maxvoitenko/Backups/grippo/predeploy-c2c04283-20261015T223546Z.sql`;
+- `/Users/maxvoitenko/Projects/Pet/grippo-backend/scripts/dump.sql`.
+
+Bootstrap copy, прежний local dump, metadata receipts и journals сохранены
+независимо. Server recovery directory вне checkout:
+`/home/ubuntu/grippo-recovery/72573d17-6261-45a9-95ad-b1d1d3ac2fc1`.
+SQL/env payloads в Git и этот отчёт не включены.
+
+### Ресурсы и оставшиеся ограничения
+
+Для сборки был отдельно разрешён один temporary swap 1 GiB: сервер имеет
+около 914 MiB RAM без исходного swap; local build достигал 387.4 MiB RSS.
+Создание/activation проверены по own inode, pinned host/DB и ext4; fstab/sysctl
+не менялись. В конце **cleanup PENDING**, ожидаемый exit 2 без mutation:
+MemAvailable 366 141 440 bytes, swap used 233 308 160 bytes; заданный guard
+требует used swap + 128 MiB, то есть 367 525 888 bytes. Поэтому swap оставлен
+активным, forced swapoff/повторная попытка не выполнялись. Путь:
+`/home/ubuntu/grippo-recovery/build-swap-72573d17-6261-45a9-95ad-b1d1d3ac2fc1/build.swap`.
+Это отдельный незавершённый шаг безопасной очистки при достаточной памяти,
+не неисправность backend/DB и не автоматическое разрешение retry/cleanup.
+
+Read-only guard smoke не доказывает успешный login реального пользователя,
+OAuth integrations или business writes; 401 unknown-user также не подтверждает
+успешный users SQL lookup. Actual schema compatibility, DB health и isolated
+restore проверены отдельно. Исторический schema drift, описанный выше, не
+исправлялся миграцией. Свежий external `npm audit` остаётся **NOT_RUN**:
+auto-review запретил отправку dependency graph registry; обходов не было.
+Два известных critical runtime advisory проверены как исправленные, это не
+утверждение об отсутствии остальных уязвимостей.
+
+Operational receipts и sanitized proofs независимо проверены reviewer: APPROVE
+rollout/backup/smoke с явно незавершённой очисткой swap. Проверены также файлы
+local latest/final/bootstrap/previous backup и четыре независимых inode. После
+функционального отчёта о healthy/smoke/final off-host backup разрешено возобновить
+HTTP clients; фактическое действие пользователей этим не утверждается.
+После успешного runtime rollout обновляются skills и этот report; последующая
+публикация документации не меняет server runtime revision и не запускает новый
+неразрешённый deployment.
+
+
+Post-deploy maintenance: обновлены только operations skill/references и этот
+report, runtime code не менялся. Repo agent-kit validator — PASS: 7 skills,
+8 agents, 625 local links, 135 indexed files; final whitespace — PASS.
+Skill-creator `quick_validate.py` — NOT_RUN: PyYAML отсутствует и в системном,
+и в bundled Python; зависимости не устанавливались. Frontmatter/links/inventory
+проверены проектным validator, поведение и точность — независимым reviewer.

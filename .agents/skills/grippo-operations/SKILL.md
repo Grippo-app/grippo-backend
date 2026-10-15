@@ -45,8 +45,9 @@ description: Исследование и изменение Docker, env, SSH, du
 - Перед каждой execute attempt helper заново вызывает штатный `dump.sh`,
   проверяет snapshot/latest и независимую private recovery copy.
   Dump-only не разрешает upload/restart/deploy/restore.
-- Окно без writes согласуется отдельно до snapshot. `--writers-frozen` —
-  утверждение оператора, а не механизм остановки писателей.
+- Окно без writes согласуется до snapshot и длится до согласованного API smoke,
+  включая HTTP-клиентов после recreate. `--writers-frozen` — утверждение
+  оператора, а не механизм остановки писателей.
 - `--env-file` читается как данные, не выполняется через `source`.
   Не выводи .env values, SQL rows, credentials/keys, полный inspect/config,
   production logs; не включай tracing с secrets.

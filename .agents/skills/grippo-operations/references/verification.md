@@ -35,6 +35,8 @@ Fixture должна завершиться до реального Docker/SSH/D
 | Область | Сценарии |
 |---|---|
 | Paths/storage | Relative/absolute selection, unsafe symlink/hardlink/owner/type/mode, missing parent/private recovery, overwrite/collision, full disk/copy/fsync failure |
+| Compose JSON | Synthetic stdin probe: plain/doubled protocols, literal `$`/`$$`, unknown serialization fail-closed; один decoder initial/rollout; inspect/generic JSON не меняются |
+| Auth readiness | Missing/blank/equal JWT secrets блокируют deploy, но не dump-only; JS trim semantics и сравнение raw values; health не заменяет auth/TTL smoke |
 | Source identity | Wrong daemon/project/labels/volume/network, absent/stopped/ambiguous DB/backend, external DB, credentials mismatch, inherited libpq endpoint overrides |
 | Dump | Exit failure/timeout/empty/partial, same-second unique names, recovery fail before latest update, atomic latest, equality/checksum/permissions, no payload in errors |
 | Plan | Default read-only, exact full revision/clean tree, same target/config/paths/timeout binding, missing/wrong approval, CLI attestation не считается human permission |
@@ -45,6 +47,7 @@ Fixture должна завершиться до реального Docker/SSH/D
 | Docker health | Node builtin HTTP:200 pass; non200/network/timeout/invalid port fail; no curl requirement |
 | Image binding | Old immutable image retained in plan/journal, unavailable old image blocks deploy but not dump-only; distinct project build tags; wrong/missing built image blocks up; immutable selector changes only backend.image; tag changes during up cannot select another image |
 | Stalled health | Many checks/timeouts share one raw query/subscription/deadline; cached 503 until raw resolve/reject, then recovery; no accumulating Promise.race reactions |
+| Bounded operational helpers | Все внешние команды/записи подменены; нехватка ресурсов до freeze; swap guard не отключает чужой swap и оставляет cleanup pending; isolated restore timeout/OOM/import failure не даёт PASS, cleanup проверяет только собственный container |
 | Secrets | Raw stderr/config/inspect/build/SQL never relayed; private logs isolated; no secrets in argv/build context/Git |
 
 Сценарии выбирай по изменению; не вводи постоянные specs/инфраструктуру вне
@@ -60,7 +63,9 @@ Compose/version/registry/image, PostgreSQL restore или production topology.
 
 Для rollout соблюдай [deployment-policy](deployment-policy.md). Нужны прямое
 human permission на attempt, новый штатный backup, реальный writer control и
-API smoke после DB-aware health. Ни PASS fixture, ни reviewer APPROVE не
+API smoke после DB-aware health. Положительный TokenService probe и отрицательные
+HTTP guard checks не доказывают реальный user login, OAuth или бизнес-записи;
+фиксируй эти границы отдельно. Ни PASS fixture, ни reviewer APPROVE не
 разрешают actual SSH/plan/deploy.
 
 После исправления повтори затронутые проверки и независимое review.

@@ -130,6 +130,36 @@ Execute:
 Docker operation отменена. Сначала диагностика, затем отдельное permission на
 recovery/новую attempt. Автоматического retry/rollback/import нет.
 
+## Ресурсы build и временный swap
+
+До остановки API оцени available RAM, фактический swap/disk и peak build вместе
+с работающей DB; remote Docker build не имеет гарантии по локальному RSS.
+Если выбран временный swap, явно включи эту host mutation в конкретный
+reviewed plan: новый private regular file, точные tools/размер/путь и собственный
+journal. Resource preflight выполняй до freeze; allocation/activation предпочитай
+до freeze, когда prerequisites уже готовы. Если порядок иной, заранее отрази в
+плане зависимость, окно недоступности и остановку при отказе; уже разрешённый
+подшаг того же плана не требует повторного permission.
+В таком workflow не добавляй fstab/sysctl, global prune или reboot.
+Перед mkswap/swapon и cleanup сверяй owner/mode/inode и точную запись /proc/swaps;
+не трогай чужой swap. После build отключай свой только при свежем RAM budget,
+покрывающем used swap плюс запланированный reserve. Отказ guard означает
+cleanup pending: не форсируй swapoff, не удаляй active file и не объявляй cleanup
+успешным. Unlink допускается только после подтверждённого отключения своего swap.
+
+## Переход со старой SFTP installation
+
+Отсутствие `.git` — отдельный bootstrap, а не повод для `git reset/clean`.
+Сверь pinned hashes действующих scripts, сохрани старые config/code/image и
+проверь backup до первого live overwrite. Exact revision публикуй из проверенного
+artifact вне live root с сохранением `.env`, SQL и чужих файлов.
+Старый source-sourcing dump и password в host argv требуют отдельной оценки
+риска. Для первого перехода потребовалось явное разрешение этих разовых
+исключений, строгая проверка dotenv grammar и private diagnostics;
+нормальные wrappers `.env` не исполняют. Не копируй прошлое разрешение или
+временные helpers в следующий workflow. Старый destructive deploy не запускай.
+После перехода современный execute всё равно делает новый штатный dump.
+
 ## Что не входит в deploy
 
 Git fetch/pull/checkout/reset/clean, live upload, DB up/recreate/upgrade,

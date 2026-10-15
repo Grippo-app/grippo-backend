@@ -40,7 +40,8 @@ writers. Агент обязан иметь соответствующее ра�
 | Docker identity | Тот же pinned daemon selector/context, Compose project/config, running DB, existing stable backend и persistent volume; backend может быть остановлен только в согласованном freeze |
 | DB identity | Running backend endpoint/credentials/network соответствуют фактической DB и rendered Compose; внешнюю DB нельзя молча заменить на `db` |
 | Schema compatibility | Новый backend совместим с существующей schema без synchronize/migrations; `SELECT 1` не проверяет все entities |
-| Writers | Согласован и фактически действует freeze до snapshot и во время rollout; PostgreSQL остаётся доступна |
+| Writers | Freeze всех DB writers и HTTP-клиентов действует до snapshot, через recreate и согласованный smoke; PostgreSQL остаётся доступна |
+| Resources | Измерены доступные RAM/swap/disk, бюджет build и параллельных probes; локальный build RSS на другой ОС — ориентир, не точный Linux peak |
 | Storage | Private recovery directory вне checkout/build context/удаляемых ресурсов, достаточно места; копии не перезаписываются |
 | Recovery | Известны текущая code/image revision, good backup и отдельно согласуемый способ восстановления; plan сохраняет immutable old image ID даже для legacy без revision label |
 | Plan | Совпадают attempt UUID, SHA256 плана и все связанные параметры; plan пересчитан перед mutation |
@@ -48,6 +49,11 @@ writers. Агент обязан иметь соответствующее ра�
 Не подменяй неизвестную production конфигурацию локальной. Если running DB
 отсутствует, обнаружено несовпадение или нужен bootstrap — stop и отдельный план.
 Не создавай пустую DB ради успешного preflight или dump.
+Остановка старого backend прекращает его writes только до recreate: новый API
+снова становится доступен до smoke. Подтверждение отсутствия внешних клиентов
+или согласованный технический writer control должно покрывать и этот период.
+Если ресурсов для build недостаточно, подготовь изменение плана до запуска;
+временный swap не включается автоматически — см. [runbooks](scripts-runbooks.md).
 
 ## Отдельный dump
 
@@ -130,7 +136,9 @@ Execute заново проверяет plan/target, фиксирует уник
 Если на сервере ещё старые source-sourcing scripts, не заменяй их и не запускай
 новый helper как скрытый обход backup-before-upload. Подготовь отдельный
 reviewed staging/upgrade plan для backup действующей системы до live update.
-Ни существующая DB, ни remote scripts в этой локальной задаче не проверены.
+Первый выполненный переход и его доказательства описаны в
+[deployment report](../../../../tasks/deployment-hardening.md); прежнее разовое
+разрешение на legacy bootstrap не переносится на другую попытку.
 
 ## Failure, disconnect и recovery
 

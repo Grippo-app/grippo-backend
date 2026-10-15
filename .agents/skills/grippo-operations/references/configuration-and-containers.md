@@ -30,6 +30,16 @@ Compose interpolation учитывает environment вызывающего пр
 assignments не доказывает runtime значения. Не выводи `.env`, `printenv`,
 `docker inspect`, полный Compose config или tracing с credentials.
 
+Compose `config --format json` в некоторых v2 удваивает каждый `$` при
+сериализации, даже когда runtime значение не меняется. Helper определяет
+протокол синтетическим stdin-only `config` probe с `--env-file /dev/null` и
+фиксированным literal; version string и реальные secrets для этого не нужны.
+Только для доказанного doubled protocol decoder снимает ровно один слой `$$`;
+настоящий `$$` сохраняется, plain JSON и `docker inspect` не преобразуются.
+Initial и immutable rollout config используют один decoder; protocol входит в
+plan identity. Неизвестный формат/непарный `$` в doubled output — stop, а не
+повод изменить password. Пробы render не запускают daemon workload.
+
 Helper фиксирует исходный Docker selector для всех commands/child dump:
 explicit `--context` либо HOST-only `--host` с сохранением TLS environment.
 Selector hash связан с планом; active-context pointer больше не выбирается
@@ -80,6 +90,15 @@ Auth source: [token.service](../../../../src/modules/auth/services/token.service
 [Apple](../../../../src/modules/auth/services/apple-auth.service.ts).
 Не считай эту таблицу validation schema всех application env: helper проверяет
 нужные ему runtime invariants, а не каждый auth credential/TTL.
+Deploy preflight требует непустые, различные `JWT_SECRET_KEY` и
+`JWT_REFRESH_SECRET`, с тем же presence check, что `String.trim()` в TokenService;
+сравниваются исходные значения. Dump-only этот auth gate не применяет, чтобы
+ошибка auth не блокировала аварийный backup. `/health` не обнаруживает такую
+ошибку и не проверяет TTL. В согласованном smoke проверяй TokenService с actual
+config и синтетическим payload в памяти, без вывода/сохранения tokens.
+Provision/rotation refresh secret требует оценки sessions и согласования:
+ранее выданные refresh tokens могут перестать приниматься и потребовать входа;
+сохраняй access secret, если его изменение отдельно не предусмотрено планом.
 
 ## Compose topology и совместимость
 
@@ -138,4 +157,7 @@ DATA_SOURCE.initialize выполняется до ready HTTP. SIGINT/SIGTERM з
 
 `.gitignore` не заменяет `.dockerignore` и не защищает уже отслеживаемые файлы.
 Перед commit проверяй конкретные staged paths; SQL/.env/keys не публикуются.
-Remote target/proxy/actual env по этим файлам не установлены.
+Compose описывает желаемую конфигурацию, а не доказывает actual состояние
+существующего DB container. Датированные remote evidence см. в
+[deployment report](../../../../tasks/deployment-hardening.md); на новой попытке
+повторно проверяй actual identity/config, особенно ещё не применённый DB hardening.

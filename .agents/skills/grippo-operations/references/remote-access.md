@@ -18,22 +18,25 @@ Remote bytes/configuration могут отличаться: проверяй в�
 |---|---|
 | Host/user/port или существующий SSH alias | Подтверждённый target и environment; alias должен вести на ожидаемый host/account |
 | Authentication | Согласованный существующий key path/agent/интерактивный механизм; private key bytes не читать и не передавать |
-| Host fingerprint | Независимый доверенный источник: пользователь, администратор или console provider |
+| Host fingerprint | Уже доверенная known_hosts запись либо независимый доверенный источник; зафиксируй происхождение trust |
 | Absolute checkout root | Реальный проект/окружение, действующая и новая revision |
 | Docker и DB identity | Daemon/context, Compose project/file, backend endpoint и источник dump |
 | Scope | Чтение, dump-only с storage либо конкретный разрешённый deploy attempt |
 
-Пользователь предположительно указал `ubuntu@51.21.57.106:22`. Это совпадает с
-локальными ignored `.idea/sshConfigs.xml` и `.idea/webServers.xml`, но **target
-не подтверждён**. `/home/ubuntu/grippo-backend` — только кандидат, выведенный из
-SFTP root `/home/ubuntu` и deployment mapping `/grippo-backend` в
-`.idea/deployment.xml`; пользователь absolute path ещё не подтвердил. Existing
-approved key и fingerprint неизвестны. Эти hints не разрешают login/deploy.
+При первом AI rollout 2026-10-16 пользователь подтвердил production
+`ubuntu@51.21.57.106:22`, root `/home/ubuntu/grippo-backend` и существующий key
+`~/.ssh/grippo-deploy.pem`. SSH использовал строгую проверку ранее доверенной
+ED25519 known_hosts записи:
+`SHA256:FS0XbKpIOAXx4+EjL9hroSJ2as6DcX0bfhltaa/Dlws`.
+Это датированные факты, а не default target или разрешение будущего запуска;
+история и runtime evidence — в [deployment report](../../../../tasks/deployment-hardening.md).
+Не приписывай этой проверке новое подтверждение fingerprint через console.
 
-В `.idea/deployment.xml` указан `autoUpload=Always`. До rollout установи,
+IDE hints сами не подтверждают target. При `autoUpload=Always` установи,
 использует ли IDE эту настройку; согласуй единственного writer remote checkout.
-Параллельный upload может заменить scripts/latest между backup и deploy.
-Не объявляй auto-upload выключенным без проверки и не меняй IDE попутно.
+Для первого rollout пользователь подтвердил закрытую IDE и отсутствие других
+изменений. На новой попытке снова установи фактическое окно: параллельный upload
+может заменить scripts/latest между backup и deploy. Не меняй IDE попутно.
 
 Читай только нужные metadata выбранного alias/key, без содержимого ключей и
 чужих hosts. Не создавай новый key, не меняй firewall/authorized_keys/groups или
