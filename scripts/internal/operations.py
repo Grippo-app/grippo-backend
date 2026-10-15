@@ -85,11 +85,13 @@ def safe_path(path, *, directory=False, private=False, missing=False):
         require(not info.st_mode & 0o077, "Private path requires mode 600 (file) / 700 (directory).")
 
 
-def run(command, label, *, output=None, timeout=60, pass_fds=(), env=None, merge_errors=False):
+def run(command, label, *, output=None, timeout=60, pass_fds=(), env=None, merge_errors=False,
+        input_data=None):
     # Raw diagnostics may contain credentials/SQL: never relay them to stdout.
     with tempfile.TemporaryFile() as errors:
         try:
-            result = subprocess.run(command, cwd=ROOT, env=env, stdin=subprocess.DEVNULL,
+            stdin = {"stdin": subprocess.DEVNULL} if input_data is None else {"input": input_data}
+            result = subprocess.run(command, cwd=ROOT, env=env, **stdin,
                                     stdout=output if output is not None else subprocess.PIPE,
                                     stderr=output if merge_errors else errors, timeout=timeout,
                                     pass_fds=pass_fds, check=False)
@@ -101,6 +103,31 @@ def run(command, label, *, output=None, timeout=60, pass_fds=(), env=None, merge
 
 def json_run(command, label, *, env=None):
     return json.loads(run(command, label, env=env))
+
+
+def compose_json_dollars_escaped(docker):
+    # Compose v2.24/v2.35 escape every '$' after serializing config, including
+    # JSON. Probe only synthetic stdin; do not infer a protocol from secrets or
+    # version strings, and do not contact a daemon to render this configuration.
+    probe = b"services:\n  probe:\n    image: scratch\n    environment:\n      GRIPPO_LITERAL: '$$GRIPPO_LITERAL'\n"
+    command = [*docker, "compose", "--env-file", "/dev/null", "--project-directory", str(ROOT),
+               "-p", "grippo-config-probe", "-f", "-", "config", "--format", "json"]
+    config = json.loads(run(command, "Compose JSON capability probe", input_data=probe))
+    literal = config["services"]["probe"]["environment"]["GRIPPO_LITERAL"]
+    require(literal in ("$GRIPPO_LITERAL", "$$GRIPPO_LITERAL"),
+            "Unknown Compose JSON dollar serialization; stop.")
+    return literal == "$$GRIPPO_LITERAL"
+
+
+def compose_json_run(command, label, dollars_escaped, *, env=None):
+    payload = run(command, label, env=env)
+    if dollars_escaped:
+        require(b"$" not in payload.replace(b"$$", b""),
+                "Compose JSON dollar serialization changed; stop.")
+        # Decode one serialization layer only. A real '$$' remains '$$';
+        # container inspect/other JSON and CLIs with literal output are untouched.
+        payload = payload.replace(b"$$", b"$")
+    return json.loads(payload)
 
 
 def docker_binding():
@@ -171,12 +198,24 @@ class Target:
         self.docker, self.context = docker_binding()
         self.compose = [*self.docker, "compose", "--project-directory", str(ROOT),
                         "--env-file", str(self.env_file), "-f", str(self.compose_file)]
-        self.config = json_run(self.compose + ["config", "--format", "json"], "Compose config")
+        self.compose_dollars_escaped = compose_json_dollars_escaped(self.docker)
+        self.config = compose_json_run(self.compose + ["config", "--format", "json"], "Compose config",
+                                       self.compose_dollars_escaped)
         require(digest(self.env_file) == self.env_sha256, "Environment changed during configuration read.")
         self.project = self.config["name"]
         services = self.config["services"]
         self.db_env = services["db"]["environment"]
         self.backend_env = services["backend"]["environment"]
+        if args.operation == "deploy":
+            access_secret = self.backend_env.get("JWT_SECRET_KEY")
+            refresh_secret = self.backend_env.get("JWT_REFRESH_SECRET")
+            # Match TokenService/String.trim for presence; compare raw secrets.
+            jwt_whitespace = (" \t\n\r\v\f\u00a0\u1680\u2000\u2001\u2002\u2003\u2004\u2005"
+                              "\u2006\u2007\u2008\u2009\u200a\u2028\u2029\u202f\u205f\u3000\ufeff")
+            require(isinstance(access_secret, str) and bool(access_secret.strip(jwt_whitespace)) and
+                    isinstance(refresh_secret, str) and bool(refresh_secret.strip(jwt_whitespace)) and
+                    access_secret != refresh_secret,
+                    "Deployment requires nonblank, distinct JWT access/refresh secrets.")
         self.image_ref = services["backend"].get("image")
         require(self.image_ref == self.project + "-backend:local",
                 "Backend build image must be scoped to the approved Compose project.")
@@ -279,6 +318,7 @@ class Target:
     def identity(self):
         return {"root": str(ROOT), "host": socket.gethostname(), "daemon": self.daemon,
                 "context": self.context, "docker_selector_sha256": fingerprint(self.docker),
+                "compose_json_dollars_escaped": self.compose_dollars_escaped,
                 "project": self.project, "db": self.db_id,
                 "backend": self.backend_id, "backend_image": self.backend_image,
                 "backend_revision": self.backend_revision, "db_image": self.db["Image"],
@@ -468,8 +508,9 @@ def execute(target, plan, lock_fd):
     require(digest(target.latest) == receipt["sha256"], "Latest changed during build; stop.")
     checkpoint("build-verified", receipt)
     rollout_env = dict(os.environ, GRIPPO_RELEASE_IMAGE=built_image)
-    rollout_config = json_run(target.compose + ["config", "--format", "json"],
-                              "Immutable rollout configuration", env=rollout_env)
+    rollout_config = compose_json_run(target.compose + ["config", "--format", "json"],
+                                     "Immutable rollout configuration", target.compose_dollars_escaped,
+                                     env=rollout_env)
     expected_config = copy.deepcopy(target.config)
     expected_config["services"]["backend"]["image"] = built_image
     require(rollout_config == expected_config,
