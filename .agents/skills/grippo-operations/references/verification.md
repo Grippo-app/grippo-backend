@@ -1,58 +1,68 @@
 # Проверка эксплуатационных изменений
 
-Общие команды TypeScript/Jest, diff hygiene, agent-kit validator, изоляция и
-формат evidence находятся в
+Общие команды TypeScript/Jest и отчёт:
 [grippo-verification/checks](../../grippo-verification/references/checks.md).
-Здесь — дополнительные сценарии для
-[deploy/dump/cleanup/logger](../../../../scripts/),
-[Dockerfile](../../../../Dockerfile) и [Compose](../../../../docker-compose.yml).
+Источники: [operations.py](../../../../scripts/internal/operations.py),
+[wrappers](../../../../scripts/), [Dockerfile](../../../../Dockerfile),
+[Compose](../../../../docker-compose.yml), [.dockerignore](../../../../.dockerignore).
 
-## Статические проверки
+## Без выполнения операций
 
-- `bash -n` проверяет parsing **каждого файла отдельно**, не поведение и не
-  side effects. В `bash -n a b` файл `b` лишь аргумент script `a`.
-- При доступном ShellCheck используй `-x -P SCRIPTDIR`; dynamic `.env` source
-  может оставлять SC1090. Не подставляй настоящий secret `.env` в source directive.
-- Bash snippets из изменённых instructions извлекай во временные файлы и
-  проверяй только через `bash -n`. Их operational commands не выполняются.
-- TypeScript/build/Jest не подтверждают backup, Docker health, SQL import или SSH.
-  `npm ci`, Docker build и app startup не нужны для статического review scripts.
+- `bash -n` проверяй для каждого wrapper/cleanup/logger отдельно. Он не
+  исполняет script; `bash -n a b` не проверяет файл b.
+- Python helper проверяй через AST parse без import/main и без создания
+  `__pycache__`. Python >=3.9 нужен runtime; validator kit требует >=3.11.
+- ShellCheck допустим при наличии; не устанавливай tools скрыто и не подставляй
+  настоящий secret env ради source analysis.
+- YAML/Node healthcheck JSON и JS syntax проверяй локальными parsers. Для
+  Compose config используй temp copy, полностью искусственную .env и controlled
+  process env; вывод capture/assertions, не полный config. Команда config
+  не запускает daemon workload; реальный context/inspect/probe не нужны.
+- Проверяй allowlist .dockerignore и explicit Docker COPY на секреты/SQL/Git/
+  локальные node_modules. Docker build может запускать lifecycle/network и
+  не является обязательной статической проверкой.
+- Snippets из изменённых docs проверяй только через bash -n. Наличие команд
+  в runbook не разрешает SSH/plan/dump/deploy/restore/cleanup.
 
-## Readiness: зависимость от версии Bash
+## Изолированные behavioral fixtures
 
-В deploy используется `set -e`, затем `attempt=0; ((attempt++))`. Post-increment
-возвращает status 1 для прежнего значения 0; применимость errexit к arithmetic
-command различается между Bash 3.2 и современными версиями. Без Docker это
-можно проверить отдельным чистым subprocess, если проверка семантики нужна задаче:
+Используй временную копию вне checkout и synthetic credentials/data. Подмени
+все Docker/Git/subprocess/network commands и source/write paths; actual
+`deploy.sh` в production checkout не запускай как тест. Если проверяешь wrapper
+в temp копии, child helper и обязательный child dump также остаются в ней.
+Fixture должна завершиться до реального Docker/SSH/DB при забытой подмене.
 
-```bash
-bash -c 'set -e; attempt=0; ((attempt++)); printf "%s\n" reached'
-```
-
-На исследованном macOS Bash 3.2.57 subprocess напечатал `reached` и вернул 0.
-На Bash с errexit для arithmetic ожидается exit 1 без `reached`. Не объявляй
-этот probe выполненным на remote host и не обещай 30 retries по одному наличию
-`MAX_ATTEMPTS`. Probe не запускает deploy/logger/.env/Docker и не доказывает
-readiness реальной DB.
-
-## Сценарии для self-review и независимого review
-
-| Область | Что проверить по source/diff |
+| Область | Сценарии |
 |---|---|
-| Permission | Прямое human permission на конкретный target/path/revision/commands; новый штатный dump до каждой попытки; review/SSH/dump-only не дают deploy permission |
-| Env/paths | Выбор путей до source .env, относительные overrides, quoting, default cwd/Compose identity; случай absolute path не считается поддержанным |
-| DB identity | Daemon/project/container соответствуют backend и libpq endpoint, а не соседней пустой DB |
-| Dump | pg_dump/copy failures, partial/empty файл, секундный collision, права existing latest, equality/checksum, независимая recovery copy |
-| Deploy | down-v до build, первая readiness failure и Bash version, missing dump, suppressed SQL error, backend-before-import, состояние после каждой ошибки |
-| SSH/transfer | Unknown/changed fingerprint, cd failure, .partial/checksum/rename, параллельный upload, disconnect без автоматического retry |
-| Cleanup | Sudo escalation, daemon-wide prune, tmp/apt/journal/reboot, ветки без Docker/apt и безусловные success messages |
-| Secrets | Нет SQL rows/keys/.env/raw production logs в diff/output; context/cache проверяется отдельно от runtime image |
+| Paths/storage | Relative/absolute selection, unsafe symlink/hardlink/owner/type/mode, missing parent/private recovery, overwrite/collision, full disk/copy/fsync failure |
+| Source identity | Wrong daemon/project/labels/volume/network, absent/stopped/ambiguous DB/backend, external DB, credentials mismatch, inherited libpq endpoint overrides |
+| Dump | Exit failure/timeout/empty/partial, same-second unique names, recovery fail before latest update, atomic latest, equality/checksum/permissions, no payload in errors |
+| Plan | Default read-only, exact full revision/clean tree, same target/config/paths/timeout binding, missing/wrong approval, CLI attestation не считается human permission |
+| Lock/attempt | Concurrent dump/deploy rejected, inherited child lock valid, existing attempt blocks replay, failed attempt not implicitly reused |
+| Execute order | Actual child dump called every attempt, receipt mismatch blocks build, backup before build, build before backend-only up, no down-v/import/DB recreate |
+| Rollout failure | Build/up/health timeout/error, backend missing/unhealthy, DB identity change; no automatic retry/rollback and good backup retained |
+| TypeORM/health | Strict flags/defaults/invalid input, production schema flags rejected, DB port bounds; /health SELECT1 success/failure without details |
+| Docker health | Node builtin HTTP:200 pass; non200/network/timeout/invalid port fail; no curl requirement |
+| Image binding | Old immutable image retained in plan/journal, unavailable old image blocks deploy but not dump-only; distinct project build tags; wrong/missing built image blocks up; immutable selector changes only backend.image; tag changes during up cannot select another image |
+| Stalled health | Many checks/timeouts share one raw query/subscription/deadline; cached 503 until raw resolve/reject, then recovery; no accumulating Promise.race reactions |
+| Secrets | Raw stderr/config/inspect/build/SQL never relayed; private logs isolated; no secrets in argv/build context/Git |
 
-Если задача требует shell harness, работай в изолированной копии: подмени **все**
-external/write commands и source/write paths. Забытый docker/sudo/rm/reboot делает
-harness неизолированным. Operational forward-test ограничивается чтением
-сценария и выбором действия: реальные SSH/dump/deploy/restore не запускаются.
+Сценарии выбирай по изменению; не вводи постоянные specs/инфраструктуру вне
+прямого запроса их добавления. Fixture подмены не подтверждают реальные
+Compose/version/registry/image, PostgreSQL restore или production topology.
 
-После исправления повтори затронутые проверки и независимое review. Отмечай
-PASS/FAIL/NOT_RUN, фактическую команду/exit и ограничения; статический разбор
-failure branch не выдавай за выполненный restore или проверку production.
+## Runtime проверка как отдельный scope
+
+Реальный build и старт требуют явно выбранной изолированной среды; приложение
+не подключают к существующей DB для проверки. Source-safety tests можно делать
+на синтетических ConfigService/DATA_SOURCE без AppModule. Реальный restore drill
+требует отдельной disposable PostgreSQL, schema/data проверки и разрешения.
+
+Для rollout соблюдай [deployment-policy](deployment-policy.md). Нужны прямое
+human permission на attempt, новый штатный backup, реальный writer control и
+API smoke после DB-aware health. Ни PASS fixture, ни reviewer APPROVE не
+разрешают actual SSH/plan/deploy.
+
+После исправления повтори затронутые проверки и независимое review.
+Отчёт: PASS/FAIL/NOT_RUN, actual method/exit, coverage и существенные limitations.
+Статический разбор branch не выдавай за выполненный deploy/restore.

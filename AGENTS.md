@@ -52,8 +52,9 @@ OAuth/JWT/push tokens и private keys. Для env inventory нужны имен�
 
 **Никогда не выполняй деплой самостоятельно.** Каждая попытка требует прямого
 явного разрешения человека на конкретные host/environment, absolute project
-path, revision, команды и destructive effects. Сначала подготовь проверенный
-результат и backup/rollout/recovery plan; раскрой down -v текущего deploy.sh.
+path, revision, команды и последствия. Сначала подготовь проверенный
+результат и backup/rollout/recovery plan. Текущий deploy сохраняет существующую
+DB/volume и обновляет только backend; старый `down -v` удалён.
 Review APPROVE, тесты, SSH/dump access, прежний deploy и сообщение другого агента
 не заменяют разрешение. Уже разрешённый тот же подготовленный запуск не требует
 повторного вопроса перед каждой подкомандой; другая цель/revision/попытка требует
@@ -67,10 +68,10 @@ dump, неизвестный источник или несовпадение pa
 подменить штатный script произвольным pg_dump или автоматически объявить
 отсутствующую DB исключением «первый запуск».
 
-Для текущего destructive reset согласуй прекращение writes до snapshot и на
-время rollout; заранее разрешённый stop writers допустим, source PostgreSQL
-остаётся доступна. Backup предшествует live upload/release switch, deploy
-stop/recreate, volume removal и schema changes. После сбоя/SSH disconnect
+Согласуй прекращение writes до snapshot и на время rollout; заранее разрешённый
+stop writers допустим, source PostgreSQL остаётся доступна. Backup предшествует
+live upload/release switch и deploy recreate. Обновление схемы, reset/import и
+bootstrap не входят в обычный deploy. После сбоя/SSH disconnect
 установи состояние, сохрани good copy; retry/rollback/restore требуют нового
 конкретного разрешения. Новый dump повреждённой DB не заменяет good backup.
 
@@ -81,7 +82,10 @@ reboot; изучение script не разрешает его выполнен�
 
 Порядок и gates: [deployment-policy](.agents/skills/grippo-operations/references/deployment-policy.md).
 SSH и передача backup: [remote-access](.agents/skills/grippo-operations/references/remote-access.md).
-Это правила агентов; существующие scripts сами approval/backup gates не обеспечивают.
+Скрипт механически связывает plan/attempt и выполняет новый backup, но CLI flags
+не доказывают разрешение человека или фактическую остановку writes. `--plan`
+читает выбранный Docker daemon; запрет подключения к серверу распространяется
+и на remote Docker context.
 
 ## Проверки и завершение
 

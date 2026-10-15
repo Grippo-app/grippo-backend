@@ -26,8 +26,8 @@ export class TrainingsEntity {
         scale: 1,
         nullable: true,
         transformer: {
-            to: (value: number) => value,
-            from: (value: string) => parseFloat(value),
+            to: (value: number | null) => value,
+            from: (value: string | null) => (value === null ? null : parseFloat(value)),
         },
     })
     volume: number | null;
@@ -41,8 +41,8 @@ export class TrainingsEntity {
         scale: 2,
         nullable: true,
         transformer: {
-            to: (value: number) => value,
-            from: (value: string) => parseFloat(value),
+            to: (value: number | null) => value,
+            from: (value: string | null) => (value === null ? null : parseFloat(value)),
         },
     })
     intensity: number | null;

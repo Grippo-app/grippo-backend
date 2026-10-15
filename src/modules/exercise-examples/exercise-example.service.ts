@@ -1,5 +1,5 @@
 import {BadRequestException, ConflictException, Inject, Injectable, NotFoundException} from '@nestjs/common';
-import {Repository} from 'typeorm';
+import {EntityManager, In, Repository} from 'typeorm';
 import {v4} from 'uuid';
 import {ExerciseExamplesEntity} from "../../entities/exercise-examples.entity";
 import {ExerciseExampleBundlesEntity} from "../../entities/exercise-example-bundles.entity";
@@ -16,6 +16,8 @@ import {DEFAULT_LANGUAGE, SupportedLanguage, SUPPORTED_LANGUAGES} from "../../i1
 import {UserProfilesEntity} from '../../entities/user-profiles.entity';
 import {ExerciseExampleComponentsEntity} from "../../entities/exercise-example-components.entity";
 import {ExerciseComponentsDto} from "./dto/exercise-components.dto";
+import {MusclesEntity} from "../../entities/muscles.entity";
+import {EquipmentsEntity} from "../../entities/equipments.entity";
 
 @Injectable()
 export class ExerciseExampleService {
@@ -203,6 +205,7 @@ export class ExerciseExampleService {
         const componentsEntity = this.buildComponentsEntity(id, components);
 
         await this.exerciseExamplesRepository.manager.transaction(async (manager) => {
+            await this.validateReferences(manager, exerciseExampleBundles, equipmentRefs);
             await manager.save(ExerciseExamplesEntity, exerciseExample);
             await manager.save(ExerciseExampleBundlesEntity, bundles);
             await manager.save(ExerciseExamplesEquipmentsEntity, equipmentRefsEntities);
@@ -221,55 +224,56 @@ export class ExerciseExampleService {
      * @param body Updated exercise example data
      */
     async updateExerciseExample(id: string, body: ExerciseExampleRequest): Promise<void> {
-        // Check if exercise example exists
-        const existingExerciseExample = await this.exerciseExamplesRepository.findOne({
-            where: {id},
-        });
+        await this.exerciseExamplesRepository.manager.transaction('READ COMMITTED', async (manager) => {
+            const existingExerciseExample = await manager.findOne(ExerciseExamplesEntity, {
+                where: {id},
+                lock: {mode: 'pessimistic_write'},
+            });
 
-        if (!existingExerciseExample) {
-            throw new NotFoundException(`Exercise example with id ${id} not found`);
-        }
+            if (!existingExerciseExample) {
+                throw new NotFoundException(`Exercise example with id ${id} not found`);
+            }
 
-        const {
-            exerciseExampleBundles,
-            equipmentRefs,
-            name,
-            description,
-            components,
-            ...rest
-        } = body;
+            const {
+                exerciseExampleBundles,
+                equipmentRefs,
+                name,
+                description,
+                components,
+                ...rest
+            } = body;
 
-        const exerciseExample = new ExerciseExamplesEntity();
-        Object.assign(exerciseExample, rest);
-        exerciseExample.id = id;
-        const nameInput = this.prepareTranslationInput(name);
-        const descriptionInput = this.prepareTranslationInput(description);
-        exerciseExample.name = nameInput.baseValue;
-        exerciseExample.description = descriptionInput.baseValue;
+            const exerciseExample = new ExerciseExamplesEntity();
+            Object.assign(exerciseExample, rest);
+            exerciseExample.id = id;
+            const nameInput = this.prepareTranslationInput(name);
+            const descriptionInput = this.prepareTranslationInput(description);
+            exerciseExample.name = nameInput.baseValue;
+            exerciseExample.description = descriptionInput.baseValue;
 
-        const translationEntities = this.exerciseExampleI18nService.buildTranslationEntities(
-            id,
-            nameInput.record,
-            descriptionInput.record,
-        );
+            const translationEntities = this.exerciseExampleI18nService.buildTranslationEntities(
+                id,
+                nameInput.record,
+                descriptionInput.record,
+            );
 
-        const bundles = exerciseExampleBundles.map((el) => {
-            const entity = new ExerciseExampleBundlesEntity();
-            Object.assign(entity, el);
-            entity.exerciseExampleId = id; // связь
-            return entity;
-        });
+            const bundles = exerciseExampleBundles.map((el) => {
+                const entity = new ExerciseExampleBundlesEntity();
+                Object.assign(entity, el);
+                entity.exerciseExampleId = id; // связь
+                return entity;
+            });
 
-        const equipmentRefsEntities = equipmentRefs.map((el) => {
-            const entity = new ExerciseExamplesEquipmentsEntity();
-            entity.equipmentId = el.equipmentId;
-            entity.exerciseExampleId = id;
-            return entity;
-        });
+            const equipmentRefsEntities = equipmentRefs.map((el) => {
+                const entity = new ExerciseExamplesEquipmentsEntity();
+                entity.equipmentId = el.equipmentId;
+                entity.exerciseExampleId = id;
+                return entity;
+            });
 
-        const componentsEntity = this.buildComponentsEntity(id, components);
+            const componentsEntity = this.buildComponentsEntity(id, components);
 
-        await this.exerciseExamplesRepository.manager.transaction(async (manager) => {
+            await this.validateReferences(manager, exerciseExampleBundles, equipmentRefs);
             await manager.delete(ExerciseExampleBundlesEntity, {exerciseExampleId: id});
             await manager.delete(ExerciseExamplesEquipmentsEntity, {exerciseExampleId: id});
             await manager.delete(ExerciseExampleTranslationEntity, {exerciseExampleId: id});
@@ -290,26 +294,59 @@ export class ExerciseExampleService {
      * Throws 409 if the example is referenced by existing exercises.
      */
     async deleteExerciseExample(id: string): Promise<void> {
-        // Check existence
-        const existing = await this.exerciseExamplesRepository.findOne({where: {id}});
-        if (!existing) {
-            throw new NotFoundException(`Exercise example with id ${id} not found`);
-        }
+        await this.exerciseExamplesRepository.manager.transaction('READ COMMITTED', async (manager) => {
+            // FOR UPDATE also waits for FK writers; the next statement sees their commits.
+            const existing = await manager.findOne(ExerciseExamplesEntity, {
+                where: {id},
+                lock: {mode: 'pessimistic_write'},
+            });
+            if (!existing) {
+                throw new NotFoundException(`Exercise example with id ${id} not found`);
+            }
 
-        // Guard: example is used by exercises -> block deletion
-        const usageCount = await this.exercisesRepository.count({where: {exerciseExampleId: id}});
-        if (usageCount > 0) {
-            throw new ConflictException(
-                `Cannot delete exercise example ${id}: referenced by ${usageCount} exercise(s).`
-            );
-        }
+            const usageCount = await manager.count(ExercisesEntity, {where: {exerciseExampleId: id}});
+            if (usageCount > 0) {
+                throw new ConflictException(
+                    `Cannot delete exercise example ${id}: referenced by ${usageCount} exercise(s).`
+                );
+            }
 
-        // Transactionally delete direct relations, then the example itself
-        await this.exerciseExamplesRepository.manager.transaction(async (manager) => {
             await manager.delete(ExerciseExampleBundlesEntity, {exerciseExampleId: id});
             await manager.delete(ExerciseExamplesEquipmentsEntity, {exerciseExampleId: id});
             await manager.delete(ExerciseExamplesEntity, {id});
         });
+    }
+
+    private async validateReferences(
+        manager: EntityManager,
+        bundles: ExerciseExampleRequest['exerciseExampleBundles'],
+        equipmentRefs: ExerciseExampleRequest['equipmentRefs'],
+    ): Promise<void> {
+        const muscleIds = [...new Set(bundles.map(bundle => bundle.muscleId.toLowerCase()))];
+        if (muscleIds.length > 0) {
+            const muscles = await manager.find(MusclesEntity, {
+                select: {id: true},
+                where: {id: In(muscleIds)},
+                order: {id: 'ASC'},
+                lock: {mode: 'for_key_share'},
+            });
+            if (muscles.length !== muscleIds.length) {
+                throw new BadRequestException('One or more muscles not found');
+            }
+        }
+
+        const equipmentIds = [...new Set(equipmentRefs.map(ref => ref.equipmentId.toLowerCase()))];
+        if (equipmentIds.length > 0) {
+            const equipments = await manager.find(EquipmentsEntity, {
+                select: {id: true},
+                where: {id: In(equipmentIds)},
+                order: {id: 'ASC'},
+                lock: {mode: 'for_key_share'},
+            });
+            if (equipments.length !== equipmentIds.length) {
+                throw new BadRequestException('One or more equipments not found');
+            }
+        }
     }
 
     private prepareTranslationInput(

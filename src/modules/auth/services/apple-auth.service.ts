@@ -193,9 +193,18 @@ export class AppleAuthService {
                 },
                 (response) => {
                     let data = '';
+                    let responseEnded = false;
+                    response.on('error', reject);
+                    response.on('aborted', () => reject(new Error('Apple token response was aborted')));
+                    response.on('close', () => {
+                        if (!responseEnded) {
+                            reject(new Error('Apple token response closed before completion'));
+                        }
+                    });
                     response.setEncoding('utf8');
                     response.on('data', (chunk) => (data += chunk));
                     response.on('end', () => {
+                        responseEnded = true;
                         try {
                             const parsed = JSON.parse(data) as AppleTokenResponse;
                             resolve(parsed);
@@ -248,6 +257,14 @@ export class AppleAuthService {
     private async fetchAppleJwks(): Promise<AppleJwksKey[]> {
         return new Promise((resolve, reject) => {
             const request = httpsGet(this.appleJwksUrl, (response) => {
+                let responseEnded = false;
+                response.on('error', reject);
+                response.on('aborted', () => reject(new Error('Apple JWKS response was aborted')));
+                response.on('close', () => {
+                    if (!responseEnded) {
+                        reject(new Error('Apple JWKS response closed before completion'));
+                    }
+                });
                 if (!response.statusCode || response.statusCode >= 400) {
                     reject(new Error(`Apple JWKS request failed with status ${response.statusCode}`));
                     response.resume();
@@ -258,6 +275,7 @@ export class AppleAuthService {
                 response.setEncoding('utf8');
                 response.on('data', (chunk) => (body += chunk));
                 response.on('end', () => {
+                    responseEnded = true;
                     try {
                         const parsed = JSON.parse(body) as { keys?: AppleJwksKey[] };
                         const keys = parsed.keys ?? [];

@@ -1,6 +1,7 @@
 import {BadRequestException, Inject, Injectable, Logger, UnauthorizedException,} from '@nestjs/common';
 import {Repository} from 'typeorm';
 import {JwtService} from '@nestjs/jwt';
+import {isUUID} from 'class-validator';
 
 import {UsersEntity} from '../../entities/users.entity';
 
@@ -49,17 +50,11 @@ export class AuthService {
     async register(dto: RegisterRequest): Promise<LoginResponse> {
         const exists = await this.usersRepository.findOne({
             where: {email: dto.email},
-            select: ['id', 'password'],
+            select: ['id'],
         });
 
         if (exists) {
-            if (exists.password) {
-                throw new BadRequestException('This email is already taken');
-            }
-
-            await this.usersRepository.update(exists.id, {password: Hash.make(dto.password)});
-            this.logger.log(`Password added to Google account: ${exists.id}`);
-            return this.buildLoginResponse(exists.id);
+            throw new BadRequestException('This email is already taken');
         }
 
         const user = this.usersRepository.create({
@@ -169,12 +164,17 @@ export class AuthService {
 
     // ----- TOKENS -----
     async refresh(refreshToken: string): Promise<LoginResponse> {
+        const refreshSecret = this.tokenService.getRefreshSecret();
         let payload: { id: string };
         try {
             payload = await this.jwtService.verifyAsync<{ id: string }>(refreshToken, {
-                secret: this.config.get<string>('JWT_REFRESH_SECRET'),
+                secret: refreshSecret,
             });
         } catch (e) {
+            throw new UnauthorizedException('Invalid or expired refresh token');
+        }
+
+        if (!payload || Array.isArray(payload) || typeof payload.id !== 'string' || !isUUID(payload.id)) {
             throw new UnauthorizedException('Invalid or expired refresh token');
         }
 

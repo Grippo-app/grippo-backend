@@ -1,5 +1,5 @@
 import {ApiProperty} from '@nestjs/swagger';
-import {IsEnum, IsInt, IsNumber, IsOptional, IsString, IsUUID} from 'class-validator';
+import {IsArray, IsEnum, IsInt, IsNumber, IsOptional, IsString, IsUUID, Max, Min} from 'class-validator';
 import {ExperienceEnum} from '../../../lib/experience.enum';
 import {Expose, Type} from 'class-transformer';
 
@@ -15,6 +15,8 @@ export class CreateUserProfileRequest {
         description: 'Weight in kilograms (e.g., 82.5)',
     })
     @IsNumber({maxDecimalPlaces: 1})
+    @Min(30)
+    @Max(300)
     @Expose()
     weight: number;
 
@@ -38,6 +40,7 @@ export class CreateUserProfileRequest {
         description: 'Excluded muscle ids',
         required: false,
     })
+    @IsArray()
     @IsUUID('all', {each: true})
     @IsOptional()
     @Type(() => String)
@@ -50,6 +53,7 @@ export class CreateUserProfileRequest {
         description: 'Excluded equipment ids',
         required: false,
     })
+    @IsArray()
     @IsUUID('all', {each: true})
     @IsOptional()
     @Type(() => String)

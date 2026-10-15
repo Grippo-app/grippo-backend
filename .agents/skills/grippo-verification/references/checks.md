@@ -26,7 +26,8 @@ testRegex .*\\.spec\\.ts$, node environment. Текущие узкие пров�
 | Структура/ссылки/inventory | `python3 scripts/validate-agent-kit.py` | Правильность решений и соблюдение правил агентом |
 | Пробелы в diff | `git diff HEAD --check -- <task-paths>` | Новые файлы вне index нужно проверить отдельно; чужие изменения отделяются по исходному состоянию |
 | Синтаксис Bash | Loop ниже проверяет каждый script отдельно | Скрипты не выполняются, ветки и побочные эффекты не проверяются |
-| ShellCheck, если есть | `shellcheck -x -P SCRIPTDIR scripts/deploy.sh scripts/dump.sh scripts/cleanup.sh scripts/internal/logger.sh` | Dynamic .env source может дать SC1090; настоящие секреты для проверки не нужны |
+| ShellCheck, если есть | `shellcheck -x -P SCRIPTDIR scripts/deploy.sh scripts/dump.sh scripts/cleanup.sh scripts/internal/logger.sh` | Проверяет shell, не Python helper/runtime; настоящие секреты для проверки не нужны |
+| Python helper syntax | `python3 -c 'import ast,pathlib; ast.parse(pathlib.Path("scripts/internal/operations.py").read_text())'` | Не импортирует helper, не пишет pycache, не проверяет Docker/filesystem behavior |
 
 ```sh
 for f in scripts/deploy.sh scripts/dump.sh scripts/cleanup.sh scripts/internal/logger.sh; do
@@ -64,7 +65,9 @@ start:dev transpile-only не доказывает корректность ти
 ## Изоляция
 
 AppModule включает async DATA_SOURCE.initialize; рабочая .env может направить
-его в существующую БД с synchronize. Для unit/service/controller fixtures
+его в существующую БД. Production запрещает schema automation, но nonproduction
+config может включать synchronize, а initialize само по себе не является
+изолированным probe. Для unit/service/controller fixtures
 предпочитай отдельный тестовый module с подменёнными providers, без AppModule.
 
 AppModule допустим только в назначенном runtime-сценарии, входящем в исходный
@@ -81,9 +84,11 @@ initialize либо направлен в отдельную disposable PostgreS
 OAuth fixtures используют синтетические claims/keys и подмену network/clock;
 реальные tokens и обращения к providers не нужны.
 
-Shell harness — изолированная копия с заменой всех внешних команд и путей
-source/write. Забытый docker/sudo/rm/reboot нарушает изоляцию.
-bash -x с .env раскрывает секреты.
+Shell/Python harness — изолированная копия с заменой всех внешних команд и путей
+source/write. Забытый docker/sudo/rm/reboot нарушает изоляцию. Подробные scenarios,
+synthetic Compose parsing и ограничения: [operations verification](../../grippo-operations/references/verification.md).
+Не используй tracing с env/secret values. `--plan` читает actual Docker daemon,
+поэтому не запускается при запрете server access, включая remote context.
 
 Статический review не разрешает SSH/dump/deploy. Проверка эксплуатационных
 решений сверяет [deployment-policy](../../grippo-operations/references/deployment-policy.md)

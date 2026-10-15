@@ -132,3 +132,10 @@ dist
 grippo-key.pem
 .idea/
 backups/
+.env.*
+!.env.example
+.DS_Store
+scripts/*.sql
+.grippo-operations.lock
+__pycache__/
+*.pyc

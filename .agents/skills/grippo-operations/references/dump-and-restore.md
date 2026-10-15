@@ -1,6 +1,6 @@
 # SQL artifact и план восстановления
 
-Источники: [dump.sh](../../../../scripts/dump.sh), [deploy.sh](../../../../scripts/deploy.sh), [entities](../../../../src/entities/), [DatabaseService](../../../../src/database/database.service.ts). Artifact path — `scripts/dump.sql`; открывать его целиком для анализа архитектуры не требуется.
+Источники: [dump.sh](../../../../scripts/dump.sh), [operations.py](../../../../scripts/internal/operations.py), [entities](../../../../src/entities/), [DatabaseService](../../../../src/database/database.service.ts). Default latest — `scripts/dump.sql`; точные snapshot/recovery paths берутся из receipt. Открывать SQL целиком для анализа архитектуры не требуется.
 
 Обязательный порядок dump-only и backup-before-every-deploy:
 [deployment-policy](deployment-policy.md). Подключение и защищённая copy:
@@ -39,14 +39,15 @@ counts из прежнего dump не доказывают его полнот�
   entity или восстановить устаревший API contract.
 - Если SQL использует `uuid-ossp`/`uuid_generate_v4()`, target должен поддерживать
   extension и соответствующие права. Deploy отдельно это не проверяет.
-- TypeORM synchronize может изменить импортированную schema. Перед его разрешением
-  нужен schema-only diff на изолированной DB, включая совместимость rollback code.
+- Production запрещает TypeORM synchronize/migrationsRun. Обычный deploy не
+  меняет schema и не импортирует dump: совместимость нового backend с текущей
+  schema проверяется отдельно. Для schema changes нужен отдельный data plan.
 
 ## Что dump сохраняет и чего не подтверждает
 
-`pg_dump -F p --inserts --no-owner --no-privileges -b` сохраняет plain SQL выбранной DB, schema/data и доступные large objects. Нет `--schema-only`, compression, encryption, checksum или exclusion приватных таблиц. `psql` — правильный importer для этого формата. `pg_restore` ожидает другие archive formats.
+`pg_dump --format=p --inserts --no-owner --no-privileges --blobs` сохраняет plain SQL выбранной DB, schema/data и доступные large objects. Helper проверяет SHA256/size snapshot, latest и recovery copy; SQL не шифруется, не сжимается и не исключает private tables. `psql` — importer этого формата; `pg_restore` ожидает archive formats.
 
-Не включены отдельные backup cluster roles/globals, другие DB, Docker volume filesystem snapshot, приложение, env/private keys, registry images или server config. Credentials/ACL нужно обеспечить отдельно, без копирования секретов в repo. Непустой snapshot может быть partial; exit code, последующая latest copy и restore drill нужны как независимые доказательства.
+Не включены backup cluster roles/globals, другие DB, Docker volume filesystem snapshot, приложение, env/private keys, registry images или server config. Credentials/ACL обеспечиваются отдельно. Independent copy — отдельный private path вне checkout; это не обязательно другой host/disk. Off-host storage, retention и restore drill не автоматизированы. Непустота/hash без полного exit0 и source identity не подтверждают valid backup; restore drill нужен как отдельное доказательство.
 
 ## Изолированная restore procedure: предложение, не встроенный script
 
@@ -54,17 +55,19 @@ counts из прежнего dump не доказывают его полнот�
 
 1. Зафиксируй source snapshot, timestamp, checksum и валидность dump exit code. Не выводи payload. Сохрани исходный latest отдельно до эксперимента; не используй target production volume.
 2. Выбери disposable DB/Compose project/ports и учётную запись с нужными правами. Убедись, что внешняя/production DB не выбрана через POSTGRES_HOST или container name. Подготовь конфигурацию с отдельными данными; не редактируй production `.env` для удобства.
-3. Подними только DB и дождись фактической readiness. Backend пока не запускай, чтобы избежать synchronize и запросов одновременно с импортом.
-4. Подготовь чистую schema в выбранной disposable DB; destructive reset разрешён только в этой среде. Импортируй plain SQL через `psql -v ON_ERROR_STOP=1 --single-transaction` с контролируемыми credentials. Это предлагаемые flags, в текущем deploy import ON_ERROR_STOP отсутствует.
+3. Подними только disposable DB и дождись фактической readiness. Backend пока не запускай, чтобы исключить запросы одновременно с импортом; schema flags выключены явно.
+4. Подготовь чистую schema в выбранной disposable DB; destructive reset разрешён только в этой среде. Импортируй plain SQL через `psql -X --no-password -v ON_ERROR_STOP=1 --single-transaction` с explicit host/port и контролируемыми credentials. Это отдельный restore workflow: deploy.sh SQL не импортирует. Любой schema reset должен входить в отдельно рассмотренную транзакцию/процедуру восстановления.
 5. Проверь exit code, schema-only inventory, constraints, ожидаемые table counts и referential integrity без вывода пользовательских строк. Проверки бизнес-инвариантов согласуй с domain owner: сортировка exercises/iterations, profile ownership, goal uniqueness, components, translations.
-6. Сравни imported schema с current entities перед разрешением synchronize. Если нужно проверить startup, используй только эту disposable DB и явно управляемую конфигурацию; generic ConfigService type не гарантирует boolean parsing.
-7. Проверь выбранные API через синтетические данные, без production tokens. `/health` не является существующим smoke route. Документируй реальный результат и затем удали только собственные disposable ресурсы, сохранив нужные артефакты/вывод без чувствительных данных.
+6. Сравни imported schema с current entities. Для startup используй только disposable DB, явно выключенные synchronize/migrationsRun и управляемые booleans; не обходи production prohibition ради удобства.
+7. Проверь `/health` и выбранные API через синтетические данные, без production tokens. Health SELECT 1 не подтверждает полноту schema/данных. Документируй результат; удали только собственные disposable ресурсы в согласованном scope, сохранив нужные артефакты/вывод без чувствительных данных.
 
 ## Rollback и восстановление после текущего deploy
 
 - Permission, mandatory fresh dump, окно writes и сохранение good copy после
   failure определяются deployment-policy; отдельный dump не разрешает restore.
-- После `down -v` старый named volume удалён. Git checkout/revert не возвращает данные; недостающий или stale dump не восполняет новые записи.
-- После отдельного `DROP SCHEMA ...` до import прежняя schema уже не является доступным transaction rollback state. `psql -1` для следующего процесса не охватывает предшествующий drop.
+- Текущий deploy сохраняет DB/volume и не делает reset/import. Если инцидент
+  относится к старому deploy с `down -v` или ручному drop, Git revert не
+  восстанавливает удалённые данные. Отдельная import transaction не отменяет
+  предшествующий schema drop другого процесса.
 - Code rollback может быть несовместим со schema/data нового приложения. Не запускай старый image автоматически поверх неизвестной схемы; подготовь совместимую пару code+data или согласованный forward fix.
-- В репозитории нет automated rollback/point-in-time recovery/WAL archive/retention или restore validation workflow. Не обещай такие возможности и не выдавай текущее «Initialization complete» за подтверждённое восстановление.
+- В репозитории нет automated rollback/point-in-time recovery/WAL archive/retention или restore validation workflow. Не обещай эти возможности и не выдавай deploy health/backup checksum за подтверждённое восстановление.

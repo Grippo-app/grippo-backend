@@ -6,7 +6,7 @@
 
 ## Источники и механизм доступа
 
-- [DatabaseService](../../../../src/database/database.service.ts): PostgreSQL, `entities: [join(__dirname, '..', 'entities', '*.entity.{ts,js}')]`, `migrations: []`; `synchronize`, `logging`, `migrationsRun` читаются через `ConfigService` из `POSTGRES_SYNC`, `POSTGRES_LOGS`, `POSTGRES_MIGRATIONS`. Значения конкретной среды здесь не установлены.
+- [DatabaseService](../../../../src/database/database.service.ts): PostgreSQL, `entities: [join(__dirname, '..', 'entities', '*.entity.{ts,js}')]`, `migrations: []`; `POSTGRES_SYNC/LOGS/MIGRATIONS` явно parsed booleans с default false, некорректный ввод отклоняется. В production synchronize/migrationsRun=true запрещены, installExtensions=false; текущий Compose выключает все flags. DB port валидируется как integer 1..65535. Actual remote config здесь не установлен.
 - [dataSourceProviders](../../../../src/database/database.provider.ts): async provider `'DATA_SOURCE'` создает `DataSource`, вызывает `initialize()`, возвращает подключенный объект.
 - [DatabaseModule](../../../../src/database/database.module.ts): импортирует `ConfigModule.forRoot()`, предоставляет и экспортирует data source и repository providers. Feature-модули импортируют `DatabaseModule` и повторно включают `...repositoryProviders` в `providers`.
 - [repositoryProviders](../../../../src/database/repository.providers.ts): `createRepositoryProvider(token, Entity)` → factory `dataSource.getRepository(Entity)`, inject `'DATA_SOURCE'`. Нет `@nestjs/typeorm` или `forFeature`.

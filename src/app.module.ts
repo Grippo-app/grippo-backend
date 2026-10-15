@@ -14,6 +14,7 @@ import {EquipmentsModule} from './modules/equipments/equipments.module';
 import {AdminModule} from './modules/admin/admin.module';
 import {I18nModule} from './i18n/i18n.module';
 import {PushTokensModule} from './modules/push-tokens/push-tokens.module';
+import {HealthController} from './modules/health/health.controller';
 
 @Module({
     imports: [
@@ -38,6 +39,7 @@ import {PushTokensModule} from './modules/push-tokens/push-tokens.module';
         AdminModule,
         PushTokensModule,
     ],
+    controllers: [HealthController],
 })
 export class AppModule {
 }

@@ -21,8 +21,8 @@ export class IterationsEntity {
         scale: 1,
         nullable: true,
         transformer: {
-            to: (value: number) => value,
-            from: (value: string) => parseFloat(value),
+            to: (value: number | null) => value,
+            from: (value: string | null) => (value === null ? null : parseFloat(value)),
         },
     })
     assistWeight: number | null;
@@ -34,8 +34,8 @@ export class IterationsEntity {
         scale: 1,
         nullable: true,
         transformer: {
-            to: (value: number) => value,
-            from: (value: string) => parseFloat(value),
+            to: (value: number | null) => value,
+            from: (value: string | null) => (value === null ? null : parseFloat(value)),
         },
     })
     externalWeight: number | null;
@@ -47,8 +47,8 @@ export class IterationsEntity {
         scale: 1,
         nullable: true,
         transformer: {
-            to: (value: number) => value,
-            from: (value: string) => parseFloat(value),
+            to: (value: number | null) => value,
+            from: (value: string | null) => (value === null ? null : parseFloat(value)),
         },
     })
     extraWeight: number | null;
@@ -60,8 +60,8 @@ export class IterationsEntity {
         scale: 1,
         nullable: true,
         transformer: {
-            to: (value: number) => value,
-            from: (value: string) => parseFloat(value),
+            to: (value: number | null) => value,
+            from: (value: string | null) => (value === null ? null : parseFloat(value)),
         },
     })
     bodyWeight: number | null;

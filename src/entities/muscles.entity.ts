@@ -39,7 +39,11 @@ export class MusclesEntity {
         precision: 5,
         scale: 2,
         nullable: true,
-        name: 'size'
+        name: 'size',
+        transformer: {
+            to: (value: number | null) => value,
+            from: (value: string | null) => (value === null ? null : Number(value)),
+        },
     })
     size: number;
 
@@ -48,7 +52,11 @@ export class MusclesEntity {
         precision: 5,
         scale: 2,
         nullable: true,
-        name: 'sensitivity'
+        name: 'sensitivity',
+        transformer: {
+            to: (value: number | null) => value,
+            from: (value: string | null) => (value === null ? null : Number(value)),
+        },
     })
     sensitivity: number;
 

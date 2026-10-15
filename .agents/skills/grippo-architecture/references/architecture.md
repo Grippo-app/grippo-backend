@@ -15,7 +15,7 @@
 global `ValidationPipe({transform: true, whitelist: true,
 forbidNonWhitelisted: true})`, `LoggingInterceptor`, вызывает `setupSwagger`.
 Глобальный prefix закомментирован: routes начинаются с `/auth`, `/users` и т. д.,
-а не `/api`. `BACKEND_PORT` обязателен; bind — `0.0.0.0`. Обработчики SIGINT/SIGTERM
+а не `/api`. `BACKEND_PORT` валидируется как integer 1..65535; bind — `0.0.0.0`. Обработчики SIGINT/SIGTERM
 вызывают `app.close()` и process exit. Явного `DataSource.destroy()` в shared
 provider нет; не обещай отдельный TypeORM shutdown hook.
 
@@ -32,6 +32,12 @@ Guard rejection происходит до route interceptor: не обещай, 
 называется `access-token`. UI `/docs`, default JSON `/docs-json`, custom JS
 `/swagger-custom.js`; production label определяется `NODE_ENV`, а не `APP_ENV`.
 Swagger запускается и в production. CORS включён без проекта-specific allowlist.
+
+[HealthController](../../../../src/modules/health/health.controller.ts) зарегистрирован
+в AppModule: публичный `GET /health`, не включён в Swagger. Через DATA_SOURCE
+проверяет initialize/SELECT 1 с ограниченным ожиданием; возвращает `{status:'ok'}`
+либо HTTP 503 без DB error details. Одновременные probes разделяют pending query, чтобы stalled
+DB не накапливала запросы. Это readiness DB, не проверка schema/auth/business API.
 
 ## Реальные слои
 
@@ -78,8 +84,12 @@ service доступным новому consumer. `DatabaseModule` уже экс
 [database.service.ts](../../../../src/database/database.service.ts): postgres,
 `POSTGRES_HOST/PORT/USERNAME/PASSWORD/DATABASE`; entities glob
 `../entities/*.entity.{ts,js}`; `migrations: []`; flags `POSTGRES_SYNC`,
-`POSTGRES_LOGS`, `POSTGRES_MIGRATIONS` напрямую из `ConfigService.get<T>()`.
-Generic `<boolean>` не преобразует строку `.env` в boolean. `extra.charset` —
+`POSTGRES_LOGS`, `POSTGRES_MIGRATIONS` явно parsed: missing/null/empty → false,
+boolean либо trimmed case-insensitive true/false принимаются, иной ввод вызывает
+ошибку. DB port валидируется как integer 1..65535. В `NODE_ENV=production`
+synchronize/migrationsRun=true запрещены, installExtensions=false;
+Compose принудительно выключает все три flags. Generic `<boolean>` сам по себе
+conversion не выполняет. `extra.charset` —
 имеющийся config, не гарантия реальной PostgreSQL collation.
 
 [repository.providers.ts](../../../../src/database/repository.providers.ts)
@@ -97,7 +107,9 @@ names имеют приоритет. Все PK — `@PrimaryGeneratedColumn('uui
 Transaction boundary принадлежит service. Работай через переданный manager во
 всех read/write шагах, которые должны быть атомарны. Наличие `transaction` в одном
 методе не делает весь feature транзакционным. Schema rollout не автоматизирован
-миграциями; env-driven synchronize требует отдельного анализа данных и rollback.
+миграциями; production deploy schema не меняет. Изменения schema требуют
+отдельного data/compatibility/recovery плана; nonproduction synchronize не
+разрешает подключаться к существующей DB для теста.
 
 ## Интеграции
 
@@ -109,7 +121,7 @@ Transaction boundary принадлежит service. Работай через �
 | JWT clients | Nest JwtService + passport-jwt | Separate secrets/TTLs, error codes, Authorization parsing |
 | Push token clients | DB registry | Unique token reassignment, DELETE /push-tokens удаляет registry, JWT не отзывает; доставки APNs/FCM нет |
 | Mobile/admin consumers | HTTP DTO/enums/Swagger | Соседние consumer repos не исследованы; не утверждай синхронизацию |
-| Operations host | Bash + Docker Compose | Destructive volumes, restore order, secrets/build context |
+| Operations host | Bash wrappers + Python helper + Docker Compose | Source identity, fresh backup, backend-only rollout, secrets/build context |
 
 В исходниках не обнаружены queue workers, Redis, message broker, SMTP/email
 verification service, object storage SDK, payment integration или notification

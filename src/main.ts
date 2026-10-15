@@ -36,10 +36,11 @@ async function bootstrap() {
     // app.setGlobalPrefix('api');
 
     // ✅ Start the app
-    const port = configService.get<number>('BACKEND_PORT');
+    const rawPort = configService.get<string>('BACKEND_PORT');
+    const port = Number(rawPort);
 
-    if (!port) {
-        throw new Error('❌ Environment variable BACKEND_PORT is required');
+    if (!/^\d+$/.test(String(rawPort)) || !Number.isInteger(port) || port < 1 || port > 65535) {
+        throw new Error('BACKEND_PORT must be an integer between 1 and 65535');
     }
 
     try {

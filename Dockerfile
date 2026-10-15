@@ -1,38 +1,37 @@
-# ─────────────────────────────
-# 🏗 Stage 1: Build
-# ─────────────────────────────
-FROM node:20 AS builder
+FROM node:20-bookworm AS builder
 
 WORKDIR /app
 
-COPY package*.json ./
-RUN npm ci
+COPY package.json package-lock.json ./
+RUN npm ci --no-audit --no-fund
 
-COPY . .
-RUN npm run build
+COPY nest-cli.json tsconfig.json tsconfig.build.json ./
+COPY src ./src
+RUN npm run build \
+    && npm prune --omit=dev --ignore-scripts --no-audit --no-fund
 
-# ─────────────────────────────
-# 🚀 Stage 2: Production
-# ─────────────────────────────
-FROM node:20-slim
+FROM node:20-bookworm-slim AS runtime
 
 ARG APP_PORT=3010
-ENV NODE_ENV=production
-ENV PORT=$APP_PORT
+ARG RELEASE_SHA=unversioned
+LABEL org.opencontainers.image.revision=${RELEASE_SHA}
+ENV NODE_ENV=production \
+    BACKEND_PORT=${APP_PORT} \
+    PORT=${APP_PORT} \
+    POSTGRES_SYNC=false \
+    POSTGRES_MIGRATIONS=false
 
 WORKDIR /app
 
-RUN adduser --system --group appuser
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/package.json ./
 
-COPY --from=builder --chown=appuser:appuser /app/dist ./dist
-COPY --from=builder --chown=appuser:appuser /app/node_modules ./node_modules
-COPY --from=builder --chown=appuser:appuser /app/package.json ./
+USER node
 
-USER appuser
+EXPOSE ${APP_PORT}
 
-EXPOSE $PORT
-
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-  CMD curl --fail http://localhost:$PORT/health || exit 1
+HEALTHCHECK --interval=10s --timeout=5s --start-period=30s --retries=6 \
+    CMD ["node", "-e", "const http=require('node:http'); const port=Number(process.env.BACKEND_PORT); if(!Number.isInteger(port)||port<1||port>65535)process.exit(1); const req=http.get({host:'127.0.0.1',port,path:'/health',timeout:4000},res=>{res.resume();process.exit(res.statusCode===200?0:1)}); req.on('timeout',()=>req.destroy(new Error('timeout'))); req.on('error',()=>process.exit(1));"]
 
 CMD ["node", "dist/main"]

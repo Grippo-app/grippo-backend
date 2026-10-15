@@ -22,8 +22,10 @@ push token registry и admin API.
 
 Jest содержит focused DTO/controller specs; они подменяют services/guards и
 не проверяют настоящие auth/DB интеграции. Перед запуском приложения установи
-изолированную DB/config: DATA_SOURCE может применить synchronize при bootstrap.
-Swagger paths: /docs, /docs-json; глобального /api prefix и /health route нет.
+изолированную DB/config: DATA_SOURCE открывает соединение при bootstrap.
+В production synchronize/migrationsRun запрещены; автоматического schema rollout нет.
+Swagger paths: /docs, /docs-json; глобального /api prefix нет. `/health` проверяет
+доступность БД без выдачи её данных.
 
 ## Эксплуатация
 
@@ -35,10 +37,35 @@ SSH, зелёные checks и review не разрешают rollout или ав
 и [SSH/remote доступ](.agents/skills/grippo-operations/references/remote-access.md)
 определяют target, backup evidence, допустимые команды и условия остановки.
 
-Текущий deploy.sh удаляет volumes через down -v, запускает backend до import и
-сам не обеспечивает backup/approval gates или проверку восстановления.
-cleanup.sh чистит весь Linux host и вызывает sudo reboot.
+`deploy.sh` планирует и выполняет обновление только backend, сохраняя работающую
+PostgreSQL и её volume. Перед build/recreate сам вызывает новый `dump.sh`,
+проверяет backup и ждёт healthy backend. Import/reset/автоматический rollback
+в deploy отсутствуют. Новая или внешняя DB требует отдельного согласованного плана.
+Исходный backend может быть остановлен для согласованного freeze; DB должна
+оставаться running. Скрипт сам не организует остановку writers.
+`cleanup.sh` по-прежнему чистит весь Linux host и вызывает sudo reboot.
 [Разбор scripts и failure branches](.agents/skills/grippo-operations/references/scripts-runbooks.md).
 Примеры в документах не являются разрешением выполнять эти операции.
+
+После подтверждения target и доступа план получают командой:
+
+```bash
+bash scripts/deploy.sh --plan \
+  --revision '<FULL_COMMIT_SHA>' \
+  --backup-dir '<ABSOLUTE_PRIVATE_DIRECTORY_OUTSIDE_CHECKOUT>'
+```
+
+`--plan` обращается к выбранному Docker daemon, но не делает backup/rollout.
+Запуск `--execute` требует отдельного явного разрешения человека на подготовленный
+plan; параметры выполнения находятся в deployment-policy. Для отдельного backup:
+
+```bash
+bash scripts/dump.sh \
+  --backup-dir '<ABSOLUTE_PRIVATE_DIRECTORY_OUTSIDE_CHECKOUT>'
+```
+
+Нужны Unix/Bash, Python >=3.9, Git и Docker Compose v2 с JSON config. `.env` читается как конфигурация,
+не исполняется shell. Содержимое secrets и SQL не печатается. Recovery directory
+должен быть заранее согласован, приватен и находиться вне checkout/build context.
 
 Финальные результаты проверки комплекта: [agent-kit-audit](tasks/agent-kit-audit.md).

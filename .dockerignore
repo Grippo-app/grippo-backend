@@ -1,0 +1,35 @@
+# Only inputs used by the reviewed Dockerfile enter the build context.
+**
+!package.json
+!package-lock.json
+!nest-cli.json
+!tsconfig.json
+!tsconfig.build.json
+!src/
+!src/**
+
+# Keep secrets, data, local dependencies and tests out even under src/.
+**/.env*
+**/*.env
+**/.npmrc
+**/*.pem
+**/*.key
+**/*.p12
+**/*.pfx
+**/*.sql
+**/*.sql.*
+**/*.dump
+**/*.backup
+**/backups
+**/.git
+**/.agents
+**/.codex
+**/.aws
+**/.ssh
+**/node_modules
+**/dist
+**/coverage
+**/*.spec.ts
+**/*.test.ts
+**/__tests__
+**/.DS_Store

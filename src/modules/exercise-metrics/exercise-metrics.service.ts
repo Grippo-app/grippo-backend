@@ -76,6 +76,7 @@ export class ExerciseMetricsService {
             .addSelect(weightExpression, 'weight_value')
             .orderBy('weight_value', 'DESC')
             .addOrderBy('iteration.createdAt', 'DESC')
+            .limit(1)
             .getOne();
 
         if (!iteration) {
@@ -105,6 +106,7 @@ export class ExerciseMetricsService {
             .andWhere('exercise.volume IS NOT NULL')
             .orderBy('exercise.volume', 'DESC')
             .addOrderBy('exercise.createdAt', 'DESC')
+            .limit(1)
             .getOne();
 
         if (!exercise) {
@@ -129,6 +131,7 @@ export class ExerciseMetricsService {
             .andWhere('iteration.repetitions IS NOT NULL')
             .orderBy('iteration.repetitions', 'DESC')
             .addOrderBy('iteration.createdAt', 'DESC')
+            .limit(1)
             .getOne();
 
         if (!iteration) {
@@ -153,6 +156,7 @@ export class ExerciseMetricsService {
             .andWhere('exercise.intensity IS NOT NULL')
             .orderBy('exercise.intensity', 'DESC')
             .addOrderBy('exercise.createdAt', 'DESC')
+            .limit(1)
             .getOne();
 
         if (!exercise) {

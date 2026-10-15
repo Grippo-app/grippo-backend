@@ -1,63 +1,70 @@
 services:
-  # ─────────────────────────────
-  # 🐘 PostgreSQL
-  # ─────────────────────────────
   db:
     image: postgres:15.5
-    container_name: ${POSTGRES_CONTAINER_NAME}
-    env_file: .env
+    container_name: ${POSTGRES_CONTAINER_NAME:?POSTGRES_CONTAINER_NAME is required}
+    # Only database credentials belong in the PostgreSQL container.
     environment:
-      POSTGRES_USER: ${POSTGRES_USERNAME}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DATABASE}
+      POSTGRES_USER: ${POSTGRES_USERNAME:?POSTGRES_USERNAME is required}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
+      POSTGRES_DB: ${POSTGRES_DATABASE:?POSTGRES_DATABASE is required}
     ports:
-      - "${POSTGRES_PORT}:5432"
+      - "${POSTGRES_BIND_ADDRESS:-127.0.0.1}:${POSTGRES_PORT:?POSTGRES_PORT is required}:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
     restart: unless-stopped
+    stop_grace_period: 60s
     healthcheck:
-      test: [ "CMD", "pg_isready", "-U", "${POSTGRES_USERNAME}" ]
+      test: ["CMD-SHELL", "pg_isready -h 127.0.0.1 -p 5432 -U \"$$POSTGRES_USER\" -d \"$$POSTGRES_DB\""]
       interval: 10s
       timeout: 5s
-      retries: 5
+      retries: 6
+      start_period: 20s
     logging:
-      driver: "json-file"
+      driver: json-file
       options:
-        max-size: "${LOG_MAX_SIZE}"
-        max-file: "${LOG_MAX_FILE}"
+        max-size: "${LOG_MAX_SIZE:-10m}"
+        max-file: "${LOG_MAX_FILE:-3}"
 
-  # ─────────────────────────────
-  # ⚙️ Backend (Node.js / NestJS)
-  # ─────────────────────────────
   backend:
+    image: ${GRIPPO_RELEASE_IMAGE:-${COMPOSE_PROJECT_NAME}-backend:local}
     build:
-      context: ${BACKEND_BUILD_CONTEXT}
-      dockerfile: ${BACKEND_DOCKERFILE}
+      # Keep the reviewed Dockerfile and .dockerignore at the context root.
+      context: .
+      dockerfile: Dockerfile
       args:
-        APP_PORT: ${BACKEND_PORT}
-    container_name: ${BACKEND_CONTAINER}
-    env_file: .env
+        APP_PORT: ${BACKEND_PORT:?BACKEND_PORT is required}
+    container_name: ${BACKEND_CONTAINER:?BACKEND_CONTAINER is required}
+    env_file: ${GRIPPO_ENV_FILE:-.env}
     environment:
-      NODE_ENV: ${APP_ENV}
-      PORT: ${BACKEND_PORT}
-      POSTGRES_HOST: ${POSTGRES_HOST}
-      POSTGRES_PORT: ${POSTGRES_PORT}
-      POSTGRES_USERNAME: ${POSTGRES_USERNAME}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DATABASE: ${POSTGRES_DATABASE}
-      JWT_SECRET_KEY: ${JWT_SECRET_KEY}
-      JWT_EXPIRATION_TIME: ${JWT_EXPIRATION_TIME}
-      JWT_REFRESH_EXPIRATION_TIME: ${JWT_REFRESH_EXPIRATION_TIME}
+      NODE_ENV: production
+      BACKEND_PORT: ${BACKEND_PORT:?BACKEND_PORT is required}
+      PORT: ${BACKEND_PORT:?BACKEND_PORT is required}
+      # This Compose stack uses its own DB and the container's internal port.
+      POSTGRES_HOST: db
+      POSTGRES_PORT: "5432"
+      POSTGRES_USERNAME: ${POSTGRES_USERNAME:?POSTGRES_USERNAME is required}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
+      POSTGRES_DATABASE: ${POSTGRES_DATABASE:?POSTGRES_DATABASE is required}
+      POSTGRES_SYNC: "false"
+      POSTGRES_MIGRATIONS: "false"
+      POSTGRES_LOGS: "false"
     ports:
-      - "${BACKEND_PORT}:${BACKEND_PORT}"
+      - "${BACKEND_BIND_ADDRESS:-0.0.0.0}:${BACKEND_PORT}:${BACKEND_PORT}"
     depends_on:
       db:
         condition: service_healthy
+    init: true
     restart: unless-stopped
+    stop_grace_period: 30s
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
     logging:
-      driver: "json-file"
+      driver: json-file
       options:
-        max-size: "${LOG_MAX_SIZE}"
-        max-file: "${LOG_MAX_FILE}"
+        max-size: "${LOG_MAX_SIZE:-10m}"
+        max-file: "${LOG_MAX_FILE:-3}"
+
 volumes:
   pgdata:

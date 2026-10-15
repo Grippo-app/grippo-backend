@@ -9,6 +9,7 @@ import {
     UseGuards,
     HttpStatus,
     HttpCode,
+    ParseUUIDPipe,
 } from '@nestjs/common';
 import {
     ApiTags,
@@ -53,7 +54,7 @@ export class WeightHistoryController {
     @ApiOperation({ summary: 'Remove weight entry by ID' })
     @ApiResponse({ status: 200, description: 'Weight entry deleted' })
     @ApiResponse({ status: HttpStatus.UNAUTHORIZED, description: 'Unauthorized' })
-    async removeWeightHistory(@Req() req, @Param('id') id: string) {
+    async removeWeightHistory(@Req() req, @Param('id', new ParseUUIDPipe()) id: string) {
         return this.weightHistoryService.removeWeight(req.user, id);
     }
 }

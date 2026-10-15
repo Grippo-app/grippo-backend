@@ -1,89 +1,59 @@
 ---
 name: grippo-operations
-description: Исследование и изменение сборки, Docker Compose, SSH/remote доступа, конфигурации, deploy/dump/cleanup и восстановления PostgreSQL в Grippo Backend. Используй для эксплуатации, отдельного дампа и подготовки деплоя с обязательным backup и явным разрешением; для доменной логики подключай соответствующий Grippo skill.
+description: Исследование и изменение Docker, env, SSH, dump/deploy/cleanup и восстановления PostgreSQL Grippo. Используй для эксплуатации, отдельного backup и подготовки разрешённого deploy; доменную логику разбирай профильным skill.
 ---
 
 # Grippo Operations
 
-Проверяй факты по [скриптам](../../../scripts/), [Dockerfile](../../../Dockerfile),
-[Compose](../../../docker-compose.yml), [package.json](../../../package.json),
-[bootstrap](../../../src/main.ts) и [настройкам БД](../../../src/database/database.service.ts).
-Документация не доказывает поведение при запуске.
+Источники: [wrappers и helper](../../../scripts/), [operations.py](../../../scripts/internal/operations.py),
+[Dockerfile](../../../Dockerfile), [Compose](../../../docker-compose.yml),
+[bootstrap](../../../src/main.ts) и [DatabaseService](../../../src/database/database.service.ts).
+Проверяй выбранные source bytes и среду; документация не доказывает runtime.
 
 ## Выбор справочника
 
-- Перед любым dump/deploy и при проверке разрешений: обязательно прочитай
-  [deployment-policy.md](references/deployment-policy.md). Каждая попытка deploy
-  требует явного разрешения человека и нового успешного `scripts/dump.sh`
-  с проверкой результата.
-- Для SSH, предварительной проверки удалённой среды и передачи backup: [remote-access.md](references/remote-access.md).
-- Разбираешь deploy, dump, cleanup, инцидент или rollback: прочитай [scripts-runbooks.md](references/scripts-runbooks.md).
-- Меняешь среду, порты, Dockerfile, Compose, запуск, healthcheck или логирование: прочитай [configuration-and-containers.md](references/configuration-and-containers.md).
-- Проверяешь сборку, TypeScript, lint, тесты или CI: прочитай [verification.md](references/verification.md).
-- Изучаешь SQL-файл или совместимость restore с entities: прочитай [dump-and-restore.md](references/dump-and-restore.md).
+- Dump/deploy и границы разрешения: обязательно [deployment-policy](references/deployment-policy.md).
+- SSH, remote preflight, передача backup: [remote-access](references/remote-access.md).
+- CLI, порядок действий и failure state: [scripts-runbooks](references/scripts-runbooks.md).
+- Docker, env, порты, health и startup: [configuration-and-containers](references/configuration-and-containers.md).
+- Безопасные проверки: [verification](references/verification.md).
+- Состав SQL и отдельный restore: [dump-and-restore](references/dump-and-restore.md).
 
 ## Рабочий цикл
 
-1. Определи результат и среду: статический аудит, локальная сборка, резервная копия,
-   restore, deploy либо очистка хоста. Запрос на документацию или разработку
-   сам по себе не разрешает запуск эксплуатационных скриптов.
-2. Прочитай актуальную реализацию нужного сценария. Установи исходный Git diff
-   и незакоммиченные изменения; сохраняй чужие файлы и не включай данные SQL-дампа/секреты
-   в свои изменения.
-3. Для deploy укажи конкретные хост и среду, абсолютный путь проекта, revision,
-   команды, backup и план восстановления; раскрой `down -v`. До rollout нужны
-   прямое разрешение человека на эту попытку и новый проверенный `scripts/dump.sh`.
-   Автоматический повтор запрещён: следующая попытка требует нового разрешения
-   и backup. Подробный порядок — в deployment-policy. Согласованные подшаги
-   одного запуска повторного вопроса не требуют.
-4. Внеси минимальное связное изменение в разрешённых рамках. Изменение документации
-   само по себе не разрешает исправлять deploy/dump/cleanup, Dockerfile или схему.
-5. Выполни доступные статические проверки из verification reference. Проверки
-   с запуском выполняй только в выбранной среде, где допустимы их побочные эффекты.
-6. Сделай self-review: проверь ветви ошибок, секреты, пути и коды завершения.
-   Передай независимому reviewer исходники, diff, фактический вывод проверок
-   и безопасный сценарий: «проанализируй поведение, ничего не запускай».
-7. Исправь подтверждённые замечания и повтори затронутые проверки. Завершай задачу
-   после закрытия применимых блокирующих замечаний и выполнения её критериев.
-   Если не хватает доступа или решения, укажи причину, незавершённые шаги
-   и подготовленный результат. Сохрани статус незавершённости. Сообщение `Done`
-   само по себе не доказывает безопасность скрипта или успешный restore.
+1. Установи scope: локальное исправление, read-only доступ, dump-only, deploy
+   либо recovery. Разработка и review не разрешают SSH или эксплуатацию.
+2. Прочитай актуальный wrapper и helper; установи Git diff и владельцев файлов.
+   Сохраняй чужие изменения, private/untracked файлы и last-known-good backup.
+3. Для deploy подготовь конкретный target/root/revision, runtime plan,
+   backup/storage и recovery. Каждая попытка требует прямого human permission.
+   `--approve-plan` связывает параметры; не заменяет разрешение человека.
+4. Выполни разрешённое локальное изменение, self-review и безопасные проверки.
+   Review эксплуатационного кода не требует реального dump/deploy.
+5. Передай независимому reviewer diff, source, результаты и scope. Исправь
+   blocking findings и повтори затронутые проверки/review.
+6. Отчитайся о фактическом результате и ограничениях; compile/static checks
+   не подтверждают доступ, backup восстановления или production rollout.
 
-## Критические особенности текущей реализации
+## Существенные ограничения
 
-- `deploy.sh` не проверяет разрешение и backup, допускает отсутствие SQL.
-  Dump-only заканчивается дампом и отчётом; review/SSH/dump/поручение агента
-  не разрешают deploy.
-- `deploy.sh` выполняет `down -v` до сборки, удаляя `pgdata`; backend стартует
-  до сброса схемы и импорта. Встроенного rollback нет.
-- Инкремент счётчика готовности `((ATTEMPTS++))` конфликтует с `set -e` в Bash,
-  где errexit применяется к арифметическим командам; семантика Bash 3.2 отличается.
-  Подробности ошибок — в scripts-runbooks, безопасная проверка — в verification.
-- `DB_DUMP_FILE` в deploy/dump и `DOCKER_COMPOSE_FILE` в deploy читаются **до**
-  `source .env`. Переопределение только внутри `.env` не меняет выбранные пути.
-  Абсолютные пути тоже безусловно получают префикс `$ROOT_DIR/`.
-- Импорт SQL скрывает stdout/stderr и не задаёт `ON_ERROR_STOP`; успешный выход
-  процесса не доказывает отсутствие SQL-ошибок. Удаление схемы и импорт выполняются
-  в отдельных процессах/транзакциях.
-- `scripts/dump.sh` создаёт plain SQL с чувствительными данными и `INSERT`,
-  snapshot с отметкой времени и перезаписывает latest через обычный `cp -f`.
-  Несмотря на комментарий, атомарного переименования нет.
-- `scripts/cleanup.sh` повышает права через `sudo -E`, чистит весь Linux-хост
-  и в конце вызывает `sudo reboot`. Это не обычная очистка проекта и не способ
-  устранить ошибку сборки.
-- `.env` исполняется Bash через `source`. Не выводи значения, не выполняй
-  `source .env` для аудита, не применяй `bash -x`, `set -x`, `docker inspect`
-  или необработанный `docker compose config` в отчётах.
-- В Dockerfile указан healthcheck `/health`, но такого route в текущем коде нет;
-  установка `curl` не предусмотрена. Наличие программы в base image статически
-  не подтверждено.
-- Репозиторий не подтверждает реальные env values, production `synchronize`,
-  доступность целевой системы или успешный restore.
-
-## Что сдавать
-
-Сообщи конкретное изменение или вывод, источник, результаты выполненных проверок
-и оставшиеся ограничения. Отдельно обозначай текущее поведение, подтверждённую
-проблему и предложенное улучшение. Не копируй `.env`, строки данных из SQL-дампа,
-токены, хеши паролей, Apple key или пользовательские идентификаторы
-в skills, fixtures, логи или PR.
+- `deploy.sh` по умолчанию строит read-only plan выбранного Docker daemon.
+  Даже plan может обращаться к remote context: соблюдай разрешённую цель.
+- Execute обновляет только существующий backend. DB/volume сохраняются;
+  `down -v`, import/drop schema, bootstrap и автоматический rollback отсутствуют.
+  Несовпадение actual DB с Compose блокирует deploy, а не меняет источник.
+- Перед каждой execute attempt helper заново вызывает штатный `dump.sh`,
+  проверяет snapshot/latest и независимую private recovery copy.
+  Dump-only не разрешает upload/restart/deploy/restore.
+- Окно без writes согласуется отдельно до snapshot. `--writers-frozen` —
+  утверждение оператора, а не механизм остановки писателей.
+- `--env-file` читается как данные, не выполняется через `source`.
+  Не выводи .env values, SQL rows, credentials/keys, полный inspect/config,
+  production logs; не включай tracing с secrets.
+- Docker context ограничен allowlist; production backend использует `db:5432`,
+  отключает synchronize/migrationsRun и SQL logging. Schema changes требуют
+  отдельного data plan; обычный deploy их не применяет.
+- `cleanup.sh` остаётся destructive host-wide операцией с reboot. Не используй
+  его для исправления build failure и не запускай при исследовании.
+- Failure/disconnect не разрешает повтор; attempt marker нельзя удалить ради
+  обхода gate. Новый attempt/target/revision требует нового human permission.

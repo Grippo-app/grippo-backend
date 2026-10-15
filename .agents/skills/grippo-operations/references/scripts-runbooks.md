@@ -1,63 +1,142 @@
-# Реальное поведение эксплуатационных скриптов
+# Эксплуатационные scripts: CLI и failure state
 
-Источники: [deploy.sh](../../../../scripts/deploy.sh), [dump.sh](../../../../scripts/dump.sh), [cleanup.sh](../../../../scripts/cleanup.sh), [logger.sh](../../../../scripts/internal/logger.sh). Порядок ниже описывает текущий код.
+Источники: [deploy.sh](../../../../scripts/deploy.sh), [dump.sh](../../../../scripts/dump.sh),
+[operations.py](../../../../scripts/internal/operations.py),
+[cleanup.sh](../../../../scripts/cleanup.sh), [logger.sh](../../../../scripts/internal/logger.sh).
+Правила разрешений/окна и порядок live update:
+[deployment-policy](deployment-policy.md). Ни пример, ни plan hash не разрешают
+выполнение. При анализе достаточно source и изолированных fixtures.
 
-Описанные branches — факты о code, не разрешённый operational workflow.
-Обязательные gates пользователя, dump-only и deploy sequence:
-[deployment-policy.md](deployment-policy.md). SSH/remote:
-[remote-access.md](remote-access.md). Перед **каждой** реальной попыткой deploy
-нужны новое успешное выполнение `scripts/dump.sh` и явное human permission на
-конкретную попытку. Наличие optional import в коде не отменяет policy.
+## Общая реализация dump/deploy
 
-## deploy.sh: cold reset и restore
+Оба Bash wrapper используют `set -euo pipefail`, определяют свой физический
+каталог и через `exec python3` передают args helper с operation `dump`/`deploy`.
+Logger и shell `source .env` для этих операций больше не используются.
+Нужны Unix с `fcntl.flock`, Bash, Python >=3.9, Git и Docker Compose v2,
+поддерживающий JSON config. Docker CLI/daemon/PG tools проверяются через
+фактические commands; scripts не устанавливают инструменты сами.
 
-`#!/bin/bash`, `set -e`; нет `set -u`, `pipefail`, `ERR`/`EXIT` trap, автоматического backup или rollback.
+| Option | Назначение |
+|---|---|
+| `--backup-dir ABS` | Обязательный уже существующий private directory вне checkout/context; независимая recovery copy, attempt journal и private build log |
+| `--env-file PATH` | Default `.env` |
+| `--compose-file PATH` | Default process `DOCKER_COMPOSE_FILE` либо `docker-compose.yml`; Compose file остаётся внутри approved checkout |
+| `--latest-file PATH` | Default process `DB_DUMP_FILE` либо `scripts/dump.sql`; selected latest не импортируется при deploy |
+| `--revision FULLSHA` | Обязательный deploy commit: lowercase 40-hex SHA, должен совпасть с HEAD; tracked/untracked dirty tree блокирует deploy |
+| `--plan` / `--execute` | Взаимоисключающие режимы deploy; без режима — plan |
+| `--attempt UUID` | Canonical UUID из принятого плана |
+| `--approve-plan SHA256` | Exact `approval_sha256` принятого плана |
+| `--writers-frozen` | Operator attestation; не механизм остановки writers |
+| `--health-timeout SECONDS` | Default 120, допустимо 1..1800; связан с plan |
 
-| Порядок | Текущая операция | Ветка ошибки и состояние после неё |
-|---|---|---|
-| 1 | Вычисляет `SCRIPT_DIR`, `ROOT_DIR`, путь logger | Нет logger → сообщение, exit 1; Docker ещё не тронут |
-| 2 | Выбирает `$ROOT_DIR/.env`, `$ROOT_DIR/${DOCKER_COMPOSE_FILE:-docker-compose.yml}`, `$ROOT_DIR/${DB_DUMP_FILE:-scripts/dump.sql}` | Overrides берутся из вызывающей среды; значения из `.env` загружаются позже и не пересчитывают пути |
-| 3 | Проверяет `.env`, выполняет `set -a; source "$ENV_FILE"; set +a` | Нет файла → exit 1. Source возвращает nonzero → `.env syntax error`, exit 1. `.env` — исполняемый Bash; это не полная схема валидации |
-| 4 | Проверяет непустые `BACKEND_HOST`, `BACKEND_PORT`, `POSTGRES_CONTAINER_NAME`, `POSTGRES_DATABASE`, `POSTGRES_USERNAME`, `POSTGRES_PASSWORD`, `POSTGRES_PORT` | Первый пустой → exit 1. Не валидирует типы, диапазоны, остальные Compose/auth vars |
-| 5 | `command -v docker`, наличие выбранного Compose file | Нет binary/file → exit 1. Docker daemon и Compose plugin отдельно не проверяются |
-| 6 | `docker compose --env-file "$ENV_FILE" -f "$COMPOSE_FILE" down -v > /dev/null` | Failure → exit 1; teardown мог выполниться частично. Успех удаляет контейнеры, network и non-external named volumes данного проекта, включая `pgdata` |
-| 7 | `mktemp`, затем `docker compose --env-file "$ENV_FILE" -f "$COMPOSE_FILE" up -d --build` | stdout/stderr в temp file. Failure → последние 200 строк в stdout, temp удаляется, exit 1. Старый volume к этому моменту уже удалён; части нового проекта могут остаться |
-| 8 | Удаляет build log после успешного `up` | Нет сохранённого build artifact/log. Interrupted process до удаления может оставить temp file: cleanup trap отсутствует |
-| 9 | `until docker exec "$POSTGRES_CONTAINER_NAME" pg_isready -U "$POSTGRES_USERNAME"` | Скрыты stdout/stderr; container/user mismatch неотличим от startup delay. Если сразу готов — переход к import |
-| 10 | При неготовности: `sleep 1`, `((ATTEMPTS++))`, log, проверка `MAX_ATTEMPTS=30` | На первой итерации post-increment возвращает status 1, потому что прежнее значение 0. На Bash с применением errexit к arithmetic commands script завершится **до** log/timeout; на локальном macOS Bash 3.2.57 pure repro продолжил выполнение. Семантику целевого Bash нужно проверить отдельно. При продолжении loop после 30 неготовностей вызывается timeout branch |
-| 11 | Проверяет существование `DUMP_FILE` | Нет файла → warn + skip import, затем success. При уже удалённом volume это может оставить пустую/default БД; её схема зависит от startup backend |
-| 12 | Только при точном `DROP_SCHEMA_BEFORE_IMPORT=true`: `docker exec -e PGPASSWORD=... psql -qAt -U ... -d ... -v ON_ERROR_STOP=1 -c "DROP SCHEMA public CASCADE; CREATE SCHEMA public;"` | Вывод скрыт. Nonzero останавливает script через `set -e`; ручного recovery нет. Любое другое/пустое значение flag → schema reset skipped |
-| 13 | `docker exec -i "$POSTGRES_CONTAINER_NAME" psql -U ... -d ... -q -1 -t < "$DUMP_FILE" > /dev/null 2>&1` | Нет `-v ON_ERROR_STOP=1`, явного `PGPASSWORD`, `-h` или `-p`. По умолчанию libpq использует local socket внутри container, но PGHOST/PGHOSTADDR/PGPORT/PGSERVICE/PGSERVICEFILE могут переопределить endpoint; actual DB нужно установить. SQL errors могут не дать nonzero psql. `-1` задаёт одну транзакцию import; прежний schema drop в неё не входит |
-| 14 | Сообщает `Database dump imported successfully` и `Initialization complete!` | Сообщение проверяет только shell flow. Нет запроса в БД, проверки constraints/data, backend health или smoke API |
+Relative paths разрешаются от script checkout root, absolute поддерживаются.
+Явный CLI option предпочтительнее process fallback; пути из содержимого `.env`
+не являются legacy process override. Paths проверяются на symlinks/type/owner
+и отсутствие group/other write; private env/files/dirs требуют отсутствия доступа
+group/others (обычно600/700). Parent directories должны существовать; helper
+создаёт только свой backup directory при необходимости.
 
-### Последствия порядка
+Latest требует suffix `.sql`, не может заменять tracked project file или
+config. `--env-file` выбирает как Compose interpolation, так и runtime env
+backend: helper устанавливает reserved `GRIPPO_ENV_FILE` для service env_file.
 
-- `up` запускает **db и backend**, `depends_on` ждёт DB healthcheck. Дополнительный script readiness выполняется уже после `up`. При задержанном DB healthcheck `up` может завершиться ошибкой ещё до собственного readiness loop.
-- Backend может устанавливать DB connection, синхронизировать schema (если это реально включено средой) и принимать запросы одновременно с reset/import. `restart: unless-stopped` не сериализует эти операции.
-- `POSTGRES_CONTAINER_NAME` — имя контейнера для `docker exec`; Compose service называется `db`. Timeout branch вызывает `docker compose logs "$POSTGRES_CONTAINER_NAME"` без `-f`/`--env-file` и передаёт container name как service name. На Bash, где timeout branch достижим, диагностика может промахнуться по service/project/CWD.
-- `BACKEND_HOST` проверяется, но не используется bootstrap для bind: Nest слушает `0.0.0.0`. Compose не использует эту переменную.
-- Неполный import после `down -v` нельзя отменить Git revert. Повторный deploy повторяет удаление volume и не восстанавливает удалённые текущие данные.
+Target preflight internally читает Compose JSON/inspect: проверяет production
+flags, fixed build context/Dockerfile/ignore, running DB и существующий backend,
+Compose labels, credentials, network alias и named DB volume. Backend должен
+использовать именно `db:5432`. Metadata SQL сверяет current database/user/server
+port. Backend может быть остановлен для согласованного freeze; dead/restarting
+state не допускается. Helper сам не останавливает writers. Внешний DB endpoint
+или mismatch приводит к stop, без retarget/bootstrap.
 
-## dump.sh: snapshot и latest SQL
+Все Docker commands, включая child dump, используют зафиксированный selector:
+`--context` с исходным context либо `--host` для HOST-only configuration с теми
+же TLS settings. Смена active-context pointer не перенаправляет rollout.
+`docker_selector_sha256` включён в target identity/plan; context, host и TLS
+configuration должны оставаться неизменными во время attempt.
 
-`set -Eeuo pipefail`, `IFS=$'\n\t'`; `ERR` trap пишет номер строки и exit code. Не запускай его как «чтение состояния»: DB читается, но sensitive SQL создаётся на host и latest перезаписывается.
+Docker/libpq commands используют explicit loopback:5432 внутри проверенного DB
+container. PGHOST/PGHOSTADDR/PGPORT/PGSERVICE/PGSERVICEFILE/PGOPTIONS/PGPASSFILE
+сбрасываются; password читается только из окружения DB container и не попадает
+в host command argv. Сырые diagnostics/SQL не публикуются.
 
-| Порядок | Текущая операция | Failure branch / артефакт |
-|---|---|---|
-| 1 | Загружает logger при наличии; иначе объявляет fallback через printf | Fallback `log_error` пишет stderr. Общий logger пишет все уровни stdout |
-| 2 | Объявляет `on_error`, `require_bin`, `file_size_h`; ставит `ERR` trap | Необработанный failure → error line/code; при доступном docker и непустом container name дополнительно `docker ps --filter name=...`, затем тот же exit code. Explicit `exit 1` в проверках не равен вызову ERR trap |
-| 3 | Вычисляет `ROOT_DIR`, `.env`, `SQL_TARGET="$ROOT_DIR/${DB_DUMP_FILE:-scripts/dump.sql}"`, `BACKUP_DIR="$ROOT_DIR/backups"` | `.env` override `DB_DUMP_FILE` ещё не загружен; абсолютный override безусловно префиксируется root |
-| 4 | Проверяет `.env`, `set -a`, `source`, `set +a` | Нет файла → log + exit 1. Source/необъявленная переменная при `set -u`/синтаксис могут оборвать script; содержимое `.env` исполняется |
-| 5 | `${...:?}` для container, database, username, password | Неустановленное или пустое значение → Bash error и остановка. Типы/доступность DB не проверяются |
-| 6 | `require_bin docker`; `mkdir -p` для dirname target и backups | Нет docker → explicit exit 1. Ошибка mkdir → ERR trap |
-| 7 | `date -u +%Y%m%d_%H%M%SZ`; путь `backups/${POSTGRES_DATABASE}_${STAMP}.sql` | UTC, точность секунда. Повтор для той же DB в ту же секунду совпадёт по имени и truncate прежний файл; нет collision check |
-| 8 | `docker exec "$POSTGRES_CONTAINER_NAME" sh -lc 'command -v pg_dump >/dev/null'` | Нет container/pg_dump/shell → `pg_dump not found...`, exit 1. Это не проверка credentials, DB readiness, free space или полного dump |
-| 9 | `docker exec -e PGPASSWORD=... "$POSTGRES_CONTAINER_NAME" pg_dump -U ... -d ... -F p --inserts --no-owner --no-privileges -b > "$SQL_SNAPSHOT"` | Редирект создаёт/truncate host file **до** `docker exec`. Failure → trap; partial/empty snapshot не удаляется, latest обычно не затронут. stderr pg_dump не скрыт; stdout SQL в файл |
-| 10 | Проверяет `[[ -s "$SQL_SNAPSHOT" ]]` | Empty → log + exit 1. Непустой файл ещё не доказательство полного/восстанавливаемого backup |
-| 11 | `cp -f "$SQL_SNAPSHOT" "$SQL_TARGET"` | Нет temp+rename, atomic guarantee отсутствует. При ошибке/прерывании copy snapshot может сохраниться, latest может оказаться partial; cp failure → trap |
-| 12 | Выводит пути/размеры и `Done` | `du -h`/`awk`, fallback stat для размера. Никакой checksum, compression, encryption, retention, off-host copy или restore verification нет |
+## dump.sh: snapshot, recovery, latest
 
-Dump — plain SQL, не custom archive: для него используется `psql`, не `pg_restore`. `--no-owner --no-privileges` не сохраняет ownership/ACL; `-b` включает large objects, если они есть, но не означает cluster-level backup. Роли, tablespaces, другие БД и host/env/image не сохраняются. File permissions задаются umask вызывающей среды; script не делает `chmod 600`.
+```bash
+bash scripts/dump.sh --backup-dir '<EXISTING_PRIVATE_ABSOLUTE_DIRECTORY>'
+```
+
+1. Берёт checkout lock `.grippo-operations.lock`; параллельный dump/deploy
+   завершается nonzero. Lock остаётся обычным файлом, владение — advisory fd lock.
+2. Выполняет preflight source и storage. Root `backups` создаётся с700 либо
+   проверяется на private mode; существующий unsafe directory не исправляется молча.
+3. Создаёт private unique `snapshot-UTC-UUID.sql.partial` через exclusive/no-follow.
+   Выполняет pg_dump plain SQL с INSERT/no-owner/no-privileges/blobs; timeout 3600s.
+4. Только после exit0, fsync и nonempty публикует уникальный snapshot без
+   перезаписи existing file. В recovery directory сначала пишет private
+   `.recovery-*.partial`, выполняет fsync/SHA256, затем публикует final через
+   exclusive hardlink без перезаписи существующего файла.
+5. Через private temp в каталоге latest копирует snapshot, fsync, atomic replace;
+   повторно проверяет filetype/permissions, непустоту и SHA256 всех трёх файлов.
+6. Печатает JSON receipt: `snapshot`, `latest`, `recovery`, `sha256`, `bytes`,
+   `source`. Source содержит root/host/daemon/context/project/db/backend/volume,
+   immutable backend/DB image IDs, прежнюю revision label при наличии,
+   config/env/selector hashes и согласованные paths, без secret values.
+
+При ошибке dump/copy cleanup удаляет только partial, созданные этим запуском;
+чужой файл при collision сохраняется. Complete
+snapshot/recovery сохраняются. Latest меняется только после завершённой recovery
+copy. После kill/power loss возможны partial files: не принимай их за backup,
+не удаляй good copies и не делай автоматический deploy/retry.
+Receipt/hash не доказывают restore. Это обычный SQL с чувствительными данными,
+без encryption/compression/retention/off-host transfer.
+
+## deploy.sh: plan и одна attempt
+
+`--plan` не создаёт backup/lock/journal и не меняет containers/files. Читает
+actual target, проверяет Git и возвращает JSON `plan` + `approval_sha256`.
+Plan связывает attempt/revision, target identity/config/env hashes/paths,
+прежний immutable image ID (даже если у legacy image нет revision label),
+health timeout и фиксированные actions. UUID нового плана отличается; для
+execute бери exact UUID/hash уже согласованного результата.
+
+Execute:
+
+1. Берёт тот же checkout lock, повторяет target/Git preflight и проверяет
+   flags/hash. `--writers-frozen` обязателен; human permission остаётся внешним
+   требованием агента.
+2. Exclusive create `attempt-UUID.json` в recovery directory фиксирует начало.
+   Existing marker запрещает replay даже после failure; не удаляй его ради retry.
+3. Через Bash вызывает **реальный штатный scripts/dump.sh заново**, передавая
+   exact paths и унаследованный lock fd. Проверяет source/path/size/SHA256 receipt
+   и actual backup files, затем повторно target/Git.
+4. `compose build --build-arg RELEASE_SHA=<approved SHA> backend`; private `build-UUID.log` остаётся в recovery
+   directory, сырое содержимое не печатается. Build timeout 1800s.
+   Build tag строго `<Compose project>-backend:local`. Проверяет ID/label
+   построенного image и сохраняет ID в checkpoint; old image должен быть доступен.
+5. Повторяет identity/revision/latest checks до recreate. Устанавливает reserved
+   `GRIPPO_RELEASE_IMAGE` в проверенный immutable ID только для rollout, разбирает
+   config и требует отличие исключительно `backend.image`. Тот же env получает:
+   `compose up -d --no-deps --force-recreate --no-build --pull never backend`.
+   Rollout timeout 180s. DB service и volume не запускаются/пересоздаются.
+6. Ждёт Docker health updated backend. Missing healthcheck, exited/unhealthy
+   container или timeout — failure. Проверяет, что прежняя DB ещё running.
+7. Проверяет точный immutable image ID, revision label и runtime DB endpoint/
+   production flags; затем печатает JSON success с status/revision/attempt/backup и
+   `database_recreated: false`. Writer controls сохраняются до approved API smoke.
+
+До build/recreate все gates fail closed; build failure сохраняет прежний backend.
+После recreate failure возможен новый неготовый backend: DB/backup сохранены,
+но availability не гарантируется. Timeout/SSH disconnect не доказывают, что
+Docker operation отменена. Сначала диагностика, затем отдельное permission на
+recovery/новую attempt. Автоматического retry/rollback/import нет.
+
+## Что не входит в deploy
+
+Git fetch/pull/checkout/reset/clean, live upload, DB up/recreate/upgrade,
+schema creation/migrations/synchronize/drop/import, восстановление из SQL,
+maintenance/proxy management и off-host backup. Их нельзя получить старым
+`DROP_SCHEMA_BEFORE_IMPORT` или другим env flag. Compatibility с действующей
+schema и API smoke проверяются отдельно; health SELECT 1 этого не заменяет.
 
 ## cleanup.sh: глобальная уборка Linux host и reboot
 
@@ -78,8 +157,5 @@ Dump — plain SQL, не custom archive: для него используетс�
 
 Только функции `log_step_start`, `log_step_end`, `log_info`, `log_success`, `log_warn`, `log_error` на `echo`. Каждый уровень берёт `$1`; это stdout, без timestamp, file sink, redaction или уровней фильтрации. Это оформление терминала, не durable audit log. Не добавляй секреты/SQL values в сообщения, включая diagnostics и build tail.
 
-Решения после failure/retry и обязательные permission/backup gates находятся в
-[deployment-policy](deployment-policy.md); recovery procedure — в
-[dump-and-restore](dump-and-restore.md). Таблицы выше описывают последствия
-текущего кода, а не исправляют их. Не меняй scripts/config попутно при аудите
-инструкций и не выполняй их ради проверки описанной ветки.
+Logger используется cleanup, а не новыми dump/deploy wrapper. Разрешение recovery,
+retention/удаления snapshots и host cleanup не следует из успешного deploy.

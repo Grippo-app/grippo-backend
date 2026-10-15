@@ -6,16 +6,17 @@ import {ForceTypeEnum} from "../../../lib/force-type.enum";
 import {
     ArrayNotEmpty,
     IsArray,
+    IsDefined,
     IsEnum,
     IsIn,
     IsInt,
     IsObject,
-    IsOptional,
     IsString,
     IsUUID,
     Max,
     Min,
     Validate,
+    ValidateIf,
     ValidateNested,
     ValidatorConstraint,
     ValidatorConstraintInterface
@@ -68,7 +69,7 @@ export class ExerciseExampleLocalizedTextDto {
     language: SupportedLanguage;
 
     @ApiProperty({type: 'string', example: 'Bench press', required: false})
-    @IsOptional()
+    @ValidateIf((_, value) => value !== undefined)
     @IsString()
     value?: string;
 }
@@ -81,6 +82,7 @@ export class ExerciseExampleRequest {
     @Type(() => ExerciseExampleLocalizedTextDto)
     @IsArray()
     @ArrayNotEmpty()
+    @IsObject({each: true})
     name: ExerciseExampleLocalizedTextDto[];
 
     @ApiProperty({
@@ -91,6 +93,7 @@ export class ExerciseExampleRequest {
     @Type(() => ExerciseExampleLocalizedTextDto)
     @IsArray()
     @ArrayNotEmpty()
+    @IsObject({each: true})
     description: ExerciseExampleLocalizedTextDto[];
 
     @ApiProperty({type: 'string', example: WeightTypeEnum.Fixed})
@@ -134,6 +137,8 @@ export class ExerciseExampleRequest {
     equipmentRefs: ExerciseExampleEquipmentRefsRequest[];
 
     @ApiProperty({type: () => ExerciseComponentsDto})
+    @IsDefined()
+    @IsObject()
     @ValidateNested()
     @Type(() => ExerciseComponentsDto)
     components: ExerciseComponentsDto;

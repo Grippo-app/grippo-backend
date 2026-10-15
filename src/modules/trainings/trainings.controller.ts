@@ -6,6 +6,7 @@ import {
     HttpCode,
     HttpStatus,
     Param,
+    ParseUUIDPipe,
     Post,
     Put,
     Query,
@@ -81,7 +82,7 @@ export class TrainingsController {
     @ApiResponse({status: HttpStatus.UNAUTHORIZED, description: 'Unauthorized'})
     async getTrainingById(
         @Req() req,
-        @Param('id') id: string,
+        @Param('id', new ParseUUIDPipe()) id: string,
     ): Promise<any> {
         const language = req.locale ?? this.exerciseExampleI18nService.resolveLanguage();
         return this.trainingsService.getTrainingById(id, req.user, language);
@@ -115,7 +116,7 @@ export class TrainingsController {
     @ApiResponse({status: HttpStatus.BAD_REQUEST, description: 'Invalid data provided'})
     async updateTraining(
         @Req() req,
-        @Query('id') id: string,
+        @Query('id', new ParseUUIDPipe()) id: string,
         @Body() body: TrainingsRequest,
     ): Promise<void> {
         return this.trainingsService.updateTraining(id, body, req.user);
@@ -129,7 +130,7 @@ export class TrainingsController {
     @ApiResponse({status: HttpStatus.NOT_FOUND, description: 'Training not found or access denied'})
     async deleteTraining(
         @Req() req,
-        @Param('id') id: string,
+        @Param('id', new ParseUUIDPipe()) id: string,
     ): Promise<void> {
         return this.trainingsService.deleteTraining(id, req.user);
     }

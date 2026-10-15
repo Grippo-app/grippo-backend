@@ -31,10 +31,6 @@ export class UsersService {
         private readonly weightHistoryRepository: Repository<WeightHistoryEntity>,
         @Inject('EXCLUDED_MUSCLES_REPOSITORY')
         private readonly excludedMusclesRepository: Repository<ExcludedMusclesEntity>,
-        @Inject('MUSCLES_REPOSITORY')
-        private readonly musclesRepository: Repository<MusclesEntity>,
-        @Inject('EQUIPMENTS_REPOSITORY')
-        private readonly equipmentsRepository: Repository<EquipmentsEntity>,
         @Inject('EXCLUDED_EQUIPMENTS_REPOSITORY')
         private readonly excludedEquipmentsRepository: Repository<ExcludedEquipmentsEntity>,
         @Inject('GOALS_REPOSITORY')
@@ -45,14 +41,17 @@ export class UsersService {
     async createProfile(userId: string, dto: CreateUserProfileRequest): Promise<UserResponse> {
         const manager = this.usersRepository.manager;
 
-        await manager.transaction(async transactionalEntityManager => {
+        await manager.transaction('READ COMMITTED', async transactionalEntityManager => {
             const usersRepo = transactionalEntityManager.getRepository(UsersEntity);
             const profilesRepo = transactionalEntityManager.getRepository(UserProfilesEntity);
             const weightRepo = transactionalEntityManager.getRepository(WeightHistoryEntity);
             const excludedMusclesRepo = transactionalEntityManager.getRepository(ExcludedMusclesEntity);
             const excludedEquipmentsRepo = transactionalEntityManager.getRepository(ExcludedEquipmentsEntity);
 
-            const user = await usersRepo.findOne({where: {id: userId}});
+            const user = await usersRepo.findOne({
+                where: {id: userId},
+                lock: {mode: 'pessimistic_write'},
+            });
             if (!user) {
                 throw new NotFoundException(`User with id ${userId} not found`);
             }
@@ -60,6 +59,30 @@ export class UsersService {
             const existingProfile = await profilesRepo.findOne({where: {user: {id: user.id}}});
             if (existingProfile) {
                 throw new BadRequestException('User profile already created');
+            }
+
+            if (dto.excludeMuscleIds?.length) {
+                const muscleIds = [...new Set(dto.excludeMuscleIds.map(id => id.toLowerCase()))];
+                const muscles = await transactionalEntityManager.getRepository(MusclesEntity).find({
+                    select: {id: true},
+                    where: {id: In(muscleIds)},
+                    lock: {mode: 'for_key_share'},
+                });
+                if (muscles.length !== muscleIds.length) {
+                    throw new NotFoundException('One or more muscle IDs are invalid');
+                }
+            }
+
+            if (dto.excludeEquipmentIds?.length) {
+                const equipmentIds = [...new Set(dto.excludeEquipmentIds.map(id => id.toLowerCase()))];
+                const equipments = await transactionalEntityManager.getRepository(EquipmentsEntity).find({
+                    select: {id: true},
+                    where: {id: In(equipmentIds)},
+                    lock: {mode: 'for_key_share'},
+                });
+                if (equipments.length !== equipmentIds.length) {
+                    throw new NotFoundException('One or more equipment IDs are invalid');
+                }
             }
 
             const profile = profilesRepo.create({
@@ -210,41 +233,55 @@ export class UsersService {
 
     async updateExcludedMuscles(user: UsersEntity, muscleIds: string[]): Promise<{ ids: string[] }> {
         const profile = await this.requireProfile(user.id);
-        const existingMuscles = await this.musclesRepository.findBy({id: In(muscleIds)});
-        if (existingMuscles.length !== muscleIds.length) {
-            throw new NotFoundException('One or more muscle IDs are invalid');
-        }
+        await this.usersRepository.manager.transaction('READ COMMITTED', async manager => {
+            const lockedProfile = await manager.getRepository(UserProfilesEntity).findOne({
+                where: {id: profile.id},
+                lock: {mode: 'pessimistic_write'},
+            });
+            if (!lockedProfile) {
+                throw new BadRequestException('User profile not created yet');
+            }
 
-        await this.excludedMusclesRepository.delete({profile: {id: profile.id}});
+            const existingMuscles = await manager.getRepository(MusclesEntity).findBy({id: In(muscleIds)});
+            if (existingMuscles.length !== muscleIds.length) {
+                throw new NotFoundException('One or more muscle IDs are invalid');
+            }
 
-        const entities = muscleIds.map((id) =>
-            this.excludedMusclesRepository.create({
+            const excludedRepo = manager.getRepository(ExcludedMusclesEntity);
+            await excludedRepo.delete({profile: {id: profile.id}});
+            const entities = muscleIds.map(id => excludedRepo.create({
                 profile: {id: profile.id},
                 muscleId: id,
-            }),
-        );
-
-        await this.excludedMusclesRepository.save(entities);
+            }));
+            await excludedRepo.save(entities);
+        });
         return {ids: muscleIds};
     }
 
     async updateExcludedEquipments(user: UsersEntity, equipmentIds: string[]): Promise<{ ids: string[] }> {
         const profile = await this.requireProfile(user.id);
-        const existingEquipments = await this.equipmentsRepository.findBy({id: In(equipmentIds)});
-        if (existingEquipments.length !== equipmentIds.length) {
-            throw new NotFoundException('One or more equipment IDs are invalid');
-        }
+        await this.usersRepository.manager.transaction('READ COMMITTED', async manager => {
+            const lockedProfile = await manager.getRepository(UserProfilesEntity).findOne({
+                where: {id: profile.id},
+                lock: {mode: 'pessimistic_write'},
+            });
+            if (!lockedProfile) {
+                throw new BadRequestException('User profile not created yet');
+            }
 
-        await this.excludedEquipmentsRepository.delete({profile: {id: profile.id}});
+            const existingEquipments = await manager.getRepository(EquipmentsEntity).findBy({id: In(equipmentIds)});
+            if (existingEquipments.length !== equipmentIds.length) {
+                throw new NotFoundException('One or more equipment IDs are invalid');
+            }
 
-        const entities = equipmentIds.map((id) =>
-            this.excludedEquipmentsRepository.create({
+            const excludedRepo = manager.getRepository(ExcludedEquipmentsEntity);
+            await excludedRepo.delete({profile: {id: profile.id}});
+            const entities = equipmentIds.map(id => excludedRepo.create({
                 profile: {id: profile.id},
                 equipmentId: id,
-            }),
-        );
-
-        await this.excludedEquipmentsRepository.save(entities);
+            }));
+            await excludedRepo.save(entities);
+        });
         return {ids: equipmentIds};
     }
 
@@ -470,32 +507,42 @@ export class UsersService {
     }
 
     async setGoal(userId: string, dto: GoalRequest): Promise<GoalResponse> {
-        const profile = await this.requireProfile(userId);
+        return this.usersRepository.manager.transaction('READ COMMITTED', async manager => {
+            const profile = await manager.getRepository(UserProfilesEntity)
+                .createQueryBuilder('profile')
+                .where('profile.user_id = :userId', {userId})
+                .setLock('pessimistic_write')
+                .getOne();
+            if (!profile) {
+                throw new BadRequestException('User profile not created yet');
+            }
 
-        const existing = await this.goalsRepository.findOne({
-            where: {profileId: profile.id},
-        });
+            const goalsRepo = manager.getRepository(GoalsEntity);
+            const existing = await goalsRepo.findOne({
+                where: {profileId: profile.id},
+            });
 
-        if (existing) {
-            existing.primaryGoal = dto.primaryGoal;
-            existing.secondaryGoal = dto.secondaryGoal ?? null;
-            existing.target = dto.target ? new Date(dto.target) : null;
-            existing.personalizations = dto.personalizations ?? [];
-            existing.confidence = 1.0;
-            const saved = await this.goalsRepository.save(existing);
+            if (existing) {
+                existing.primaryGoal = dto.primaryGoal;
+                existing.secondaryGoal = dto.secondaryGoal ?? null;
+                existing.target = dto.target ? new Date(dto.target) : null;
+                existing.personalizations = dto.personalizations ?? [];
+                existing.confidence = 1.0;
+                const saved = await goalsRepo.save(existing);
+                return this.toGoalResponse(saved);
+            }
+
+            const created = goalsRepo.create({
+                profileId: profile.id,
+                primaryGoal: dto.primaryGoal,
+                secondaryGoal: dto.secondaryGoal ?? null,
+                target: dto.target ? new Date(dto.target) : null,
+                personalizations: dto.personalizations ?? [],
+                confidence: 1.0,
+            });
+            const saved = await goalsRepo.save(created);
             return this.toGoalResponse(saved);
-        }
-
-        const created = this.goalsRepository.create({
-            profileId: profile.id,
-            primaryGoal: dto.primaryGoal,
-            secondaryGoal: dto.secondaryGoal ?? null,
-            target: dto.target ? new Date(dto.target) : null,
-            personalizations: dto.personalizations ?? [],
-            confidence: 1.0,
         });
-        const saved = await this.goalsRepository.save(created);
-        return this.toGoalResponse(saved);
     }
 
     async getGoal(userId: string): Promise<GoalResponse | null> {

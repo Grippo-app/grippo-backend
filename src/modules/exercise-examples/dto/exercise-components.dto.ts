@@ -1,5 +1,5 @@
-import {Equals, IsBoolean, IsDefined, IsNumber, Max, Min, ValidateIf, ValidateNested,} from 'class-validator';
-import {ApiProperty, ApiPropertyOptional, getSchemaPath} from '@nestjs/swagger';
+import {Equals, IsBoolean, IsDefined, IsNumber, IsObject, Max, Min, ValidateIf, ValidateNested,} from 'class-validator';
+import {ApiProperty, getSchemaPath} from '@nestjs/swagger';
 import {Type} from 'class-transformer';
 
 export class ExerciseComponentsExternalWeightDto {
@@ -33,42 +33,46 @@ export class ExerciseComponentsAssistWeightDto {
 }
 
 export class ExerciseComponentsDto {
-    @ApiPropertyOptional({
+    @ApiProperty({
         oneOf: [{type: 'null'}, {$ref: getSchemaPath(ExerciseComponentsExternalWeightDto)}],
         nullable: true,
     })
     @IsDefined()
     @ValidateIf((_, value) => value !== null)
+    @IsObject()
     @ValidateNested()
     @Type(() => ExerciseComponentsExternalWeightDto)
     externalWeight: ExerciseComponentsExternalWeightDto | null;
 
-    @ApiPropertyOptional({
+    @ApiProperty({
         oneOf: [{type: 'null'}, {$ref: getSchemaPath(ExerciseComponentsBodyWeightDto)}],
         nullable: true,
     })
     @IsDefined()
     @ValidateIf((_, value) => value !== null)
+    @IsObject()
     @ValidateNested()
     @Type(() => ExerciseComponentsBodyWeightDto)
     bodyWeight: ExerciseComponentsBodyWeightDto | null;
 
-    @ApiPropertyOptional({
+    @ApiProperty({
         oneOf: [{type: 'null'}, {$ref: getSchemaPath(ExerciseComponentsExtraWeightDto)}],
         nullable: true,
     })
     @IsDefined()
     @ValidateIf((_, value) => value !== null)
+    @IsObject()
     @ValidateNested()
     @Type(() => ExerciseComponentsExtraWeightDto)
     extraWeight: ExerciseComponentsExtraWeightDto | null;
 
-    @ApiPropertyOptional({
+    @ApiProperty({
         oneOf: [{type: 'null'}, {$ref: getSchemaPath(ExerciseComponentsAssistWeightDto)}],
         nullable: true,
     })
     @IsDefined()
     @ValidateIf((_, value) => value !== null)
+    @IsObject()
     @ValidateNested()
     @Type(() => ExerciseComponentsAssistWeightDto)
     assistWeight: ExerciseComponentsAssistWeightDto | null;

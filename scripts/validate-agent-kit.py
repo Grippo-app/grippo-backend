@@ -28,7 +28,7 @@ const outputs = inputs.map(({label, text}) => {
 process.stdout.write(JSON.stringify(outputs));
 """
 CONFIG_FILES = {
-    '.gitignore', 'CLAUDE.md', 'Dockerfile', 'README.md', 'docker-compose.yml',
+    '.gitignore', '.dockerignore', 'CLAUDE.md', 'Dockerfile', 'README.md', 'docker-compose.yml',
     'nest-cli.json', 'package.json', 'package-lock.json', 'tsconfig.build.json',
     'tsconfig.json',
 }
@@ -206,6 +206,7 @@ def main():
     source_map = root / '.agents/skills/grippo-architecture/references/source-map.md'
     expected = {path.resolve() for path in (root / 'src').rglob('*') if path.is_file()}
     expected |= {path.resolve() for path in (root / 'scripts').rglob('*.sh')}
+    expected |= {path.resolve() for path in (root / 'scripts').rglob('*.py')}
     expected |= {(root / name).resolve() for name in CONFIG_FILES}
     if not source_map.is_file():
         fail(source_map, 'source inventory missing')

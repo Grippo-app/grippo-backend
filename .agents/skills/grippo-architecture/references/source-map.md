@@ -1,6 +1,6 @@
 # Полный индекс исследованного source snapshot
 
-Индекс текущего набора: 124 source/config/script files, включая focused specs.
+Индекс текущего набора: 128 source/config/script files, включая focused specs.
 Индекс помогает найти owner и источник; сам по себе не доказывает полноту
 анализа поведения. Включены все src файлы: 19 entities, 10 feature modules,
 shared bootstrap/database/common/i18n/lib. Подробности — в профильных references.
@@ -10,6 +10,7 @@ Mobile/admin repositories и production окружение не исследов
 
 | Source | Primary skill |
 |---|---|
+| [.dockerignore](../../../../.dockerignore) | [grippo-operations](../../grippo-operations/SKILL.md) |
 | [.gitignore](../../../../.gitignore) | [grippo-operations](../../grippo-operations/SKILL.md) |
 | [CLAUDE.md](../../../../CLAUDE.md) | [grippo-architecture](../../grippo-architecture/SKILL.md) |
 | [Dockerfile](../../../../Dockerfile) | [grippo-operations](../../grippo-operations/SKILL.md) |
@@ -22,6 +23,8 @@ Mobile/admin repositories и production окружение не исследов
 | [scripts/deploy.sh](../../../../scripts/deploy.sh) | [grippo-operations](../../grippo-operations/SKILL.md) |
 | [scripts/dump.sh](../../../../scripts/dump.sh) | [grippo-operations](../../grippo-operations/SKILL.md) |
 | [scripts/internal/logger.sh](../../../../scripts/internal/logger.sh) | [grippo-operations](../../grippo-operations/SKILL.md) |
+| [scripts/internal/operations.py](../../../../scripts/internal/operations.py) | [grippo-operations](../../grippo-operations/SKILL.md) |
+| [scripts/validate-agent-kit.py](../../../../scripts/validate-agent-kit.py) | [grippo-verification](../../grippo-verification/SKILL.md) |
 | [src/app.module.ts](../../../../src/app.module.ts) | [grippo-architecture](../../grippo-architecture/SKILL.md) |
 | [src/common/admin.guard.ts](../../../../src/common/admin.guard.ts) | [grippo-identity-api](../../grippo-identity-api/SKILL.md) |
 | [src/common/jwt-auth.guard.ts](../../../../src/common/jwt-auth.guard.ts) | [grippo-identity-api](../../grippo-identity-api/SKILL.md) |
@@ -70,6 +73,7 @@ Mobile/admin repositories и production окружение не исследов
 | [src/lib/user-role.enum.ts](../../../../src/lib/user-role.enum.ts) | [grippo-domain-data](../../grippo-domain-data/SKILL.md) |
 | [src/lib/weight-type.enum.ts](../../../../src/lib/weight-type.enum.ts) | [grippo-domain-data](../../grippo-domain-data/SKILL.md) |
 | [src/main.ts](../../../../src/main.ts) | [grippo-architecture](../../grippo-architecture/SKILL.md) |
+| [src/modules/health/health.controller.ts](../../../../src/modules/health/health.controller.ts) | [grippo-operations](../../grippo-operations/SKILL.md) |
 | [src/modules/admin/admin.controller.ts](../../../../src/modules/admin/admin.controller.ts) | [grippo-identity-api](../../grippo-identity-api/SKILL.md) |
 | [src/modules/admin/admin.controller.spec.ts](../../../../src/modules/admin/admin.controller.spec.ts) | [grippo-verification](../../grippo-verification/SKILL.md) |
 | [src/modules/admin/admin.module.ts](../../../../src/modules/admin/admin.module.ts) | [grippo-identity-api](../../grippo-identity-api/SKILL.md) |

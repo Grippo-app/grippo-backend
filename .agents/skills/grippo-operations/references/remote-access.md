@@ -90,8 +90,8 @@ git rev-parse HEAD
 git status --short --untracked-files=no
 git diff --name-status
 bash --version
-sha256sum scripts/dump.sh scripts/deploy.sh scripts/internal/logger.sh \
-  docker-compose.yml Dockerfile
+sha256sum scripts/dump.sh scripts/deploy.sh scripts/internal/operations.py \
+  docker-compose.yml Dockerfile .dockerignore
 ```
 
 Неуспешный `cd` завершает session до следующих команд. Сверь resolved cwd/root и
@@ -99,8 +99,9 @@ script hashes с прочитанной revision; branch name недостато
 перечисляет untracked/ignored SQL/keys: при необходимости проверяй конкретные
 paths, не раскрывая данные. Сырые diff/logs с secrets не публикуй.
 
-Environment анализируй по именам assignments без `source .env`; shell scripts
-**исполняют** этот файл. Наличие имени не доказывает непустое/runtime значение.
+Environment анализируй по именам assignments без `source .env`. Новые wrappers
+читают Compose config через helper, старые remote scripts могут ещё исполнять
+dotenv: сверь их bytes до выбора workflow. Наличие имени не доказывает runtime значение.
 Для сопоставления свойств подготовь узкую проверку с выводом match/mismatch.
 Не выводи `.env`, `env`, `printenv`, полный `docker inspect` или Compose config.
 Реестр имён и порядок env:
@@ -125,14 +126,15 @@ docker compose --env-file "$REMOTE_ROOT/.env" \
   Не добавляй `-p` только диагностике, если deploy не получает ту же identity.
 - **Backend/source DB.** Effective `POSTGRES_HOST/PORT/DATABASE/USERNAME` backend
   должны совпадать с фактической PostgreSQL instance/database/ролью dump.
-  `pg_dump`/`psql` запускаются без `-h/-p`; container libpq `PGHOST`, `PGHOSTADDR`,
-  `PGPORT`, `PGSERVICE`, `PGSERVICEFILE` способны изменить endpoint. Имя container
-  и наличие `pg_dump` не доказывают совпадение.
+  Новый helper задаёт explicit loopback:5432 внутри DB container и сбрасывает
+  inherited libpq redirects. Для старых remote scripts это не предполагается.
+  Имя container и наличие `pg_dump` сами не доказывают совпадение.
 - **Network/данные.** Для обычной Compose topology backend идёт к `db:5432`;
   published host port отличается от container port. Backend может использовать
   external DB. Установи actual source/data state по разрешённым metadata/DB
   проверкам без user rows. Не запускай Nest/TypeORM как diagnostic probe:
-  initialize может применить `synchronize`.
+  initialize открывает реальную DB; production schema automation запрещена,
+  но неизвестная remote revision/config может вести себя иначе.
 
 Если identity неизвестна, перечисли missing evidence и останови dependent
 действия. Отсутствующий running container не доказывает первый запуск: могут
@@ -141,7 +143,10 @@ docker compose --env-file "$REMOTE_ROOT/.env" \
 Preflight не заменяется `git pull`, checkout/reset/clean, SFTP или `rsync --delete`.
 Это записи. Передача кода относится к конкретному плану release **после** нового
 проверенного backup; сохраняются remote изменения, `.env`, keys и exact latest.
-После update повторно сверяются revision/script bytes, target и import checksum.
+После update повторно сверяются revision/script bytes и target; текущий deploy
+SQL не импортирует и заново вызывает штатный backup перед build/recreate.
+Если на сервере старые scripts, переход на новый helper требует reviewed
+staging/upgrade plan с backup действующей системы до live upload.
 
 ## Выполнение dump и обрыв связи
 
@@ -165,7 +170,7 @@ backup scope; это не разрешает выбрать посторонни
 SQL в чат/Git и не передавай его через `ssh ... cat dump.sql` в stdout. Не копируй
 вместе с backup `.env`/keys без соответствующей задачи.
 
-**Remote:** выбери exact завершённый timestamped snapshot, а не движущийся latest.
+**Remote:** выбери exact snapshot из успешного JSON receipt, а не движущийся latest.
 Проверь происхождение и закрой доступ в пределах backup scope:
 
 ```bash

@@ -44,7 +44,7 @@ export class GoalsEntity {
         enum: GoalPersonalizationKeyEnum,
         enumName: 'goal_personalization_key_enum',
         array: true,
-        default: () => "'{}'::goal_personalization_key_enum[]",
+        default: [],
     })
     personalizations: GoalPersonalizationKeyEnum[];
 

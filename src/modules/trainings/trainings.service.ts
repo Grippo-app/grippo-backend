@@ -22,7 +22,6 @@ export class TrainingsService {
         @Inject('TRAININGS_REPOSITORY') private readonly trainingsRepository: Repository<TrainingsEntity>,
         @Inject('EXERCISES_REPOSITORY') private readonly exercisesRepository: Repository<ExercisesEntity>,
         @Inject('ITERATIONS_REPOSITORY') private readonly iterationsRepository: Repository<IterationsEntity>,
-        @Inject('EXERCISE_EXAMPLES_REPOSITORY') private readonly exerciseExamplesRepository: Repository<ExerciseExamplesEntity>,
     ) {
     }
 
@@ -56,7 +55,9 @@ export class TrainingsService {
         end: string,
         language: SupportedLanguage,
     ): Promise<TrainingsEntity[]> {
-        if (!moment(start).isValid() || !moment(end).isValid()) {
+        if (typeof start !== 'string' || !start.trim()
+            || typeof end !== 'string' || !end.trim()
+            || !moment(start).isValid() || !moment(end).isValid()) {
             throw new BadRequestException('Wrong date format');
         }
 
@@ -161,7 +162,10 @@ export class TrainingsService {
                 const {iterations, exerciseExampleId, ...exerciseData} = el;
 
                 if (exerciseExampleId) {
-                    const exists = await this.exerciseExamplesRepository.findOneBy({id: exerciseExampleId});
+                    const exists = await manager.findOne(ExerciseExamplesEntity, {
+                        where: {id: exerciseExampleId},
+                        lock: {mode: 'for_key_share'},
+                    });
                     if (!exists) {
                         throw new BadRequestException(`Invalid exerciseExampleId: ${exerciseExampleId}`);
                     }
@@ -203,7 +207,7 @@ export class TrainingsService {
 
         return await this.trainingsRepository.manager.transaction(async (manager) => {
             // Check if training exists and belongs to the user
-            const existingTraining = await this.trainingsRepository.findOne({
+            const existingTraining = await manager.findOne(TrainingsEntity, {
                 where: {id, profileId: profile.id}
             });
 
@@ -227,7 +231,10 @@ export class TrainingsService {
                 const {iterations, exerciseExampleId, ...exerciseData} = el;
 
                 if (exerciseExampleId) {
-                    const exists = await this.exerciseExamplesRepository.findOneBy({id: exerciseExampleId});
+                    const exists = await manager.findOne(ExerciseExamplesEntity, {
+                        where: {id: exerciseExampleId},
+                        lock: {mode: 'for_key_share'},
+                    });
                     if (!exists) {
                         throw new BadRequestException(`Invalid exerciseExampleId: ${exerciseExampleId}`);
                     }

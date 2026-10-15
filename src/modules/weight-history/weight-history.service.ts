@@ -52,22 +52,33 @@ export class WeightHistoryService {
 
     async removeWeight(user, id: string) {
         const profile = await this.requireProfile(user?.id);
-        const count = await this.weightHistoryRepository
-            .createQueryBuilder('weight')
-            .where('weight.profile_id = :profileId', {profileId: profile.id})
-            .getCount();
+        return this.weightHistoryRepository.manager.transaction('READ COMMITTED', async manager => {
+            const lockedProfile = await manager.getRepository(UserProfilesEntity).findOne({
+                where: {id: profile.id},
+                lock: {mode: 'pessimistic_write'},
+            });
+            if (!lockedProfile) {
+                throw new BadRequestException('User profile not created yet');
+            }
 
-        if (count <= 1) {
-            throw new Error('Cannot delete the last weight history entry');
-        }
+            const weightsRepo = manager.getRepository(WeightHistoryEntity);
+            const count = await weightsRepo
+                .createQueryBuilder('weight')
+                .where('weight.profile_id = :profileId', {profileId: profile.id})
+                .getCount();
 
-        return await this.weightHistoryRepository
-            .createQueryBuilder()
-            .delete()
-            .from(WeightHistoryEntity)
-            .where('id = :id', {id})
-            .andWhere('profile_id = :profileId', {profileId: profile.id})
-            .execute();
+            if (count <= 1) {
+                throw new BadRequestException('Cannot delete the last weight history entry');
+            }
+
+            return weightsRepo
+                .createQueryBuilder()
+                .delete()
+                .from(WeightHistoryEntity)
+                .where('id = :id', {id})
+                .andWhere('profile_id = :profileId', {profileId: profile.id})
+                .execute();
+        });
     }
 
     private async requireProfile(userId?: string): Promise<UserProfilesEntity> {
