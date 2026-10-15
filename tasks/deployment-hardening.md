@@ -254,3 +254,41 @@ Legacy backup требует quote-only нормализации существ�
 На момент этого preparation snapshot серверные код/`.env`/контейнеры/данные
 не менялись; выполнялись только metadata probes и временный private config
 render с подтверждённым удалением временных файлов. Deployment не выполнен.
+
+### Дополнительные release gates перед разрешением
+
+Проверка npm advisory подтвердила две известные critical в прежнем runtime
+lockfile. Подготовлено узкое совместимое обновление:
+
+- `proxy-addr 2.0.7 → 2.0.8` в разрешённом Express диапазоне `~2.0.7`:
+  [upstream advisory](https://github.com/jshttp/proxy-addr/security/advisories/GHSA-jqcg-44mw-7w3h).
+- `sha.js 2.4.11 → 2.4.12` в разрешённом TypeORM диапазоне `^2.4.11`:
+  [upstream advisory](https://github.com/browserify/sha.js/security/advisories/GHSA-95m3-7q98-8xr5).
+
+`package.json` не меняется. Lockfile содержит необходимую upstream цепочку
+`to-buffer`: 18 добавленных helper packages, 10 обновлений вместе с целевыми
+двумя и удаление прежнего orphan `has-proto`. Новых/изменённых узлов вне
+dependency closure целевых пакетов нет; npm ls не обнаружил missing/invalid,
+integrity и требования Node20 проверены.
+
+Независимое dependency review: **APPROVE** и **41 runtime assertion PASS**,
+включая обе причины advisory, корректные SHA1/SHA256/SHA512 и TypeORM aliases.
+Свежие post-install проверки: noEmit **PASS**, Jest **2/86 PASS**, PostgreSQL
+guards **5/5**, реальный PostgreSQL **32/32 + cleanup PASS**, agent-kit и
+whitespace **PASS**, `npm run build` **PASS**.
+
+Офлайн сравнение уже полученных advisory с итоговыми версиями подтверждает
+устранение двух известных critical. Повторный online audit **NOT_RUN**:
+автоматическая проверка разрешений отклонила отправку dependency tree в
+registry. Обходов не предпринимали; «свежий audit/0 vulnerabilities» не заявляется.
+
+Resource preflight: сервер около **914 MiB RAM**, swap отсутствует;
+backend потребляет около 99 MiB. Local macOS build max RSS около **387 MiB**
+превышает ожидаемые около 350 MiB available после freeze. Это не точная модель
+Linux/Docker, но запуск без ресурсного плана не считается подготовленным.
+
+Для отдельного явного разрешения подготовлен временный swap **1 GiB** в
+private recovery storage: без `fstab`, sysctl, перезапуска DB или cleanup host.
+Подтверждены ext4, необходимые tools и noninteractive sudo capability.
+Отключение допускается только для собственного файла при достаточной RAM;
+иначе он остаётся active с явным pending cleanup. Swap пока не создан/не включён.
