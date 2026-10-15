@@ -18,6 +18,10 @@ description: "Проверять изменения Grippo Backend: выбрат
    AppModule. Он допустим только в назначенном runtime-сценарии с проверенной
    изоляцией конфигурации, DATA_SOURCE и внешних интеграций по checks.
    Не меняй реализацию без назначенного права записи; lint --fix/format меняют файлы.
+5. Для изменений схемы и покрытых операций с данными поддерживай постоянные
+   `test/postgres/` scenarios/fixtures и выполняй полную PostgreSQL suite по
+   [checks](references/checks.md). Jest и type check её не заменяют;
+   отсутствие локального PostgreSQL отмечай как NOT_RUN.
 
 Статическая проверка не разрешает SSH, dump или deploy. Для проверки плана
 эксплуатации сверяй

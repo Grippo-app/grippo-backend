@@ -417,3 +417,78 @@ binary/source/harness и обезличенные результаты сохр�
 Production schema/data, HTTP с настоящими guards, OAuth,
 нагрузка, сетевые сбои и все возможные deadlock schedules не проверялись.
 Рабочие PostgreSQL/daemon/конфигурация не подключались. Push/deploy не выполнялись.
+
+## Четвёртый проход: постоянные PostgreSQL regression tests
+
+Пользователь разрешил сохранить 32 сценария в репозитории и закрепить
+их проверку и актуализацию в проектных skills. Код приложения и зависимости
+в этом проходе не менялись.
+
+### Сохранённый набор и запуск
+
+- [test/postgres/README.md](../test/postgres/README.md) описывает запуск,
+  изоляцию, покрытие и поддержку. Сценарии разделены на identity и
+  catalog/trainings; исходные SQL assertions и barriers сохранены.
+- `npm run test:postgres` создаёт новый локальный native PostgreSQL major 15
+  и отдельные одноразовые БД. Путь к установленным binaries можно передать
+  через `--pg-bin /absolute/bin` или `GRIPPO_TEST_PG_BIN`. Установки, скачивания
+  и Docker отсутствуют. Число сценариев берётся из inventory обеих групп.
+- Runtime нельзя подключить к URL/host/port/PGDATA существующей БД. Descriptor
+  принадлежит текущему процессу; до подключения проверяются собственные
+  PID/datadir/port, затем фактический сервер. AppModule, database bootstrap,
+  ConfigModule и загрузка `.env` запрещены до выполнения transitive imports.
+  SQL logging выключен; outputs содержат только статусы и безопасную metadata.
+- `npm run test:postgres:guards` проверяет изоляцию без PostgreSQL.
+  Cleanup собственной БД, процесса и временных credentials обязателен;
+  ошибка cleanup даёт ненулевой результат.
+
+### Поддержка в инструкциях
+
+AGENTS.md и skills domain-data, identity-api, orchestrator, verification,
+review требуют актуализировать затронутые scenarios/fixtures вместе
+с изменениями схемы, CRUD, ownership, транзакций и блокировок и запускать
+полную suite. Для нового дефекта нужен regression case; assertions и изоляцию
+нельзя ослаблять ради PASS. Auth/HTTP и несвязанные документы требуют
+соответствующих собственных проверок.
+
+Единые подробные критерии находятся в
+[checks](../.agents/skills/grippo-verification/references/checks.md).
+Source map включает все семь файлов набора. Validator теперь проверяет
+inventory этих файлов и ссылки в test README.
+
+### Проверки и review
+
+- Два полных запуска сохранённой команды на двух новых PostgreSQL **15.5**:
+  **14/14 identity + 18/18 catalog/trainings = 32/32**, exit 0 и cleanup PASS
+  в каждом. Первый выполнил root, итоговый повтор — автор переноса сценариев.
+  Проверены 13 реальных ожиданий lock через точный holder в
+  `pg_blocking_pids`, 7 поздних SQL rollback, FK/CHECK/UNIQUE и каскады.
+- Runtime guards: **5/5 PASS**; повторены независимым reviewer.
+- Отдельный временный lifecycle harness на настоящем PostgreSQL 15.5:
+  **4/4 PASS** — success exit 0, ошибка после создания схемы exit 1,
+  SIGTERM во время SQL exit 143, SIGINT во время SQL exit 130.
+  В каждом случае postmaster PID отсутствует, временные root/datadir удалены;
+  ошибочные и прерванные запуски не выдают успешный итог.
+- TypeScript noEmit: **PASS**. Discovery и изолированные существующие Jest:
+  **2 suites / 86 tests PASS**. Синтаксис всех шести CJS и whitespace: PASS.
+- Project agent-kit validator: **PASS**, 135 indexed source/config/script/test
+  files. Временные fixture-проверки подтвердили отказ при broken README link,
+  пропущенном test inventory, новом незарегистрированном файле и stale link;
+  полная fixture проходит. Fixture-каталог удалён.
+- Стандартный `skill-creator` quick validator не запустился: в системном
+  Python нет PyYAML. Проектный validator проверил YAML через существующий
+  js-yaml, links, routing и inventory без установки зависимостей.
+
+Ownership: `persist_pg_runtime` — runtime/runner/guards;
+`persist_pg_scenarios` — context и два набора сценариев;
+`pg_skills_maintenance` — read-only предложения для skills;
+root — интеграция, документация и validator.
+Независимый `pg_persistence_review`: **APPROVE**, применимых P1/P2 нет.
+Проверены итоговый код, сохранность исходных assertions, изоляция, результаты
+и правила поддержки. Reviewer самостоятельно выполнил guards и validator,
+прочитал lifecycle harness и подтвердил отсутствие четырёх PID/каталогов;
+собственный полный SQL-прогон reviewer не выполнял.
+
+Границы прежние: свежая схема из entities, не существующая production schema;
+HTTP/auth/OAuth, нагрузка, сетевые сбои, все deadlock schedules и установка
+uuid-ossp не проверены. Рабочая БД не использовалась. Push/deploy не выполнялись.

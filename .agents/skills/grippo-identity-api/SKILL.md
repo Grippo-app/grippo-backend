@@ -60,3 +60,10 @@ module и response; изменяй только нужные звенья. Ра�
 Общий порядок self-review и независимого ревью задаёт [grippo-review](../grippo-review/SKILL.md),
 команды и ограничения проверок — [grippo-verification](../grippo-verification/SKILL.md).
 Статическое чтение не подтверждает HTTP/OAuth/DB поведение.
+
+При изменении сохранения или удаления users/profile/goals/exclusions/весов,
+ownership, их entities/FK/constraints/defaults, транзакций или блокировок
+поддерживай сценарии и fixtures `test/postgres/` и запускай полную suite по
+[PostgreSQL checks](../grippo-verification/references/checks.md).
+Auth-only/DTO/HTTP изменения требуют своих проверок; PostgreSQL suite
+не подтверждает JWT, guards и внешний OAuth.

@@ -1,6 +1,6 @@
-# Полный индекс исследованного source snapshot
+# Полный индекс исходников и постоянных тестов
 
-Индекс текущего набора: 128 source/config/script files, включая focused specs.
+Индекс включает source/config/script files, focused specs и `test/postgres/`.
 Индекс помогает найти owner и источник; сам по себе не доказывает полноту
 анализа поведения. Включены все src файлы: 19 entities, 10 feature modules,
 shared bootstrap/database/common/i18n/lib. Подробности — в профильных references.
@@ -136,6 +136,13 @@ Mobile/admin repositories и production окружение не исследов
 | [src/modules/weight-history/weight-history.module.ts](../../../../src/modules/weight-history/weight-history.module.ts) | [grippo-identity-api](../../grippo-identity-api/SKILL.md) |
 | [src/modules/weight-history/weight-history.service.ts](../../../../src/modules/weight-history/weight-history.service.ts) | [grippo-identity-api](../../grippo-identity-api/SKILL.md) |
 | [src/swagger.ts](../../../../src/swagger.ts) | [grippo-architecture](../../grippo-architecture/SKILL.md) |
+| [test/postgres/README.md](../../../../test/postgres/README.md) | [grippo-verification](../../grippo-verification/SKILL.md) |
+| [test/postgres/catalog.cjs](../../../../test/postgres/catalog.cjs) | [grippo-verification](../../grippo-verification/SKILL.md) |
+| [test/postgres/context.cjs](../../../../test/postgres/context.cjs) | [grippo-verification](../../grippo-verification/SKILL.md) |
+| [test/postgres/identity.cjs](../../../../test/postgres/identity.cjs) | [grippo-verification](../../grippo-verification/SKILL.md) |
+| [test/postgres/run.cjs](../../../../test/postgres/run.cjs) | [grippo-verification](../../grippo-verification/SKILL.md) |
+| [test/postgres/runtime.cjs](../../../../test/postgres/runtime.cjs) | [grippo-verification](../../grippo-verification/SKILL.md) |
+| [test/postgres/runtime.guard.cjs](../../../../test/postgres/runtime.guard.cjs) | [grippo-verification](../../grippo-verification/SKILL.md) |
 | [tsconfig.build.json](../../../../tsconfig.build.json) | [grippo-operations](../../grippo-operations/SKILL.md) |
 | [tsconfig.json](../../../../tsconfig.json) | [grippo-operations](../../grippo-operations/SKILL.md) |
 
@@ -149,4 +156,5 @@ Schema metadata извлекай по [правилам работы с дамп
 
 Комплект инструкций: root AGENTS.md, .agents/skills/grippo-*, .codex/agents/*.toml,
 scripts/validate-agent-kit.py и tasks/*. При добавлении/удалении runtime source
-обнови таблицу и профильный reference. Validator сверяет inventory, формат и ссылки.
+или постоянных файлов `test/postgres/` обнови таблицу и профильный reference.
+Validator сверяет inventory, формат и ссылки; он не запускает PostgreSQL tests.

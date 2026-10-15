@@ -11,9 +11,12 @@ testRegex .*\\.spec\\.ts$, node environment. Текущие узкие пров�
 
 Перед задачей повторяй поиск specs и читай их окружение. test:e2e ссылается
 на отсутствующий test/jest-e2e.json. ESLint/Prettier config, CI workflow и
-настроенная интеграционная БД не обнаружены. Наличие packages не доказывает
-готовую suite. Новые постоянные specs/инфраструктура — только при явном запросе
-их добавления по AGENTS.
+постоянная интеграционная БД не предусмотрены. Настоящие SQL/locks/FK/rollback
+проверяет отдельная поддерживаемая suite [test/postgres](../../../../test/postgres/README.md)
+на автоматически создаваемом локальном PostgreSQL. Jest её не обнаруживает
+и не запускает. Наличие packages не доказывает готовую suite. Поддержка этих
+существующих regression tests входит в изменение покрытого поведения;
+посторонние постоянные specs/инфраструктура — только в разрешённом scope по AGENTS.
 
 ## Команды из корня
 
@@ -22,6 +25,9 @@ testRegex .*\\.spec\\.ts$, node environment. Текущие узкие пров�
 | Types/imports/decorators | `./node_modules/.bin/tsc --noEmit --incremental false -p tsconfig.build.json` | Поведение DI/HTTP/SQL/OAuth при выполнении |
 | Поиск specs | `npm test -- --listTests --runInBand` | Пустой список не является успешными тестами |
 | Текущие тесты | `npm test -- --runInBand` | Guards/services подменены; HTTP fixture требует loopback listen |
+| Настоящие PostgreSQL regression tests | `npm run test:postgres` | Отдельный локальный PostgreSQL 15; не проверяет рабочую схему, HTTP/guards или OAuth |
+| PostgreSQL с явно выбранными binaries | `npm run test:postgres -- --pg-bin /absolute/path/to/bin` | Путь к установленным binaries, а не URL/DSN существующей БД |
+| PostgreSQL runtime guards | `npm run test:postgres:guards` | Node built-in tests без PostgreSQL; не подтверждают SQL/locks |
 | Отдельный существующий spec | `npm test -- --runInBand --runTestsByPath <existing-spec-path>` | Использовать только существующий файл |
 | Структура/ссылки/inventory | `python3 scripts/validate-agent-kit.py` | Правильность решений и соблюдение правил агентом |
 | Пробелы в diff | `git diff HEAD --check -- <task-paths>` | Новые файлы вне index нужно проверить отдельно; чужие изменения отделяются по исходному состоянию |
@@ -61,6 +67,69 @@ start:dev transpile-only не доказывает корректность ти
 Это выбор по изменению, а не обязательный полный набор для любой задачи.
 Подробные ожидания находятся в профильных references. Не закрепляй известную
 ошибку как желаемую бизнес-норму в regression test.
+
+## Постоянные PostgreSQL regression tests
+
+Код и сценарии — [test/postgres](../../../../test/postgres/README.md), запуск —
+`npm run test:postgres`. Требуется локальный native PostgreSQL 15; каталог
+binaries можно указать абсолютным `--pg-bin` или `GRIPPO_TEST_PG_BIN`.
+Команда не устанавливает PostgreSQL и не использует рабочую `.env`,
+`DATABASE_URL`, production bootstrap или AppModule. Отсутствующий/неподходящий
+runtime — NOT_RUN с ненулевым exit, а не PASS и не основание подключать другую БД.
+
+Защиту runner проверяет `npm run test:postgres:guards` без PostgreSQL.
+При изменении runtime/context/изоляции или самих scenarios выполни guards
+и полную PostgreSQL suite; README-only изменения требуют проверки ссылок,
+а не запуска БД.
+
+Runner создаёт новый временный cluster/процесс и отдельные тестовые БД,
+проверяет принадлежность runtime и фактическое подключение до создания схемы.
+Он не принимает URL/DSN/host/port существующей БД; защиту изоляции нельзя
+отключать или обходить. Внутри только синтетические данные, текущие entities,
+реальные TypeORM repositories и сервисы. SQL logging выключен; строки данных,
+credentials и параметры запросов в отчёт не выводятся. Создание свежей тестовой
+схемы не означает разрешение synchronize рабочей БД.
+
+Текущая исходная suite содержит 32 сценария (14 identity, 18 catalog/training):
+конкурентное создание профиля/goal, замена exclusions, защита последнего веса,
+конкурентные catalog CRUD/training create/replace, FK/CHECK/UNIQUE,
+CASCADE/SET NULL и полный rollback после поздней серверной ошибки.
+В 13 конкурентных сценариях ожидание доказывает `pg_blocking_pids` с точным
+PID блокирующей transaction; задержка сама по себе не доказательство.
+В 7 rollback-сценариях ошибка возникает в настоящей PostgreSQL transaction,
+а после отката сравниваются прежние IDs, timestamps, порядок, агрегаты и children.
+Число сценариев — текущее покрытие, не ограничение на расширение suite.
+
+При изменении entities/FK/constraints/schema/defaults, ownership, CRUD
+users/profile/goals/exclusions/weight, каталога/тренировок, transaction manager
+или режима/порядка блокировок:
+
+1. Найди затронутые сценарии, актуализируй их fixtures и ожидаемое поведение
+   в том же изменении. При новом дефекте добавь regression case; по возможности
+   подтверди, что он падает на прежнем коде, затем проходит после исправления.
+2. Для нового FK/default/каскада проверь фактическую схему и SQL-ошибку;
+   для гонки — оба существенных порядка операций и реальное ожидание lock;
+   для атомарности — поздний сбой и сохранность первоначального состояния.
+   Не закрепляй прежний баг как требование.
+3. Не удаляй и не ослабляй сценарии/изоляцию ради зелёного результата.
+   Изменение бизнес-контракта требует основания в запросе пользователя;
+   обновление expected само по себе таким основанием не является.
+4. После итогового изменения запусти полную suite, включая обе группы.
+   Сохранение и актуализация существующей suite уже разрешены в рамках
+   соответствующей работы; несвязанные документы и код не требуют её запуска.
+5. PASS требует успешных сценариев и cleanup собственного runtime/данных.
+   Проверь результат cleanup также при FAIL/interrupt. Ошибку cleanup сообщи
+   отдельно; существующие PostgreSQL процессы/данные не останавливай и не удаляй.
+
+Записывай command, фактическую версию PostgreSQL, результаты по группам,
+число выполненных сценариев и cleanup. Частичный запуск, отсутствие runtime
+или отказ sandbox — NOT_RUN/частичное покрытие; Jest/type check не заменяют SQL.
+Это проверка текущих entities/services на свежей схеме. Она не доказывает
+совпадение production schema/data, реальную HTTP authorization/OAuth,
+нагрузку или все возможные deadlock schedules.
+Локальный disposable запуск не является dump/deploy/restore и не требует
+повторного согласования уже разрешённого тестирования; правила эксплуатации
+рабочей инфраструктуры остаются прежними.
 
 ## Изоляция
 

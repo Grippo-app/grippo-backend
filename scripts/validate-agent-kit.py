@@ -149,6 +149,7 @@ def main():
     docs = sorted((root / '.agents/skills').glob('grippo-*/**/*.md'))
     docs += [root / name for name in ('AGENTS.md', 'README.md', 'CLAUDE.md')]
     docs += sorted((root / 'tasks').glob('*.md'))
+    docs += sorted((root / 'test/postgres').rglob('*.md'))
     graph = {}
     checked_links = 0
     for doc in docs:
@@ -207,12 +208,16 @@ def main():
     expected = {path.resolve() for path in (root / 'src').rglob('*') if path.is_file()}
     expected |= {path.resolve() for path in (root / 'scripts').rglob('*.sh')}
     expected |= {path.resolve() for path in (root / 'scripts').rglob('*.py')}
+    postgres_tests = (root / 'test/postgres').resolve()
+    expected |= {path.resolve() for path in postgres_tests.rglob('*')
+                 if path.is_file() and path.name != '.DS_Store'}
     expected |= {(root / name).resolve() for name in CONFIG_FILES}
     if not source_map.is_file():
         fail(source_map, 'source inventory missing')
     else:
         inventory = {target for target in graph.get(source_map.resolve(), set())
-                     if target in expected or '/src/' in str(target) or target.suffix == '.sh'}
+                     if target in expected or '/src/' in str(target) or target.suffix == '.sh'
+                     or target.is_relative_to(postgres_tests)}
         for path in sorted(expected - inventory):
             errors.append(f'Source not indexed: {relative(path)}')
         for path in sorted(inventory - expected):
@@ -226,7 +231,7 @@ def main():
         print(f'FAIL: {len(errors)} error(s)')
         return 1
     print(f'PASS: {len(skills)} skills, {len(profiles)} agents, '
-          f'{checked_links} local links, {len(expected)} indexed source/config/script files')
+          f'{checked_links} local links, {len(expected)} indexed source/config/script/test files')
     print('Scope: format, references, discoverability and source inventory; '
           'does not prove behavioral correctness or client activation.')
     return 0

@@ -19,6 +19,12 @@ description: "Проводить self-review и независимое ревь�
 к проверенному объёму, не разрешает deploy и не гарантирует работу
 непроверенных интеграций.
 
+Для изменений покрытой схемы, операций с данными и блокировок проверь, что
+`test/postgres/` scenarios/fixtures актуализированы и есть результат полной
+suite по [PostgreSQL checks](../grippo-verification/references/checks.md).
+Проверь, что regression case обнаруживает дефект и не ослаблен ради PASS,
+а защита изоляции и cleanup сохранены. NOT_RUN не подтверждает SQL-поведение.
+
 Для skills проверяй точность, условия выбора, ссылки, дубли и поведение
 на реалистичном сценарии. Правила эксплуатации проверяй по
 [deployment-policy](../grippo-operations/references/deployment-policy.md),
