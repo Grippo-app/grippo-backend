@@ -9,22 +9,50 @@ import {
     IsEnum,
     IsIn,
     IsInt,
+    IsObject,
     IsOptional,
     IsString,
     IsUUID,
-    ValidateNested
+    Max,
+    Min,
+    Validate,
+    ValidateNested,
+    ValidatorConstraint,
+    ValidatorConstraintInterface
 } from "class-validator";
 import {Type} from "class-transformer";
 import {SUPPORTED_LANGUAGES, SupportedLanguage} from "../../../i18n/i18n.types";
 import {ExerciseComponentsDto} from "./exercise-components.dto";
+
+@ValidatorConstraint({name: 'exerciseMuscleTotal', async: false})
+class ExerciseMuscleTotalConstraint implements ValidatorConstraintInterface {
+    validate(bundles: unknown): boolean {
+        if (!Array.isArray(bundles)) return false;
+        let total = 0;
+        for (const bundle of bundles) {
+            if (!bundle || typeof bundle !== 'object' || Array.isArray(bundle)
+                || !Number.isInteger(bundle.percentage) || bundle.percentage < 0 || bundle.percentage > 100) {
+                return false;
+            }
+            total += bundle.percentage;
+        }
+        return total === 100;
+    }
+
+    defaultMessage(): string {
+        return 'exerciseExampleBundles percentages must total 100';
+    }
+}
 
 export class ExerciseExampleBundleRequest {
     @ApiProperty({type: 'string', example: '3a975ded-af6b-4dd2-9a0e-6e3554e8e6dd'})
     @IsUUID()
     muscleId: string;
 
-    @ApiProperty({type: 'int', example: 20, description: 'percentage'})
+    @ApiProperty({type: 'integer', example: 20, minimum: 0, maximum: 100, description: 'percentage'})
     @IsInt()
+    @Min(0)
+    @Max(100)
     percentage: number;
 }
 
@@ -89,12 +117,18 @@ export class ExerciseExampleRequest {
     @IsString()
     imageUrl: string;
 
-    @ApiProperty({type: [ExerciseExampleBundleRequest]})
+    @ApiProperty({type: [ExerciseExampleBundleRequest], minItems: 1, description: 'Muscle contributions with whole-number percentages totaling 100.'})
+    @IsArray()
+    @ArrayNotEmpty()
+    @IsObject({each: true})
+    @Validate(ExerciseMuscleTotalConstraint)
     @ValidateNested({each: true})
     @Type(() => ExerciseExampleBundleRequest)
     exerciseExampleBundles: ExerciseExampleBundleRequest[];
 
-    @ApiProperty({type: [ExerciseExampleEquipmentRefsRequest]})
+    @ApiProperty({type: [ExerciseExampleEquipmentRefsRequest], description: 'Equipment references. An empty array is allowed.'})
+    @IsArray()
+    @IsObject({each: true})
     @ValidateNested({each: true})
     @Type(() => ExerciseExampleEquipmentRefsRequest)
     equipmentRefs: ExerciseExampleEquipmentRefsRequest[];
