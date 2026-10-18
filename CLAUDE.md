@@ -6,6 +6,7 @@ references. Не поддерживай здесь второй набор ар�
 
 - Архитектура/кодстайл: [grippo-architecture](.agents/skills/grippo-architecture/SKILL.md).
 - Данные и доменные сценарии: [grippo-domain-data](.agents/skills/grippo-domain-data/SKILL.md).
+- Команда содержательного аудита упражнений, переводов и исследований: [grippo-exercise-audit](.agents/skills/grippo-exercise-audit/SKILL.md).
 - Identity/API/i18n: [grippo-identity-api](.agents/skills/grippo-identity-api/SKILL.md).
 - Эксплуатация: [grippo-operations](.agents/skills/grippo-operations/SKILL.md).
 - Координация, проверки и ревью — по маршрутизации AGENTS.

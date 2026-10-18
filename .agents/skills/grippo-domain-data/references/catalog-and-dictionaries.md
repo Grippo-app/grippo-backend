@@ -36,15 +36,15 @@
 
 ### Request
 
-`name`, `description` проверяются как непустые массивы с nested `ExerciseExampleLocalizedTextDto`; weightType/category/experience/forceType — enums; imageUrl — IsString (не IsUrl). У localized arrays нет IsObject(each:true): `name:[[]]` проходит текущий pipe и даёт пустой translation record/baseValue:null. Непустой массив поэтому не гарантирует ни объект-запись, ни непустой текст.
+`name`, `description` проверяются как непустые массивы с IsObject(each:true), ValidateNested/Type для `ExerciseExampleLocalizedTextDto`; вложенные массивы вместо записей отвергаются. Непустой массив не гарантирует непустой текст. WeightType/category/experience/forceType — enums; imageUrl — IsString (не IsUrl).
 
-LocalizedText имеет language IsIn(SUPPORTED_LANGUAGES), value optional IsString. `name: [{language:'en'}]` проходит требования array/element без обязательного текста; пустая строка после trim превращается в null. Duplicate language отдельно не запрещен. `IsOptional` также пропускает value:null; фактическая проверка ValidationPipe это подтверждает, но `normalizeTranslationValue` затем вызывает null.trim и выбрасывает TypeError. Этот дефект нельзя принимать за поддерживаемую null-семантику request; явный null относится к storage/response.
+LocalizedText имеет language IsIn(SUPPORTED_LANGUAGES), value — ValidateIf(value !== undefined) + IsString. `name: [{language:'en'}]` проходит требования array/element без обязательного текста; явный value:null отвергается API, пустая строка после trim превращается в null. Duplicate language отдельно не запрещен. Nullable storage/response не означает nullable request; прямой вызов сервиса обходит DTO.
 
 `exerciseExampleBundles`: обязательный непустой array через IsArray/ArrayNotEmpty; каждый элемент IsObject + ValidateNested/Type, muscleId UUID, percentage integer с Min(0)/Max(100). `ExerciseMuscleTotalConstraint` дополнительно проверяет array, object rows, integer/bounds и сумму **ровно 100**. Сумму считают по rows, не по уникальным мышцам; дубликаты muscleId не запрещены, zero contribution допустим при общей сумме 100.
 
 `equipmentRefs`: обязательный array через IsArray, каждый элемент IsObject + ValidateNested/Type с equipmentId UUID; `[]` допустим. Явных IsDefined на этих arrays нет, но IsArray отвергает absent/null, а bundles дополнительно требует ArrayNotEmpty/total. Сервис продолжает использовать `.map()` и напрямую не повторяет эти API проверки.
 
-DB entity не содержит bounds/sum/unique-pair constraints для bundles. Вход через direct service/manager/import может обходить request validation. Существование muscle/equipment сервис заранее не проверяет; корректный по формату, но неизвестный UUID может завершиться FK ошибкой persistence вместо аккуратного domain 404/400.
+DB entity не содержит bounds/sum/unique-pair constraints для bundles. Прямой вызов сервиса обходит DTO bounds/sum; manager/import могут обходить и сервис. Create/update вызывают `validateReferences` внутри своей transaction: уникальные lowercased IDs проверяются через её manager с `for_key_share`, неизвестные muscle/equipment дают BadRequest до записи children. Дедупликация IDs поиска не запрещает повторные входные связи.
 
 `id?: string` у ExerciseExampleRequest без decorators не разрешает отправлять id при строгом global whitelist. ID обновления передается в query.
 
@@ -52,17 +52,13 @@ DB entity не содержит bounds/sum/unique-pair constraints для bundle
 
 Create создает example с v4; base name/description вычисляет из локализованного входа; bundles/equipment refs получают example FK. Связанные entity обычно получают generated PK, components получает PK равный exampleId. В transaction manager последовательно сохраняются parent, bundles, refs, components и nonempty translations.
 
-Update сначала проверяет существование example вне transaction; заново строит parent и все children. В transaction удаляет **все** прежние bundles, equipment refs, translations, сохраняет parent и новые children. Components сохраняет с `id = exerciseExampleId`, ожидая этот service invariant. Unsubmitted translations не сохраняются; partial patch semantics отсутствует. При записи из внешнего импорта проверь существующий components PK/FK: unique FK не гарантирует их равенство.
+Update работает в READ COMMITTED transaction: через её manager находит example с `pessimistic_write`, при miss отвечает 404, строит замену и проверяет references до удаления прежних children. Затем тем же manager удаляет **все** прежние bundles, equipment refs, translations, сохраняет parent и новые children. Components сохраняет с `id = exerciseExampleId`, ожидая этот service invariant. Unsubmitted translations не сохраняются; partial patch semantics отсутствует. При записи из внешнего импорта проверь существующий components PK/FK: unique FK не гарантирует их равенство.
 
-Delete сначала проверяет existence, затем считает referencing exercises. При usageCount>0 бросает Conflict с количеством. При 0 в transaction удаляет bundles, refs, example. Translations/components удаляет DB CASCADE. Muscles/equipments остаются. Проверка usage вне transaction не исключает конкурентную вставку exercise; DB FK тогда следует `SET NULL`, а не сервисному 409. Это риск гонки, не утверждение о подтвержденном инциденте.
+Delete в READ COMMITTED transaction находит example с `pessimistic_write`, затем тем же manager считает referencing exercises. При usageCount>0 бросает Conflict с количеством; при 0 удаляет bundles, refs, example. Translations/components удаляет DB CASCADE. Muscles/equipments остаются. Это описание текущего кода и границ transaction, а не результат проверки конкурентных SQL-сценариев; для неё нужны изолированные PostgreSQL tests.
 
 ## Components: допустимые формы и хранение
 
-Документированная форма — четыре ключа externalWeight, bodyWeight, extraWeight, assistWeight с объектом либо null. Каждый ключ обязателен, если сам `components` передан объектом: DTO использует IsDefined + ValidateIf(value !== null) + ValidateNested; `ApiPropertyOptional` в Swagger неверно описывает их как необязательные.
-
-**Пробел в проверке формы:** у `components` и его ветвей нет IsObject. ValidateNested допускает массивы; например, `externalWeight:[]` при остальных null проходит текущий ValidationPipe и сервис превращает эту ветвь в `externalWeightRequired:null`. Пустой массив в extraWeight/assistWeight при допустимом body также теряет значение. `bodyWeight:[]` проходит DTO, затем отклоняется сервисной проверкой required. Поэтому таблица ниже описывает штатный контракт, а не все значения, фактически пропускаемые DTO. Это существующий дефект, не разрешение использовать массив вместо компонента.
-
-На самом `ExerciseExampleRequest.components` нет IsDefined: отсутствие компонента проходит DTO, затем сервис отвечает 400 `Components are required`. Это отличается от обязательности четырёх ключей внутри переданного объекта.
+`ExerciseExampleRequest.components` — обязательный объект: IsDefined + IsObject + ValidateNested/Type. Внутри обязательны четыре ключа externalWeight, bodyWeight, extraWeight, assistWeight с объектом либо null. Каждый использует IsDefined + ValidateIf(value !== null) + IsObject + ValidateNested/Type; Swagger ApiProperty документирует обязательность и nullable форму. Отсутствующий/null parent, отсутствующие ключи, массивы и скаляры вместо объектов отвергаются DTO. Сервисная проверка `Components are required` дополнительно защищает прямой вызов без DTO.
 
 `null` означает отсутствующую ветвь, `{required:false}` — существующую ветвь с false. Сервис сравнивает с null, а не truthiness, поэтому не сливай эти состояния.
 
@@ -112,7 +108,7 @@ Admin stored endpoint возвращает `{id, base:{name,description}, transl
 
 MuscleResponse: id/name/type/muscleGroupId/recovery/size/sensitivity/createdAt/updatedAt. Group: id/name/type/muscles/timestamps. EquipmentResponse: id/name/type/equipmentGroupId/timestamps. Group: id/name/type/equipments/timestamps.
 
-При отсутствующей relation group mapping бросает raw Error; это фактический стиль старого кода, не рекомендуемый Nest domain error. Muscle numeric size/sensitivity не имеют TypeORM transformer, в отличие от многих weight/volume полей: TS number и Swagger Number недостаточно для гарантии JSON number.
+При отсутствующей relation group mapping бросает raw Error; это фактический стиль старого кода, не рекомендуемый Nest domain error. В [MusclesEntity](../../../../src/entities/muscles.entity.ts) numeric(5,2) size/sensitivity имеют transformer: null сохраняется, остальные hydrated values приводятся через Number. `getMany` → response mapping использует эти значения; это не гарантия для raw SQL, неизвестной production revision или некорректных нечисловых входов. TS number и Swagger Number сами по себе конверсию не обеспечивают.
 
 В этих feature-модулях отсутствует CRUD для групп/мышц/оборудования, seed/migration workflow или локализация словарей. Не выдумывай их при просьбе «добавить оборудование»; сначала определи разрешенный механизм изменения данных.
 

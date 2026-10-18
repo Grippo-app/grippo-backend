@@ -44,7 +44,7 @@
 
 1. Раздели localized public read и stored admin editor endpoint. Не формируй editable translations из fallback response.
 2. Для write определись с replacement semantics; текущий PUT удаляет все прежние bundles/refs/translations. DTO требует непустые bundles, integer percentages 0..100 и сумму 100; equipmentRefs обязателен, но может быть []. Дубли muscleId/equipmentId не запрещены. Сервис не нормирует percentages и не заменяет DTO checks DB-ограничениями.
-3. Для components проверь четыре nullable ключа, отсутствие самого components, массив вместо объекта/ветви, null против required:false, external/body exclusivity, extra/assist dependency, multiplier bounds/precision и все-null форму. ValidateNested без IsObject сейчас допускает массивы; externalWeight:[] сервис превращает в отсутствие ветви.
+3. Для components проверь обязательный object parent и четыре обязательных nullable ключа, массив вместо объекта/ветви, null против required:false, external/body exclusivity, extra/assist dependency, multiplier bounds/precision и все-null форму. Текущий DTO сочетает IsDefined/IsObject с nested validation; массив вместо объекта отвергается до сервиса.
 4. Сверь DTO ↔ service validation ↔ DB checks ↔ оба read builders (catalog/training). Загрузка entity требует componentsEntity, публичная выдача его удаляет.
 5. Для imports не предполагай components PK=example FK: эту форму задает service, не DB check. Не заменяй existing row новым PK без проверки unique FK.
 6. Для перевода проверь trim, повтор языка, en absent/null, name-only/description-only row, массив вместо localized row и base fallback. Учитывай locale storage `ua`.
@@ -67,16 +67,15 @@
 |---|---|
 | Training by ID возвращает null при miss; UUID pipes на training IDs отсутствуют | Документация «всегда 404/400» была бы неверна; отдельно проверяй фактический HTTP |
 | Training nested arrays без IsArray/IsDefined | Actual ValidationPipe ранее подтвердил acceptance missing training.exercises; далее сервис ожидает .entries(). Catalog bundles/refs в текущем DTO уже required arrays; не переносить старый catalog risk на новый код |
-| LocalizedText.value:null принят IsOptional, normalizer вызывает .trim | Pipe-level acceptance и TypeError при prepareTranslationInput подтверждены без БД; desired nullable API требует отдельного исправления |
-| Localized arrays имеют ValidateNested без IsObject(each:true) | name:[[]] проходит pipe и обрабатывается как пустой перевод; ArrayNotEmpty не гарантирует наличие текста/объекта |
+| LocalizedText.value optional только для undefined | ValidateIf(value !== undefined) + IsString отвергает explicit null; отсутствие value допустимо, empty string после trim → null в storage |
+| Localized arrays имеют IsObject(each:true) и nested validation | name:[[]] отвергается; ArrayNotEmpty всё ещё не гарантирует непустой текст |
 | id в request classes без validators | Entity round-trip с id несовместим с forbidNonWhitelisted |
 | Reads через injected repo внутри training transaction | Нет единой гарантии transaction connection для этих чтений; новая логика должна использовать manager |
 | Ownership/usage проверки вне transaction либо без locking | Есть окно конкуренции; отсутствие гонок тестом одного запроса не доказано |
 | Каталог read зависит от наличия components у каждой entity | Неполный example может сломать список и связанные trainings |
-| Components Swagger optional, runtime keys defined | Поддерживать явные null в clients; correction OpenAPI рассматривается отдельно |
-| У components/ветвей нет IsObject | DTO допускает массивы; externalWeight:[] с остальными null доходит до сервиса и сохраняется как отсутствие ветви. Это ошибка проверки формы, а не альтернативный контракт |
-| muscle size/sensitivity numeric без transformer | Проверять реальные типы pg/response, не верить TS number |
-| iteration nullable weight transformers делают parseFloat(null) | Offline driver fixture подтвердил NaN; SQL rank и JS bestWeight расходятся, JSON weight:null. Это прежний дефект, не исправленный документацией |
+| Components parent обязателен object; четыре ключа обязательны и nullable | Swagger ApiProperty и runtime IsDefined/IsObject согласованы; поддерживать явные null в clients, массивы не допустимая форма |
+| muscle size/sensitivity numeric имеют Number/null transformer | Entity hydration и raw SQL различаются; наличие TS number само по себе тип ответа не гарантирует |
+| iteration nullable weight/bodyMultiplier transformers сохраняют null | В текущем IterationsEntity from использует value === null ? null : parseFloat(value); прежний вывод о NaN из hydrated SQL null больше не описывает этот путь. Raw SQL и нечисловые значения требуют отдельной проверки |
 | Catalog API checks и DB constraints различаются | Текущий DTO проверяет percentage integer 0..100 и total100; DB этого не проверяет, direct service/import обходят pipe. Unique pairs/dedup отсутствуют на обоих уровнях |
 | Training aggregates приходят от клиента | Метрики и training summary могут расходиться с iterations |
 | Catalog exclusions repos injected, но в queries не используются | Не обещать фильтрацию, не удалять данные по exclusions |

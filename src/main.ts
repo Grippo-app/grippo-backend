@@ -11,8 +11,10 @@ async function bootstrap() {
     const app = await NestFactory.create<NestExpressApplication>(
         AppModule,
         new ExpressAdapter(),
-        { cors: true },
     );
+
+    // Register CORS before the Swagger routes mounted below.
+    app.enableCors();
 
     const configService = app.get<ConfigService>(ConfigService);
     const logger = new Logger('Bootstrap');

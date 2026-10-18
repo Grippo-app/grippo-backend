@@ -16,6 +16,7 @@ push token registry и admin API.
 | Архитектура, modules, DI | [architecture](.agents/skills/grippo-architecture/references/architecture.md) |
 | Все исходники и владельцы областей | [source-map](.agents/skills/grippo-architecture/references/source-map.md) |
 | Entities и отношения | [entity-map](.agents/skills/grippo-domain-data/references/entity-map.md) |
+| Команда аудита: техника, проценты, сложность, оборудование, переводы и исследования | [exercise-audit](.agents/skills/grippo-exercise-audit/SKILL.md) |
 | API и identity | [api-map](.agents/skills/grippo-identity-api/references/api-map.md) |
 | Env keys, порты, Docker и запуск | [configuration-and-containers](.agents/skills/grippo-operations/references/configuration-and-containers.md) |
 | Проверки и границы покрытия | [checks](.agents/skills/grippo-verification/references/checks.md) |

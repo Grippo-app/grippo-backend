@@ -45,6 +45,16 @@ diff перед commit. При чужом index не используй безу
 | [grippo-implementer](../../../../.codex/agents/grippo-implementer.toml) | Небольшой срез по определённому контракту, самопроверка и передача результата |
 | [grippo-verifier](../../../../.codex/agents/grippo-verifier.toml) | Независимые безопасные проверки; реализацию не меняет |
 | [grippo-reviewer](../../../../.codex/agents/grippo-reviewer.toml) | Независимое ревью без правки файлов и проверка исправленных замечаний |
+| [grippo-exercise-auditor](../../../../.codex/agents/grippo-exercise-auditor.toml) | Предметный аудит каталога: scope, покрытие, каноны, findings и решения |
+| [grippo-strength-coach](../../../../.codex/agents/grippo-strength-coach.toml) | Setup, техника, cues, освоение варианта и требования к оборудованию |
+| [grippo-biomechanics-scientist](../../../../.codex/agents/grippo-biomechanics-scientist.toml) | Механика, рабочие суставы, роли мышц и допустимость численных выводов |
+| [grippo-muscle-map-specialist](../../../../.codex/agents/grippo-muscle-map-specialist.toml) | Состав мышечной карты, проценты и полные обоснованные векторы |
+| [grippo-exercise-difficulty-specialist](../../../../.codex/agents/grippo-exercise-difficulty-specialist.toml) | Техническая сложность и отдельная readiness |
+| [grippo-exercise-equipment-specialist](../../../../.codex/agents/grippo-exercise-equipment-specialist.toml) | Оборудование, геометрия и components |
+| [grippo-exercise-localization-specialist](../../../../.codex/agents/grippo-exercise-localization-specialist.toml) | Смысл техники/анатомии и конкретные тексты base/en/ua/ru |
+| [grippo-exercise-researcher](../../../../.codex/agents/grippo-exercise-researcher.toml) | Первоисточники под конкретные тезисы и пределы переноса результатов |
+| [grippo-exercise-evidence-analyst](../../../../.codex/agents/grippo-exercise-evidence-analyst.toml) | Независимый синтез, методы и дедупликация studies/cohorts |
+| [grippo-exercise-audit-reviewer](../../../../.codex/agents/grippo-exercise-audit-reviewer.toml) | Независимое ревью содержательного аудита и доказательств |
 
 Выбирай профильного специалиста, когда нужно предметное решение: например,
 формула метрики, linking identity, каскад удаления или порядок восстановления.
@@ -56,6 +66,10 @@ diff перед commit. При чужом index не используй безу
 и файлы можно вести параллельно; общий контракт сначала согласуй. Изменения
 схемы/зависимостей, один деплой или общая изменяемая тестовая БД требуют
 последовательной работы. Перед правкой перечитай файл и сохрани чужие изменения.
+
+Для предметного аудита упражнений роли и пакет передачи уточнены в
+[exercise-audit team](../../grippo-exercise-audit/references/agent-team.md).
+Эти роли не заменяют domain/identity/operations при изменении данных или API.
 
 Если выбрать custom role нельзя, передай агенту роль и нужный skill текстом.
 Если subagents недоступны, выполни отдельные проходы сам и честно укажи

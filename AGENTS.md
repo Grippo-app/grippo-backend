@@ -12,6 +12,7 @@ NestJS 10 / Express, TypeScript, TypeORM 0.3, PostgreSQL 15.5; Node 20 в Docker
 | Сложная задача, распределение ownership, интеграция | [grippo-orchestrator](.agents/skills/grippo-orchestrator/SKILL.md) |
 | Модульные границы, DI, кодстайл | [grippo-architecture](.agents/skills/grippo-architecture/SKILL.md) |
 | Entities, trainings, catalog, dictionaries, metrics | [grippo-domain-data](.agents/skills/grippo-domain-data/SKILL.md) |
+| Командный аудит упражнений: техника, проценты, сложность, оборудование, переводы и научный поиск | [grippo-exercise-audit](.agents/skills/grippo-exercise-audit/SKILL.md) |
 | Auth, users/profile/goals, admin, weight/push, i18n | [grippo-identity-api](.agents/skills/grippo-identity-api/SKILL.md) |
 | Docker, env, SSH, dump/deploy/restore/cleanup | [grippo-operations](.agents/skills/grippo-operations/SKILL.md) |
 | Проверки и ограничения покрытия | [grippo-verification](.agents/skills/grippo-verification/SKILL.md) |

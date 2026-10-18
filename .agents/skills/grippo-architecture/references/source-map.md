@@ -12,6 +12,7 @@ Mobile/admin repositories и production окружение не исследов
 |---|---|
 | [.dockerignore](../../../../.dockerignore) | [grippo-operations](../../grippo-operations/SKILL.md) |
 | [.gitignore](../../../../.gitignore) | [grippo-operations](../../grippo-operations/SKILL.md) |
+| [.agents/skills/grippo-exercise-audit/scripts/inspect_snapshot.py](../../grippo-exercise-audit/scripts/inspect_snapshot.py) | [grippo-exercise-audit](../../grippo-exercise-audit/SKILL.md) |
 | [CLAUDE.md](../../../../CLAUDE.md) | [grippo-architecture](../../grippo-architecture/SKILL.md) |
 | [Dockerfile](../../../../Dockerfile) | [grippo-operations](../../grippo-operations/SKILL.md) |
 | [README.md](../../../../README.md) | [grippo-operations](../../grippo-operations/SKILL.md) |

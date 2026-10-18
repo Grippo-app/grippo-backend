@@ -5,6 +5,8 @@
 | Новое поле тренировки | domain-data | architecture: DTO/entity/schema; identity: ownership | Create/read/replace, история, null/default, агрегаты |
 | Изменение веса/достижений | domain-data | identity: weight history; исторические значения | Формула, numeric conversion, границы дат, profile filter |
 | Локализованное поле каталога | domain-data + identity-api | I18n middleware/fallback, admin write DTO | en/ua/ru, missing/null/blank translation, raw admin translations |
+| Правильность упражнений, мышц/процентов, сложности и оборудования | [exercise-audit](../../grippo-exercise-audit/SKILL.md) | Отдельные coach/biomechanics/muscle-map/difficulty/equipment; researcher + evidence-analyst для науки; domain-data для контракта | Канон, многопервоисточный поиск, all-ID/owner coverage, конкретные и условные after |
+| Смысл и терминология переводов упражнений | [exercise-audit](../../grippo-exercise-audit/SKILL.md): localization | Coach для канона; identity-api для raw/fallback контракта | base/en/ua/ru: анатомия, направление, setup, минимальные cell-level after |
 | Проблема refresh/401 | identity-api | strategy → guard; имена config keys | Разделение access/refresh, expiry/invalid/deleted-user response |
 | Пользовательские exclusions | identity-api + domain-data | Profile ownership и использование в каталоге | Замена списка; не предполагать автоматический catalog filter |
 | Новый admin endpoint | identity-api + architecture | AdminModule imports/exports, общий feature service | 401/403, admin-only, явный целевой user |
