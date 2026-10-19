@@ -4,6 +4,7 @@
 const assert = require('node:assert/strict');
 const {randomUUID} = require('node:crypto');
 const {EntityManager} = require('typeorm');
+const {ValidationPipe} = require('@nestjs/common');
 
 function deferred() {
   let resolve;
@@ -32,6 +33,7 @@ async function runCatalog(ctx) {
   const {ds, E, signal} = ctx;
   const {ExerciseExampleService} = ctx.load('src/modules/exercise-examples/exercise-example.service.ts');
   const {TrainingsService} = ctx.load('src/modules/trainings/trainings.service.ts');
+  const {TrainingsRequest} = ctx.load('src/modules/trainings/dto/trainings.request.ts');
   const results = [];
 
   function operation(kind, hooks = {}) {
@@ -188,6 +190,85 @@ async function runCatalog(ctx) {
       ds.query('SELECT to_jsonb(i) AS row FROM iterations i JOIN exercises e ON e.id=i.exercise_id WHERE e.training_id=$1 ORDER BY e.order_index, i.order_index, i.id', [id]),
     ]);
   }
+
+  function validateTraining(body) {
+    return new ValidationPipe({transform: true, whitelist: true, forbidNonWhitelisted: true})
+      .transform(body, {type: 'body', metatype: TrainingsRequest});
+  }
+
+  for (const action of ['create', 'replace']) {
+    await runCase(`training ${action} normalizes aggregate precision through ValidationPipe and persists supplied values`, async () => {
+      const example = await seedExample();
+      const identity = await seedUser();
+      let trainingId;
+      if (action === 'replace') {
+        ({id: trainingId} = await operation('training').service.createTraining(trainingBody(example.id), identity.user));
+      }
+      const samples = [
+        {input: [[987.654321, 108.888889], [-123.45678, -23.45678], [1e-7, -1e-7]],
+          expected: [[987.7, 108.89], [-123.5, -23.46], [0, 0]]},
+        // These ties have exact binary representations, including negative ties.
+        {input: [[12.25, 1.125], [-12.25, -1.125], [12.24, 1.124]],
+          expected: [[12.3, 1.13], [-12.3, -1.13], [12.2, 1.12]]},
+        {input: [[999999999.9, 999.99], [-999999999.9, -999.99], [0, 0]],
+          expected: [[999999999.9, 999.99], [-999999999.9, -999.99], [0, 0]]},
+      ];
+      for (const {input, expected} of samples) {
+        const raw = trainingBody(example.id);
+        [raw, ...raw.exercises].forEach((item, index) => {
+          [item.volume, item.intensity] = input[index];
+        });
+        const body = await validateTraining(raw);
+        [body, ...body.exercises].forEach((item, index) => {
+          assert(item.volume === expected[index][0] && item.intensity === expected[index][1],
+            'ValidationPipe must normalize the training and every exercise aggregate');
+        });
+        if (action === 'create') {
+          ({id: trainingId} = await operation('training').service.createTraining(body, identity.user));
+        } else {
+          await operation('training').service.updateTraining(trainingId, body, identity.user);
+        }
+        const saved = await ds.getRepository(E.TrainingsEntity).findOneByOrFail({id: trainingId});
+        const exercises = await ds.getRepository(E.ExercisesEntity).find({
+          where: {trainingId}, order: {orderIndex: 'ASC'},
+        });
+        assert(saved.profileId === identity.profile.id && exercises.length === 2,
+          'normalized training must retain its owner and complete exercise graph');
+        [saved, ...exercises].forEach((item, index) => {
+          assert(item.volume === expected[index][0] && item.intensity === expected[index][1],
+            'PostgreSQL hydrated aggregates must equal supplied normalized values without recalculation');
+        });
+      }
+    });
+  }
+
+  await runCase('training aggregate normalization preserves strict types, finite raw bounds and iteration precision', async () => {
+    for (const nested of [false, true]) {
+      for (const [field, maximum] of [['volume', 999999999.9], ['intensity', 999.99]]) {
+        for (const invalid of [undefined, null, '12.345', true, [], {}, NaN, Infinity, -Infinity,
+          maximum + 0.001, -maximum - 0.001]) {
+          const body = trainingBody(undefined);
+          (nested ? body.exercises[0] : body)[field] = invalid;
+          const result = await outcome(validateTraining(body));
+          assert(!result.ok && status(result.error) === 400,
+            'invalid aggregate type, non-finite number or raw bound must be rejected before persistence');
+          const errors = result.error.getResponse().message;
+          assert(Array.isArray(errors) && errors.some(message => message.includes(field)),
+            'aggregate rejection must identify the invalid field');
+        }
+      }
+    }
+    for (const [field, invalid] of [
+      ['assistWeight', 1.125], ['externalWeight', 1.125], ['extraWeight', 1.125],
+      ['bodyWeight', 1.125], ['bodyMultiplier', 1.125], ['repetitions', 1.125],
+    ]) {
+      const body = trainingBody(undefined);
+      body.exercises[0].iterations[0][field] = invalid;
+      const result = await outcome(validateTraining(body));
+      assert(!result.ok && status(result.error) === 400,
+        'aggregate normalization must not relax iteration numeric precision');
+    }
+  });
 
   await runCase('training create validation holds catalog key-share before exercise insert; delete waits then returns 409', async () => {
     const example = await seedExample();
@@ -551,8 +632,8 @@ async function runCatalog(ctx) {
     }
   });
 
-  assert.equal(results.length, 18, 'Catalog scenario inventory changed; review the documented coverage');
+  assert.equal(results.length, 21, 'Catalog scenario inventory changed; review the documented coverage');
   return results;
 }
 
-module.exports = {runCatalog, expectedCases: 18};
+module.exports = {runCatalog, expectedCases: 21};

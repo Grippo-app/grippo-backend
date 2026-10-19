@@ -1,7 +1,7 @@
 # PostgreSQL regression tests
 
 Постоянные проверки настоящих services → TypeORM → PostgreSQL. Исходное
-покрытие — 32 сценария: 14 identity и 18 catalog/trainings. Это число можно
+покрытие — 35 сценариев: 14 identity и 21 catalog/trainings. Это число можно
 увеличивать при добавлении regression cases.
 
 ## Запуск
@@ -53,7 +53,7 @@ entities с проектной naming strategy.
 | Группа | Покрытие |
 |---|---|
 | Identity — 14 сценариев | Default goal, конкурентное создание profile/goal, удаление последнего веса, обе замены exclusions, поздние rollback, FK/CHECK/UNIQUE, user/profile cascades |
-| Catalog/trainings — 18 сценариев | Create/replace training ↔ delete catalog в обеих очередностях, update/delete catalog, locks справочников до записи, поздние rollback графа, invalid refs, фактические FK/CASCADE/SET NULL |
+| Catalog/trainings — 21 сценарий | Create/replace training ↔ delete catalog в обеих очередностях, update/delete catalog, locks справочников до записи, поздние rollback графа, invalid refs, фактические FK/CASCADE/SET NULL; округление агрегатов через ValidationPipe при create/replace, сохранение типов, исходных диапазонов и точности весов |
 | Runtime guards | Отказ от чужого runtime и параметров подключения, безопасный environment и lifecycle runner; без обращения к БД |
 
 В 13 конкурентных сценариях ожидание подтверждается `pg_blocking_pids`

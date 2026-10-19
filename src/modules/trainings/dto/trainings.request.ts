@@ -1,6 +1,6 @@
 import {ApiProperty} from '@nestjs/swagger';
 import {IsArray, IsDefined, IsInt, IsObject, IsOptional, IsString, IsUUID, Max, Min, ValidateBy, ValidateNested,} from 'class-validator';
-import {Type} from 'class-transformer';
+import {Transform, Type} from 'class-transformer';
 
 const INT_MIN = -2147483648;
 const INT_MAX = 2147483647;
@@ -8,6 +8,16 @@ const VOLUME_MAX = 999999999.9;
 const INTENSITY_MAX = 999.99;
 const WEIGHT_MAX = 9999.9;
 const BODY_MULTIPLIER_MAX = 99.99;
+
+function RoundAggregate(decimalPlaces: number, maximum: number): PropertyDecorator {
+    return Transform(({value}) => {
+        // Preserve invalid input so validation checks its original type and range.
+        if (typeof value !== 'number' || !Number.isFinite(value) || value < -maximum || value > maximum) {
+            return value;
+        }
+        return Number(value.toFixed(decimalPlaces));
+    }, {toClassOnly: true});
+}
 
 // Keep decimal validation safe for numbers serialized in scientific notation.
 function IsNumberWithPrecision(maxDecimalPlaces: number): PropertyDecorator {
@@ -75,7 +85,8 @@ export class TrainingExerciseRequest {
     @IsString()
     name: string;
 
-    @ApiProperty({type: 'number', example: 2000.5, description: 'Volume in kg (1 decimal)', minimum: -VOLUME_MAX, maximum: VOLUME_MAX})
+    @ApiProperty({type: 'number', example: 2000.5, description: 'Volume in kg, rounded to 1 decimal', minimum: -VOLUME_MAX, maximum: VOLUME_MAX})
+    @RoundAggregate(1, VOLUME_MAX)
     @IsNumberWithPrecision(1)
     @Min(-VOLUME_MAX)
     @Max(VOLUME_MAX)
@@ -87,7 +98,8 @@ export class TrainingExerciseRequest {
     @Max(INT_MAX)
     repetitions: number;
 
-    @ApiProperty({type: 'number', example: 60, description: 'Intensity % (2 decimals allowed)', minimum: -INTENSITY_MAX, maximum: INTENSITY_MAX})
+    @ApiProperty({type: 'number', example: 60, description: 'Intensity %, rounded to 2 decimals', minimum: -INTENSITY_MAX, maximum: INTENSITY_MAX})
+    @RoundAggregate(2, INTENSITY_MAX)
     @IsNumberWithPrecision(2)
     @Min(-INTENSITY_MAX)
     @Max(INTENSITY_MAX)
@@ -119,7 +131,8 @@ export class TrainingsRequest {
     @Max(INT_MAX)
     duration: number;
 
-    @ApiProperty({type: 'number', example: 20000.5, description: 'Total volume in kg (1 decimal)', minimum: -VOLUME_MAX, maximum: VOLUME_MAX})
+    @ApiProperty({type: 'number', example: 20000.5, description: 'Total volume in kg, rounded to 1 decimal', minimum: -VOLUME_MAX, maximum: VOLUME_MAX})
+    @RoundAggregate(1, VOLUME_MAX)
     @IsNumberWithPrecision(1)
     @Min(-VOLUME_MAX)
     @Max(VOLUME_MAX)
@@ -131,7 +144,8 @@ export class TrainingsRequest {
     @Max(INT_MAX)
     repetitions: number;
 
-    @ApiProperty({type: 'number', example: 60, description: 'Intensity % (2 decimals allowed)', minimum: -INTENSITY_MAX, maximum: INTENSITY_MAX})
+    @ApiProperty({type: 'number', example: 60, description: 'Intensity %, rounded to 2 decimals', minimum: -INTENSITY_MAX, maximum: INTENSITY_MAX})
+    @RoundAggregate(2, INTENSITY_MAX)
     @IsNumberWithPrecision(2)
     @Min(-INTENSITY_MAX)
     @Max(INTENSITY_MAX)
