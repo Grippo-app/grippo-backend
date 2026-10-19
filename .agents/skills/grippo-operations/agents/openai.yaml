@@ -1,4 +1,4 @@
 interface:
   display_name: "Grippo Operations"
-  short_description: "Docker, deploy, дампы и эксплуатация Grippo"
-  default_prompt: "Используй $grippo-operations для исследования эксплуатационного сценария Grippo и проверки его побочных эффектов, восстановления и доступной верификации."
+  short_description: "Логи сервера, SSH, deploy и дампы Grippo"
+  default_prompt: "Используй $grippo-operations для подключения к разрешённым логам сервера Grippo или работы с выбранным эксплуатационным сценарием."
