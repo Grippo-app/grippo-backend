@@ -43,6 +43,7 @@ writers. Агент обязан иметь соответствующее ра�
 | Writers | Freeze всех DB writers и HTTP-клиентов действует до snapshot, через recreate и согласованный smoke; PostgreSQL остаётся доступна |
 | Resources | Измерены доступные RAM/swap/disk, бюджет build и параллельных probes; локальный build RSS на другой ОС — ориентир, не точный Linux peak |
 | Storage | Private recovery directory вне checkout/build context/удаляемых ресурсов, достаточно места; копии не перезаписываются |
+| Notion archive | Для каждой production attempt подтверждено native `dump.sql` свежего pre-upload snapshot в [Dump history](notion-dump-history.md) до live upload/release switch |
 | Recovery | Известны текущая code/image revision, good backup и отдельно согласуемый способ восстановления; plan сохраняет immutable old image ID даже для legacy без revision label |
 | Plan | Совпадают attempt UUID, SHA256 плана и все связанные параметры; plan пересчитан перед mutation |
 
@@ -91,6 +92,9 @@ Snapshot и recovery copy сохраняются под уникальными �
    только в разрешённом scope.
 2. **Согласуй live подготовку и окно.** До upload/release switch нужен новый
    успешный штатный dump действующей системы и проверенная независимая копия.
+   Для production до live upload/release switch агент обязан загрузить exact snapshot
+   в [Notion Dump history](notion-dump-history.md) и подтвердить native вложение.
+   Неподтверждённый архив останавливает live подготовку.
    Исходная PostgreSQL остаётся доступна. Сохрани remote `.env`, keys, backups,
    чужие изменения и good snapshot; не применяй reset/clean/rsync-delete.
 3. **Сверь подготовленную revision и план.** Deploy сам не делает Git update.
@@ -131,6 +135,10 @@ Execute заново проверяет plan/target, фиксирует уник
    `/health` и согласованный API smoke с synthetic identity. Health проверяет
    доступность DB, а не полноту schema, auth/OAuth или бизнес-потоков.
    Снимай freeze только предусмотренным согласованным шагом; сохрани snapshots.
+   Exact внутренний dump этой attempt также архивируй в Notion по
+   [правилу истории](notion-dump-history.md), в том числе после failed rollout,
+   если dump успешно завершён. Shell не делает эту загрузку. Неподтверждённый
+   архив после rollout — отдельный pending шаг, не повод автоматически повторять deploy.
    Сообщай фактические результаты и pending проверки.
 
 Если на сервере ещё старые source-sourcing scripts, не заменяй их и не запускай

@@ -5,6 +5,9 @@ const assert = require('node:assert/strict');
 const {randomUUID} = require('node:crypto');
 const {EntityManager} = require('typeorm');
 const {ValidationPipe} = require('@nestjs/common');
+const fs = require('node:fs');
+const path = require('node:path');
+const importer = require('../../scripts/internal/exercise-translations.cjs');
 
 function deferred() {
   let resolve;
@@ -34,6 +37,7 @@ async function runCatalog(ctx) {
   const {ExerciseExampleService} = ctx.load('src/modules/exercise-examples/exercise-example.service.ts');
   const {TrainingsService} = ctx.load('src/modules/trainings/trainings.service.ts');
   const {TrainingsRequest} = ctx.load('src/modules/trainings/dto/trainings.request.ts');
+  const {calculateTranslationsRevision} = ctx.load('src/modules/exercise-examples/exercise-translations-revision.ts');
   const results = [];
 
   function operation(kind, hooks = {}) {
@@ -632,8 +636,373 @@ async function runCatalog(ctx) {
     }
   });
 
-  assert.equal(results.length, 21, 'Catalog scenario inventory changed; review the documented coverage');
+  const revision = 'a'.repeat(40);
+  async function ownedConnection() {
+    const runner = ds.createQueryRunner();
+    await runner.connect();
+    return runner;
+  }
+  async function dataset() {
+    const rows = await ds.query('SELECT id FROM exercise_examples ORDER BY id');
+    return {version: 1, records: rows.flatMap(({id}) => importer.LANGUAGES.map(language => ({
+      exerciseExampleId: id, language, name: `Synthetic ${language} ${id}`,
+      description: `Synthetic description ${language} ${id}`,
+    })))};
+  }
+  async function prepared(data = undefined, options = {}) {
+    data ??= await dataset();
+    const runner = await ownedConnection();
+    try { return {data, manifest: await importer.planImport(runner, {dataset: data, codeRevision: revision, ...options})}; }
+    finally { await runner.release(); }
+  }
+  async function apply(preparation, options = {}) {
+    const runner = await ownedConnection();
+    const receipts = [];
+    try {
+      const result = await importer.applyImport(runner, {dataset: preparation.data, manifest: preparation.manifest,
+        codeRevision: revision, onReceipt: receipt => { receipts.push(receipt); }, ...options});
+      return {...result, receipts};
+    } finally { await runner.release(); }
+  }
+  async function removePortuguese() {
+    await ds.query("DELETE FROM exercise_example_translations WHERE language::text IN ('pt-BR','pt-PT')");
+  }
+  async function rawRevision(id) {
+    const example = await ds.getRepository(E.ExerciseExamplesEntity).findOneByOrFail({id});
+    const rows = await ds.getRepository(E.ExerciseExampleTranslationEntity).find({where: {exerciseExampleId: id}});
+    return calculateTranslationsRevision(example, rows);
+  }
+  function withPortuguese(body, token, overrides = {}) {
+    return {...body, name: [...body.name, {language: 'pt-BR', value: 'Synthetic BR'}, {language: 'pt-PT', value: 'Synthetic PT'}],
+      description: [...body.description, {language: 'pt-BR', value: 'Synthetic BR description'}, {language: 'pt-PT', value: 'Synthetic PT description'}],
+      translationsRevision: token, ...overrides};
+  }
+
+  await runCase('schema rehearsal expands the actual old enum, preserves rows and UNIQUE, and repeats safely', async () => {
+    // This suite owns this entire disposable database. No synchronize is used for
+    // the old -> new transition: recreate only its enum as an old release fixture.
+    const before = await ds.query('SELECT to_jsonb(t) AS row FROM exercise_example_translations t ORDER BY id');
+    await ds.query('ALTER TABLE exercise_example_translations ALTER COLUMN language TYPE text USING language::text');
+    await ds.query('DROP TYPE public.supported_language_enum');
+    await ds.query("CREATE TYPE public.supported_language_enum AS ENUM ('en','ua','ru')");
+    await ds.query('ALTER TABLE exercise_example_translations ALTER COLUMN language TYPE public.supported_language_enum USING language::public.supported_language_enum');
+    const sql = fs.readFileSync(path.resolve(__dirname, '../../scripts/sql/add-portuguese-locales.sql'), 'utf8');
+    await ds.query(sql);
+    await ds.query(sql);
+    const labels = await ds.query("SELECT enumlabel FROM pg_enum WHERE enumtypid='public.supported_language_enum'::regtype ORDER BY enumsortorder");
+    same(labels.map(row => row.enumlabel), ['en', 'ua', 'ru', 'pt-BR', 'pt-PT'], 'enum labels must be canonical and additive');
+    same(await ds.query('SELECT to_jsonb(t) AS row FROM exercise_example_translations t ORDER BY id'), before,
+      'schema transition must preserve old rows, IDs, timestamps and text');
+    const example = await seedExample();
+    for (const language of ['pt-BR', 'pt-PT']) {
+      await ds.getRepository(E.ExerciseExampleTranslationEntity).insert({exerciseExampleId: example.id, language, name: 'Synthetic', description: null});
+    }
+    const duplicate = await outcome(ds.getRepository(E.ExerciseExampleTranslationEntity).insert({exerciseExampleId: example.id,
+      language: 'pt-BR', name: 'Synthetic duplicate', description: null}));
+    assert(!duplicate.ok && code(duplicate.error) === '23505', 'actual pair UNIQUE must prevent duplicate locale and allow both PT variants');
+    await removePortuguese();
+    const metadata = await ds.driver.createSchemaBuilder().log();
+    assert.equal(metadata.upQueries.length, 0, 'actual DDL shape must still match current entity metadata');
+  });
+
+  await runCase('schema script refuses unknown labels, order and consumers before adding either enum label', async () => {
+    const sql = fs.readFileSync(path.resolve(__dirname, '../../scripts/sql/add-portuguese-locales.sql'), 'utf8');
+    const runner = await ownedConnection();
+    async function fixtureEnum(labels) {
+      await runner.query('ALTER TABLE exercise_example_translations ALTER COLUMN language TYPE text USING language::text');
+      await runner.query('DROP TYPE public.supported_language_enum');
+      // All labels below are fixed synthetic fixture literals, never user input.
+      await runner.query(`CREATE TYPE public.supported_language_enum AS ENUM (${labels.map(label => `'${label}'`).join(',')})`);
+      await runner.query('ALTER TABLE exercise_example_translations ALTER COLUMN language TYPE public.supported_language_enum USING language::public.supported_language_enum');
+    }
+    try {
+      for (const labels of [['en','ua','ru','pt-PT'], ['en','ua','ru','pt-PT','pt-BR'], ['en','ua','ru','fr']]) {
+        await fixtureEnum(labels);
+        const rejected = await outcome(runner.query(sql));
+        assert(!rejected.ok, 'unknown labels and incompatible partial enum order must stop before DDL');
+        await runner.query('ROLLBACK');
+        const after = await runner.query("SELECT enumlabel FROM pg_enum WHERE enumtypid='public.supported_language_enum'::regtype ORDER BY enumsortorder");
+        same(after.map(row => row.enumlabel), labels, 'rejected schema must retain exactly the previous labels');
+      }
+      await fixtureEnum(['en','ua','ru','pt-BR','pt-PT']);
+      await runner.query('CREATE TABLE grippo_test_extra_enum_consumer (language public.supported_language_enum)');
+      const rejected = await outcome(runner.query(sql));
+      assert(!rejected.ok, 'unknown enum consumer must stop the schema operation');
+      await runner.query('ROLLBACK');
+    } finally {
+      await runner.query('DROP TABLE IF EXISTS grippo_test_extra_enum_consumer');
+      await runner.release();
+    }
+  });
+
+  await runCase('translation revision is canonical, ignores child identities, and preserves null and exact text distinctions', async () => {
+    const id = randomUUID();
+    const base = {id, name: 'Synthetic base', description: null};
+    const rows = [{language: 'pt-PT', name: 'Synthetic PT', description: ''},
+      {language: 'en', name: 'Synthetic EN', description: null}, {language: 'ua', name: null, description: 'Synthetic UA'}];
+    const token = calculateTranslationsRevision(base, rows);
+    const expected = importer.hash(['grippo.exercise-translations.v1', id, [base.name, base.description],
+      [['en', 'Synthetic EN', null], ['ua', null, 'Synthetic UA'], ['pt-PT', 'Synthetic PT', '']]]);
+    assert.equal(token, expected, 'hash must match the published versioned tuple');
+    assert.equal(token, calculateTranslationsRevision(base, rows.slice().reverse().map(row => ({...row, id: randomUUID(), updatedAt: new Date()}))),
+      'row order and child metadata must not change revision');
+    for (const [changedBase, changedRows] of [
+      [{...base, name: `${base.name} `}, rows], [{...base, description: ''}, rows],
+      [base, rows.map(row => row.language === 'en' ? {...row, description: ''} : row)],
+      [base, rows.map(row => row.language === 'en' ? {...row, name: ' Synthetic EN'} : row)],
+      [base, [...rows, {language: 'pt-BR', name: null, description: null}]], [base, rows.slice(1)],
+    ]) assert.notEqual(token, calculateTranslationsRevision(changedBase, changedRows), 'content/base/null/row presence must change revision');
+  });
+
+  await runCase('conditional PUT rejects stale snapshots and incomplete PT fields before every graph write', async () => {
+    const example = await seedExample();
+    const service = operation('catalog').service;
+    const initial = await rawRevision(example.id);
+    const before = await catalogSnapshot(example.id);
+    for (const body of [withPortuguese(example.body, undefined), {...example.body, translationsRevision: '0'.repeat(64)}]) {
+      const result = await outcome(service.updateExerciseExample(example.id, body));
+      assert(!result.ok && status(result.error) === 409 && result.error.getResponse().code === 'EXERCISE_TRANSLATIONS_STALE',
+        'new PT or any stale token must reject before changes');
+      same(await catalogSnapshot(example.id), before, '409 must preserve the entire original graph');
+    }
+    await service.updateExerciseExample(example.id, withPortuguese(example.body, initial));
+    const current = await rawRevision(example.id);
+    const after = await catalogSnapshot(example.id);
+    for (const body of [example.body, withPortuguese(example.body, initial),
+      {...example.body, translationsRevision: current},
+      withPortuguese(example.body, current, {description: example.body.description}),
+      withPortuguese(example.body, current, {name: [...example.body.name, {language: 'pt-BR', value: null}, {language: 'pt-PT', value: ''}]})]) {
+      const result = await outcome(service.updateExerciseExample(example.id, body));
+      assert(!result.ok && status(result.error) === 409, 'missing, stale, null or incomplete PT must return 409');
+      same(await catalogSnapshot(example.id), after, 'rejected update must preserve IDs, timestamps and the entire graph');
+    }
+    const clear = withPortuguese(example.body, current);
+    for (const field of ['name', 'description']) for (const item of clear[field]) if (item.language.startsWith('pt-')) item.value = '';
+    await service.updateExerciseExample(example.id, clear);
+    assert.equal(await ds.getRepository(E.ExerciseExampleTranslationEntity).count({where: {exerciseExampleId: example.id,
+      language: require('typeorm').In(['pt-BR','pt-PT'])}}), 0, 'two explicit blanks must intentionally clear PT rows');
+  });
+
+  await runCase('old three-language PUT remains compatible and duplicate PT clear follows the effective normalized input', async () => {
+    const example = await seedExample();
+    await operation('catalog').service.updateExerciseExample(example.id, example.body);
+    const cleared = {...example.body, name: [...example.body.name, {language: 'pt-BR', value: 'Synthetic new'}, {language: 'pt-BR', value: ''}]};
+    await operation('catalog').service.updateExerciseExample(example.id, cleared);
+    const omitted = {...example.body, name: [...example.body.name, {language: 'pt-BR', value: 'Synthetic new'}, {language: 'pt-BR', value: undefined}]};
+    const before = await catalogSnapshot(example.id);
+    const result = await outcome(operation('catalog').service.updateExerciseExample(example.id, omitted));
+    assert(!result.ok && status(result.error) === 409, 'undefined later value must not hide effective new PT text');
+    same(await catalogSnapshot(example.id), before, 'effective new PT rejection must be atomic');
+  });
+
+  await runCase('import dry-run is read-only; atomic apply touches only PT and repeat is an identity/timestamp no-op', async () => {
+    const example = await seedExample();
+    const before = await catalogSnapshot(example.id);
+    const preparation = await prepared();
+    same(await catalogSnapshot(example.id), before, 'dry-run must not change a row');
+    const imported = await apply(preparation);
+    assert.equal(imported.changed, preparation.data.records.length, 'first apply must load both regional rows for every parent');
+    assert(imported.receipts.map(receipt => receipt.phase).join(',') === 'PREPARED,TRANSACTION,COMMITTING,COMMITTED',
+      'receipt must capture transaction identity before writes and COMMIT phase before commit');
+    assert(imported.receipt.session.pid > 0 && imported.receipt.session.backend_start && imported.receipt.session.transaction_id,
+      'receipt must retain session and transaction identity');
+    const after = await catalogSnapshot(example.id);
+    same(after.slice(0, 4), before.slice(0, 4), 'import must preserve base, parent timestamps, refs and components');
+    same(after[4].filter(item => ['en','ua','ru'].includes(item.row.language)), before[4], 'old translation rows must remain byte-equivalent');
+    const repeated = await apply(preparation);
+    assert.equal(repeated.changed, 0, 'repeat must be a true no-op');
+    same(await catalogSnapshot(example.id), after, 'no-op must preserve inserted IDs and timestamps');
+    await removePortuguese();
+  });
+
+  await runCase('import validates complete UUID/canonical datasets and rejects conflicts, changed sources and IDs', async () => {
+    const preparation = await prepared();
+    for (const records of [preparation.data.records.slice(1), [...preparation.data.records, preparation.data.records[0]],
+      preparation.data.records.map((row, index) => index ? row : {...row, language: 'pt-br'}),
+      preparation.data.records.map(row => ({...row, exerciseExampleId: `${row.exerciseExampleId}\n`})),
+      preparation.data.records.map((row, index) => index ? row : {...row, name: null})]) {
+      assert.throws(() => importer.validateDataset({version: 1, records}), 'invalid dataset must fail before SQL');
+    }
+    const first = preparation.data.records[0];
+    await ds.getRepository(E.ExerciseExampleTranslationEntity).insert({exerciseExampleId: first.exerciseExampleId,
+      language: first.language, name: 'Synthetic different', description: 'Synthetic conflict'});
+    const conflict = await outcome(prepared(preparation.data));
+    assert(!conflict.ok && code(conflict.error) === 'TARGET_CONFLICT', 'different existing PT must not become an implicit replacement');
+    const rejected = await outcome(apply(preparation));
+    assert(!rejected.ok && code(rejected.error) === 'TARGET_CHANGED', 'changed target after dry-run must abort');
+    await removePortuguese();
+    const parent = await ds.getRepository(E.ExerciseExamplesEntity).findOneByOrFail({id: first.exerciseExampleId});
+    await ds.query('UPDATE exercise_examples SET name=name || $1 WHERE id=$2', [' changed', parent.id]);
+    const sourceChanged = await outcome(apply(preparation));
+    assert(!sourceChanged.ok && code(sourceChanged.error) === 'SOURCE_CHANGED', 'changed en/base source must invalidate manifest under locks');
+    await ds.query('UPDATE exercise_examples SET name=$1 WHERE id=$2', [parent.name, parent.id]);
+    const [english] = await ds.query("SELECT name FROM exercise_example_translations WHERE exercise_example_id=$1 AND language='en'", [parent.id]);
+    await ds.query("UPDATE exercise_example_translations SET name=name || $1 WHERE exercise_example_id=$2 AND language='en'", [' changed', parent.id]);
+    const englishChanged = await outcome(apply(preparation));
+    assert(!englishChanged.ok && code(englishChanged.error) === 'SOURCE_CHANGED', 'changed English row must invalidate manifest even if base is unchanged');
+    await ds.query("UPDATE exercise_example_translations SET name=$1 WHERE exercise_example_id=$2 AND language='en'", [english.name, parent.id]);
+    await seedExample();
+    const idsChanged = await outcome(apply(preparation));
+    assert(!idsChanged.ok && code(idsChanged.error) === 'CATALOG_ID_SET_CHANGED', 'new parent must invalidate complete-catalog manifest');
+    assert.equal((await ds.query("SELECT count(*)::integer AS count FROM exercise_example_translations WHERE language::text LIKE 'pt-%'"))[0].count, 0,
+      'all failed checks must precede PT writes');
+  });
+
+  await runCase('exact replacement approval binds both old and desired hashes and preserves the translation row identity', async () => {
+    const data = await dataset();
+    const first = data.records[0];
+    const saved = await ds.getRepository(E.ExerciseExampleTranslationEntity).save({exerciseExampleId: first.exerciseExampleId,
+      language: first.language, name: 'Synthetic old BR', description: null});
+    const permission = {exerciseExampleId: first.exerciseExampleId, language: first.language,
+      expectedBeforeSha256: importer.hash([saved.name, saved.description]), desiredSha256: importer.hash([first.name, first.description])};
+    const preparation = await prepared(data, {replacements: [permission]});
+    await apply(preparation);
+    const after = await ds.getRepository(E.ExerciseExampleTranslationEntity).findOneByOrFail({id: saved.id});
+    assert.equal(after.name, first.name, 'approved exact replacement must update content');
+    assert.equal(after.createdAt.getTime(), saved.createdAt.getTime(), 'replacement must retain ID and created timestamp');
+    await removePortuguese();
+  });
+
+  await runCase('late PostgreSQL import failure rolls back all earlier PT inserts and leaves base and graph intact', async () => {
+    const preparation = await prepared();
+    const last = preparation.data.records[preparation.data.records.length - 1];
+    const before = await ds.query('SELECT to_jsonb(t) AS row FROM exercise_example_translations t ORDER BY id');
+    const runner = await ownedConnection();
+    let writes = 0;
+    try {
+      await ds.query(`CREATE FUNCTION grippo_test_reject_translation() RETURNS trigger LANGUAGE plpgsql AS $$
+        BEGIN IF NEW.exercise_example_id='${last.exerciseExampleId}'::uuid AND NEW.language::text='pt-PT' THEN
+          RAISE EXCEPTION 'synthetic late translation failure' USING ERRCODE='23514'; END IF; RETURN NEW; END $$`);
+      await ds.query('CREATE TRIGGER grippo_test_reject_translation BEFORE INSERT OR UPDATE ON exercise_example_translations FOR EACH ROW EXECUTE FUNCTION grippo_test_reject_translation()');
+      const adapter = {query: async (sql, parameters) => {
+        const rows = await runner.query(sql, parameters);
+        if (sql.includes('INSERT INTO public.exercise_example_translations')) writes += 1;
+        return rows;
+      }};
+      const rejected = await outcome(importer.applyImport(adapter, {dataset: preparation.data, manifest: preparation.manifest,
+        codeRevision: revision, onReceipt: () => {}}));
+      assert(!rejected.ok && code(rejected.error) === '23514' && writes > 1, 'server failure must follow real earlier PT inserts');
+      same(await ds.query('SELECT to_jsonb(t) AS row FROM exercise_example_translations t ORDER BY id'), before,
+        'late import failure must roll back every inserted row');
+    } finally {
+      await runner.release();
+      await ds.query('DROP TRIGGER IF EXISTS grippo_test_reject_translation ON exercise_example_translations');
+      await ds.query('DROP FUNCTION IF EXISTS grippo_test_reject_translation()');
+    }
+  });
+
+  for (const firstAction of ['import', 'put']) {
+    await runCase(`actual importer and PUT serialize ${firstAction}-first and reject the stale second writer`, async () => {
+      const example = await seedExample();
+      const token = await rawRevision(example.id);
+      const preparation = await prepared();
+      const hold = gate();
+      const runner = await ownedConnection();
+      const put = operation('catalog', firstAction === 'put' ? {findOne: async context => {
+        if (context.args[0] === E.ExerciseExamplesEntity && context.value) await hold.hold(context);
+      }} : {});
+      const putBody = {...example.body, name: [{language: 'en', value: 'Synthetic changed source'}], translationsRevision: token};
+      const started = deferred();
+      const adapter = {query: async (sql, parameters) => {
+        const value = await runner.query(sql, parameters);
+        if (sql.includes('pg_current_xact_id()')) started.resolve(value[0].pid);
+        if (firstAction === 'import' && sql.endsWith(' FOR UPDATE')) await hold.hold({pid: await started.promise});
+        return value;
+      }};
+      const promises = [];
+      try {
+        let importing;
+        let updating;
+        const startImport = () => outcome(importer.applyImport(adapter, {dataset: preparation.data, manifest: preparation.manifest,
+          codeRevision: revision, onReceipt: () => {}}));
+        if (firstAction === 'import') {
+          importing = startImport(); promises.push(importing);
+          const importPid = await bounded(hold.reached, 'import parent locks barrier missing');
+          updating = outcome(put.service.updateExerciseExample(example.id, putBody)); promises.push(updating);
+          const putPid = await bounded(put.started, 'PUT transaction missing');
+          await blockedBy(putPid, importPid);
+        } else {
+          updating = outcome(put.service.updateExerciseExample(example.id, putBody)); promises.push(updating);
+          const putPid = await bounded(hold.reached, 'PUT parent lock barrier missing');
+          importing = startImport(); promises.push(importing);
+          const importPid = await bounded(started.promise, 'import transaction missing');
+          await blockedBy(importPid, putPid);
+        }
+        hold.release();
+        const [importResult, putResult] = await bounded(Promise.all([importing, updating]), 'import/PUT race did not finish');
+        if (firstAction === 'import') {
+          assert(importResult.ok && !putResult.ok && status(putResult.error) === 409,
+            'committed import must make pre-import PUT snapshot stale');
+        } else {
+          assert(putResult.ok && !importResult.ok && code(importResult.error) === 'SOURCE_CHANGED',
+            'committed PUT source change must invalidate waiting import manifest');
+        }
+      } finally {
+        hold.release();
+        await bounded(Promise.allSettled(promises), 'import/PUT cleanup timed out');
+        await runner.release();
+        await removePortuguese();
+      }
+    });
+  }
+
+  await runCase('lost COMMIT response stays UNKNOWN while original session is active, then fully reconciles APPLIED', async () => {
+    const preparation = await prepared();
+    const original = await ownedConnection();
+    const observer = await ownedConnection();
+    const commitReached = deferred();
+    const releaseCommit = deferred();
+    let receipt;
+    const adapter = {query: async (sql, parameters) => {
+      if (sql === 'COMMIT') {
+        commitReached.resolve();
+        await bounded(releaseCommit.promise, 'delayed commit barrier missing');
+        await original.query(sql, parameters);
+        throw Object.assign(new Error('Synthetic lost COMMIT response'), {code: 'ECONNRESET'});
+      }
+      return original.query(sql, parameters);
+    }};
+    const pending = outcome(importer.applyImport(adapter, {dataset: preparation.data, manifest: preparation.manifest,
+      codeRevision: revision, onReceipt: event => { receipt = event; }}));
+    try {
+      await bounded(commitReached.promise, 'COMMIT phase was not reached');
+      const [{count}] = await observer.query("SELECT count(*)::integer AS count FROM exercise_example_translations WHERE language::text LIKE 'pt-%'");
+      assert.equal(count, 0, 'observer must see before-state while writes are uncommitted');
+      const unresolved = await importer.reconcileImport(observer, {dataset: preparation.data, manifest: preparation.manifest, receipt});
+      assert.equal(unresolved.outcome, 'UNKNOWN', 'before-state cannot establish rollback while original session is still alive');
+      // Deterministically finish COMMIT between the first identity read and
+      // liveness read. Reconcile must open its data snapshot only afterwards.
+      let committedBetweenProbes = false;
+      const racingObserver = {query: async (sql, parameters) => {
+        const value = await observer.query(sql, parameters);
+        if (!committedBetweenProbes && sql.includes('pg_postmaster_start_time()')) {
+          committedBetweenProbes = true;
+          releaseCommit.resolve();
+          const result = await bounded(pending, 'lost COMMIT response did not finish');
+          assert(!result.ok && code(result.error) === 'COMMIT_OUTCOME_UNKNOWN', 'client disconnect must not claim rollback or retry');
+        }
+        return value;
+      }};
+      const reconciled = await importer.reconcileImport(racingObserver, {dataset: preparation.data, manifest: preparation.manifest, receipt});
+      assert(committedBetweenProbes, 'test must finish original COMMIT between actual identity/liveness probes');
+      assert.equal(reconciled.outcome, 'APPLIED', 'after original transaction ends, full exact party must reconcile as applied');
+      const target = preparation.data.records[0];
+      await observer.query('UPDATE exercise_example_translations SET name=$1 WHERE exercise_example_id=$2 AND language::text=$3',
+        ['Synthetic later edit', target.exerciseExampleId, target.language]);
+      const mismatch = await importer.reconcileImport(observer, {dataset: preparation.data, manifest: preparation.manifest, receipt});
+      assert.equal(mismatch.outcome, 'MISMATCH', 'a single changed row must prevent claiming the complete batch applied');
+      await removePortuguese();
+      const notApplied = await importer.reconcileImport(observer, {dataset: preparation.data, manifest: preparation.manifest, receipt});
+      assert.equal(notApplied.outcome, 'NOT_APPLIED', 'full exact before-state is conclusive only after original operation ends');
+    } finally {
+      releaseCommit.resolve();
+      await bounded(Promise.allSettled([pending]), 'lost COMMIT cleanup timed out');
+      await original.release(); await observer.release(); await removePortuguese();
+    }
+  });
+
+  assert.equal(results.length, 33, 'Catalog scenario inventory changed; review the documented coverage');
   return results;
 }
 
-module.exports = {runCatalog, expectedCases: 21};
+module.exports = {runCatalog, expectedCases: 33};

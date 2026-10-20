@@ -87,7 +87,7 @@ Read helper строит эти object/null по entity, body.required всег�
 
 ## Переводы: запись, fallback, выдача
 
-Storage languages `en`, `ua`, `ru`, default en из [i18n.types.ts](../../../../src/i18n/i18n.types.ts). Middleware и нормализация locale описаны в [identity/API reference](../../grippo-identity-api/references/localization-and-http.md); каталог использует `req.locale`/service.
+Storage languages `en`, `ua`, `ru`, `pt-BR`, `pt-PT`, default en из [i18n.types.ts](../../../../src/i18n/i18n.types.ts). Middleware и нормализация locale описаны в [identity/API reference](../../grippo-identity-api/references/localization-and-http.md); каталог использует `req.locale`/service. Entity задаёт `supported_language_enum` и именованный UNIQUE `(exerciseExampleId,language)`; рабочая schema обновляется отдельным SQL, не synchronize.
 
 `prepareTranslationInput` отдельно для name и description:
 
@@ -98,7 +98,9 @@ Storage languages `en`, `ua`, `ru`, default en из [i18n.types.ts](../../../../
 
 При чтении i18n выбирает целую row: direct translation, иначе en row, иначе base. Поля selected row с null откатываются к **base** соответствующего поля; при наличии direct row ее null description не берет автоматически description из en row. Затем сервис удаляет translations с entity.
 
-Admin stored endpoint возвращает `{id, base:{name,description}, translations:[{language,name,description}]}`. Absent language не синтезируется, строки сортируются по SUPPORTED_LANGUAGES. Это правильный путь для редактора; localized обычный response теряет сведения о fallback и отсутствующих значениях.
+Admin stored endpoint возвращает `{id, translationsRevision, base:{name,description}, translations:[{language,name,description}]}`. Absent language не синтезируется, строки сортируются по SUPPORTED_LANGUAGES. Это правильный путь для редактора; localized обычный response теряет сведения о fallback и отсутствующих значениях.
+
+PUT использует [update-only DTO](../../../../src/modules/exercise-examples/dto/exercise-example-update.request.ts). После parent lock через transaction manager перечитываются rows: любой присланный revision проверяется; current PT либо новый непустой PT требует matching token. Stale/missing → 409 `EXERCISE_TRANSLATIONS_STALE`; current PT требует explicit string name/description entries, иначе 409 `EXERCISE_TRANSLATIONS_INCOMPLETE`. Оба empty values разрешают намеренное удаление. Все guards идут до writes; без PT прежний PUT без token совместим. Это optimistic concurrency текстов, не всего графа. [Handoff/schema/import runbook](../../../../tasks/portuguese-rollout.md).
 
 ## Справочники muscles/equipments
 

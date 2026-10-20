@@ -69,6 +69,13 @@ dump, неизвестный источник или несовпадение pa
 подменить штатный script произвольным pg_dump или автоматически объявить
 отсутствующую DB исключением «первый запуск».
 
+Для каждой production deploy attempt свежий проверенный dump обязателен также
+в [Notion Dump history](https://app.notion.com/p/3300cb0926ef80a7b760e51cf768a2d1):
+новый серый callout сверху, `At D MMM YYYY (краткая причина)`, вложение `dump.sql`.
+Порядок загрузки, проверки и отказа — [Notion archive](.agents/skills/grippo-operations/references/notion-dump-history.md).
+Это разрешённое пользователем место хранения полного SQL файлом; payload не
+печатать и не вставлять текстом. Правило не разрешает сам deploy или dump сейчас.
+
 Согласуй прекращение writes до snapshot и на время rollout; заранее разрешённый
 stop writers допустим, source PostgreSQL остаётся доступна. Backup предшествует
 live upload/release switch и deploy recreate. Обновление схемы, reset/import и

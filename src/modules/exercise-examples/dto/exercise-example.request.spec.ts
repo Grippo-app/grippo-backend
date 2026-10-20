@@ -1,6 +1,8 @@
 import 'reflect-metadata';
 import {BadRequestException, ValidationPipe} from '@nestjs/common';
 import {ExerciseExampleRequest} from './exercise-example.request';
+import {ExerciseExampleUpdateRequest} from './exercise-example-update.request';
+import {SUPPORTED_LANGUAGES} from '../../../i18n/i18n.types';
 
 const MUSCLE_ID = '11111111-1111-4111-8111-111111111111';
 const OTHER_MUSCLE_ID = '22222222-2222-4222-8222-222222222222';
@@ -145,5 +147,48 @@ describe('ExerciseExampleRequest through the application ValidationPipe', () => 
 
     it('keeps the strict body whitelist, including rejecting a submitted exercise id', async () => {
         await expectFieldError(payload({id: MUSCLE_ID}), 'id');
+    });
+
+    it.each(SUPPORTED_LANGUAGES)('accepts canonical locale %s in both text arrays', async language => {
+        const text = [{language, value: 'Synthetic text'}];
+        const result = await validate(payload({name: text, description: text}));
+        expect(result.name).toEqual(text);
+        expect(result.description).toEqual(text);
+    });
+
+    it.each(['pt', 'pt-br', 'pt-pt', 'pt_BR', 'pt_PT', 'uk', 'PT-BR'])('rejects noncanonical write locale %s', async language => {
+        for (const field of ['name', 'description']) {
+            await expectFieldError(payload({[field]: [{language, value: 'Synthetic text'}]}), 'language');
+        }
+    });
+
+    it.each(['name', 'description'])('keeps omitted/empty %s values distinct from null', async field => {
+        const omitted = await validate(payload({[field]: [{language: 'pt-PT'}]}));
+        expect(omitted[field][0]).not.toHaveProperty('value');
+        const blank = await validate(payload({[field]: [{language: 'pt-PT', value: ''}]}));
+        expect(blank[field][0].value).toBe('');
+        await expectFieldError(payload({[field]: [{language: 'pt-PT', value: null}]}), 'value');
+    });
+
+    it('rejects an update-only revision on the create DTO', async () => {
+        await expectFieldError(payload({translationsRevision: 'a'.repeat(64)}), 'translationsRevision');
+    });
+});
+
+describe('ExerciseExampleUpdateRequest revision validation', () => {
+    const validateUpdate = (value: unknown): Promise<ExerciseExampleUpdateRequest> =>
+        new ValidationPipe({transform: true, whitelist: true, forbidNonWhitelisted: true})
+            .transform(value, {type: 'body', metatype: ExerciseExampleUpdateRequest});
+
+    it('preserves optional legacy writes and accepts an exact lowercase SHA256', async () => {
+        expect(await validateUpdate(payload())).toBeInstanceOf(ExerciseExampleUpdateRequest);
+        const translationsRevision = 'abcdef0123456789'.repeat(4);
+        const result = await validateUpdate(payload({translationsRevision}));
+        expect(result.translationsRevision).toBe(translationsRevision);
+        expect(result.name).toEqual(payload().name);
+    });
+
+    it.each([null, '', 3, false, {}, [], 'A'.repeat(64), 'a'.repeat(63), 'a'.repeat(65), 'g'.repeat(64), `${'a'.repeat(64)}\n`])('rejects malformed revision %p', async translationsRevision => {
+        await expect(validateUpdate(payload({translationsRevision}))).rejects.toBeInstanceOf(BadRequestException);
     });
 });

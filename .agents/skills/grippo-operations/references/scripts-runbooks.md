@@ -90,6 +90,15 @@ copy. После kill/power loss возможны partial files: не прини
 Receipt/hash не доказывают restore. Это обычный SQL с чувствительными данными,
 без encryption/compression/retention/off-host transfer.
 
+## Архив production dump в Notion
+
+Для каждой production deploy attempt агент выполняет [обязательную архивацию](notion-dump-history.md):
+подтверждённый native `dump.sql` pre-upload snapshot до live upload/release switch;
+внутренний новый dump execute — после выполнения/установления состояния. Это внешний
+MCP шаг агента: wrapper/helper не реализуют Notion upload и не проверяют его наличие.
+Отсутствие доступа к Notion до live подготовки останавливает её; archive failure после
+rollout сообщается отдельно с фактическим статусом backend.
+
 ## deploy.sh: plan и одна attempt
 
 `--plan` не создаёт backup/lock/journal и не меняет containers/files. Читает

@@ -24,6 +24,9 @@ export class ExerciseExampleTranslationsResponse {
     @ApiProperty({type: String, format: 'uuid'})
     id: string;
 
+    @ApiProperty({type: String, pattern: '^[a-f0-9]{64}$', description: 'Revision of the stored base text and translation rows from this response'})
+    translationsRevision: string;
+
     @ApiProperty({type: () => ExerciseExampleBaseTextResponse})
     base: ExerciseExampleBaseTextResponse;
 

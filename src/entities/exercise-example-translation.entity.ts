@@ -5,12 +5,14 @@ import {
     JoinColumn,
     ManyToOne,
     PrimaryGeneratedColumn,
+    Unique,
     UpdateDateColumn,
 } from 'typeorm';
 import { ExerciseExamplesEntity } from './exercise-examples.entity';
 import { SupportedLanguage, SUPPORTED_LANGUAGES } from '../i18n/i18n.types';
 
 @Entity({ name: 'exercise_example_translations' })
+@Unique('uq_exercise_example_translations_language', ['exerciseExampleId', 'language'])
 export class ExerciseExampleTranslationEntity {
     @PrimaryGeneratedColumn('uuid')
     id: string;
@@ -24,7 +26,7 @@ export class ExerciseExampleTranslationEntity {
     @JoinColumn({ name: 'exercise_example_id' })
     exerciseExample: ExerciseExamplesEntity;
 
-    @Column({ type: 'enum', enum: SUPPORTED_LANGUAGES })
+    @Column({ type: 'enum', enum: SUPPORTED_LANGUAGES, enumName: 'supported_language_enum' })
     language: SupportedLanguage;
 
     @Column({ type: 'text', nullable: true })
