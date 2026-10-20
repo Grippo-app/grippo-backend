@@ -5,9 +5,9 @@
 | Новое поле тренировки | domain-data | architecture: DTO/entity/schema; identity: ownership | Create/read/replace, история, null/default, агрегаты |
 | Изменение веса/достижений | domain-data | identity: weight history; исторические значения | Формула, numeric conversion, границы дат, profile filter |
 | Новое упражнение под ключ через AI | [exercise-create](../../grippo-exercise-create/SKILL.md) | exercise-audit для содержания; domain/identity для API; imagegen для изображения | Канон/дубликаты, все локали, refs/components, финальное изображение/URL, payload, create/readback |
-| Локализованное поле каталога | domain-data + identity-api | I18n middleware/fallback, admin write DTO | en/ua/ru, missing/null/blank translation, raw admin translations |
+| Локализованное поле каталога | domain-data + identity-api | I18n middleware/fallback, admin write DTO | Все затронутые target локали из текущего SUPPORTED_LANGUAGES, missing/null/blank translation, raw admin translations |
 | Правильность упражнений, мышц/процентов, сложности и оборудования | [exercise-audit](../../grippo-exercise-audit/SKILL.md) | Отдельные coach/biomechanics/muscle-map/difficulty/equipment; researcher + evidence-analyst для науки; domain-data для контракта | Канон, многопервоисточный поиск, all-ID/owner coverage, конкретные и условные after |
-| Смысл и терминология переводов упражнений | [exercise-audit](../../grippo-exercise-audit/SKILL.md): localization | Coach для канона; identity-api для raw/fallback контракта | base/en/ua/ru: анатомия, направление, setup, минимальные cell-level after |
+| Смысл и терминология переводов упражнений | [exercise-audit](../../grippo-exercise-audit/SKILL.md): localization | Coach для канона; identity-api для raw/fallback контракта | base и целевые локали: анатомия, направление, setup, минимальные cell-level after |
 | Проблема refresh/401 | identity-api | strategy → guard; имена config keys | Разделение access/refresh, expiry/invalid/deleted-user response |
 | Пользовательские exclusions | identity-api + domain-data | Profile ownership и использование в каталоге | Замена списка; не предполагать автоматический catalog filter |
 | Новый admin endpoint | identity-api + architecture | AdminModule imports/exports, общий feature service | 401/403, admin-only, явный целевой user |
@@ -21,6 +21,11 @@
 Это карта влияния, а не обязательная команда из всех ролей. Автора реализации
 выбирай по [workflow](workflow.md). Независимые исследования и ревью можно
 делегировать, пока основной агент делает другой срез.
+
+Языковой scope определяй по запросу и текущим
+[SUPPORTED_LANGUAGES](../../../../src/i18n/i18n.types.ts), DTO и raw-переводам.
+Для проверки всех переводов нельзя молча ограничиваться историческими тремя
+языками; явно запрошенный узкий языковой scope сохраняй.
 
 ## Сценарии проверки решений
 

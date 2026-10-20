@@ -11,10 +11,10 @@
 | Метод и маршрут | Вход | Выход / фактическая семантика |
 |---|---|---|
 | `GET /trainings?start=…&end=…` | start/end строки, без DTO | 200, trainings только текущего profile, диапазон включает обе календарные даты |
-| `GET /trainings/:id` | строка id, **без ParseUUIDPipe** | 200; service возвращает entity либо null при отсутствии/другом владельце, без NotFound; JSON `null` как тело не гарантируется |
+| `GET /trainings/:id` | id через ParseUUIDPipe | 200; service возвращает entity либо null при отсутствии/другом владельце, без NotFound; JSON `null` как тело не гарантируется |
 | `POST /trainings` | `TrainingsRequest` | 201 `{id}`, training + children в транзакции |
-| `PUT /trainings?id=…` | query id, **без ParseUUIDPipe**, полный `TrainingsRequest` | 204; заменяет все exercises/iterations, 404 при отсутствии/другом владельце |
-| `DELETE /trainings/:id` | строка id без UUID pipe | 204, 404 при отсутствии/другом владельце |
+| `PUT /trainings?id=…` | query id через ParseUUIDPipe, полный `TrainingsRequest` | 204; заменяет все exercises/iterations, 404 при отсутствии/другом владельце |
+| `DELETE /trainings/:id` | id через ParseUUIDPipe | 204, 404 при отсутствии/другом владельце |
 | `GET /admin/users/:id/trainings?start=…&end=…` | user ID проходит ParseUUIDPipe, admin guards | 200; тот же fetch по profile; если profile нет, `[]` **до валидации dates** |
 
 Административный вход находится в [AdminController](../../../../src/modules/admin/admin.controller.ts), который применяет `JwtAuthGuard, AdminOnlyGuard`. Не добавляй туда логику подсчета или ручные join.
@@ -23,33 +23,33 @@
 
 ## Request, DTO и сохраненные величины
 
-`TrainingsRequest`: duration int, volume number с maxDecimalPlaces 1, repetitions int, intensity number с maxDecimalPlaces 2, exercises nested. `TrainingExerciseRequest`: name string; volume/repetitions/intensity с теми же decorators; iterations nested; exerciseExampleId optional UUID. `ExerciseIterationRequest`: repetitions int; assistWeight/externalWeight/extraWeight/bodyWeight optional nullable number с 1 decimal; bodyMultiplier optional nullable number с 2 decimals.
+`TrainingsRequest`: duration/repetitions int; volume/intensity — конечные number, которые `RoundAggregate` округляет до 1/2 decimals перед validation. `TrainingExerciseRequest`: name string; те же volume/repetitions/intensity; iterations nested; exerciseExampleId optional UUID. `ExerciseIterationRequest`: repetitions int; четыре веса optional nullable number с 1 decimal; bodyMultiplier optional nullable number с 2 decimals. У iteration нет округления: лишняя точность отклоняется.
 
 - Duration описана как минуты, volume как кг; intensity описана как проценты в training DTO. Никакого нормирования 0..1/0..100 нет; metric DTO пример `0.85` сам по себе не меняет семантику.
-- На числах нет `@Min`/`@Max`: отрицательные значения не запрещены этими DTO. DB precision ограничивает вместимость, но не доменную неотрицательность.
+- DTO ограничивает signed диапазоны под storage: int −2147483648..2147483647; volume ±999999999.9; intensity ±999.99; веса ±9999.9; multiplier ±99.99. Отрицательные значения в этих пределах допустимы. Transform не приводит строки и не исправляет нечисловые/неfinite значения или число за пределом диапазона; validators их отклоняют.
 - Сервер **не пересчитывает** training/exercise volume, repetitions, intensity по approaches. Значения могут расходиться. Пользовательские summary и lifetime/bestTonnage читают эти сохраненные агрегаты.
 - Сервер не сверяет iteration весовые поля с актуальным `exerciseExample.components`; исторический `bodyMultiplier` хранится в iteration самостоятельно.
 - `TrainingExerciseRequest.id` и `ExerciseIterationRequest.id` объявлены без validators. При global whitelist+forbidNonWhitelisted это не разрешенные request поля; отправка полученного entity обратно целиком не является корректным request.
-- Exercises/iterations имеют `@ValidateNested + @Type`, но не имеют `@IsArray`/`@IsDefined`/`@ArrayNotEmpty`. Не приписывай им структурные гарантии, отсутствующие в decorators. Сервис рассчитывает на `.entries()`.
+- Exercises/iterations обязательны через IsDefined/IsArray, элементы — IsObject(each:true) + ValidateNested/Type. Отсутствие, null, скаляр, object вместо array и array вместо row отклоняются. ArrayNotEmpty отсутствует: пустые arrays допустимы.
 
 ### Создание
 
 `createTraining` сначала разрешает profile, затем `trainingsRepository.manager.transaction`:
 
 1. Отделяет `exercises`, создает training из остальных полей, задает `v4()` и profile.id, `manager.save`.
-2. Для каждого exercise отделяет iterations/exerciseExampleId. Если example ID truthy, выполняет `exerciseExamplesRepository.findOneBy`; отсутствие дает `BadRequest('Invalid exerciseExampleId: …')`.
+2. Для каждого exercise отделяет iterations/exerciseExampleId. Если example ID truthy, выполняет `manager.findOne(ExerciseExamplesEntity)` с `for_key_share`; отсутствие дает `BadRequest('Invalid exerciseExampleId: …')`.
 3. Создает exercise с новым v4, FK training, example ID либо null, `orderIndex` из позиции массива; сохраняет manager.
 4. Создает iterations с новыми v4, exerciseId и позиционным orderIndex; сохраняет manager.
 5. Возвращает ID тренировки. Поле createdAt из request не принимается — дата назначается persistence.
 
-В callback проверка example идет через **injected repository**, а не manager. Записи находятся в транзакции, но нельзя утверждать, что все связанные чтения имеют ее isolation/connection. Для новой логики используй manager repository.
+Проверка ссылок и writes в callback используют один manager; `for_key_share` удерживает referenced example от конкурентного удаления до завершения transaction. Первоначальный requireProfile выполняется до transaction. Не объявляй весь feature защищённым от любых гонок по одному этому lock.
 
 ### Обновление
 
 `updateTraining` не является PATCH:
 
 1. Разрешает profile, открывает transaction.
-2. Через injected trainingsRepository читает `{id, profileId}`; при miss бросает NotFound.
+2. Через manager читает `{id, profileId}`; при miss бросает NotFound. Явного parent lock в этом чтении нет.
 3. Через manager обновляет training по `{id}`, передает агрегаты и profileId.
 4. `manager.delete(ExercisesEntity, {trainingId: id})`: FK каскадирует iterations.
 5. Заново создает все exercises/iterations, новые UUID и orderIndex из массивов, с теми же проверками example.
@@ -62,7 +62,7 @@ ID тренировки сохраняется; ID, createdAt и updatedAt до�
 
 ## Чтение, локализация и порядок
 
-`fetchTrainingsForProfile` проверяет `moment(start).isValid()` и `moment(end).isValid()`, иначе `BadRequest('Wrong date format')`. Проверки `start <= end` нет; `date(:start) <= date(created_at) <= date(:end)` работает по календарным датам, не timestamp границам. Swagger `required: true` для query не создает pipe; отсутствие параметра отдельно не проверяется перед moment.
+`fetchTrainingsForProfile` требует непустые после trim строки start/end и успешный `moment(...).isValid()`, иначе `BadRequest('Wrong date format')`. Отсутствие query отвергается этим service check. Проверки `start <= end` нет; `date(:start) <= date(created_at) <= date(:end)` работает по календарным датам, не timestamp границам. Swagger `required: true` сам validation не создаёт; строгого ISO parser здесь нет.
 
 Список загружает training.exercises → exerciseExample → componentsEntity/translations и exercises.iterations. Detail дополнительно загружает exerciseExampleBundles → muscle. Оборудование в этом fetch не загружается; не ожидай в training response весь каталог.
 
@@ -102,7 +102,7 @@ effectiveWeight = (externalWeight ?? 0)
                 - (assistWeight ?? 0)
 ```
 
-SQL COALESCE и JS вычисление в bestWeight задуманы одинаково, но текущая hydration нарушает это соответствие: nullable externalWeight/bodyWeight/extraWeight/assistWeight имеют `from: parseFloat`, и PostgreSQL driver применяет transformer даже к null. Offline проверка metadata + `driver.prepareHydratedValue(null,column)` дала NaN для всех четырех полей, null для bodyMultiplier. `??` не заменяет NaN, поэтому SQL может ранжировать пустые веса как 0, а JS response вычисляет NaN; JSON сериализует `{weight:NaN}` как `{"weight":null}`. Это воспроизведенный риск текущего кода, а не допустимая бизнес-семантика. Он возможен и при одном null весовом поле.
+SQL использует COALESCE, JS — `??`. Текущие transformers всех пяти весовых полей сохраняют SQL null, поэтому null получает указанные defaults в обоих путях. Прежнее преобразование SQL null в NaN исправлено; не описывай его как текущий дефект. Для специальных нечисловых значений и raw SQL соответствие нужно проверять отдельно: `??` не заменяет NaN, а JSON сериализует NaN как null.
 
 Нулевой **числовой** multiplier сохраняется как 0 благодаря `??`; `|| 1` изменит смысл. Формула не читает актуальные components каталога, не умножает на repetitions и не обрезает отрицательный результат до 0. При проверке исправления используй реально hydrated values, а не только plain JS fixtures с null.
 

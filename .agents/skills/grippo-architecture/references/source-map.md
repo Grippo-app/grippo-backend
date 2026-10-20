@@ -25,6 +25,11 @@ Production metadata проверяй заново для каждой разре
 | [scripts/cleanup.sh](../../../../scripts/cleanup.sh) | [grippo-operations](../../grippo-operations/SKILL.md) |
 | [scripts/deploy.sh](../../../../scripts/deploy.sh) | [grippo-operations](../../grippo-operations/SKILL.md) |
 | [scripts/dump.sh](../../../../scripts/dump.sh) | [grippo-operations](../../grippo-operations/SKILL.md) |
+| [scripts/setup-mac.sh](../../../../scripts/setup-mac.sh) | [grippo-orchestrator](../../grippo-orchestrator/SKILL.md) |
+| [scripts/internal/setup-mac.cjs](../../../../scripts/internal/setup-mac.cjs) | [grippo-orchestrator](../../grippo-orchestrator/SKILL.md) |
+| [scripts/internal/mac-access.cjs](../../../../scripts/internal/mac-access.cjs) | [grippo-exercise-create](../../grippo-exercise-create/SKILL.md) |
+| [scripts/internal/mac-server-access.cjs](../../../../scripts/internal/mac-server-access.cjs) | [grippo-operations](../../grippo-operations/SKILL.md) |
+| [scripts/internal/mac-transfer.cjs](../../../../scripts/internal/mac-transfer.cjs) | [grippo-exercise-create](../../grippo-exercise-create/SKILL.md) |
 | [scripts/import-exercise-translations.cjs](../../../../scripts/import-exercise-translations.cjs) | [grippo-operations](../../grippo-operations/SKILL.md) |
 | [scripts/internal/exercise-translations.cjs](../../../../scripts/internal/exercise-translations.cjs) | [grippo-domain-data](../../grippo-domain-data/SKILL.md) |
 | [scripts/sql/add-portuguese-locales.sql](../../../../scripts/sql/add-portuguese-locales.sql) | [grippo-operations](../../grippo-operations/SKILL.md) |

@@ -89,4 +89,21 @@ function assertLegacyJournalEmpty(directory = LEGACY_JOURNAL_ROOT) {
     } catch { throw failure('LEGACY_JOURNAL_MIGRATION_REQUIRED'); }
 }
 
-module.exports = {JOURNAL_ROOT, LEGACY_JOURNAL_ROOT, assertLegacyJournalEmpty, inspectDirectory, readPrivateFile};
+function assertPublicationHistoryReady({root = PRIVATE_ROOT, migrationStatus} = {}) {
+    const setup = path.join(root, 'mac-setup');
+    if (!inspectDirectory(setup, {root})) return;
+    const lock = readPrivateFile(path.join(setup, 'import.lock'), root);
+    const imports = path.join(setup, 'imports');
+    const hasImports = inspectDirectory(imports, {root}) && fs.readdirSync(imports).length > 0;
+    // Original installations have no Mac transfer receipts. Their existing
+    // journal gates still apply; no Mac-only dependency is loaded here.
+    if (!lock && !hasImports) return;
+    let status;
+    try {
+        status = migrationStatus ? migrationStatus() : require('../../../../scripts/internal/mac-transfer.cjs')
+            .createTransfer({home: path.dirname(root)}).checkMigrationStatus({includeServerAccess: false});
+    } catch { throw failure('PUBLICATION_HISTORY_MIGRATION_UNVERIFIED'); }
+    if (status?.status !== 'ready') throw failure('PUBLICATION_HISTORY_MIGRATION_INCOMPLETE');
+}
+
+module.exports = {JOURNAL_ROOT, LEGACY_JOURNAL_ROOT, assertLegacyJournalEmpty, assertPublicationHistoryReady, inspectDirectory, readPrivateFile};

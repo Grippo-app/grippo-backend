@@ -54,8 +54,7 @@ checks, repository queries, transaction и mapping ответа.
 
 Для новых business ошибок используй подходящий Nest HttpException.
 `JwtStrategy` бросает raw Error с установленным err.name — это наблюдаемая особенность;
-не воспроизводи её в других services. Существующий raw Error в weight removal
-зафиксирован в identity references как риск, а не правило.
+не воспроизводи её в других services.
 
 Логирование — Nest `Logger`; не пиши секреты, body sign-in, SQL rows и private
 keys. Текущий `LoggingInterceptor` логирует method/path/status/uid/duration:

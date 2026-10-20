@@ -12,8 +12,9 @@
 Оба Bash wrapper используют `set -euo pipefail`, определяют свой физический
 каталог и через `exec python3` передают args helper с operation `dump`/`deploy`.
 Logger и shell `source .env` для этих операций больше не используются.
-Нужны Unix с `fcntl.flock`, Bash, Python >=3.9, Git и Docker Compose v2,
-поддерживающий JSON config. Docker CLI/daemon/PG tools проверяются через
+Нужны Unix с `fcntl.flock`, Bash, Python >=3.9, Git и Docker Compose с
+`config --format json` и ожидаемым протоколом подстановки `$` (включая v2/v5).
+Helper проверяет возможности, а не только major version. Docker CLI/daemon/PG tools проверяются через
 фактические commands; scripts не устанавливают инструменты сами.
 
 | Option | Назначение |

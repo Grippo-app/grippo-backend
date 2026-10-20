@@ -96,7 +96,8 @@ finding `required_field_missing`: по такой выгрузке нельзя 
   отсутствовать в grouped API; назначение группы и проверка выдачи требуют
   отдельного анализа. Непустой невалидный или отсутствующий в снимке FK — finding.
 - Повторные пары exercise–muscle, exercise–equipment и exercise–language:
-  finding о дублировании связи. SQL уникальность этих пар не предполагается.
+  finding о дублировании связи. В текущей entity уникальность задана для
+  exercise–language; применение constraint в живой БД этот CLI не проверяет.
 - Ровно одна components-строка для каждого exercise — требование чтения каталога.
   Отличающийся components PK и exercise FK — только observation о service
   convention: SQL unique FK не требует их равенства.
@@ -141,7 +142,8 @@ finding `required_field_missing`: по такой выгрузке нельзя 
 
 ### Текст, языки, словари
 
-- Хранимые языки только `en`, `ua`, `ru`; missing language — observation
+- Хранимые языки — `en`, `ua`, `ru`, `pt-BR`, `pt-PT`, как в текущем
+  SUPPORTED_LANGUAGES; отсутствующий перевод поддерживаемого языка — observation
   с возможным fallback, а не запрещённая БД форма. Дублирование языка — finding.
 - Nullable base/translation text и image_url принимают `null` с observation;
   dictionary name — строка. Пустота, внешние пробелы, replacement/control
@@ -150,11 +152,13 @@ finding `required_field_missing`: по такой выгрузке нельзя 
 - `image_url` проверяется только как string/null; URL и доступность медиа не
   проверяются. Естественный язык, качество перевода и эквивалентность локалей
   требуют отдельного просмотра специалистами.
-- Enum membership взято из исходников на **2026-10-18**. Примеры: category
+- Enum membership — локальный список из исходников. Примеры: category
   compound/isolation; weight_type free/fixed/body_weight; force_type
   push/pull/hinge; experience beginner/intermediate/advanced/pro. Полные enum
   словарей явно перечислены в скрипте; при изменении `src/lib/*enum.ts` сначала
-  пересмотри список. Это не разрешение добавлять новые enum для аудита.
+  пересмотри список; при изменении SUPPORTED_LANGUAGES обнови LANGUAGES и
+  проверь обе PT локали и отклонение header aliases в storage. Это не
+  разрешение добавлять новые enum для аудита.
 - Nullable enum принимается с observation. Muscle recovery — nonnegative
   математически целый finite JSON number/null, включая `24.0`, исключая
   boolean/string; size/sensitivity — finite number/numeric string/null. Новые

@@ -10,7 +10,8 @@
 Связанные исходники админки:
 
 - `src/domain/exercise/ExerciseNormalizer.js`: editor/defaults, import и
-  `toRequestDto` (326); scalar/maps преобразуются в массивы языковых значений.
+  `buildPersistencePayload` (326, exported static method 386); scalar/maps
+  преобразуются в массивы языковых значений.
 - `src/domain/exercise/ExerciseValidator.js`: правила формы и components.
 - `src/shared/constants/index.js`: языки; `src/shared/utils/index.js`:
   ограничения image URL; `src/domain/exercise/DictionaryStore.js`: справочники.

@@ -1,5 +1,15 @@
 # Постоянный локальный доступ к S3 и admin API
 
+Для нового Mac используй [единый установщик и зашифрованный перенос](../../grippo-orchestrator/references/mac-setup.md).
+Он восстанавливает существующие записи и полный журнал, привязывая AWS profile
+к новым путям. Это отдельный путь от первоначального создания IAM user ниже:
+`--apply` при переносе уже существующей identity не повторяется.
+После такой установки бери точный `toolchain.nodeExecutable` и `toolchain.binPath`
+из JSON-отчёта установщика для запуска Node helpers и их child environment.
+Обычный `node` в PATH может указывать на другой runtime; собственный AWS profile
+намеренно привязан к конкретным Node/helper. Не ослабляй эту проверку и не
+перепривязывай профиль между разными runtime при каждом упражнении.
+
 После разовой настройки на этом Mac команды выполняет агент. Для нового
 упражнения пользователь одобряет полное финальное preview; повторный ручной
 вход не нужен, пока доступы действуют и Keychain доступен. Настройка доступа
@@ -51,6 +61,11 @@ node .agents/skills/grippo-exercise-create/scripts/exercise-vault.cjs --status
 Вложенные ключи запрещены; чтение, удаление, ACL, IAM и серверные операции
 не выдаются. Имена, реальные WebP bytes и checksum дополнительно проверяет
 media helper.
+
+Перед runtime STS/upload helper также проверяет весь профиль: только согласованные
+region/output/credential_process, без static credentials одноимённого профиля,
+role/SSO и иных источников, которые могут обойти Keychain. Несовпадение блокирует
+операцию без изменения AWS config или IAM.
 
 Новый профиль `grippo-exercise-publisher-keychain` использует фиксированный
 absolute `credential_process` из Node bridge. Единственный access key
