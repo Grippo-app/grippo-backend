@@ -363,7 +363,7 @@ async function main(argv) {
     process.stdout.write(JSON.stringify(result) + '\n');
 }
 
-module.exports = {installVault, readRecord, writeRecord, deleteRecord, promptAdminCredentials};
+module.exports = {installVault, readRecord, writeRecord, deleteRecord, promptAdminCredentials, validateRecord, status};
 if (require.main === module) main(process.argv.slice(2)).catch(error => {
     process.stderr.write((ERROR_CODE.test(error.code || '') ? error.code : 'VAULT_FAILED') + '\n');
     process.exitCode = 1;

@@ -13,6 +13,7 @@ push token registry и admin API.
 | Нужная информация | Источник |
 |---|---|
 | Правила работы и выбор skill | [AGENTS.md](AGENTS.md) |
+| Новый Mac: зависимости, защищённый перенос доступов/журнала и readiness | [mac-setup](.agents/skills/grippo-orchestrator/references/mac-setup.md) |
 | Архитектура, modules, DI | [architecture](.agents/skills/grippo-architecture/references/architecture.md) |
 | Все исходники и владельцы областей | [source-map](.agents/skills/grippo-architecture/references/source-map.md) |
 | Entities и отношения | [entity-map](.agents/skills/grippo-domain-data/references/entity-map.md) |

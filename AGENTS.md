@@ -38,7 +38,8 @@ NestJS 10 / Express, TypeScript, TypeORM 0.3, PostgreSQL 15.5; Node 20 в Docker
   Swagger и TS тип не заменяют runtime validators; nested DTO требуют
   явной проверки структуры и transformation.
 - I18n: LanguageMiddleware → req.locale → ExerciseExampleI18nService;
-  API languages — en/ua/ru. Локальное оформление файла важнее массового format.
+  API languages — SUPPORTED_LANGUAGES в src/i18n/i18n.types.ts
+  (en/ua/ru/pt-BR/pt-PT). Локальное оформление файла важнее массового format.
 - Schema/enum/DTO/auth/env/dependencies меняй только для запрошенной работы,
   объяснив влияние и проверив доступных потребителей. Не вводи migration
   framework, другой auth/DI/framework или широкую переработку вне задачи.

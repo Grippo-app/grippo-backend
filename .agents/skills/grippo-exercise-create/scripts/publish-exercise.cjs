@@ -9,7 +9,7 @@ const crypto = require('node:crypto');
 const {API_BASE, canonical, readJson, readPreview, sha256} = require('./exercise-package.cjs');
 const {validatePreview} = require('./prepare-exercise.cjs');
 const {UUID, requestJson, safeError, verifyPublicMedia} = require('./exercise-http.cjs');
-const {JOURNAL_ROOT, assertLegacyJournalEmpty, inspectDirectory, readPrivateFile} = require('./exercise-state.cjs');
+const {JOURNAL_ROOT, assertLegacyJournalEmpty, assertPublicationHistoryReady, inspectDirectory, readPrivateFile} = require('./exercise-state.cjs');
 const object = value => value !== null && typeof value === 'object' && !Array.isArray(value);
 const timestamp = () => new Date().toISOString();
 const normalizedName = value => typeof value === 'string' ? value.normalize('NFKC').trim().replace(/\s+/gu, ' ').toLocaleLowerCase('en-US') : '';
@@ -292,6 +292,7 @@ async function run(args, deps = {}) {
     if (args.mode !== 'create' || args['expected-package-sha256'] !== preview.packageSha256) {
         throw safeError('APPROVED_PACKAGE_SHA256_REQUIRED');
     }
+    (deps.assertPublicationHistoryReady || assertPublicationHistoryReady)();
     const media = await verifyMedia(preview.media);
     const catalog = await checkCatalog(preview, token, send);
     // Slow read-only prerequisites cannot make an edited local package eligible
@@ -302,6 +303,7 @@ async function run(args, deps = {}) {
     if (freshPreview.packageSha256 !== preview.packageSha256) throw safeError('APPROVED_PACKAGE_CHANGED');
     // Recheck the fixed legacy location after slow read-only prerequisites.
     assertLegacyJournalEmpty(deps.legacyJournalRoot);
+    (deps.assertPublicationHistoryReady || assertPublicationHistoryReady)();
     inspectDirectory(directory, {root, create: true});
     durableWrite(path.join(directory, 'intent.json'), {
         schemaVersion: 1, status: 'create_started', packageSha256: preview.packageSha256,

@@ -104,7 +104,7 @@ function credentialProcess() {
     const script = path.join(__dirname, 'exercise-vault.cjs');
     // AWS splits this command into arguments. Do not accept shell substitutions,
     // relative paths, HOME expansion, or command fragments from configuration.
-    if (![node, script].every(value => path.isAbsolute(value) && /^[a-zA-Z0-9 /._-]+$/.test(value))) fail('CREDENTIAL_PROCESS_PATH_UNSAFE');
+    if (![node, script].every(value => path.isAbsolute(value) && /^[a-zA-Z0-9 /._@-]+$/.test(value))) fail('CREDENTIAL_PROCESS_PATH_UNSAFE');
     return `"${node}" "${script}" --aws-credential-process`;
 }
 
@@ -247,6 +247,11 @@ async function apply(expectedHash) {
 
 function verifyPublisherProfile() {
     assertAwsConfigSafe();
+    // Shared-file static credentials and role/SSO settings can take precedence
+    // over credential_process. Validate the complete local source before STS;
+    // the same strict reader is used by Mac setup, always without writes here.
+    const profile = require('../../../../scripts/internal/mac-access.cjs').configureAwsProfile({write: false});
+    if (profile.status !== 'matches') fail('AWS_PROFILE_CREDENTIAL_SOURCE_MISMATCH');
     assertCliHistoryDisabled(runAws, PROFILE);
     const configured = runAws(['configure', 'get', 'credential_process'], {profile: PROFILE});
     if (configured !== credentialProcess()) fail('AWS_PROFILE_CREDENTIAL_PROCESS_MISMATCH');

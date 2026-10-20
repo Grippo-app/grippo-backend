@@ -8,7 +8,7 @@ const path = require('node:path');
 const crypto = require('node:crypto');
 const {spawnSync} = require('node:child_process');
 const {readPreview, loadPolicy, MAX_MEDIA_BYTES} = require('./exercise-package.cjs');
-const {JOURNAL_ROOT, assertLegacyJournalEmpty, inspectDirectory, readPrivateFile} = require('./exercise-state.cjs');
+const {JOURNAL_ROOT, assertLegacyJournalEmpty, assertPublicationHistoryReady, inspectDirectory, readPrivateFile} = require('./exercise-state.cjs');
 const {awsEnvironment, verifyPublisherProfile} = require('./exercise-aws-access.cjs');
 
 class MediaError extends Error {
@@ -170,8 +170,9 @@ function createPlanDirectory(out, plan, qa) {
     }
 }
 
-function upload(plan, original, out, journalRoot = JOURNAL_ROOT, legacyJournalRoot) {
+function upload(plan, original, out, journalRoot = JOURNAL_ROOT, legacyJournalRoot, historyReady = assertPublicationHistoryReady) {
     assertLegacyJournalEmpty(legacyJournalRoot);
+    historyReady();
     // A named profile may have been edited since setup. Check the exact local
     // credential process and restricted actor before recording any upload intent.
     verifyPublisherProfile();
@@ -182,6 +183,7 @@ function upload(plan, original, out, journalRoot = JOURNAL_ROOT, legacyJournalRo
     // Stable per-object intent survives a changed --out or copied preview. An
     // unfinished or completed attempt is reconciled read-only, never replayed.
     const objectIdentity = sha256(`${plan.bucket}/${plan.key}`);
+    historyReady();
     try { inspectDirectory(journalRoot, {root: journalRoot, create: true}); } catch (error) {
         if (error instanceof MediaError) throw error;
         fail('$.upload', error.safeCode || 'JOURNAL_UNAVAILABLE');

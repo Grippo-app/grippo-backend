@@ -17,16 +17,13 @@ AuthModule импортирует `PassportModule.register({defaultStrategy:'jwt
 
 `register`:
 
-1. Lookup по email с `id,password`.
-2. Если password уже есть → 400 `This email is already taken`.
-3. Если user существует и password пустой → сохраняет hash нового password и сразу выдаёт tokens того же user. Наличие `googleId`/`appleId` не требуется; лог `Password added to Google account` описывает ветку уже, чем код.
-4. Иначе создаёт `UsersEntity {email,password:hash,role:DEFAULT}`, сохраняет и выдаёт tokens.
+1. Lookup по email с `id`.
+2. Любой существующий user, включая social-only → 400 `This email is already taken`, без записи password и выдачи JWT.
+3. Иначе создаёт `UsersEntity {email,password:hash,role:DEFAULT}`, сохраняет и выдаёт tokens.
 
 Profile в этих шагах не создаётся. Lookup/create и linking не обёрнуты общей transaction; уникальные DB constraints остаются последней защитой от concurrent duplicate insert. Нет перевода unique-violation в специализированный 400/409 в `AuthService`.
 
-**Вывод по коду, существенный риск:** публичный register позволяет назначить password существующему social-only user, зная его email и не предъявляя provider token/подтверждение владения email. Поэтому выдача JWT в этой ветке — граница account takeover. Это описание текущего поведения, не рекомендуемый linking pattern.
-
-**Рекомендация при задаче исправить linking:** сначала сформулировать и согласовать требуемое доказательство владения и client migration; сделать атомарность/обработку races частью изменения. Не копировать текущую ветку в нового provider как шаблон безопасного linking.
+Прежний путь назначения password social-only user через публичный register закрыт. Не восстанавливай его как удобное linking поведение. Добавление password к существующей identity требует отдельного разрешённого потока с доказательством владения и обработкой races.
 
 ## Google — факты
 
@@ -80,16 +77,16 @@ Lookup по `appleId=sub`, далее по email если он есть. Для 
 
 | Назначение | Secret | TTL |
 |---|---|---|
-| Access | `JWT_SECRET_KEY` | `JWT_EXPIRATION_TIME` |
+| Access | `JWT_SECRET_KEY` | `JWT_EXPIRATION_TIME || '1d'` |
 | Refresh | `JWT_REFRESH_SECRET` | `JWT_REFRESH_EXPIRATION_TIME` |
 
-`AuthModule` задаёт default `signOptions.expiresIn = JWT_EXPIRATION_TIME || '1d'`; `TokenService` в каждом sign передаёт `expiresIn: config.get(...)` явно без своего fallback. Offline harness с текущим установленным `JwtService`, module default `'1d'` и fake config без TTL подтвердил отказ issuance: `"expiresIn" should be a number of seconds or string representing a timespan`. Поэтому module fallback не обеспечивает рабочий login при отсутствующем TTL. Это проверка синтетического config без `.env`, БД или bootstrap; при обновлении зависимости результат перепроверь. Config schema, гарантирующей непустые секреты и TTL, в `ConfigModule.forRoot` нет. Разные secrets — конфигурационный инвариант, код не проверяет их различие.
+Access TTL fallback задан и в AuthModule, и явно в TokenService. Refresh TTL передаётся без fallback; его отсутствие/некорректная форма может сорвать issuance. ConfigModule не имеет общей validation schema, но `TokenService.getRefreshSecret()` до signing и refresh verification требует непустые string access/refresh secrets и их различие; иначе HTTP 500 `JWT configuration is invalid`. Whitespace проверяется через trim, сами secret values не trim-ятся при подписи/сравнении.
 
-Refresh: `jwtService.verifyAsync(refreshToken,{secret:JWT_REFRESH_SECRET})` в try/catch → `usersRepository.existsBy({id:payload.id})` → новая пара. Invalid/expired verification или отсутствующий user → 401 `Invalid or expired refresh token`. Ошибка БД на `existsBy`/ошибка issuance вне verification catch не получает эту нормализацию.
+Refresh: getRefreshSecret до try → verifyAsync с этим secret в try/catch → проверка payload (не null/array, строковый UUID id) → usersRepository.existsBy → новая пара. Invalid/expired verification, неверная форма identity или отсутствующий user → 401 `Invalid or expired refresh token`. Ошибка конфигурации, БД или issuance не нормализуется verification catch в 401.
 
 Refresh token не хранится, не хэшируется в БД, не invalidated после использования. Нет refresh rotation/reuse detection/revocation/logout route/password-change invalidation. Новая пара не означает одноразовость старого token. Удаление user блокирует refresh при DB lookup и protected requests при strategy lookup. Смена роли учитывается при следующем protected request, поскольку роль берётся из БД. `DELETE /push-tokens` не logout и JWT не отзывает.
 
-**Разделение access/refresh:** payload одинаков по типу; разграничение опирается на secrets. Если secrets одинаковы и claims подходят, код сам не различает назначения token. Кроме того, установленный `JwtService.getSecretKey` выбирает `options?.secret || this.options.secret`: отсутствующий/пустой `JWT_REFRESH_SECRET` в signAsync и verifyAsync заменяется модульным access secret `JWT_SECRET_KEY`. При заданных TTL это не обязательно ошибка запуска: refresh подписывается access secret, а refresh verifier принимает и access token. Синтетическая offline проверка `TokenService` и `JwtService` подтвердила обе ветки; значения реальной среды не проверялись. При обновлении `@nestjs/jwt` сверяй реализацию по [lockfile](../../../../package-lock.json). Не публикуй и не читай production secrets для проверки этой заметки.
+**Разделение access/refresh:** payload одинаков по типу; разграничение опирается на разные secrets. getRefreshSecret отвергает missing/blank/equal конфигурацию до обращения к JWT library, закрывая прежний fallback refresh к модульному access secret. Проверяй это синтетическими config/signature fixtures; production secrets для проверки не нужны. Отдельного token-type claim нет.
 
 ## Access validation и error contract
 

@@ -193,8 +193,11 @@ Conditional put и checksum поддерживаются текущей CLI inpu
 
 ## Подтверждение URL и модели
 
-После upload проверь metadata S3 и обычный CDN GET без admin Authorization:
-успех, `image/webp`, фактические bytes/размеры и hash финального файла. Проверь
+После upload проверь checksum/metadata из PutObject receipt и обычный CDN GET
+без admin Authorization: успех, `image/webp`, фактические bytes/размеры и hash
+финального файла. Publisher identity имеет только PutObject; отдельное чтение
+metadata S3 допустимо лишь при уже разрешённом read access, для публикации оно
+не требуется. Не расширяй IAM ради проверки. Проверь
 видимое изображение и отсутствие заглушки/ошибки. HEAD и успешный put сами
 по себе не подтверждают финальную CDN выдачу. При cache/распространении
 подожди и перепроверь read-only; не повторяй запись ради того же URL.
