@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 'use strict';
 
-// Credentials come only from this process's terminal. No browser session,
-// credential file, environment token, refresh, redirects, retries or cache.
+// Explicit setup takes credentials from this process's hidden terminal and
+// stores them in our restricted macOS Keychain vault. Later runs log in once
+// using that record. Tokens remain in memory; no refresh, redirects or retries.
 const https = require('node:https');
 const {StringDecoder} = require('node:string_decoder');
 const {TextDecoder} = require('node:util');
@@ -22,6 +23,8 @@ const validText = value => value === null || typeof value === 'string';
 function parseArguments(argv) {
     if (!argv.length || argv.length === 1 && argv[0] === '--check') return {mode: 'check'};
     if (argv.length === 1 && argv[0] === '--help') return {mode: 'help'};
+    if (argv.length === 1 && argv[0] === '--setup') return {mode: 'setup'};
+    if (argv.length === 1 && argv[0] === '--forget') return {mode: 'forget'};
     if (argv[0] === '--publisher') return {mode: 'publisher', publisherArgs: publisher.parseArguments(argv.slice(1))};
     throw safeError('ACCESS_CLI_ARGUMENTS_INVALID');
 }
@@ -92,6 +95,51 @@ async function promptCredentials(deps) {
     return {email, password};
 }
 
+async function promptSetupCredentials(vault, deps) {
+    if (deps.promptCredentials) return deps.promptCredentials(deps.terminal);
+    const input = deps.terminal?.input || process.stdin;
+    const output = deps.terminal?.output || process.stderr;
+    if (input.isTTY && output.isTTY && typeof input.setRawMode === 'function') return promptCredentials(deps.terminal);
+    // Only explicit setup may open the secure native dialog. Unattended
+    // check/publication paths never prompt or fall back to another credential.
+    return vault.promptAdminCredentials();
+}
+
+function validateCredentials(credentials) {
+    if (!object(credentials) || Object.keys(credentials).length !== 2
+        || !['email', 'password'].every(field => Object.hasOwn(credentials, field))
+        || typeof credentials.email !== 'string' || credentials.email.length > 320
+        || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(credentials.email)
+        || /[\p{Cc}\p{Cf}]/u.test(credentials.email)
+        || typeof credentials.password !== 'string' || !credentials.password.length
+        || Buffer.byteLength(credentials.password, 'utf8') > 16384
+        || /[\p{Cc}\p{Cf}]/u.test(credentials.password)) throw safeError('AUTH_CREDENTIALS_INVALID');
+    return credentials;
+}
+
+function validateAdminRecord(record) {
+    const fields = ['schemaVersion', 'apiBase', 'userId', 'email', 'password'];
+    if (!object(record) || Object.keys(record).length !== fields.length
+        || !fields.every(field => Object.hasOwn(record, field))
+        || record.schemaVersion !== 1 || record.apiBase !== API_BASE || !validUuid(record.userId)) {
+        throw safeError('ADMIN_ACCESS_RECORD_INVALID');
+    }
+    try { validateCredentials({email: record.email, password: record.password}); }
+    catch { throw safeError('ADMIN_ACCESS_RECORD_INVALID'); }
+    return record;
+}
+
+function clearCredentials(credentials) {
+    if (object(credentials)) { credentials.email = ''; credentials.password = ''; }
+}
+
+function clearAuthResponse(response) {
+    if (object(response?.json)) {
+        delete response.json.accessToken;
+        delete response.json.refreshToken;
+    }
+}
+
 async function requestAccessJson(input, deps = {}) {
     const {method, path, token, body} = input;
     const raw = /^\/admin\/exercise-examples\/([^/]+)\/translations$/.exec(path);
@@ -122,16 +170,20 @@ async function requestAccessJson(input, deps = {}) {
             let request;
             let timer;
             let settled = false;
+            const chunks = [];
             const finish = (error, result) => {
                 if (settled) return;
                 settled = true;
                 clearTimeout(timer);
+                for (const chunk of chunks) chunk.fill(0);
+                chunks.length = 0;
                 if (error) reject(error); else resolve(result);
             };
             try {
                 request = (deps.https || https).request(new URL(path, API_BASE), {
                     method, headers, rejectUnauthorized: true,
                 }, response => {
+                    if (settled) { response.destroy(); return; }
                     const statusCode = response.statusCode;
                     response.on('error', () => finish(safeError('ACCESS_HTTP_RESPONSE_FAILED')));
                     response.on('aborted', () => finish(safeError('ACCESS_HTTP_RESPONSE_ABORTED')));
@@ -154,8 +206,8 @@ async function requestAccessJson(input, deps = {}) {
                         return;
                     }
                     let count = 0;
-                    const chunks = [];
                     response.on('data', chunk => {
+                        if (settled) return;
                         count += chunk.length;
                         if (count > limit) { finish(safeError('ACCESS_HTTP_BODY_TOO_LARGE')); response.destroy(); }
                         else chunks.push(Buffer.from(chunk));
@@ -164,8 +216,10 @@ async function requestAccessJson(input, deps = {}) {
                         if (settled) return;
                         if (length !== undefined && count !== Number(length)) { finish(safeError('ACCESS_HTTP_BODY_TRUNCATED')); return; }
                         let json;
-                        try { json = JSON.parse(new TextDecoder('utf-8', {fatal: true}).decode(Buffer.concat(chunks))); }
+                        const bytes = Buffer.concat(chunks);
+                        try { json = JSON.parse(new TextDecoder('utf-8', {fatal: true}).decode(bytes)); }
                         catch { finish(safeError('ACCESS_HTTP_JSON_INVALID')); return; }
+                        finally { bytes.fill(0); }
                         finish(null, {statusCode, json});
                     });
                 });
@@ -178,26 +232,27 @@ async function requestAccessJson(input, deps = {}) {
                 finish(safeError('ACCESS_HTTP_REQUEST_FAILED'));
             }
         });
-    } finally { if (encoded) encoded.fill(0); }
+    } finally {
+        if (encoded) encoded.fill(0);
+        delete headers.Authorization;
+    }
 }
 
 async function authenticate(credentials, send) {
     let response;
     try {
+        validateCredentials(credentials);
         response = await send({method: 'POST', path: '/auth/login', body: credentials});
+        if (!object(response) || response.statusCode !== 200) throw safeError('ADMIN_LOGIN_REJECTED', response?.statusCode);
+        const auth = response.json;
+        if (!object(auth) || !validUuid(auth.id) || !validToken(auth.accessToken) || !validToken(auth.refreshToken)) {
+            throw safeError('AUTH_RESPONSE_INVALID');
+        }
+        return {id: auth.id.toLowerCase(), token: auth.accessToken};
     } finally {
-        credentials.email = '';
-        credentials.password = '';
+        clearCredentials(credentials);
+        clearAuthResponse(response);
     }
-    if (response.statusCode !== 200) throw safeError('ADMIN_LOGIN_REJECTED', response.statusCode);
-    const auth = response.json;
-    if (!object(auth) || !validUuid(auth.id) || !validToken(auth.accessToken) || !validToken(auth.refreshToken)) {
-        throw safeError('AUTH_RESPONSE_INVALID');
-    }
-    const session = {id: auth.id.toLowerCase(), token: auth.accessToken};
-    delete auth.accessToken;
-    delete auth.refreshToken;
-    return session;
 }
 
 async function checkAccess(session, send) {
@@ -253,9 +308,44 @@ async function checkAccess(session, send) {
     return summary;
 }
 
+async function setupAccess(deps = {}) {
+    const vault = deps.vault || require('./exercise-vault.cjs');
+    const send = deps.requestAccessJson || requestAccessJson;
+    await vault.installVault();
+    let credentials;
+    let record;
+    let session;
+    try {
+        credentials = await promptSetupCredentials(vault, deps);
+        validateCredentials(credentials);
+        // authenticate clears its input. Keep this independent, short-lived
+        // record only until verified credentials have reached the vault.
+        record = {schemaVersion: 1, apiBase: API_BASE, userId: '', email: credentials.email, password: credentials.password};
+        session = await authenticate(credentials, send);
+        const access = await checkAccess(session, send);
+        if (access.status !== 'admin_access_verified') throw safeError('ADMIN_ACCESS_PREREQUISITES_PENDING');
+        record.userId = session.id;
+        validateAdminRecord(record);
+        const stored = await vault.writeRecord('admin', record);
+        if (stored?.stored !== true) throw safeError('ADMIN_ACCESS_STORE_FAILED');
+        return {...access, credentialsStored: true, credentialStorage: 'macos-keychain'};
+    } finally {
+        clearCredentials(credentials);
+        clearCredentials(record);
+        if (session) session.token = '';
+    }
+}
+
 async function run(args, deps = {}) {
     const publish = deps.publisherRun || publisher.run;
-    if (args.mode === 'help') return {status: 'help', usage: 'exercise-admin-access.cjs [--check] | --publisher <publish-exercise flags>'};
+    if (args.mode === 'help') return {
+        status: 'help', usage: 'exercise-admin-access.cjs --setup | [--check] | --forget | --publisher <publish-exercise flags>',
+    };
+    if (args.mode === 'setup') return setupAccess(deps);
+    if (args.mode === 'forget') {
+        const removed = await (deps.vault || require('./exercise-vault.cjs')).deleteRecord('admin');
+        return {status: 'admin_credentials_removed', deleted: removed.deleted === true};
+    }
     if (!['check', 'publisher'].includes(args.mode)) throw safeError('ACCESS_MODE_INVALID');
     if (args.mode === 'publisher') {
         // Validate the complete package before requesting credentials. An
@@ -264,26 +354,40 @@ async function run(args, deps = {}) {
         if (args.publisherArgs.mode === 'offline') return preflight;
     }
     const send = deps.requestAccessJson || requestAccessJson;
-    const credentials = await (deps.promptCredentials || promptCredentials)(deps.terminal);
+    const vault = deps.vault || require('./exercise-vault.cjs');
+    let record;
+    let credentials;
     let session;
     try {
+        record = await vault.readRecord('admin');
+        if (record === null) throw safeError('ADMIN_ACCESS_SETUP_REQUIRED');
+        validateAdminRecord(record);
+        credentials = {email: record.email, password: record.password};
         session = await authenticate(credentials, send);
+        if (session.id !== record.userId.toLowerCase()) throw safeError('ADMIN_ACCESS_ACCOUNT_CHANGED');
+        clearCredentials(record);
         const access = await checkAccess(session, send);
         if (args.mode === 'check') return access;
         if (access.status !== 'admin_access_verified') throw safeError('ADMIN_ACCESS_PREREQUISITES_PENDING');
-        const publication = await publish(args.publisherArgs, {token: session.token});
+        const publicationAccess = {token: session.token};
+        let publication;
+        try { publication = await publish(args.publisherArgs, publicationAccess); }
+        finally { publicationAccess.token = ''; }
         return {status: publication.status, access, publication};
     } finally {
-        credentials.email = '';
-        credentials.password = '';
+        clearCredentials(credentials);
+        clearCredentials(record);
         if (session) session.token = '';
     }
 }
 
-module.exports = {authenticate, checkAccess, parseArguments, promptCredentials, readHiddenLine, requestAccessJson, run};
+module.exports = {
+    authenticate, checkAccess, parseArguments, promptCredentials, readHiddenLine, requestAccessJson, run,
+    setupAccess, validateAdminRecord, validateCredentials,
+};
 if (require.main === module) Promise.resolve().then(() => run(parseArguments(process.argv.slice(2)))).then(result => {
     process.stdout.write(`${JSON.stringify(result)}\n`);
-    if (!['help', 'admin_access_verified', 'offline_validated', 'verified'].includes(result.status)) process.exitCode = 1;
+    if (!['help', 'admin_access_verified', 'admin_credentials_removed', 'offline_validated', 'verified'].includes(result.status)) process.exitCode = 1;
 }).catch(error => {
     const code = typeof error?.safeCode === 'string' && /^[A-Z][A-Z0-9_]+$/.test(error.safeCode) ? error.safeCode : 'ADMIN_ACCESS_FAILED';
     process.stderr.write(`${JSON.stringify({status: 'FAIL', code})}\n`);
