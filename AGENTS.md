@@ -12,6 +12,7 @@ NestJS 10 / Express, TypeScript, TypeORM 0.3, PostgreSQL 15.5; Node 20 в Docker
 | Сложная задача, распределение ownership, интеграция | [grippo-orchestrator](.agents/skills/grippo-orchestrator/SKILL.md) |
 | Модульные границы, DI, кодстайл | [grippo-architecture](.agents/skills/grippo-architecture/SKILL.md) |
 | Entities, trainings, catalog, dictionaries, metrics | [grippo-domain-data](.agents/skills/grippo-domain-data/SKILL.md) |
+| Новое упражнение под ключ через AI: карточка, исследования, переводы, изображение и сохранение | [grippo-exercise-create](.agents/skills/grippo-exercise-create/SKILL.md) |
 | Командный аудит упражнений: техника, проценты, сложность, оборудование, переводы и научный поиск | [grippo-exercise-audit](.agents/skills/grippo-exercise-audit/SKILL.md) |
 | Auth, users/profile/goals, admin, weight/push, i18n | [grippo-identity-api](.agents/skills/grippo-identity-api/SKILL.md) |
 | Логи сервера, Docker, env, SSH, dump/deploy/restore/cleanup | [grippo-operations](.agents/skills/grippo-operations/SKILL.md) |
@@ -68,6 +69,13 @@ Review APPROVE, тесты, SSH/dump access, прежний deploy и сообщ
 dump, неизвестный источник или несовпадение paths запрещают deploy. Нельзя
 подменить штатный script произвольным pg_dump или автоматически объявить
 отсутствующую DB исключением «первый запуск».
+
+Для каждой production deploy attempt свежий проверенный dump обязателен также
+в [Notion Dump history](https://app.notion.com/p/3300cb0926ef80a7b760e51cf768a2d1):
+новый серый callout сверху, `At D MMM YYYY (краткая причина)`, вложение `dump.sql`.
+Порядок загрузки, проверки и отказа — [Notion archive](.agents/skills/grippo-operations/references/notion-dump-history.md).
+Это разрешённое пользователем место хранения полного SQL файлом; payload не
+печатать и не вставлять текстом. Правило не разрешает сам deploy или dump сейчас.
 
 Согласуй прекращение writes до snapshot и на время rollout; заранее разрешённый
 stop writers допустим, source PostgreSQL остаётся доступна. Backup предшествует

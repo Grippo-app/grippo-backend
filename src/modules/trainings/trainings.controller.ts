@@ -11,17 +11,20 @@ import {
     Put,
     Query,
     Req,
+    Res,
     UseGuards,
 } from '@nestjs/common';
 import {
     ApiBearerAuth,
     ApiExtraModels,
+    ApiHeader,
     ApiOkResponse,
     ApiOperation,
     ApiQuery,
     ApiResponse,
     ApiTags,
 } from '@nestjs/swagger';
+import {Response} from 'express';
 import {TrainingsService} from './trainings.service';
 import {JwtAuthGuard} from '../../common/jwt-auth.guard';
 import {TrainingsRequest} from './dto/trainings.request';
@@ -62,15 +65,18 @@ export class TrainingsController {
     @Get()
     @HttpCode(HttpStatus.OK)
     @ApiOperation({summary: 'Get all trainings in date range for current user'})
+    @ApiHeader({name: 'Accept-Language', required: false, description: 'Preferred language ranges with optional q weights. Locales: en, ua (uk alias), ru, pt-BR, pt-PT; bare pt defaults to pt-BR.'})
     @ApiQuery({name: 'start', required: true, example: new Date().toISOString(), description: 'Start date (ISO)'})
     @ApiQuery({name: 'end', required: true, example: new Date().toISOString(), description: 'End date (ISO)'})
-    @ApiOkResponse({status: 200, description: 'List of trainings returned successfully', type: [TrainingsEntity]})
+    @ApiOkResponse({status: 200, description: 'List of trainings returned successfully', type: [TrainingsEntity], headers: {Vary: {description: 'Includes Accept-Language for localized responses', schema: {type: 'string', example: 'Accept-Language'}}}})
     @ApiResponse({status: HttpStatus.UNAUTHORIZED, description: 'Unauthorized'})
     async getTrainings(
         @Req() req,
         @Query('start') start: string,
         @Query('end') end: string,
+        @Res({passthrough: true}) res: Response,
     ): Promise<any> {
+        res.vary('Accept-Language');
         const language = req.locale ?? this.exerciseExampleI18nService.resolveLanguage();
         return this.trainingsService.getTrainings(req.user, start, end, language);
     }
@@ -78,12 +84,15 @@ export class TrainingsController {
     @Get(':id')
     @HttpCode(HttpStatus.OK)
     @ApiOperation({summary: 'Get training details by ID for current user'})
-    @ApiOkResponse({status: 200, description: 'Training details returned successfully', type: TrainingsEntity})
+    @ApiHeader({name: 'Accept-Language', required: false, description: 'Preferred language ranges with optional q weights. Locales: en, ua (uk alias), ru, pt-BR, pt-PT; bare pt defaults to pt-BR.'})
+    @ApiOkResponse({status: 200, description: 'Training details returned successfully', type: TrainingsEntity, headers: {Vary: {description: 'Includes Accept-Language for localized responses', schema: {type: 'string', example: 'Accept-Language'}}}})
     @ApiResponse({status: HttpStatus.UNAUTHORIZED, description: 'Unauthorized'})
     async getTrainingById(
         @Req() req,
         @Param('id', new ParseUUIDPipe()) id: string,
+        @Res({passthrough: true}) res: Response,
     ): Promise<any> {
+        res.vary('Accept-Language');
         const language = req.locale ?? this.exerciseExampleI18nService.resolveLanguage();
         return this.trainingsService.getTrainingById(id, req.user, language);
     }

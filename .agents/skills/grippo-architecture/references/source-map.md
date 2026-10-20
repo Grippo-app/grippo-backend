@@ -4,7 +4,9 @@
 Индекс помогает найти owner и источник; сам по себе не доказывает полноту
 анализа поведения. Включены все src файлы: 19 entities, 10 feature modules,
 shared bootstrap/database/common/i18n/lib. Подробности — в профильных references.
-Mobile/admin repositories и production окружение не исследовались.
+Контракт локалей и редактора переводов — в
+[localization-and-http](../../grippo-identity-api/references/localization-and-http.md).
+Production metadata проверяй заново для каждой разрешённой операции.
 
 ## Файлы
 
@@ -23,6 +25,9 @@ Mobile/admin repositories и production окружение не исследов
 | [scripts/cleanup.sh](../../../../scripts/cleanup.sh) | [grippo-operations](../../grippo-operations/SKILL.md) |
 | [scripts/deploy.sh](../../../../scripts/deploy.sh) | [grippo-operations](../../grippo-operations/SKILL.md) |
 | [scripts/dump.sh](../../../../scripts/dump.sh) | [grippo-operations](../../grippo-operations/SKILL.md) |
+| [scripts/import-exercise-translations.cjs](../../../../scripts/import-exercise-translations.cjs) | [grippo-operations](../../grippo-operations/SKILL.md) |
+| [scripts/internal/exercise-translations.cjs](../../../../scripts/internal/exercise-translations.cjs) | [grippo-domain-data](../../grippo-domain-data/SKILL.md) |
+| [scripts/sql/add-portuguese-locales.sql](../../../../scripts/sql/add-portuguese-locales.sql) | [grippo-operations](../../grippo-operations/SKILL.md) |
 | [scripts/internal/logger.sh](../../../../scripts/internal/logger.sh) | [grippo-operations](../../grippo-operations/SKILL.md) |
 | [scripts/internal/operations.py](../../../../scripts/internal/operations.py) | [grippo-operations](../../grippo-operations/SKILL.md) |
 | [scripts/validate-agent-kit.py](../../../../scripts/validate-agent-kit.py) | [grippo-verification](../../grippo-verification/SKILL.md) |
@@ -95,12 +100,14 @@ Mobile/admin repositories и production окружение не исследов
 | [src/modules/equipments/equipments.service.ts](../../../../src/modules/equipments/equipments.service.ts) | [grippo-domain-data](../../grippo-domain-data/SKILL.md) |
 | [src/modules/exercise-examples/dto/exercise-components.dto.ts](../../../../src/modules/exercise-examples/dto/exercise-components.dto.ts) | [grippo-domain-data](../../grippo-domain-data/SKILL.md) |
 | [src/modules/exercise-examples/dto/exercise-example-translations.response.ts](../../../../src/modules/exercise-examples/dto/exercise-example-translations.response.ts) | [grippo-domain-data](../../grippo-domain-data/SKILL.md) |
+| [src/modules/exercise-examples/dto/exercise-example-update.request.ts](../../../../src/modules/exercise-examples/dto/exercise-example-update.request.ts) | [grippo-identity-api](../../grippo-identity-api/SKILL.md) |
 | [src/modules/exercise-examples/dto/exercise-example.request.ts](../../../../src/modules/exercise-examples/dto/exercise-example.request.ts) | [grippo-domain-data](../../grippo-domain-data/SKILL.md) |
 | [src/modules/exercise-examples/dto/exercise-example.request.spec.ts](../../../../src/modules/exercise-examples/dto/exercise-example.request.spec.ts) | [grippo-verification](../../grippo-verification/SKILL.md) |
 | [src/modules/exercise-examples/dto/exercise-example.response.ts](../../../../src/modules/exercise-examples/dto/exercise-example.response.ts) | [grippo-domain-data](../../grippo-domain-data/SKILL.md) |
 | [src/modules/exercise-examples/exercise-example.controller.ts](../../../../src/modules/exercise-examples/exercise-example.controller.ts) | [grippo-domain-data](../../grippo-domain-data/SKILL.md) |
 | [src/modules/exercise-examples/exercise-example.module.ts](../../../../src/modules/exercise-examples/exercise-example.module.ts) | [grippo-domain-data](../../grippo-domain-data/SKILL.md) |
 | [src/modules/exercise-examples/exercise-example.service.ts](../../../../src/modules/exercise-examples/exercise-example.service.ts) | [grippo-domain-data](../../grippo-domain-data/SKILL.md) |
+| [src/modules/exercise-examples/exercise-translations-revision.ts](../../../../src/modules/exercise-examples/exercise-translations-revision.ts) | [grippo-domain-data](../../grippo-domain-data/SKILL.md) |
 | [src/modules/exercise-metrics/dto/exercise-metrics.response.ts](../../../../src/modules/exercise-metrics/dto/exercise-metrics.response.ts) | [grippo-domain-data](../../grippo-domain-data/SKILL.md) |
 | [src/modules/exercise-metrics/exercise-metrics.controller.ts](../../../../src/modules/exercise-metrics/exercise-metrics.controller.ts) | [grippo-domain-data](../../grippo-domain-data/SKILL.md) |
 | [src/modules/exercise-metrics/exercise-metrics.module.ts](../../../../src/modules/exercise-metrics/exercise-metrics.module.ts) | [grippo-domain-data](../../grippo-domain-data/SKILL.md) |
@@ -155,7 +162,9 @@ Schema metadata извлекай по [правилам работы с дамп
 .idea, .DS_Store, .git, node_modules и dist не копируются в знания; установленный
 код зависимостей читается точечно для подтверждения TypeORM/validator semantics.
 
-Комплект инструкций: root AGENTS.md, .agents/skills/grippo-*, .codex/agents/*.toml,
-scripts/validate-agent-kit.py и tasks/*. При добавлении/удалении runtime source
-или постоянных файлов `test/postgres/` обнови таблицу и профильный reference.
+Комплект инструкций: root AGENTS.md/README.md/CLAUDE.md,
+.agents/skills/grippo-*, .codex/agents/*.toml, scripts/validate-agent-kit.py
+и постоянные test/postgres/ docs. Разовые отчёты и рабочие артефакты в него
+не входят. При добавлении/удалении runtime source или постоянных файлов
+`test/postgres/` обнови таблицу и профильный reference.
 Validator сверяет inventory, формат и ссылки; он не запускает PostgreSQL tests.

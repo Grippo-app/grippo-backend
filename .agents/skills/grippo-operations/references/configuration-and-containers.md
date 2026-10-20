@@ -158,6 +158,6 @@ DATA_SOURCE.initialize выполняется до ready HTTP. SIGINT/SIGTERM з
 `.gitignore` не заменяет `.dockerignore` и не защищает уже отслеживаемые файлы.
 Перед commit проверяй конкретные staged paths; SQL/.env/keys не публикуются.
 Compose описывает желаемую конфигурацию, а не доказывает actual состояние
-существующего DB container. Датированные remote evidence см. в
-[deployment report](../../../../tasks/deployment-hardening.md); на новой попытке
-повторно проверяй actual identity/config, особенно ещё не применённый DB hardening.
+существующего DB container. На каждой разрешённой попытке повторно проверяй
+actual identity/config по [remote preflight](remote-access.md), включая DB
+ports, mounts и security settings; source config не доказывает их применение.

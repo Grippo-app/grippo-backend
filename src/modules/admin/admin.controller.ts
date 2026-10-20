@@ -19,6 +19,7 @@ import {
     ApiBadRequestResponse,
     ApiBearerAuth,
     ApiConflictResponse,
+    ApiHeader,
     ApiNoContentResponse,
     ApiNotFoundResponse,
     ApiOkResponse,
@@ -33,6 +34,7 @@ import {JwtAuthGuard} from '../../common/jwt-auth.guard';
 import {AdminOnlyGuard} from '../../common/admin.guard';
 import {ExerciseExampleService} from '../exercise-examples/exercise-example.service';
 import {ExerciseExampleRequest} from '../exercise-examples/dto/exercise-example.request';
+import {ExerciseExampleUpdateRequest} from '../exercise-examples/dto/exercise-example-update.request';
 import {ExerciseExampleCreateResponse} from '../exercise-examples/dto/exercise-example.response';
 import {ExerciseExampleTranslationsResponse} from '../exercise-examples/dto/exercise-example-translations.response';
 import {UsersService} from '../users/users.service';
@@ -110,9 +112,16 @@ export class AdminController {
     @ApiUnauthorizedResponse({description: 'Unauthorized'})
     @ApiNotFoundResponse({description: 'Exercise example not found'})
     @ApiBadRequestResponse({description: 'Invalid data provided'})
+    @ApiConflictResponse({
+        description: 'Translation snapshot is stale/missing, or an existing Portuguese translation lacks explicit name/description entries',
+        schema: {type: 'object', required: ['code', 'message'], properties: {
+            code: {type: 'string', enum: ['EXERCISE_TRANSLATIONS_STALE', 'EXERCISE_TRANSLATIONS_INCOMPLETE']},
+            message: {type: 'string'},
+        }},
+    })
     async updateExerciseExample(
         @Query('id', new ParseUUIDPipe()) id: string,
-        @Body() body: ExerciseExampleRequest,
+        @Body() body: ExerciseExampleUpdateRequest,
     ): Promise<void> {
         return this.exerciseExamplesService.updateExerciseExample(id, body);
     }
@@ -188,10 +197,11 @@ export class AdminController {
     @Get('users/:id/trainings')
     @HttpCode(HttpStatus.OK)
     @ApiOperation({summary: 'Get trainings of any user in date range (admin only)'})
+    @ApiHeader({name: 'Accept-Language', required: false, description: 'Preferred language ranges with optional q weights. Locales: en, ua (uk alias), ru, pt-BR, pt-PT; bare pt defaults to pt-BR.'})
     @ApiParam({name: 'id', description: 'User ID (UUID)', type: String})
     @ApiQuery({name: 'start', required: true, example: new Date().toISOString(), description: 'Start date (ISO)'})
     @ApiQuery({name: 'end', required: true, example: new Date().toISOString(), description: 'End date (ISO)'})
-    @ApiOkResponse({description: 'List of trainings', type: [TrainingsEntity]})
+    @ApiOkResponse({description: 'List of trainings', type: [TrainingsEntity], headers: {Vary: {description: 'Includes Accept-Language for localized responses', schema: {type: 'string', example: 'Accept-Language'}}}})
     @ApiBadRequestResponse({description: 'Invalid date range'})
     @ApiUnauthorizedResponse({description: 'Unauthorized'})
     async getUserTrainings(
@@ -199,7 +209,9 @@ export class AdminController {
         @Query('start') start: string,
         @Query('end') end: string,
         @Req() req,
+        @Res({passthrough: true}) res: Response,
     ): Promise<TrainingsEntity[]> {
+        res.vary('Accept-Language');
         const language = req.locale ?? this.exerciseExampleI18nService.resolveLanguage();
         return this.trainingsService.getTrainingsByUserId(id, start, end, language);
     }

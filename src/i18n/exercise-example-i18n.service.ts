@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ExerciseExamplesEntity } from '../entities/exercise-examples.entity';
 import { ExerciseExampleTranslationEntity } from '../entities/exercise-example-translation.entity';
 import { DEFAULT_LANGUAGE, SupportedLanguage, SUPPORTED_LANGUAGES } from './i18n.types';
-import { tryNormalizeLocale } from './locale.helper';
+import { parseLocaleRange } from './locale.helper';
 
 @Injectable()
 export class ExerciseExampleI18nService {
@@ -15,16 +15,44 @@ export class ExerciseExampleI18nService {
             return DEFAULT_LANGUAGE;
         }
 
-        for (const part of header.split(',')) {
-            const candidate = part.split(';')[0]?.trim();
-            if (!candidate) continue;
-            const normalized = tryNormalizeLocale(candidate);
-            if (normalized) {
-                return normalized;
+        const candidates = new Map<SupportedLanguage, {quality: number; specificity: number; position: number}>();
+        header.split(',').forEach((part, position) => {
+            const [tag, ...parameters] = part.split(';').map(value => value.trim());
+            const range = parseLocaleRange(tag);
+            if (!range || parameters.length > 1) return;
+
+            let quality = 1;
+            if (parameters.length) {
+                const match = /^q\s*=\s*(0(?:\.\d{0,3})?|1(?:\.0{0,3})?)$/i.exec(parameters[0]);
+                if (!match) return; // Ignore the entire malformed/unknown parameter member.
+                quality = Number(match[1]);
+            }
+
+            for (const language of range.languages) {
+                const current = candidates.get(language);
+                if (!current || range.specificity > current.specificity
+                    || (range.specificity === current.specificity && current.quality !== 0
+                        && (quality === 0 || quality > current.quality))) {
+                    candidates.set(language, {quality, specificity: range.specificity, position});
+                }
+            }
+        });
+
+        let selected: SupportedLanguage = DEFAULT_LANGUAGE;
+        let bestQuality = 0;
+        let bestPosition = Infinity;
+        for (const language of SUPPORTED_LANGUAGES) {
+            const candidate = candidates.get(language);
+            if (candidate && candidate.quality > 0
+                && (candidate.quality > bestQuality
+                    || (candidate.quality === bestQuality && candidate.position < bestPosition))) {
+                selected = language;
+                bestQuality = candidate.quality;
+                bestPosition = candidate.position;
             }
         }
 
-        return DEFAULT_LANGUAGE;
+        return selected;
     }
 
     translateExample<T extends ExerciseExamplesEntity | null | undefined>(

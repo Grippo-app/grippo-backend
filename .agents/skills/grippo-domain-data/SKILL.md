@@ -12,6 +12,10 @@ description: "Изменять и исследовать TypeORM-сущност�
 исследуй через [exercise-audit](../grippo-exercise-audit/SKILL.md). Этот skill
 отвечает за хранение, запросы и контракт; научный вывод не следует из DTO.
 
+Новую карточку под ключ веди через
+[exercise-create](../grippo-exercise-create/SKILL.md): там связаны содержание,
+изображение, editor JSON, API create и readback.
+
 ## Выбор контекста
 
 - Сущности, FK, enum, каскады, nullable, decimal, DI: [entity-map.md](references/entity-map.md). Здесь все 19 entity, 18 repository tokens и карта удаления.

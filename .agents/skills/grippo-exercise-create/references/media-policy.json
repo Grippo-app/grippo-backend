@@ -1,0 +1,12 @@
+{
+  "bucket": "grippo-bucket",
+  "region": "eu-north-1",
+  "prefix": "example-images/",
+  "publicBaseUrl": "https://dsikfdo0rac0e.cloudfront.net/",
+  "format": "webp",
+  "contentType": "image/webp",
+  "width": 1024,
+  "height": 1024,
+  "stemPattern": "^[a-z0-9]+(?:_[a-z0-9]+)*$",
+  "overwrite": false
+}

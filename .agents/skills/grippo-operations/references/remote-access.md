@@ -28,9 +28,9 @@ Remote bytes/configuration могут отличаться: проверяй в�
 `~/.ssh/grippo-deploy.pem`. SSH использовал строгую проверку ранее доверенной
 ED25519 known_hosts записи:
 `SHA256:FS0XbKpIOAXx4+EjL9hroSJ2as6DcX0bfhltaa/Dlws`.
-Это датированные факты, а не default target или разрешение будущего запуска;
-история и runtime evidence — в [deployment report](../../../../tasks/deployment-hardening.md).
-Не приписывай этой проверке новое подтверждение fingerprint через console.
+Это датированные факты, а не default target или разрешение будущего запуска.
+Повторно установи actual identity/config внутри разрешённого scope; не
+приписывай прежней проверке новое подтверждение fingerprint через console.
 
 IDE hints сами не подтверждают target. При `autoUpload=Always` установи,
 использует ли IDE эту настройку; согласуй единственного writer remote checkout.

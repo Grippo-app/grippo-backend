@@ -7,12 +7,14 @@ import {
     Param,
     ParseUUIDPipe,
     Req,
+    Res,
     UseGuards,
 } from '@nestjs/common';
 import {
     ApiBadRequestResponse,
     ApiBearerAuth,
     ApiExtraModels,
+    ApiHeader,
     ApiNotFoundResponse,
     ApiOkResponse,
     ApiOperation,
@@ -20,6 +22,7 @@ import {
     ApiTags,
     ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
+import {Response} from 'express';
 import {ExerciseExampleService} from './exercise-example.service';
 import {JwtAuthGuard} from '../../common/jwt-auth.guard';
 import {ExerciseExampleResponseDto, ExerciseExampleWithStatsResponse} from "./dto/exercise-example.response";
@@ -47,7 +50,8 @@ export class ExerciseExampleController {
     @Get()
     @HttpCode(HttpStatus.OK)
     @ApiOperation({summary: 'List exercise examples with per-user stats (usageCount, lastUsed)'})
-    @ApiOkResponse({status: 200, description: 'List returned successfully', type: [ExerciseExampleWithStatsResponse]})
+    @ApiHeader({name: 'Accept-Language', required: false, description: 'Preferred language ranges with optional q weights. Locales: en, ua (uk alias), ru, pt-BR, pt-PT; bare pt defaults to pt-BR.'})
+    @ApiOkResponse({status: 200, description: 'List returned successfully', type: [ExerciseExampleWithStatsResponse], headers: {Vary: {description: 'Includes Accept-Language for localized responses', schema: {type: 'string', example: 'Accept-Language'}}}})
     @ApiUnauthorizedResponse({description: 'Unauthorized'})
     @ApiBearerAuth('access-token')
     @ApiExtraModels(
@@ -62,7 +66,9 @@ export class ExerciseExampleController {
     )
     async getExerciseExamples(
         @Req() req: any,
+        @Res({passthrough: true}) res: Response,
     ): Promise<ExerciseExampleWithStatsResponse[]> {
+        res.vary('Accept-Language');
         const language = req.locale ?? this.exerciseExampleI18nService.resolveLanguage();
         return this.exerciseExamplesService.getExerciseExamples(req.user, language);
     }
@@ -70,8 +76,9 @@ export class ExerciseExampleController {
     @Get(':id')
     @HttpCode(HttpStatus.OK)
     @ApiOperation({summary: 'Get exercise example by ID with per-user stats (usageCount, lastUsed)'})
+    @ApiHeader({name: 'Accept-Language', required: false, description: 'Preferred language ranges with optional q weights. Locales: en, ua (uk alias), ru, pt-BR, pt-PT; bare pt defaults to pt-BR.'})
     @ApiParam({name: 'id', description: 'Exercise example ID (UUID)', type: String, required: true})
-    @ApiOkResponse({status: 200, description: 'Exercise example returned', type: ExerciseExampleWithStatsResponse})
+    @ApiOkResponse({status: 200, description: 'Exercise example returned', type: ExerciseExampleWithStatsResponse, headers: {Vary: {description: 'Includes Accept-Language for localized responses', schema: {type: 'string', example: 'Accept-Language'}}}})
     @ApiBadRequestResponse({description: 'Invalid ID format'})
     @ApiNotFoundResponse({description: 'Exercise example not found'})
     @ApiUnauthorizedResponse({description: 'Unauthorized'})
@@ -89,7 +96,9 @@ export class ExerciseExampleController {
     async getExerciseExampleById(
         @Req() req: any,
         @Param('id', new ParseUUIDPipe()) id: string,
+        @Res({passthrough: true}) res: Response,
     ): Promise<ExerciseExampleWithStatsResponse> {
+        res.vary('Accept-Language');
         const language = req.locale ?? this.exerciseExampleI18nService.resolveLanguage();
         const result = await this.exerciseExamplesService.getExerciseExampleById(id, req.user, language);
         if (!result) throw new NotFoundException(`Exercise example with id ${id} not found`);

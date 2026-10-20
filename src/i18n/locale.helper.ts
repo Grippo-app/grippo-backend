@@ -3,18 +3,18 @@ import { SupportedLanguage, SUPPORTED_LANGUAGES } from './i18n.types';
 export const isSupportedLanguage = (value: string): value is SupportedLanguage =>
     SUPPORTED_LANGUAGES.includes(value as SupportedLanguage);
 
-/**
- * Normalizes arbitrary locale strings to one of the supported language codes.
- * Returns `undefined` when the value cannot be mapped to a supported language.
- */
-export const tryNormalizeLocale = (value?: string | null): SupportedLanguage | undefined => {
+export interface LocaleRange {
+    languages: readonly SupportedLanguage[];
+    specificity: number;
+}
+
+/** Explicit primary-language aliases; another language's region never selects a locale. */
+export const parseLocaleRange = (value?: string | null): LocaleRange | undefined => {
     const trimmed = value?.trim();
     if (!trimmed) return undefined;
+    if (trimmed === '*') return {languages: SUPPORTED_LANGUAGES, specificity: 0};
 
     const normalized = trimmed.replace(/_/g, '-');
-    const lowercase = normalized.toLowerCase();
-    if (isSupportedLanguage(lowercase)) return lowercase;
-
     let locale: Intl.Locale;
     try {
         locale = new Intl.Locale(normalized);
@@ -22,27 +22,19 @@ export const tryNormalizeLocale = (value?: string | null): SupportedLanguage | u
         return undefined;
     }
 
-    const primary = locale.language?.toLowerCase();
-
-    if (!primary) {
-        return undefined;
+    switch (locale.language.toLowerCase()) {
+        case 'en': return {languages: ['en'], specificity: 1};
+        case 'ru': return {languages: ['ru'], specificity: 1};
+        case 'uk':
+        case 'ua': return {languages: ['ua'], specificity: 1};
+        case 'pt':
+            // Bare Portuguese can negotiate either edition, preferring Brazilian.
+            if (!locale.region) return {languages: ['pt-BR', 'pt-PT'], specificity: 1};
+            return {languages: [locale.region.toUpperCase() === 'PT' ? 'pt-PT' : 'pt-BR'], specificity: 2};
+        default: return undefined;
     }
-
-    if (isSupportedLanguage(primary)) {
-        return primary;
-    }
-
-    const maximized = typeof locale.maximize === 'function' ? locale.maximize() : locale;
-
-    const maximizedLanguage = maximized.language?.toLowerCase();
-    if (maximizedLanguage && isSupportedLanguage(maximizedLanguage)) {
-        return maximizedLanguage;
-    }
-
-    const region = maximized.region?.toLowerCase();
-    if (region && isSupportedLanguage(region)) {
-        return region;
-    }
-
-    return undefined;
 };
+
+/** Normalizes a locale to its preferred storage/read code, without likely-subtag inference. */
+export const tryNormalizeLocale = (value?: string | null): SupportedLanguage | undefined =>
+    value?.trim() === '*' ? undefined : parseLocaleRange(value)?.languages[0];
