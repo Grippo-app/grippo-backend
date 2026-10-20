@@ -145,3 +145,7 @@ __pycache__/
 /.aws/
 /.grippo-private/
 **/.publication-journal/
+
+# SwiftPM output for the local native credential helper.
+/.build/
+/.swiftpm/
