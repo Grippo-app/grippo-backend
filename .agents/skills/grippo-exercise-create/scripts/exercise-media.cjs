@@ -9,6 +9,7 @@ const crypto = require('node:crypto');
 const {spawnSync} = require('node:child_process');
 const {readPreview, loadPolicy, MAX_MEDIA_BYTES} = require('./exercise-package.cjs');
 const {JOURNAL_ROOT, assertLegacyJournalEmpty, inspectDirectory, readPrivateFile} = require('./exercise-state.cjs');
+const {awsEnvironment, verifyPublisherProfile} = require('./exercise-aws-access.cjs');
 
 class MediaError extends Error {
     constructor(at, code) {
@@ -171,6 +172,9 @@ function createPlanDirectory(out, plan, qa) {
 
 function upload(plan, original, out, journalRoot = JOURNAL_ROOT, legacyJournalRoot) {
     assertLegacyJournalEmpty(legacyJournalRoot);
+    // A named profile may have been edited since setup. Check the exact local
+    // credential process and restricted actor before recording any upload intent.
+    verifyPublisherProfile();
     const current = readSource(plan.sourcePath);
     if (current.sha256 !== original.sha256 || !sameFingerprint(current.stat, original.stat)) fail('$.file', 'SOURCE_CHANGED_BEFORE_UPLOAD');
     const started = {outcome: 'started', automaticRetry: false, startedAt: new Date().toISOString(), publicReadbackPending: true,
@@ -191,16 +195,18 @@ function upload(plan, original, out, journalRoot = JOURNAL_ROOT, legacyJournalRo
     writeNew(path.join(out, 'media-upload-started.json'), started);
     const args = [
         's3api', 'put-object', '--bucket', plan.bucket, '--region', plan.region,
+        '--profile', 'grippo-exercise-publisher-keychain',
         '--endpoint-url', `https://s3.${plan.region}.amazonaws.com`,
         '--key', plan.key, '--body', plan.sourcePath, '--content-type', plan.contentType,
         '--if-none-match', '*', '--checksum-algorithm', 'SHA256', '--checksum-sha256', plan.checksumSHA256,
         '--output', 'json', '--no-cli-pager',
+        '--cli-connect-timeout', '10', '--cli-read-timeout', '30',
     ];
     // No shell, ACL, IAM changes, or SDK/CLI automatic retries. The server-side
     // checksum also protects the gap between revalidation and AWS reading --body.
     const result = spawnSync('aws', args, {
         shell: false, encoding: 'utf8', timeout: 50000, maxBuffer: 1024 * 1024,
-        env: {...process.env, AWS_MAX_ATTEMPTS: '1', AWS_RETRY_MODE: 'standard', AWS_PAGER: '', AWS_CLI_AUTO_PROMPT: 'off'},
+        env: awsEnvironment(),
     });
     let outcome = 'outcome_unknown';
     let code = 'AWS_COMMAND_OUTCOME_UNKNOWN';

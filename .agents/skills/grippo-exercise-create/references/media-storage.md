@@ -152,8 +152,11 @@ upload не выполняются; QA/review/готовый plan или общ�
 Это факт окружения исследования, не вечная неисправность и не разрешение
 создавать новые keys/roles. При ошибке CLI используй уже разрешённую рабочую
 сессию Console или обозначь pending access; не проси секреты в чат.
-Штатный browser login CLI и выбор отдельного профиля описаны в
-[access-setup](access-setup.md); профиль не ограничивает права выбранной identity.
+Для регулярной публикации helper использует только ограниченный профиль
+`grippo-exercise-publisher-keychain`: credential process читает собственную
+запись macOS Keychain. До upload проверяются профиль, регион и STS identity;
+подмена на root блокирует запись. Разовая настройка — в
+[access-setup](access-setup.md).
 
 CLI upload дополнительно оставляет `media-upload-started.json` до внешней
 команды и `media-upload.json` с безопасным outcome. Отсутствие завершающего

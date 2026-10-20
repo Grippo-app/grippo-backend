@@ -175,10 +175,12 @@ node .agents/skills/grippo-exercise-create/scripts/publish-exercise.cjs \
 доказательством разрешения. Target закреплён `https://grippo-app.com`; другую
 среду не выбирают через произвольный URL или environment override.
 
-Для интерактивного прямого API пути доступен
-[`exercise-admin-access.cjs`](../scripts/exercise-admin-access.cjs): скрытый локальный
-вход, read-only проверка и передача token в publisher в том же процессе без
-сохранения credentials. Порядок и ограничения — в [access-setup](access-setup.md).
+Для прямого API пути доступен
+[`exercise-admin-access.cjs`](../scripts/exercise-admin-access.cjs): после разовой
+настройки он читает собственную запись macOS Keychain, выполняет обычный login,
+проверяет доступ и передаёт свежий token в publisher в памяти того же процесса.
+Пользователь не вводит пароль при каждом упражнении. Разовая настройка и границы
+хранения — в [access-setup](access-setup.md).
 Открытая browser session сама не является программным токеном.
 
 Альтернативный `GRIPPO_ADMIN_TOKEN` читается только из процесса, без .env discovery, аргументов

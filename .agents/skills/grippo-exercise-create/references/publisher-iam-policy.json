@@ -1,0 +1,24 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "CreateOnlyExerciseWebP",
+      "Effect": "Allow",
+      "Action": "s3:PutObject",
+      "Resource": "arn:aws:s3:::grippo-bucket/example-images/*.webp",
+      "Condition": {
+        "Bool": {"aws:SecureTransport": "true"},
+        "StringEquals": {
+          "s3:ResourceAccount": "915173132322",
+          "s3:if-none-match": "*"
+        }
+      }
+    },
+    {
+      "Sid": "DenyNestedKeys",
+      "Effect": "Deny",
+      "Action": "s3:PutObject",
+      "Resource": "arn:aws:s3:::grippo-bucket/example-images/*/*"
+    }
+  ]
+}
