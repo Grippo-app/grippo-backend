@@ -19,7 +19,7 @@ reviewer затем проверяет исправление на актуал�
 | Данные | FK/onDelete/null/default/index, UUID, decimal/hydration, исторические значения |
 | Транзакции/конкуренция | Нужные reads/writes через manager, rollback, гонки при count/delete/replacement |
 | Запросы | Profile filter, формулы/уровень count, порядок/ties/dates, cardinality/N+1/неограниченные выборки |
-| I18n | req.locale, en/ua/ru, фактический fallback/изменение объекта и удаление relations из ответа |
+| I18n | req.locale, текущие SUPPORTED_LANGUAGES (включая обе PT), явный языковой scope, фактический fallback/изменение объекта и удаление relations из ответа |
 | Интеграции | Claims/signature/audience/expiry, identity linking, timeout/cache/обработка ошибок |
 | Эксплуатация | Прямое разрешение каждой попытки, новый штатный dump/source/artifact/storage, без обхода через retry/delegation |
 | Секреты | Нет env values, SQL rows, credentials/tokens/keys и чувствительных логов в результатах |

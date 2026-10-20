@@ -11,7 +11,8 @@
 ## Bootstrap и HTTP lifecycle
 
 [main.ts](../../../../src/main.ts) создаёт `NestExpressApplication` с
-`ExpressAdapter` и `{cors: true}`. Из DI получает `ConfigService`, добавляет
+`ExpressAdapter`, затем вызывает `app.enableCors()` до регистрации Swagger routes.
+Из DI получает `ConfigService`, добавляет
 global `ValidationPipe({transform: true, whitelist: true,
 forbidNonWhitelisted: true})`, `LoggingInterceptor`, вызывает `setupSwagger`.
 Глобальный prefix закомментирован: routes начинаются с `/auth`, `/users` и т. д.,

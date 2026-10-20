@@ -1,6 +1,6 @@
 # Схема, сущности и отношения
 
-Снимок исходников от 2026-10-15. Это карта entity и использующих их сервисов; metadata дополнительно построены локальным `DataSource.buildMetadatas()` без initialize/подключения (`isInitialized:false`, 19 entity, все PK generated UUID). Это не результат инспекции живой БД. Для актуального DDL нужны отдельно разрешенная среда и проверка ее схемы.
+Это карта текущих entity и использующих их сервисов, а не инспекция живой БД. Metadata можно проверить локальным `DataSource.buildMetadatas()` без initialize/подключения; не импортируй для этого AppModule. Для актуального DDL нужны отдельно разрешённая среда и проверка её схемы.
 
 Содержание: общие свойства; 19 entity; FK/удаление; repository tokens; enums; места, где TypeScript/DTO не отражают хранение.
 
@@ -57,7 +57,7 @@
 
 - `weight`: decimal(5,1), transformer `parseFloat`, кг; DB check `30 <= weight <= 300`.
 - `profile`: `ManyToOne`, FK `profile_id`, `onDelete: CASCADE`, `orphanedRowAction: delete`; scalar `profileId` в классе не объявлен. Без nullable:false FK допускает null; пользовательский сервис всегда задаёт profile.
-- [WeightHistoryService](../../../../src/modules/weight-history/weight-history.service.ts) добавляет записи, читает DESC по createdAt и ограничивает удаление последней записи проверкой количества перед delete; это не DB constraint и не транзакционная гарантия при конкуренции.
+- [WeightHistoryService](../../../../src/modules/weight-history/weight-history.service.ts) добавляет записи и читает DESC по createdAt. Удаление выполняется в READ COMMITTED transaction: manager блокирует profile через pessimistic_write, считает записи и удаляет по id + profile_id. Последняя запись защищена сервисом для этого пути, а не DB constraint для любых writers.
 
 ### 5. PushTokensEntity → `push_tokens`
 
@@ -92,12 +92,12 @@
 
 Источник: [iterations.entity.ts](../../../../src/entities/iterations.entity.ts).
 
-- `assistWeight`, `externalWeight`, `extraWeight`, `bodyWeight`: nullable decimal(5,1), `parseFloat`.
+- `assistWeight`, `externalWeight`, `extraWeight`, `bodyWeight`: nullable decimal(5,1); transformers сохраняют null, остальные значения преобразуют через `parseFloat`.
 - `bodyMultiplier`: nullable decimal(4,2); transformer явно сохраняет `null`, иначе `parseFloat`.
 - `repetitions`: nullable int; `exerciseId`: nullable column, owning `ManyToOne` к exercise, FK `exercise_id`, `onDelete: CASCADE`, orphan delete.
 - `orderIndex`: int default 0. Это подход/итерация выполненного exercise, не шаблон каталога.
 - В entity отсутствуют checks для неотрицательности веса/повторений, bounds bodyMultiplier или взаимного исключения весовых полей. Проверки components каталога сюда автоматически не распространяются.
-- Nullable весовые `parseFloat` transformers не сохраняют null: local PostgreSQL driver hydration превращает его в NaN. `bodyMultiplier` transformer null сохраняет. Это отражается на JS metric formula; см. [trainings-and-metrics](trainings-and-metrics.md).
+- Все пять весовых transformers сохраняют SQL null. Не переноси прежний риск NaN от `parseFloat(null)` на текущую hydration; raw SQL и специальные нечисловые значения требуют отдельной проверки. Формула — в [trainings-and-metrics](trainings-and-metrics.md).
 
 ### 9. ExerciseExamplesEntity → `exercise_examples`
 
@@ -131,8 +131,8 @@
 Источник: [exercise-example-translation.entity.ts](../../../../src/entities/exercise-example-translation.entity.ts).
 
 - `exerciseExampleId`: UUID; `ManyToOne`, `onDelete: CASCADE`.
-- `language`: enum из `SUPPORTED_LANGUAGES`; `name`, `description`: nullable text.
-- Unique `(exercise_example_id, language)` в entity нет. Текущий CRUD строит максимум одну строку на язык в рамках request и при update удаляет все прежние translation rows.
+- `language`: enum из `SUPPORTED_LANGUAGES`, SQL enumName `supported_language_enum`; `name`, `description`: nullable text.
+- Именованный UNIQUE `uq_exercise_example_translations_language` задаёт пару `(exerciseExampleId, language)`. Текущий CRUD строит максимум одну строку на язык в рамках request и при update заменяет translation rows. Наличие decorator не подтверждает применение ограничения в конкретной живой БД.
 - Обычный catalog/training response удаляет `translations` после locale fallback. Admin stored-translations endpoint выдает реально сохраненные строки без fallback.
 
 ### 13. ExerciseExampleComponentsEntity → `exercise_example_components`
@@ -158,7 +158,7 @@
 Источник: [muscles.entity.ts](../../../../src/entities/muscles.entity.ts).
 
 - `name`: string; `type`: nullable `MuscleEnum`; `recovery`: nullable integer, DB check null либо >= 0.
-- `size`, `sensitivity`: nullable numeric(5,2), **без transformer**, хотя TS и response DTO объявляют number. Проверяй фактические типы `pg` при изменении ответов.
+- `size`, `sensitivity`: nullable numeric(5,2), transformers сохраняют null и преобразуют остальные hydrated значения через Number. Raw SQL не получает эту гарантию автоматически.
 - `muscleGroup`: `ManyToOne`, FK `muscle_group_id`, cascade delete/orphan delete. Scalar muscleGroupId в entity нет, response строит его из relation.
 - `exerciseExampleBundles`, `excludedMuscles`: inverse коллекции, cascade remove.
 
@@ -259,7 +259,7 @@ exercise_examples
 | [equipment-group.enum.ts](../../../../src/lib/equipment-group.enum.ts) | `free_weight`, `machines`, `cable_machines`, `body_weight`, `benches_and_racks` |
 | [equipment.enum.ts](../../../../src/lib/equipment.enum.ts) | Конкретное оборудование, сгруппированное комментариями. Сохраняй точные legacy values, в том числе `romain_chair`, `cord_handles`, неоднородные singular/plural |
 | [goal.enum.ts](../../../../src/lib/goal.enum.ts) | Primary: build_muscle/get_stronger/lose_fat/return_to_training/maintain/general_fitness; secondary добавляет consistency; personalization — расписание, длительность, lifestyle/recovery/care/health/restrictions, sport, focus, qualities, program/routine/method/equipment preferences, phase |
-| [i18n.types.ts](../../../../src/i18n/i18n.types.ts) | Отдельный string union/array `['en','ua','ru']`, default `en`; `uk` в storage enum отсутствует |
+| [i18n.types.ts](../../../../src/i18n/i18n.types.ts) | Канонический набор `SUPPORTED_LANGUAGES`: `en`, `ua`, `ru`, `pt-BR`, `pt-PT`; default `en`; header alias `uk` не является storage code |
 
 ## Изменение схемы: что проверить
 

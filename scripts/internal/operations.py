@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Fail-closed Docker operations. Dotenv is never executed as shell code.
 
-Requires Python 3.9+, Git and Docker Compose v2 JSON config. CLI confirmation
+Requires Python 3.9+, Git and Docker Compose with JSON config. CLI confirmation
 prevents accidents; it does not prove human permission or a write freeze.
 """
 

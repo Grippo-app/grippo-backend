@@ -31,7 +31,7 @@ Guard registration: [auth.module.ts](../../../../src/modules/auth/auth.module.ts
 | Request DTO | Реальные validators |
 |---|---|
 | [LoginRequest](../../../../src/modules/auth/dto/login.request.ts) | `email: IsEmail`; `password: IsString` без min/max |
-| [RegisterRequest](../../../../src/modules/auth/dto/register.request.ts) | `email: IsEmail`; `password: Length(6,128)` |
+| [RegisterRequest](../../../../src/modules/auth/dto/register.request.ts) | `email: IsEmail`; `password: Length(6,128)` и custom maxPasswordBytes: string, не более 72 UTF-8 bytes |
 | [GoogleLoginRequest](../../../../src/modules/auth/dto/google-login.request.ts) | `idToken: IsString`, пустая строка не отсечена DTO |
 | [AppleLoginRequest](../../../../src/modules/auth/dto/apple-login.request.ts) | `code: IsString + IsNotEmpty`; service дополнительно проверяет truthiness |
 | refresh body | нет request class, `refreshToken` не проходит field decorators; validation whole-body whitelist здесь не следует обещать |
@@ -60,13 +60,13 @@ Email normalization/verification для password registration в service нет.
 
 | Request DTO | Реальные validators и ограничения |
 |---|---|
-| [CreateUserProfileRequest](../../../../src/modules/users/dto/create-user-profile.request.ts) | `name: IsString`; `weight: IsNumber(maxDecimalPlaces:1)`; `height: IsInt`; `experience: IsEnum(ExperienceEnum)`; `excludeMuscleIds`/`excludeEquipmentIds`: `IsOptional + IsUUID('all',{each:true}) + Type(String)`, без `IsArray` |
+| [CreateUserProfileRequest](../../../../src/modules/users/dto/create-user-profile.request.ts) | `name: IsString`; `weight: IsNumber(maxDecimalPlaces:1) + Min(30) + Max(300)`; `height: IsInt`; `experience: IsEnum(ExperienceEnum)`; exclusions: `IsOptional + IsArray + IsUUID('all',{each:true}) + Type(String)` |
 | [UpdateExperienceRequest](../../../../src/modules/users/dto/update-experience.request.ts) | `experience: IsEnum` |
 | [UpdateHeightRequest](../../../../src/modules/users/dto/update-height.request.ts) | `height: IsInt`, без bounds |
 | [UpdateExcludedIdsDto](../../../../src/modules/users/dto/update-excluded-ids.dto.ts) | `ids: IsArray + IsUUID('all',{each:true})`; empty array допустим; уникальность не проверена DTO |
 | [GoalRequest](../../../../src/modules/users/dto/goal.request.ts) | `primaryGoal: IsEnum`; `secondaryGoal: IsOptional+IsEnum`; `target: IsOptional+IsDateString`; `personalizations: IsOptional+IsArray+IsEnum(each:true)` |
 
-`CreateUserProfileRequest.weight` не имеет DTO bounds 30–300; эти bounds находятся в entity DB check. Profile exclusion fields типизированы `string[]`, но scalar UUID не отклонён `IsArray`: service ожидает `.map`. Не полагайся на TypeScript как на runtime validation.
+`CreateUserProfileRequest.weight` имеет DTO bounds 30–300 и DB check. Exclusions проверяются как arrays; scalar UUID отвергается. TypeScript declaration само по себе этих гарантий не обеспечивает.
 
 Ответы: [UserResponse](../../../../src/modules/users/dto/user.response.ts) = `{id,email,role,createdAt,updatedAt,profile,stats}`; profile `{id,name,height,experience,weight}`; stats `{trainingsCount,totalDuration,totalVolume,totalRepetitions}`. Stats суммируют сохранённые training aggregates, не пересчитывают iterations. `googleId`, `appleId`, `password` в response не выводятся.
 
@@ -78,7 +78,7 @@ Email normalization/verification для password registration в service нет.
 |---|---|---|
 | `GET /weight-history` | `getWeightHistory → getWeightHistory` | 200 `WeightHistoryEntity[]`, `createdAt DESC` |
 | `POST /weight-history` | `setWeightHistory → setWeightHistory` | `WeightHistoryRequest` → 201 сохранённая entity |
-| `DELETE /weight-history/:id` | `removeWeightHistory → removeWeight` | path string без `ParseUUIDPipe`; 200 TypeORM `DeleteResult` |
+| `DELETE /weight-history/:id` | `removeWeightHistory → removeWeight` | path через ParseUUIDPipe; 200 TypeORM `DeleteResult`, last entry → 400 |
 | `POST /push-tokens` | `savePushToken → upsertToken` | `PushTokenRequest` → 201, `Promise<void>` |
 | `DELETE /push-tokens` | `deletePushTokens → deleteAllForUser` | 204; удаляются все tokens текущего user |
 
@@ -94,7 +94,7 @@ Email normalization/verification для password registration в service нет.
 |---|---|---|
 | `GET /admin/exercise-examples/:id/translations` | `getExerciseExampleTranslations → ExerciseExampleService.getExerciseExampleTranslations` | UUID path; 200 `ExerciseExampleTranslationsResponse`, сохранённые base/translation rows без fallback |
 | `POST /admin/exercise-examples` | `createExerciseExample → ExerciseExampleService.createExerciseExample` | `ExerciseExampleRequest`; 201 `{id}` |
-| `PUT /admin/exercise-examples?id=UUID` | `updateExerciseExample → ExerciseExampleService.updateExerciseExample` | UUID **query**, полный `ExerciseExampleRequest`; 204 |
+| `PUT /admin/exercise-examples?id=UUID` | `updateExerciseExample → ExerciseExampleService.updateExerciseExample` | UUID **query**, полный `ExerciseExampleUpdateRequest` с conditional translationsRevision; 204 |
 | `DELETE /admin/exercise-examples/:id` | `deleteExerciseExample → ExerciseExampleService.deleteExerciseExample` | UUID path; 204; 404 при отсутствии; 409 при ссылках из exercises |
 | `POST /admin/users/make-admin` | `makeAdmin → UsersService.makeUserAdminByEmail` | `AssignAdminRequest.email: IsEmail`; 200 `AdminUserResponse` |
 | `GET /admin/users` | `getUsers → UsersService.getAllUsers` | 200 `AdminUserResponse[]`, все users без pagination |
@@ -113,5 +113,5 @@ Email normalization/verification для password registration в service нет.
 
 - JWT guard задаёт 401 и `WWW-Authenticate`; admin guard 403. Точные значения и разница `err/info`: [auth-and-integrations.md](auth-and-integrations.md).
 - Response DTO — описание и ручной mapping, не response validator. Нет global serializer, скрывающего произвольные поля автоматически.
-- 400/404/409 в Swagger не доказывают, что каждый failure в service превращён в HttpException: последний weight, malformed UUID и DB constraints требуют отдельного review.
+- 400/404/409 в Swagger не доказывают обработку каждого failure. Last weight и malformed UUID имеют явные проверки; DB constraints и другие пути ошибок проверяй отдельно.
 - Поддерживай HTTP method/query-vs-path/status/null/empty-array различия. Не «выравнивай» их под один стиль как побочный эффект задачи.

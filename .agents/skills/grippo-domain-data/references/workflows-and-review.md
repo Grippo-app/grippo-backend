@@ -17,7 +17,7 @@
 1. Определи owning side, SQL имя через SnakeNamingStrategy и существующий FK scalar. Проверь все readers/writers и response serialization.
 2. Оцени существующие rows: null/default/backfill, conversion, numeric precision/scale, enum compatibility, unique/check/index, onDelete/orphan actions.
 3. Сохрани актуальный механизм entity glob. Создай repository token только если потребуется injection; operation через transaction manager может работать без отдельного token, как components.
-4. Для новой cross-entity операции используй `manager.transaction`, читай и пиши через этот manager. Не копируй outside-manager reads из trainings как рекомендуемый pattern.
+4. Для новой cross-entity операции используй `manager.transaction`, читай и пиши через этот manager. Проверяй границу каждой операции: requireProfile в trainings выполняется до transaction, ownership и example reference checks внутри update используют manager.
 5. Проверь metadata без подключения к БД, если доступна существующая TypeORM среда: число entity, column name/type/nullability, owning relation/FK action, uniqueness, decimal transformers. Такой результат не доказывает совместимость с production rows.
 6. Проект не содержит настроенных migrations. Не создавай migration folder/toolchain как побочный эффект. Для схемы, backup и восстановления следуй [политике эксплуатации](../../grippo-operations/references/deployment-policy.md); проверка metadata не разрешает запуск.
 7. Проверь каскад от user до leaves и независимо от dictionary/example до связей. Сохрани историю exercises: текущий DB example FK SET NULL, текущий delete API service guard 409.
@@ -65,13 +65,13 @@
 
 | Наблюдение | Следствие / что проверять при соответствующей задаче |
 |---|---|
-| Training by ID возвращает null при miss; UUID pipes на training IDs отсутствуют | Документация «всегда 404/400» была бы неверна; отдельно проверяй фактический HTTP |
-| Training nested arrays без IsArray/IsDefined | Actual ValidationPipe ранее подтвердил acceptance missing training.exercises; далее сервис ожидает .entries(). Catalog bundles/refs в текущем DTO уже required arrays; не переносить старый catalog risk на новый код |
+| Training IDs проходят ParseUUIDPipe; service detail возвращает null при miss | Invalid UUID отклоняется pipe; валидный отсутствующий/чужой ID не превращается этим в 404 |
+| Training nested arrays обязательны, элементы проверяются как objects | IsDefined/IsArray/IsObject + nested validation отвергают missing/null/неверную структуру; пустые arrays допустимы |
 | LocalizedText.value optional только для undefined | ValidateIf(value !== undefined) + IsString отвергает explicit null; отсутствие value допустимо, empty string после trim → null в storage |
 | Localized arrays имеют IsObject(each:true) и nested validation | name:[[]] отвергается; ArrayNotEmpty всё ещё не гарантирует непустой текст |
 | id в request classes без validators | Entity round-trip с id несовместим с forbidNonWhitelisted |
-| Reads через injected repo внутри training transaction | Нет единой гарантии transaction connection для этих чтений; новая логика должна использовать manager |
-| Ownership/usage проверки вне transaction либо без locking | Есть окно конкуренции; отсутствие гонок тестом одного запроса не доказано |
+| Training create/update используют manager для reference checks и writes; requireProfile идёт до transaction | Reference locks for_key_share защищают example от удаления; parent training read при update не имеет явного lock. Проверяй конкретную гонку, не объявляй все операции одинаково защищёнными |
+| Delete training выполняет owner read и delete без общей transaction | Учитывай конкуренцию; catalog delete имеет собственные parent lock и usage check, это другой путь |
 | Каталог read зависит от наличия components у каждой entity | Неполный example может сломать список и связанные trainings |
 | Components parent обязателен object; четыре ключа обязательны и nullable | Swagger ApiProperty и runtime IsDefined/IsObject согласованы; поддерживать явные null в clients, массивы не допустимая форма |
 | muscle size/sensitivity numeric имеют Number/null transformer | Entity hydration и raw SQL различаются; наличие TS number само по себе тип ответа не гарантирует |

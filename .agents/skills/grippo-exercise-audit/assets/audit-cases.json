@@ -547,7 +547,7 @@
             "description": null
           }
         },
-        "verified_contract": "Все три строки языка существуют. Для выбранной строки null description заменяется напрямую base.description. Английская строка при этом не используется. API принимает именно en/ru/ua. Raw значения даны полностью выше.",
+        "verified_contract": "Все три scoped строки языка существуют. Для выбранной строки null description заменяется напрямую base.description. Английская строка при этом не используется. В этом задании рассматриваются en/ru/ua; остальные SUPPORTED_LANGUAGES вне scope. Raw значения scoped полей даны полностью выше.",
         "scope": "Только description base/en/ru/ua; имена, оборудование, enum и мышцы не менять."
       }
     },

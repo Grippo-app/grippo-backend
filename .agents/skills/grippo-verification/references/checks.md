@@ -10,8 +10,9 @@ testRegex .*\\.spec\\.ts$, node environment. Текущие узкие пров�
 без AppModule/config/БД; настоящую авторизацию и сохранение данных не покрывают.
 
 Перед задачей повторяй поиск specs и читай их окружение. test:e2e ссылается
-на отсутствующий test/jest-e2e.json. ESLint/Prettier config, CI workflow и
-постоянная интеграционная БД не предусмотрены. Настоящие SQL/locks/FK/rollback
+на отсутствующий test/jest-e2e.json. В checkout нет ESLint/Prettier config и
+CI workflow; это не подтверждает отсутствие внешнего/default CI в GitHub.
+Постоянная интеграционная БД не предусмотрена. Настоящие SQL/locks/FK/rollback
 проверяет отдельная поддерживаемая suite [test/postgres](../../../../test/postgres/README.md)
 на автоматически создаваемом локальном PostgreSQL. Jest её не обнаруживает
 и не запускает. Наличие packages не доказывает готовую suite. Поддержка этих
@@ -59,7 +60,7 @@ start:dev transpile-only не доказывает корректность ти
 | Замена training | Rollback при ошибке children, новые FK/IDs/order, nullable example, история |
 | Catalog/метрики | Components/translations, формулы/numeric hydration/уровень count/ties/dates/profile filter |
 | Auth/provider | Secret/type/expiry, missing/deleted user, email/provider linking, claims/cache/network errors |
-| I18n | en/ua/ru/region/unsupported, null/blank/missing translation, изменение relations |
+| I18n | Все текущие SUPPORTED_LANGUAGES, обе PT локали, region/alias/q0/unsupported, null/blank/missing translation, изменение relations |
 | Weight/push | Bounds/order/гонка последней записи; unique token reassignment, DELETE /push-tokens без JWT revocation |
 | Schema/SQL | Metadata/FK/index/default/null/enum и характерные существующие данные на изолированном PostgreSQL |
 | Scripts/kit | Синтаксис, изолированные подмены внешних команд/негативные fixtures и независимая проверка решений |

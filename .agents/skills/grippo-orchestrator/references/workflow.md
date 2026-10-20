@@ -8,9 +8,11 @@
 не доказывают выполнение задачи.
 
 До изменений прочитай AGENTS, git status/diff и профильный skill. Проследи
-controller → service → provider/entity → response. Установи исходный контракт,
-владельца данных, границу транзакции и неизвестные условия. Не подключай
-AppModule/БД для обычного исследования.
+затронутый путь: для HTTP — controller → service → provider/entity → response;
+для CLI — аргументы → helper → ресурсы/побочные эффекты; для инструкций — выбор
+skill/роли → применяемые правила → действия и результат. Установи исходный
+контракт и неизвестные условия; владельца данных и границу транзакции — когда
+они затронуты. Не подключай AppModule/БД для обычного исследования.
 
 Для существенной работы зафиксируй цель, критерии готовности каждого среза,
 файлы/автора, зависимости и способы проверки. Используй документ задачи;
@@ -51,7 +53,7 @@ diff перед commit. При чужом index не используй безу
 | [grippo-muscle-map-specialist](../../../../.codex/agents/grippo-muscle-map-specialist.toml) | Состав мышечной карты, проценты и полные обоснованные векторы |
 | [grippo-exercise-difficulty-specialist](../../../../.codex/agents/grippo-exercise-difficulty-specialist.toml) | Техническая сложность и отдельная readiness |
 | [grippo-exercise-equipment-specialist](../../../../.codex/agents/grippo-exercise-equipment-specialist.toml) | Оборудование, геометрия и components |
-| [grippo-exercise-localization-specialist](../../../../.codex/agents/grippo-exercise-localization-specialist.toml) | Смысл техники/анатомии и конкретные тексты base/en/ua/ru |
+| [grippo-exercise-localization-specialist](../../../../.codex/agents/grippo-exercise-localization-specialist.toml) | Смысл техники/анатомии и конкретные тексты base и целевых локалей по текущему контракту |
 | [grippo-exercise-researcher](../../../../.codex/agents/grippo-exercise-researcher.toml) | Первоисточники под конкретные тезисы и пределы переноса результатов |
 | [grippo-exercise-evidence-analyst](../../../../.codex/agents/grippo-exercise-evidence-analyst.toml) | Независимый синтез, методы и дедупликация studies/cohorts |
 | [grippo-exercise-audit-reviewer](../../../../.codex/agents/grippo-exercise-audit-reviewer.toml) | Независимое ревью содержательного аудита и доказательств |
@@ -113,8 +115,10 @@ status/diff, результаты проверок/ревью и состоян�
 ## Реализация и проверка
 
 Один срез завершает пользовательский путь, а не добавляет абстракции ради плана.
-Автор читает итоговый diff и проверяет контракт, ownership, отсутствующие/null/
-пустые/повторяющиеся данные, транзакции, FK, числа, даты, историю и локаль.
+Автор читает итоговый diff и выбирает проверки затронутого пути. Для данных это
+контракт, ownership, отсутствующие/null/пустые/повторяющиеся значения, транзакции,
+FK, числа, даты, история и локаль; для CLI — входы, эффекты и отказы; для
+инструкций — выбор действий на конкретных сценариях.
 Предметные сценарии находятся в профильном skill; общий
 [review protocol](../../grippo-review/references/review-protocol.md) не копируй.
 

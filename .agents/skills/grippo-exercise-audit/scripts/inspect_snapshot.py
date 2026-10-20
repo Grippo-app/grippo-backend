@@ -12,9 +12,9 @@ from decimal import Decimal, InvalidOperation
 from pathlib import Path
 from uuid import UUID
 
-VERSION = "1.1"
+VERSION = "1.2"
 MAX_BYTES = 32 * 1024 * 1024
-LANGUAGES = ("en", "ua", "ru")
+LANGUAGES = ("en", "ua", "ru", "pt-BR", "pt-PT")
 ENUMS = {
     "category": {"compound", "isolation"},
     "weight_type": {"free", "fixed", "body_weight"},

@@ -20,20 +20,20 @@ Repository tokens задаются централизованно в [repository
 
 ## Создание profile
 
-`createProfile(userId,dto)` начинает `usersRepository.manager.transaction`; внутри берёт через transaction manager users/profiles/weights/exclusions repos. Последовательность:
+`createProfile(userId,dto)` начинает READ COMMITTED transaction; внутри берёт через transaction manager users/profiles/weights/exclusions repos. Последовательность:
 
-1. Проверить user по ID → 404 если нет.
+1. Найти и заблокировать user по ID через pessimistic_write → 404 если нет.
 2. Проверить profile по user relation → 400 `User profile already created`, если есть.
-3. Создать и сохранить profile с `name,height,experience`.
+3. Проверить непустые exclusion списки через manager с for_key_share; для поиска IDs приводятся к lowercase и дедуплицируются. Неизвестные references → 404 до создания profile. Создать и сохранить profile с `name,height,experience`.
 4. Создать первый weight с profile ID и `dto.weight`.
 5. Очистить exclusions для нового profile, затем при непустых input списках сохранить rows с `muscleId`/`equipmentId`.
 6. Commit; после transaction `getUser(userId)` собирает response.
 
 Все write actions в этой transaction используют manager-derived repositories. Не переноси последующий read response внутрь другого injected repo как будто он автоматически видит uncommitted transaction.
 
-Profile creation не проверяет существование muscle/equipment IDs тем же count-check, который есть в replacement methods; не дедуплицирует списки. Некорректный reference может дать FK error, а transaction откатит весь profile/first weight. Повторяющиеся валидные IDs сохраняются отдельными exclusion rows: unique пары profile/reference в entities нет. Это отличается от replacement methods, где дубликат приводит к count mismatch. DTO профиля не имеет `IsArray` на exclusion fields, хотя service вызывает `.map`; см. [API map](api-map.md).
+Profile creation проверяет уникальные normalized references, но сохраняет исходные списки без дедупликации. Повторяющиеся валидные IDs создают отдельные exclusion rows: unique пары profile/reference в entities нет. Это отличается от replacement methods, где дубликат приводит к count mismatch. DTO профиля имеет IsArray для exclusions и bounds 30–300 для веса; см. [API map](api-map.md).
 
-Concurrent create-profile check не использует explicit lock; проверка существования плюс последующий insert не делает бизнес-ошибку 400 гарантированной при race. Relation uniqueness должна рассматриваться вместе с реальной schema, а не как замена обработке ошибок.
+User row lock сериализует concurrent createProfile для одного user в этом сервисном пути; второй вызов перечитывает profile после lock. Relation uniqueness остаётся отдельной защитой; прямые writers не обязаны следовать сервисному протоколу.
 
 ## Чтение и update profile
 
@@ -53,12 +53,12 @@ Get methods сначала требуют profile; загружают reference 
 Replacement methods:
 
 1. Require profile.
-2. `referenceRepository.findBy({id:In(ids)})`.
-3. Если число найденных сущностей отличается от длины input → 404 `One or more muscle/equipment IDs are invalid`.
-4. Delete все exclusions profile.
-5. Create/save rows на каждый input ID; вернуть `{ids:input}`.
+2. Открыть READ COMMITTED transaction, через manager заблокировать profile pessimistic_write; при его отсутствии → 400.
+3. Через manager выполнить `referenceRepository.findBy({id:In(ids)})`.
+4. Если число найденных сущностей отличается от длины input → 404 `One or more muscle/equipment IDs are invalid`.
+5. Тем же manager удалить все exclusions profile и создать/save rows на каждый input ID. После commit вернуть `{ids:input}`.
 
-`[]` очищает список. Повтор одного валидного ID обычно даёт count mismatch, поскольку query возвращает distinct reference rows: дубликат трактуется как invalid list, а не dedup/no-op. Delete+save в replacement methods **не** в transaction, хотя profile creation в transaction. Ошибка insert после delete может оставить пустой список; concurrent replacement может смешать/потерять результат. Это риск текущего алгоритма, не реализованная atomic replacement гарантия.
+`[]` очищает список. Повтор одного валидного ID обычно даёт count mismatch, поскольку query возвращает distinct reference rows: дубликат трактуется как invalid list, а не dedup/no-op. Delete/save атомарны; ошибка insert откатывает прежний список. Profile lock сериализует эти replacement methods для одного profile. Это не гарантия для прямых SQL writers, не соблюдающих протокол lock.
 
 ## Goal
 
@@ -85,10 +85,10 @@ Replacement methods:
 - Admin `getWeightHistoryByUserId`: нет profile → `[]`, существование user отдельно не проверяется.
 - List целиком, без pagination/range, сортировка только createdAt DESC.
 - Add сохраняет новую row; не обновляет scalar в profile. `GET /users.profile.weight` определяется последней row.
-- Add DTO 30–300 без `maxDecimalPlaces`; input precision не равно storage precision. В profile DTO одно decimal place, но bounds отсутствуют — две входные поверхности имеют разные validators.
-- Delete: сначала count всех weights владельца; `count <= 1` → обычный `Error('Cannot delete the last weight history entry')`; затем delete по **id и profile_id**; возвращает `DeleteResult`.
+- Add DTO 30–300 без `maxDecimalPlaces`; input precision не равно storage precision. Profile DTO также требует 30–300 и дополнительно одно decimal place.
+- Delete: после requireProfile открывает READ COMMITTED transaction, блокирует profile pessimistic_write, считает weights владельца; `count <= 1` → BadRequestException. Затем тем же manager удаляет по **id и profile_id**; возвращает `DeleteResult`.
 
-**Выводы по коду:** последний-weight failure у обычного Nest exception handling становится 500, специализированного 400 нет. Неизвестный/чужой ID при count > 1 может дать 200 affected 0, не 404. При count <= 1 ошибка возникает до проверки target ID. Count/delete без transaction/lock допускает race удаления последних записей; запрет в одном последовательном вызове не обеспечивает invariant при concurrency. Path id не валидируется `ParseUUIDPipe`, поэтому malformed UUID может попасть в БД как ошибка. Owner predicate сохраняй при любом redesign.
+**Выводы по коду:** последняя запись даёт HTTP 400. Неизвестный/чужой валидный UUID при count > 1 может дать 200 affected 0, не 404. При count <= 1 ошибка возникает до проверки target ID. Profile lock сериализует удаления этим методом, но не задаёт DB constraint для любых writers. Path id проходит ParseUUIDPipe; malformed UUID отвергается до service. Owner predicate сохраняй при любом redesign.
 
 ## Push registry
 
