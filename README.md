@@ -16,11 +16,12 @@ push token registry и admin API.
 | Архитектура, modules, DI | [architecture](.agents/skills/grippo-architecture/references/architecture.md) |
 | Все исходники и владельцы областей | [source-map](.agents/skills/grippo-architecture/references/source-map.md) |
 | Entities и отношения | [entity-map](.agents/skills/grippo-domain-data/references/entity-map.md) |
+| Новое упражнение через AI: содержание, переводы, изображение и добавление | [exercise-create](.agents/skills/grippo-exercise-create/SKILL.md) |
 | Команда аудита: техника, проценты, сложность, оборудование, переводы и исследования | [exercise-audit](.agents/skills/grippo-exercise-audit/SKILL.md) |
 | API и identity | [api-map](.agents/skills/grippo-identity-api/references/api-map.md) |
 | Env keys, порты, Docker и запуск | [configuration-and-containers](.agents/skills/grippo-operations/references/configuration-and-containers.md) |
 | Проверки и границы покрытия | [checks](.agents/skills/grippo-verification/references/checks.md) |
-| pt-BR/pt-PT, snapshot API, schema/import и клиентский handoff | [Portuguese rollout](tasks/portuguese-rollout.md) |
+| Локали, snapshot API и отдельные schema/import операции | [localization-and-http](.agents/skills/grippo-identity-api/references/localization-and-http.md) |
 
 Jest содержит focused DTO/controller specs; они подменяют services/guards и
 не проверяют настоящие auth/DB интеграции. Перед запуском приложения установи
@@ -35,7 +36,9 @@ Swagger paths: /docs, /docs-json; глобального /api prefix нет. `/h
 Raw admin translations возвращает `translationsRevision`; PUT проверяет снимок
 при сохранении португальских переводов и отвечает structured409 при конфликте.
 Подготовлены отдельные schema SQL и dry-run importer; автоматически при старте
-они не выполняются. Команды, private artifacts и release gates — в rollout выше.
+они не выполняются. Контракт редактора и порядок отдельных schema/import операций
+описаны в [localization-and-http](.agents/skills/grippo-identity-api/references/localization-and-http.md);
+разрешения и release gates — в [deployment-policy](.agents/skills/grippo-operations/references/deployment-policy.md).
 
 ## Эксплуатация
 
@@ -83,4 +86,6 @@ bash scripts/dump.sh \
 не исполняется shell. Содержимое secrets и SQL не печатается. Recovery directory
 должен быть заранее согласован, приватен и находиться вне checkout/build context.
 
-Финальные результаты проверки комплекта: [agent-kit-audit](tasks/agent-kit-audit.md).
+Проверка инструкций и ссылок: `python3 scripts/validate-agent-kit.py`.
+Она проверяет формат и полноту ссылок; поведение приложения подтверждается
+проверками из [checks](.agents/skills/grippo-verification/references/checks.md).

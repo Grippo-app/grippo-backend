@@ -148,7 +148,6 @@ def main():
 
     docs = sorted((root / '.agents/skills').glob('grippo-*/**/*.md'))
     docs += [root / name for name in ('AGENTS.md', 'README.md', 'CLAUDE.md')]
-    docs += sorted((root / 'tasks').glob('*.md'))
     docs += sorted((root / 'test/postgres').rglob('*.md'))
     graph = {}
     checked_links = 0

@@ -4,8 +4,9 @@
 Индекс помогает найти owner и источник; сам по себе не доказывает полноту
 анализа поведения. Включены все src файлы: 19 entities, 10 feature modules,
 shared bootstrap/database/common/i18n/lib. Подробности — в профильных references.
-Клиентский handoff и проверенные production metadata описаны отдельно в
-[плане португальских локалей](../../../../tasks/plan.md); индекс их не заменяет.
+Контракт локалей и редактора переводов — в
+[localization-and-http](../../grippo-identity-api/references/localization-and-http.md).
+Production metadata проверяй заново для каждой разрешённой операции.
 
 ## Файлы
 
@@ -161,7 +162,9 @@ Schema metadata извлекай по [правилам работы с дамп
 .idea, .DS_Store, .git, node_modules и dist не копируются в знания; установленный
 код зависимостей читается точечно для подтверждения TypeORM/validator semantics.
 
-Комплект инструкций: root AGENTS.md, .agents/skills/grippo-*, .codex/agents/*.toml,
-scripts/validate-agent-kit.py и tasks/*. При добавлении/удалении runtime source
-или постоянных файлов `test/postgres/` обнови таблицу и профильный reference.
+Комплект инструкций: root AGENTS.md/README.md/CLAUDE.md,
+.agents/skills/grippo-*, .codex/agents/*.toml, scripts/validate-agent-kit.py
+и постоянные test/postgres/ docs. Разовые отчёты и рабочие артефакты в него
+не входят. При добавлении/удалении runtime source или постоянных файлов
+`test/postgres/` обнови таблицу и профильный reference.
 Validator сверяет inventory, формат и ссылки; он не запускает PostgreSQL tests.

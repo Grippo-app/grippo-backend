@@ -8,7 +8,7 @@
 
 `resolveLanguage` объединяет array header через comma, разбирает строгий qvalue (default1, 0..1, до3 decimals), игнорирует malformed/unknown/duplicate parameters. Для каждого candidate самое specific совпадение управляет q: explicit pt-region > bare pt > wildcard; primary aliases > wildcard. При одинаковой specificity duplicate q0 доминирует, иначе max q и исходная позиция. Затем max q>0, исходная позиция и порядок allowlist; если кандидатов нет — en без406.
 
-`parseLocaleRange`/`tryNormalizeLocale`: trim → underscore-to-hyphen → Intl.Locale structural parse; en/ru и явные ua/uk aliases, без maximize и сопоставления чужого primary по региону. Explicit pt-region PT → pt-PT; прочие pt-регионы → pt-BR; bare pt предлагает BR/PT с приоритетом BR. Helper не возвращает wildcard как storage code. Write body использует только canonical codes; полный контракт/матрица в [плане](../../../../tasks/plan.md).
+`parseLocaleRange`/`tryNormalizeLocale`: trim → underscore-to-hyphen → Intl.Locale structural parse; en/ru и явные ua/uk aliases, без maximize и сопоставления чужого primary по региону. Explicit pt-region PT → pt-PT; прочие pt-регионы → pt-BR; bare pt предлагает BR/PT с приоритетом BR. Helper не возвращает wildcard как storage code. Write body использует только canonical codes: `uk`, `pt`, `pt_BR` и `pt-AO` допустимы для нормализации header, но не как `language` в body.
 
 Сценарии, непосредственно следующие из алгоритма:
 
@@ -18,7 +18,9 @@
 | `ru-RU,en;q=0.9` | `ru` |
 | `en;q=0,ru;q=1` | `ru` |
 | `de-DE,ru;q=0.2` | `ru` |
-| `ua` | `ua`, direct supported value |
+| `ua` / `uk-UA` | `ua` |
+| `pt` / `pt-AO` / `pt_BR` | `pt-BR` |
+| `pt-PT` / `pt_PT` | `pt-PT` |
 | `pt-BR;q=0,pt;q=1` | `pt-PT` |
 | `fr-UA` | `en`, чужой primary не выбирается по региону |
 
@@ -49,6 +51,45 @@ Admin `GET /admin/exercise-examples/:id/translations` [service](../../../../src/
 Update удаляет **все** старые translation rows и вставляет rows из текущего body в transaction вместе с остальным example graph. До любых writes после parent lock проверяется conditional revision через fresh manager rows: любой присланный token сравнивается, current PT/новый непустой PT требует matching token (409 STALE), current PT требует обоих explicit string entries (409 INCOMPLETE). Два empty values разрешают clear. Update-only DTO валидирует hex64; POST поле не принимает. Entity [ExerciseExampleTranslationEntity](../../../../src/entities/exercise-example-translation.entity.ts) задаёт CASCADE, supported_language_enum и именованный UNIQUE `(exerciseExampleId,language)`. Это защита текстов, не версия всего графа.
 
 Явный `{language:'ru',value:null}` отвергается API: ValidateIf пропускает проверку только для undefined, IsString отклоняет null. Nullable storage/response не разрешает explicit-null удаление в request. Для удаления текста string path использует empty string; для current PT отсутствие entries отвергается защитой выше. Legacy full replacement остальных языков сохраняется. Прямой вызов сервиса обходит DTO и отдельно требует допустимой формы. См. domain skill для полного exercise example graph.
+
+## Отдельные schema/import операции переводов
+
+Runtime поддержка локалей не обновляет существующую БД автоматически.
+[Schema SQL](../../../../scripts/sql/add-portuguese-locales.sql) — отдельная
+разрешённая операция через `psql -v ON_ERROR_STOP=1`: проверяет форму enum,
+единственного потребителя и именованный UNIQUE, блокирует translation table,
+добавляет `pt-BR`/`pt-PT` и делает COMMIT. Запись новых enum values допускается
+только после этого COMMIT. Не пересоздавай enum и не включай synchronize.
+
+[Importer CLI](../../../../scripts/import-exercise-translations.cjs) и
+[его core](../../../../scripts/internal/exercise-translations.cjs) не читают
+`.env` и не запускают приложение. Dataset имеет форму
+`{version:1,records:[{exerciseExampleId,language,name,description}]}`:
+точный текущий набор catalog IDs, обе PT локали для каждого ID, уникальные пары
+и непустые строковые тексты. Частичная или устаревшая выборка отвергается.
+Dataset/connection/manifest/approval/receipt хранятся вне checkout: private
+regular files в собственном закрытом каталоге, без symlinks и вывода payload.
+
+По умолчанию CLI выполняет read-only dry-run и создаёт новый manifest,
+связывающий dataset, текущую commit revision, tool hashes, DB identity,
+source texts и before/desired target hashes. Существующий отличный PT текст
+требует точного разрешения replacement; совпадающие записи остаются no-op.
+Доступные flags и шаблон вызова: `node scripts/import-exercise-translations.cjs --help`.
+Сам dry-run подключается к явно выбранной БД и требует разрешённого scope.
+
+`--apply` отдельно требует committed tools, clean `src`/`scripts`, согласованный
+manifest/approval, свежий проверенный штатный dump и реально остановленных
+writers. Approval file/flags не заменяют разрешение человека и writer control.
+Importer в transaction блокирует parent rows и повторно проверяет identity,
+полный набор IDs и тексты до записей. Меняет только PT rows; durable receipt
+фиксирует фазы до COMMIT. После disconnect/UNKNOWN используй read-only
+`--reconcile` с прежними manifest/receipt; автоматический retry запрещён.
+Смена DB identity или незавершённая исходная transaction оставляет UNKNOWN.
+
+Schema/import не входят в обычный backend deploy. Согласование и backup gates —
+[deployment-policy](../../grippo-operations/references/deployment-policy.md),
+регрессии и пределы локального доказательства —
+[PostgreSQL suite](../../../../test/postgres/README.md).
 
 ## Global DTO pipeline
 

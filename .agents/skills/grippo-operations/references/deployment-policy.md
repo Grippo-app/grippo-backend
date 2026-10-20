@@ -144,9 +144,8 @@ Execute заново проверяет plan/target, фиксирует уник
 Если на сервере ещё старые source-sourcing scripts, не заменяй их и не запускай
 новый helper как скрытый обход backup-before-upload. Подготовь отдельный
 reviewed staging/upgrade plan для backup действующей системы до live update.
-Первый выполненный переход и его доказательства описаны в
-[deployment report](../../../../tasks/deployment-hardening.md); прежнее разовое
-разрешение на legacy bootstrap не переносится на другую попытку.
+Прежнее разовое разрешение на legacy bootstrap не переносится на другую
+попытку; текущий plan должен подтверждаться actual состоянием выбранной среды.
 
 ## Failure, disconnect и recovery
 
