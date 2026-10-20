@@ -4,11 +4,11 @@
 
 Источники: [i18n.types.ts](../../../../src/i18n/i18n.types.ts), [I18nModule](../../../../src/i18n/i18n.module.ts), [LanguageMiddleware](../../../../src/i18n/language.middleware.ts), [locale.helper.ts](../../../../src/i18n/locale.helper.ts), [Express augmentation](../../../../src/i18n/express.d.ts), [ExerciseExampleI18nService](../../../../src/i18n/exercise-example-i18n.service.ts).
 
-`SUPPORTED_LANGUAGES = ['en','ua','ru']`, default `en`. Это реальные storage/API значения; не заменяй `ua` на `uk` как стилистическое исправление. I18nModule `@Global`, middleware `forRoutes('*')` читает `Accept-Language` и присваивает `req.locale`. Глобальность DI не переводит все API строки автоматически: user names, muscle/equipment names и exception messages здесь не локализуются.
+`SUPPORTED_LANGUAGES = ['en','ua','ru','pt-BR','pt-PT']`, default `en`. Это реальные storage/API значения; `uk` — header alias для `ua`, не write ID. I18nModule `@Global`, middleware `forRoutes('*')` читает `Accept-Language` и присваивает `req.locale`. Глобальность DI не переводит все API строки автоматически: user names, muscle/equipment names и exception messages здесь не локализуются.
 
-`resolveLanguage` объединяет array header через comma, идёт по comma-separated элементам **в исходном порядке**, отбрасывает suffix после `;`, возвращает первый candidate, для которого `tryNormalizeLocale` дал supported value. Нет сортировки `q` и обработки `q=0`; отсутствующий/неподдержанный header → `en`.
+`resolveLanguage` объединяет array header через comma, разбирает строгий qvalue (default1, 0..1, до3 decimals), игнорирует malformed/unknown/duplicate parameters. Для каждого candidate самое specific совпадение управляет q: explicit pt-region > bare pt > wildcard; primary aliases > wildcard. При одинаковой specificity duplicate q0 доминирует, иначе max q и исходная позиция. Затем max q>0, исходная позиция и порядок allowlist; если кандидатов нет — en без406.
 
-`tryNormalizeLocale`: trim → `_` заменяется на `-` → lowercase supported value → `Intl.Locale` → language → maximize language → maximize region, сравнивая каждый с supported list. Поэтому регион может дать `ua`, даже когда primary language не supported. `uk-UA`/`uk` в окружении со стандартным Intl maximization могут разрешиться через регион UA; это поведение environment-dependent, не жёсткий map `uk→ua`. Malformed locale ловится и возвращает undefined. Для примеров/fixtures выбирай явные значения и проверяй фактически нужное окружение.
+`parseLocaleRange`/`tryNormalizeLocale`: trim → underscore-to-hyphen → Intl.Locale structural parse; en/ru и явные ua/uk aliases, без maximize и сопоставления чужого primary по региону. Explicit pt-region PT → pt-PT; прочие pt-регионы → pt-BR; bare pt предлагает BR/PT с приоритетом BR. Helper не возвращает wildcard как storage code. Write body использует только canonical codes; полный контракт/матрица в [плане](../../../../tasks/plan.md).
 
 Сценарии, непосредственно следующие из алгоритма:
 
@@ -16,11 +16,14 @@
 |---|---|
 | отсутствует | `en` |
 | `ru-RU,en;q=0.9` | `ru` |
-| `en;q=0,ru;q=1` | `en`, quality weights игнорируются |
-| `de-DE,ru;q=0.2` | `ru`, если de-DE не сопоставился с supported code |
+| `en;q=0,ru;q=1` | `ru` |
+| `de-DE,ru;q=0.2` | `ru` |
 | `ua` | `ua`, direct supported value |
+| `pt-BR;q=0,pt;q=1` | `pt-PT` |
+| `fr-UA` | `en`, чужой primary не выбирается по региону |
 
 Контроллеры [exercise examples](../../../../src/modules/exercise-examples/exercise-example.controller.ts), [trainings](../../../../src/modules/trainings/trainings.controller.ts), [admin user trainings](../../../../src/modules/admin/admin.controller.ts) используют `req.locale ?? resolveLanguage()`. Translation service вызывается после загрузки translation relations в соответствующих services; middleware сам ничего в entity не подгружает.
+Эти пять read handlers append Vary: Accept-Language, сохраняя прежний Vary. Content-Language не задаётся. q управляет requested locale, но en/base fallback остаётся best effort даже при исключении en в header.
 
 ## Read fallback и мутация
 
@@ -33,7 +36,7 @@
 
 Это **выбор row**, не независимая chain каждого field. Пример: base name `Base`, en name `English`, ru row `{name:null,description:'Русское'}` → ru result name `Base`, description `Русское`; не English. Пустая строка не null: вручную сохранённый `''` остаётся `''`. `translateExamples` и `translateExercisesCollection` мутируют collection contents на месте. Повторный перевод того же объекта на другой язык после удаления translations не восстанавливает исходные rows. Не кэшируй/переиспользуй такой объект между locale requests и не сохраняй его в persistence.
 
-Admin `GET /admin/exercise-examples/:id/translations` [service](../../../../src/modules/exercise-examples/exercise-example.service.ts) сознательно возвращает `{id,base:{name,description},translations:[{language,name,description}]}` без fallback; rows сортируются порядком SUPPORTED_LANGUAGES. Это edit contract, не обычный localized read contract.
+Admin `GET /admin/exercise-examples/:id/translations` [service](../../../../src/modules/exercise-examples/exercise-example.service.ts) сознательно возвращает `{id,translationsRevision,base:{name,description},translations:[{language,name,description}]}` без fallback; rows сортируются порядком SUPPORTED_LANGUAGES. Revision — SHA256 versioned tuple id/base/exact sorted text, без child IDs/timestamps. Это edit contract, не обычный localized read contract.
 
 ## Write translation contract
 
@@ -43,9 +46,9 @@ Admin `GET /admin/exercise-examples/:id/translations` [service](../../../../src/
 
 `prepareTranslationInput` trim-ит values, undefined пропускает, empty string превращает в null, duplicate language перезаписывает record последним значением. Base — en record value если определён, иначе первый непустой обработанный value; firstNonNull не пересчитывается после duplicate overwrite. `buildTranslationEntities` проходит supported languages, игнорирует обе undefined и обе null/empty fields, создаёт row если хотя бы одно непусто. Nullable field заполняется null, строка trim-ится.
 
-Update удаляет **все** старые translation rows и вставляет rows из текущего body в transaction вместе с остальным example graph. Это full replacement; отсутствие языка в новом наборе не сохраняет старый перевод. Entity [ExerciseExampleTranslationEntity](../../../../src/entities/exercise-example-translation.entity.ts) имеет CASCADE exercise example FK и enum language, но в definition нет unique `(exerciseExampleId,language)`. Read `find` выбирает первую matching row, если в БД дубликаты.
+Update удаляет **все** старые translation rows и вставляет rows из текущего body в transaction вместе с остальным example graph. До любых writes после parent lock проверяется conditional revision через fresh manager rows: любой присланный token сравнивается, current PT/новый непустой PT требует matching token (409 STALE), current PT требует обоих explicit string entries (409 INCOMPLETE). Два empty values разрешают clear. Update-only DTO валидирует hex64; POST поле не принимает. Entity [ExerciseExampleTranslationEntity](../../../../src/entities/exercise-example-translation.entity.ts) задаёт CASCADE, supported_language_enum и именованный UNIQUE `(exerciseExampleId,language)`. Это защита текстов, не версия всего графа.
 
-Явный `{language:'ru',value:null}` отвергается API: ValidateIf пропускает проверку только для undefined, IsString отклоняет null. Nullable storage/response не разрешает explicit-null удаление в request. Для удаления текста string path использует empty string; при full replacement отсутствие языка в обоих наборах name/description удаляет его прежнюю row. Прямой вызов сервиса обходит DTO и отдельно требует допустимой формы. См. domain skill для полного exercise example graph.
+Явный `{language:'ru',value:null}` отвергается API: ValidateIf пропускает проверку только для undefined, IsString отклоняет null. Nullable storage/response не разрешает explicit-null удаление в request. Для удаления текста string path использует empty string; для current PT отсутствие entries отвергается защитой выше. Legacy full replacement остальных языков сохраняется. Прямой вызов сервиса обходит DTO и отдельно требует допустимой формы. См. domain skill для полного exercise example graph.
 
 ## Global DTO pipeline
 

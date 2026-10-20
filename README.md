@@ -20,6 +20,7 @@ push token registry и admin API.
 | API и identity | [api-map](.agents/skills/grippo-identity-api/references/api-map.md) |
 | Env keys, порты, Docker и запуск | [configuration-and-containers](.agents/skills/grippo-operations/references/configuration-and-containers.md) |
 | Проверки и границы покрытия | [checks](.agents/skills/grippo-verification/references/checks.md) |
+| pt-BR/pt-PT, snapshot API, schema/import и клиентский handoff | [Portuguese rollout](tasks/portuguese-rollout.md) |
 
 Jest содержит focused DTO/controller specs; они подменяют services/guards и
 не проверяют настоящие auth/DB интеграции. Перед запуском приложения установи
@@ -28,11 +29,24 @@ Jest содержит focused DTO/controller specs; они подменяют se
 Swagger paths: /docs, /docs-json; глобального /api prefix нет. `/health` проверяет
 доступность БД без выдачи её данных.
 
+Каталог/тренировки поддерживают `Accept-Language` en/ua/ru/pt-BR/pt-PT и
+`Vary: Accept-Language`. `uk` — header alias для ua; bare pt/прочие pt-регионы
+выбирают BR, явный PT — PT. Без перевода сохраняется en/base fallback.
+Raw admin translations возвращает `translationsRevision`; PUT проверяет снимок
+при сохранении португальских переводов и отвечает structured409 при конфликте.
+Подготовлены отдельные schema SQL и dry-run importer; автоматически при старте
+они не выполняются. Команды, private artifacts и release gates — в rollout выше.
+
 ## Эксплуатация
 
 **Деплой только с явного разрешения человека на конкретную попытку. Перед каждым
 деплоем обязателен новый successful dump через scripts/dump.sh.** Dump-only,
 SSH, зелёные checks и review не разрешают rollout или автоматический retry.
+
+Свежие pre-deploy дампы каждой production attempt сохраняются также в
+[Notion Dump history](https://app.notion.com/p/3300cb0926ef80a7b760e51cf768a2d1)
+датированным серым блоком с вложением `dump.sql`; [порядок архивации](.agents/skills/grippo-operations/references/notion-dump-history.md).
+Это обязательный шаг агента через Notion MCP; shell scripts сами файл в Notion не загружают.
 
 [Обязательный порядок dump/deploy](.agents/skills/grippo-operations/references/deployment-policy.md)
 и [SSH/remote доступ](.agents/skills/grippo-operations/references/remote-access.md)

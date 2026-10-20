@@ -90,15 +90,19 @@ Runner создаёт новый временный cluster/процесс и о
 credentials и параметры запросов в отчёт не выводятся. Создание свежей тестовой
 схемы не означает разрешение synchronize рабочей БД.
 
-Текущая исходная suite содержит 32 сценария (14 identity, 18 catalog/training):
+Текущая suite содержит 47 сценариев (14 identity, 33 catalog/training):
 конкурентное создание профиля/goal, замена exclusions, защита последнего веса,
 конкурентные catalog CRUD/training create/replace, FK/CHECK/UNIQUE,
 CASCADE/SET NULL и полный rollback после поздней серверной ошибки.
-В 13 конкурентных сценариях ожидание доказывает `pg_blocking_pids` с точным
+В исходных 13 конкурентных сценариях ожидание доказывает `pg_blocking_pids` с точным
 PID блокирующей transaction; задержка сама по себе не доказательство.
-В 7 rollback-сценариях ошибка возникает в настоящей PostgreSQL transaction,
+В исходных 7 rollback-сценариях ошибка возникает в настоящей PostgreSQL transaction,
 а после отката сравниваются прежние IDs, timestamps, порядок, агрегаты и children.
 Число сценариев — текущее покрытие, не ограничение на расширение suite.
+Португальский срез дополнительно проверяет enum transition/UNIQUE, revision guards,
+импорт/no-op/conflicts, поздний rollback, обе очередности importer/PUT с реальным
+ожиданием lock и reconciliation потерянного COMMIT. Runtime guards также проверяют
+inert import CLI и три независимых private backup artifacts; рабочие SQL rows не нужны.
 
 При изменении entities/FK/constraints/schema/defaults, ownership, CRUD
 users/profile/goals/exclusions/weight, каталога/тренировок, transaction manager

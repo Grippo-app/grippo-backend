@@ -6,6 +6,8 @@ import {ExerciseExampleBundlesEntity} from "../../entities/exercise-example-bund
 import {ExerciseExampleLocalizedTextDto, ExerciseExampleRequest} from "./dto/exercise-example.request";
 import {ExerciseExampleCreateResponse, ExerciseExampleWithStatsResponse} from "./dto/exercise-example.response";
 import {ExerciseExampleTranslationsResponse} from './dto/exercise-example-translations.response';
+import {ExerciseExampleUpdateRequest} from './dto/exercise-example-update.request';
+import {calculateTranslationsRevision} from './exercise-translations-revision';
 import {ExerciseExamplesEquipmentsEntity} from "../../entities/exercise-examples-equipments.entity";
 import {ExerciseExampleTranslationEntity} from "../../entities/exercise-example-translation.entity";
 import {ExcludedEquipmentsEntity} from "../../entities/excluded-equipments.entity";
@@ -149,6 +151,7 @@ export class ExerciseExampleService {
         if (!example) throw new NotFoundException('Exercise example not found');
         return {
             id: example.id,
+            translationsRevision: calculateTranslationsRevision(example, example.translations ?? []),
             base: {name: example.name ?? null, description: example.description ?? null},
             translations: (example.translations ?? []).map(translation => ({
                 language: translation.language,
@@ -223,7 +226,7 @@ export class ExerciseExampleService {
      * @param id Exercise example ID to update
      * @param body Updated exercise example data
      */
-    async updateExerciseExample(id: string, body: ExerciseExampleRequest): Promise<void> {
+    async updateExerciseExample(id: string, body: ExerciseExampleUpdateRequest): Promise<void> {
         await this.exerciseExamplesRepository.manager.transaction('READ COMMITTED', async (manager) => {
             const existingExerciseExample = await manager.findOne(ExerciseExamplesEntity, {
                 where: {id},
@@ -240,8 +243,20 @@ export class ExerciseExampleService {
                 name,
                 description,
                 components,
+                translationsRevision,
                 ...rest
             } = body;
+
+            const currentTranslations = await manager.find(ExerciseExampleTranslationEntity, {
+                where: {exerciseExampleId: id},
+            });
+            this.validateTranslationsUpdate(
+                existingExerciseExample,
+                currentTranslations,
+                name,
+                description,
+                translationsRevision,
+            );
 
             const exerciseExample = new ExerciseExamplesEntity();
             Object.assign(exerciseExample, rest);
@@ -345,6 +360,39 @@ export class ExerciseExampleService {
             });
             if (equipments.length !== equipmentIds.length) {
                 throw new BadRequestException('One or more equipments not found');
+            }
+        }
+    }
+
+    private validateTranslationsUpdate(
+        example: ExerciseExamplesEntity,
+        currentTranslations: ExerciseExampleTranslationEntity[],
+        name: ExerciseExampleLocalizedTextDto[],
+        description: ExerciseExampleLocalizedTextDto[],
+        translationsRevision?: string,
+    ): void {
+        const isPortuguese = (language: SupportedLanguage) => language === 'pt-BR' || language === 'pt-PT';
+        const currentPortuguese = currentTranslations.filter(translation => isPortuguese(translation.language));
+        const revisionRequired = currentPortuguese.length > 0 || [name, description].some(items => {
+            const record = this.prepareTranslationInput(items).record;
+            return record['pt-BR'] != null || record['pt-PT'] != null;
+        });
+        if ((revisionRequired || translationsRevision !== undefined)
+            && translationsRevision !== calculateTranslationsRevision(example, currentTranslations)) {
+            throw new ConflictException({
+                code: 'EXERCISE_TRANSLATIONS_STALE',
+                message: 'Exercise translations changed. Reload the stored translations before saving.',
+            });
+        }
+
+        for (const translation of currentPortuguese) {
+            const hasName = (name ?? []).some(item => item?.language === translation.language && typeof item.value === 'string');
+            const hasDescription = (description ?? []).some(item => item?.language === translation.language && typeof item.value === 'string');
+            if (!hasName || !hasDescription) {
+                throw new ConflictException({
+                    code: 'EXERCISE_TRANSLATIONS_INCOMPLETE',
+                    message: `Both name and description must explicitly include ${translation.language}.`,
+                });
             }
         }
     }

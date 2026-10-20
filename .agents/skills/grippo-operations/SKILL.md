@@ -1,6 +1,6 @@
 ---
 name: grippo-operations
-description: Исследование и изменение Docker, env, SSH, dump/deploy/cleanup и восстановления PostgreSQL Grippo. Используй для эксплуатации, отдельного backup и подготовки разрешённого deploy; доменную логику разбирай профильным skill.
+description: Подключение к логам сервера Grippo и диагностика HTTP-ошибок; Docker, env, SSH, dump/deploy/cleanup и восстановление PostgreSQL. Используй для серверных логов и эксплуатации; доменную логику разбирай профильным skill.
 ---
 
 # Grippo Operations
@@ -12,7 +12,9 @@ description: Исследование и изменение Docker, env, SSH, du
 
 ## Выбор справочника
 
+- «Подключись к логам», «сейчас дерну запрос», диагностика production HTTP: [server-logs](references/server-logs.md). Это отдельный read-only путь; dump/deploy scripts для него не нужны.
 - Dump/deploy и границы разрешения: обязательно [deployment-policy](references/deployment-policy.md).
+- Каждая production attempt: [обязательный архив dump в Notion](references/notion-dump-history.md), текущий native формат и подтверждение вложения.
 - SSH, remote preflight, передача backup: [remote-access](references/remote-access.md).
 - CLI, порядок действий и failure state: [scripts-runbooks](references/scripts-runbooks.md).
 - Docker, env, порты, health и startup: [configuration-and-containers](references/configuration-and-containers.md).
@@ -20,6 +22,10 @@ description: Исследование и изменение Docker, env, SSH, du
 - Состав SQL и отдельный restore: [dump-and-restore](references/dump-and-restore.md).
 
 ## Рабочий цикл
+
+Для чтения логов выполни workflow из `server-logs`: уже данное разрешение на
+чтение той же подтверждённой цели повторно не спрашивай. Написание инструкции
+само по себе не разрешает SSH. Следующие шаги относятся к изменению эксплуатации.
 
 1. Установи scope: локальное исправление, read-only доступ, dump-only, deploy
    либо recovery. Разработка и review не разрешают SSH или эксплуатацию.
@@ -43,7 +49,8 @@ description: Исследование и изменение Docker, env, SSH, du
   `down -v`, import/drop schema, bootstrap и автоматический rollback отсутствуют.
   Несовпадение actual DB с Compose блокирует deploy, а не меняет источник.
 - Перед каждой execute attempt helper заново вызывает штатный `dump.sh`,
-  проверяет snapshot/latest и независимую private recovery copy.
+  проверяет snapshot/latest и независимую private recovery copy. Агент отдельно
+  сохраняет свежие pre-deploy snapshots в Notion; shell/MCP integration не встроена.
   Dump-only не разрешает upload/restart/deploy/restore.
 - Окно без writes согласуется до snapshot и длится до согласованного API smoke,
   включая HTTP-клиентов после recreate. `--writers-frozen` — утверждение
