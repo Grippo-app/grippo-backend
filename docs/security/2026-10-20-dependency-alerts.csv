@@ -1,0 +1,99 @@
+github_alert,advisory,severity,package,affected_range,baseline_versions,current_versions,current_scopes,result
+1,GHSA-rv95-896h-c2vc,medium,express,< 4.19.2,4.18.2,4.22.1,production,resolved-in-lockfile
+2,GHSA-grv7-fg5c-xmjg,high,braces,< 3.0.3,3.0.2,3.0.3,development,resolved-in-lockfile
+4,GHSA-4vvj-4cpr-p986,medium,webpack,>= 5.0.0-alpha.0 < 5.94.0,5.89.0; 5.90.1,5.112.0,development,resolved-in-lockfile
+5,GHSA-9wv6-86v2-598j,high,path-to-regexp,< 0.1.10,0.1.7; 3.2.0,0.1.13; 3.3.0,production,resolved-in-lockfile
+6,GHSA-qwcr-r2fm-qrc7,high,body-parser,< 1.20.3,1.20.1; 1.20.2,1.20.8,production,resolved-in-lockfile
+7,GHSA-qw6h-vgh9-j6wx,low,express,< 4.20.0,4.18.2,4.22.1,production,resolved-in-lockfile
+8,GHSA-cm22-4g7w-348p,low,serve-static,< 1.16.0,1.15.0,1.16.3,production,resolved-in-lockfile
+9,GHSA-m6fv-jmcg-4jfg,low,send,< 0.19.0,0.18.0,0.19.2,production,resolved-in-lockfile
+10,GHSA-9wv6-86v2-598j,high,path-to-regexp,>= 2.0.0 < 3.3.0,0.1.7; 3.2.0,0.1.13; 3.3.0,production,resolved-in-lockfile
+11,GHSA-pxg6-pf52-xh8x,low,cookie,< 0.7.0,0.5.0,0.7.2,production,resolved-in-lockfile
+12,GHSA-3xgq-45jj-v275,high,cross-spawn,>= 7.0.0 < 7.0.5,7.0.3,7.0.6,production,resolved-in-lockfile
+13,GHSA-rhx6-c78j-4q9w,high,path-to-regexp,< 0.1.12,0.1.7; 3.2.0,0.1.13; 3.3.0,production,resolved-in-lockfile
+15,GHSA-cj7v-w2c7-cp7c,medium,@nestjs/common,< 10.4.16,10.3.1,10.4.22,production,resolved-in-lockfile
+16,GHSA-75v8-2h7p-7m2m,low,formidable,>= 2.1.0 < 2.1.3,2.1.2,2.1.5,development,resolved-in-lockfile
+17,GHSA-44fp-w29j-9vj5,high,multer,< 2.0.0,1.4.4-lts.1,2.4.0,production,resolved-in-lockfile
+18,GHSA-4pg4-qvpc-4q3h,high,multer,>= 1.4.4-lts.1 < 2.0.0,1.4.4-lts.1,2.4.0,production,resolved-in-lockfile
+19,GHSA-g5hg-p3ph-g8qg,high,multer,>= 1.4.4-lts.1 < 2.0.1,1.4.4-lts.1,2.4.0,production,resolved-in-lockfile
+20,GHSA-v6h2-p8h4-qcjw,low,brace-expansion,>= 2.0.0 <= 2.0.1,1.1.11; 2.0.1,1.1.21; 2.1.7,development; production,resolved-in-lockfile
+21,GHSA-v6h2-p8h4-qcjw,low,brace-expansion,>= 1.0.0 <= 1.1.11,1.1.11; 2.0.1,1.1.21; 2.1.7,development; production,resolved-in-lockfile
+22,GHSA-fjgf-rc76-4x9p,high,multer,>= 1.4.4-lts.1 < 2.0.2,1.4.4-lts.1,2.4.0,production,resolved-in-lockfile
+23,GHSA-76c9-3jph-rj3q,low,on-headers,< 1.1.0,1.0.2,1.1.0,production,resolved-in-lockfile
+24,GHSA-fjxv-7rqg-78g4,critical,form-data,>= 4.0.0 < 4.0.4,4.0.0,4.0.6,development,resolved-in-lockfile
+25,GHSA-52f5-9888-hmc6,low,tmp,<= 0.2.3,0.0.33,0.2.7,development,resolved-in-lockfile
+28,GHSA-9965-vmph-33xx,medium,validator,< 13.15.20,13.11.0,13.15.35,production,resolved-in-lockfile
+29,GHSA-q2pj-6v73-8rgj,high,typeorm,< 0.3.26,0.3.20,0.3.31,production,resolved-in-lockfile
+32,GHSA-mh29-5h37-fv8m,medium,js-yaml,< 3.14.2,3.14.1; 4.1.0,3.15.2; 4.3.2,development; production,resolved-in-lockfile
+33,GHSA-mh29-5h37-fv8m,medium,js-yaml,>= 4.0.0 < 4.1.1,3.14.1; 4.1.0,3.15.2; 4.3.2,development; production,resolved-in-lockfile
+35,GHSA-5j98-mcp5-4vw2,high,glob,>= 10.2.0 < 10.5.0,10.3.10; 7.2.3; 9.3.5,10.5.0; 7.2.3,development; production,resolved-in-lockfile
+38,GHSA-vghf-hv5q-vc2g,high,validator,< 13.15.22,13.11.0,13.15.35,production,resolved-in-lockfile
+39,GHSA-869p-cjfg-cm3x,high,jws,= 4.0.0,3.2.2; 4.0.0,3.2.3; 4.0.1,production,resolved-in-lockfile
+40,GHSA-869p-cjfg-cm3x,high,jws,< 3.2.3,3.2.2; 4.0.0,3.2.3; 4.0.1,production,resolved-in-lockfile
+41,GHSA-6rw7-vpxm-498p,medium,qs,< 6.14.1,6.11.0,6.16.1,production,resolved-in-lockfile
+44,GHSA-xxjr-mmjv-4gpg,medium,lodash,>= 4.0.0 <= 4.17.22,4.17.21,4.18.1,production,resolved-in-lockfile
+45,GHSA-73rr-hh4g-fpgx,low,diff,>= 4.0.0 < 4.0.4,4.0.2,4.0.4,production,resolved-in-lockfile
+48,GHSA-38r7-794h-5758,low,webpack,>= 5.49.0 < 5.104.0,5.89.0; 5.90.1,5.112.0,development,resolved-in-lockfile
+49,GHSA-8fgc-7cc6-rx7x,low,webpack,>= 5.49.0 <= 5.104.0,5.89.0; 5.90.1,5.112.0,development,resolved-in-lockfile
+50,GHSA-w7fw-mjwx-w883,low,qs,>= 6.7.0 <= 6.14.1,6.11.0,6.16.1,production,resolved-in-lockfile
+56,GHSA-3ppc-4f35-3m26,high,minimatch,>= 9.0.0 < 9.0.6,3.1.2; 8.0.4; 9.0.3,3.1.5; 9.0.9,development; production,resolved-in-lockfile
+57,GHSA-3ppc-4f35-3m26,high,minimatch,< 3.1.3,3.1.2; 8.0.4; 9.0.3,3.1.5; 9.0.9,development; production,resolved-in-lockfile
+59,GHSA-7r86-cg39-jmmj,high,minimatch,>= 8.0.0 < 8.0.6,3.1.2; 8.0.4; 9.0.3,3.1.5; 9.0.9,development; production,resolved-in-lockfile
+60,GHSA-7r86-cg39-jmmj,high,minimatch,>= 9.0.0 < 9.0.7,3.1.2; 8.0.4; 9.0.3,3.1.5; 9.0.9,development; production,resolved-in-lockfile
+61,GHSA-23c5-xmqv-rm74,high,minimatch,>= 9.0.0 < 9.0.7,3.1.2; 8.0.4; 9.0.3,3.1.5; 9.0.9,development; production,resolved-in-lockfile
+62,GHSA-23c5-xmqv-rm74,high,minimatch,< 3.1.4,3.1.2; 8.0.4; 9.0.3,3.1.5; 9.0.9,development; production,resolved-in-lockfile
+63,GHSA-7r86-cg39-jmmj,high,minimatch,< 3.1.3,3.1.2; 8.0.4; 9.0.3,3.1.5; 9.0.9,development; production,resolved-in-lockfile
+64,GHSA-5c6j-r48x-rmvq,high,serialize-javascript,<= 7.0.2,6.0.2,removed,removed,resolved-in-lockfile
+65,GHSA-xf7r-hgr6-v32p,high,multer,< 2.1.0,1.4.4-lts.1,2.4.0,production,resolved-in-lockfile
+66,GHSA-v52c-386h-88mc,high,multer,< 2.1.0,1.4.4-lts.1,2.4.0,production,resolved-in-lockfile
+67,GHSA-5528-5vmv-3xc2,high,multer,< 2.1.1,1.4.4-lts.1,2.4.0,production,resolved-in-lockfile
+69,GHSA-rf6f-7fwh-wjgh,high,flatted,<= 3.4.1,3.2.9,3.4.4,development,resolved-in-lockfile
+71,GHSA-3v7f-55p6-f55p,medium,picomatch,>= 3.0.0 < 3.0.2,2.3.1; 3.0.1,2.3.2; 4.0.7,development,resolved-in-lockfile
+72,GHSA-f886-m6hf-6m8v,medium,brace-expansion,>= 2.0.0 < 2.0.3,1.1.11; 2.0.1,1.1.21; 2.1.7,development; production,resolved-in-lockfile
+74,GHSA-37ch-88jc-xwx2,high,path-to-regexp,< 0.1.13,0.1.7; 3.2.0,0.1.13; 3.3.0,production,resolved-in-lockfile
+75,GHSA-c2c7-rcm5-vvqj,high,picomatch,< 2.3.2,2.3.1; 3.0.1,2.3.2; 4.0.7,development,resolved-in-lockfile
+76,GHSA-3v7f-55p6-f55p,medium,picomatch,< 2.3.2,2.3.1; 3.0.1,2.3.2; 4.0.7,development,resolved-in-lockfile
+78,GHSA-36xv-jgw5-4q75,medium,@nestjs/core,<= 11.1.17,10.3.1,10.4.22,production,remaining
+79,GHSA-f23m-r3pf-42rh,medium,lodash,<= 4.17.23,4.17.21,4.18.1,production,resolved-in-lockfile
+80,GHSA-r5fr-rjxr-66jc,high,lodash,>= 4.0.0 <= 4.17.23,4.17.21,4.18.1,production,resolved-in-lockfile
+83,GHSA-qj8w-gfj5-8c6v,medium,serialize-javascript,>= 5.0.0 < 7.0.5,6.0.2,removed,removed,resolved-in-lockfile
+84,GHSA-w5hq-g745-h8pq,medium,uuid,< 11.1.1,10.0.0; 9.0.0; 9.0.1,11.1.1,production,resolved-in-lockfile
+86,GHSA-ph9p-34f9-6g65,high,tmp,< 0.2.6,0.0.33,0.2.7,development,resolved-in-lockfile
+87,GHSA-hmw2-7cc7-3qxx,high,form-data,>= 4.0.0 < 4.0.6,4.0.0,4.0.6,development,resolved-in-lockfile
+89,GHSA-72gw-mp4g-v24j,high,multer,>= 1.0.0 < 2.2.0,1.4.4-lts.1,2.4.0,production,resolved-in-lockfile
+90,GHSA-4x5r-pxfx-6jf8,low,@babel/core,<= 7.29.0,7.23.9,7.29.7,development,resolved-in-lockfile
+91,GHSA-9ggv-8w38-r7pm,medium,typeorm,>= 0.1.12 <= 0.3.28,0.3.20,0.3.31,production,resolved-in-lockfile
+92,GHSA-h67p-54hq-rp68,medium,js-yaml,>= 4.0.0 <= 4.1.1,3.14.1; 4.1.0,3.15.2; 4.3.2,development; production,resolved-in-lockfile
+93,GHSA-h67p-54hq-rp68,medium,js-yaml,< 3.15.0,3.14.1; 4.1.0,3.15.2; 4.3.2,development; production,resolved-in-lockfile
+94,GHSA-4vj7-5mj6-jm8m,medium,morgan,>= 1.2.0 <= 1.10.1,1.10.0,1.12.1,production,resolved-in-lockfile
+95,GHSA-v422-hmwv-36x6,low,body-parser,< 1.20.6,1.20.1; 1.20.2,1.20.8,production,resolved-in-lockfile
+96,GHSA-3jxr-9vmj-r5cp,high,brace-expansion,>= 2.0.0 < 2.1.2,1.1.11; 2.0.1,1.1.21; 2.1.7,development; production,resolved-in-lockfile
+97,GHSA-52cp-r559-cp3m,high,js-yaml,>= 3.0.0 < 3.15.0,3.14.1; 4.1.0,3.15.2; 4.3.2,development; production,resolved-in-lockfile
+98,GHSA-52cp-r559-cp3m,high,js-yaml,>= 4.0.0 < 4.3.0,3.14.1; 4.1.0,3.15.2; 4.3.2,development; production,resolved-in-lockfile
+99,GHSA-2rp8-mm9q-fp49,medium,typeorm,< 0.3.31,0.3.20,0.3.31,production,resolved-in-lockfile
+100,GHSA-3jxr-9vmj-r5cp,high,brace-expansion,< 1.1.16,1.1.11; 2.0.1,1.1.21; 2.1.7,development; production,resolved-in-lockfile
+102,GHSA-mh99-v99m-4gvg,high,brace-expansion,>= 2.0.0 < 2.1.3,1.1.11; 2.0.1,1.1.21; 2.1.7,development; production,resolved-in-lockfile
+103,GHSA-rgw5-rvv9-x895,high,brace-expansion,>= 2.0.0 < 2.1.4,1.1.11; 2.0.1,1.1.21; 2.1.7,development; production,resolved-in-lockfile
+104,GHSA-mh99-v99m-4gvg,high,brace-expansion,< 1.1.17,1.1.11; 2.0.1,1.1.21; 2.1.7,development; production,resolved-in-lockfile
+105,GHSA-5p4m-2wfm-xmqj,high,js-yaml,>= 3.0.0 < 3.15.1,3.14.1; 4.1.0,3.15.2; 4.3.2,development; production,resolved-in-lockfile
+106,GHSA-5p4m-2wfm-xmqj,high,js-yaml,>= 4.0.0 < 4.3.1,3.14.1; 4.1.0,3.15.2; 4.3.2,development; production,resolved-in-lockfile
+107,GHSA-rgw5-rvv9-x895,high,brace-expansion,< 1.1.18,1.1.11; 2.0.1,1.1.21; 2.1.7,development; production,resolved-in-lockfile
+109,GHSA-73wf-gq98-2v4g,high,browserslist,<= 4.28.6,4.22.3,4.29.4,development,resolved-in-lockfile
+110,GHSA-4mjr-xmp4-gh2g,medium,qs,>= 2.2.5 < 6.16.0,6.11.0,6.16.1,production,resolved-in-lockfile
+111,GHSA-jxfw-x594-9x9m,medium,morgan,< 1.12.0,1.10.0,1.12.1,production,resolved-in-lockfile
+112,GHSA-wc9g-mqfw-jrwm,high,multer,< 2.3.0,1.4.4-lts.1,2.4.0,production,resolved-in-lockfile
+113,GHSA-qvfw-j98x-7q72,low,multer,< 2.3.0,1.4.4-lts.1,2.4.0,production,resolved-in-lockfile
+114,GHSA-535w-7cp7-47q4,high,multer,< 2.3.0,1.4.4-lts.1,2.4.0,production,resolved-in-lockfile
+115,GHSA-2883-xcg3-v3hh,high,js-yaml,>= 3.0.0 < 3.15.2,3.14.1; 4.1.0,3.15.2; 4.3.2,development; production,resolved-in-lockfile
+116,GHSA-2883-xcg3-v3hh,high,js-yaml,>= 4.0.0 < 4.3.2,3.14.1; 4.1.0,3.15.2; 4.3.2,development; production,resolved-in-lockfile
+117,GHSA-9f6g-j8ch-79g4,medium,morgan,< 1.12.1,1.10.0,1.12.1,production,resolved-in-lockfile
+118,GHSA-4p3w-j4w9-5jqw,medium,moment,>= 2.29.2 < 2.31.0,2.30.1,2.31.0,production,resolved-in-lockfile
+119,GHSA-qhr7-859c-m2p7,high,brace-expansion,>= 2.0.0 < 2.1.6,1.1.11; 2.0.1,1.1.21; 2.1.7,development; production,resolved-in-lockfile
+120,GHSA-q2hr-2g5m-vwhr,medium,brace-expansion,>= 2.0.0 < 2.1.7,1.1.11; 2.0.1,1.1.21; 2.1.7,development; production,resolved-in-lockfile
+121,GHSA-6j4f-fj2g-mc7p,high,brace-expansion,>= 2.0.0 < 2.1.5,1.1.11; 2.0.1,1.1.21; 2.1.7,development; production,resolved-in-lockfile
+122,GHSA-q2hr-2g5m-vwhr,medium,brace-expansion,< 1.1.21,1.1.11; 2.0.1,1.1.21; 2.1.7,development; production,resolved-in-lockfile
+123,GHSA-qhr7-859c-m2p7,high,brace-expansion,< 1.1.20,1.1.11; 2.0.1,1.1.21; 2.1.7,development; production,resolved-in-lockfile
+124,GHSA-f886-m6hf-6m8v,medium,brace-expansion,< 1.1.13,1.1.11; 2.0.1,1.1.21; 2.1.7,development; production,resolved-in-lockfile
+125,GHSA-6j4f-fj2g-mc7p,high,brace-expansion,< 1.1.19,1.1.11; 2.0.1,1.1.21; 2.1.7,development; production,resolved-in-lockfile
+126,GHSA-vfj7-8cjw-p6xm,high,braces,<= 3.0.3,3.0.2,3.0.3,development,remaining
+128,GHSA-hp3w-g68c-fv3c,medium,sprintf-js,<= 1.1.3,1.0.3,1.0.3,development,remaining
