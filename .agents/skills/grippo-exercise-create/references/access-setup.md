@@ -17,7 +17,14 @@ JSON задачи, journal, файлы проекта или вывод инст
 в памяти одной команды, refresh token не сохраняется.
 
 Исходники: [Node bridge](../scripts/exercise-vault.cjs) и
-[native helper](../scripts/exercise-vault.swift). Установка явная:
+[native helper](../scripts/exercise-vault.swift).
+
+Сборка для SwiftPM и CodeQL описана в корневом
+[Package.swift](../../../../Package.swift): один native source, без зависимостей.
+Она только компилирует helper; рабочая установка и записи Keychain создаются
+штатными командами ниже, отдельно от CI.
+
+Установка явная:
 
 ```bash
 node .agents/skills/grippo-exercise-create/scripts/exercise-vault.cjs --install
