@@ -6,7 +6,7 @@ import { repositoryProviders } from './repository.providers';
 import { DatabaseService } from './database.service';
 
 @Module({
-  imports: [ConfigModule.forRoot()],
+  imports: [ConfigModule],
   providers: [...dataSourceProviders, ...repositoryProviders, DatabaseService],
   exports: [...dataSourceProviders, ...repositoryProviders],
 })

@@ -9,9 +9,9 @@ testRegex .*\\.spec\\.ts$, node environment. Текущие узкие пров�
 Они проверяют ValidationPipe/controller/Swagger с подменёнными services/guards,
 без AppModule/config/БД; настоящую авторизацию и сохранение данных не покрывают.
 
-Перед задачей повторяй поиск specs и читай их окружение. test:e2e ссылается
-на отсутствующий test/jest-e2e.json. В checkout нет ESLint/Prettier config и
-CI workflow; это не подтверждает отсутствие внешнего/default CI в GitHub.
+Перед задачей повторяй поиск specs и читай их окружение. Отдельного e2e entrypoint
+нет. ESLint использует `.eslintrc.cjs` без правил форматирования; Prettier config
+и CI workflow в checkout отсутствуют. Это не подтверждает отсутствие внешнего/default CI в GitHub.
 Постоянная интеграционная БД не предусмотрена. Настоящие SQL/locks/FK/rollback
 проверяет отдельная поддерживаемая suite [test/postgres](../../../../test/postgres/README.md)
 на автоматически создаваемом локальном PostgreSQL. Jest её не обнаруживает
@@ -24,6 +24,7 @@ CI workflow; это не подтверждает отсутствие внеш�
 | Проверка | Команда | Что не доказывает |
 |---|---|---|
 | Types/imports/decorators | `./node_modules/.bin/tsc --noEmit --incremental false -p tsconfig.build.json` | Поведение DI/HTTP/SQL/OAuth при выполнении |
+| Lint без записи | `npm run lint` | Поведение HTTP/SQL/OAuth при выполнении |
 | Поиск specs | `npm test -- --listTests --runInBand` | Пустой список не является успешными тестами |
 | Текущие тесты | `npm test -- --runInBand` | Guards/services подменены; HTTP fixture требует loopback listen |
 | Настоящие PostgreSQL regression tests | `npm run test:postgres` | Отдельный локальный PostgreSQL 15; не проверяет рабочую схему, HTTP/guards или OAuth |
@@ -46,7 +47,7 @@ done
 --root <fixture> проверяет изолированную копию. Не устанавливай packages скрыто
 ради успешной проверки; отсутствующий инструмент укажи как ограничение.
 
-npm run lint включает --fix, format — --write. Nest build удаляет/пишет dist
+npm run lint не меняет файлы; lint:fix включает --fix, format — --write. Nest build удаляет/пишет dist
 (deleteOutDir), поэтому для проверки типов используй noEmit без incremental.
 start:dev transpile-only не доказывает корректность типов. npm ci/build могут
 исполнять lifecycle hooks и обращаться в сеть; это не чтение документации.
@@ -91,10 +92,12 @@ Runner создаёт новый временный cluster/процесс и о
 credentials и параметры запросов в отчёт не выводятся. Создание свежей тестовой
 схемы не означает разрешение synchronize рабочей БД.
 
-Текущая suite содержит 47 сценариев (14 identity, 33 catalog/training):
+Текущая suite содержит 52 сценария (17 identity, 35 catalog/training):
 конкурентное создание профиля/goal, замена exclusions, защита последнего веса,
 конкурентные catalog CRUD/training create/replace, FK/CHECK/UNIQUE,
-CASCADE/SET NULL и полный rollback после поздней серверной ошибки.
+CASCADE/SET NULL и полный rollback после поздней серверной ошибки. Regression
+cases также проверяют set-семантику exclusions, границы роста, отказ при повторных
+catalog references и сохранность публичного catalog/training response.
 В исходных 13 конкурентных сценариях ожидание доказывает `pg_blocking_pids` с точным
 PID блокирующей transaction; задержка сама по себе не доказательство.
 В исходных 7 rollback-сценариях ошибка возникает в настоящей PostgreSQL transaction,

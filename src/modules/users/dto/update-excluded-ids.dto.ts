@@ -3,7 +3,7 @@ import {ApiProperty} from '@nestjs/swagger';
 
 export class UpdateExcludedIdsDto {
     @ApiProperty({
-        description: 'List of IDs to exclude',
+        description: 'List of IDs to exclude (case-insensitive; duplicate IDs are collapsed)',
         type: [String],
         example: ['a3f4b7c2-2db5-4e99-a95b-11db59f1b191'],
     })

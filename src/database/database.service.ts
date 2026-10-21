@@ -48,10 +48,6 @@ export class DatabaseService {
             migrationsRun,
 
             namingStrategy: new SnakeNamingStrategy(),
-
-            extra: {
-                charset: 'utf8mb4_unicode_ci',
-            },
         };
     }
 }

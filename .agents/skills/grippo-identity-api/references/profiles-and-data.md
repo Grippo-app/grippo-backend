@@ -24,14 +24,14 @@ Repository tokens задаются централизованно в [repository
 
 1. Найти и заблокировать user по ID через pessimistic_write → 404 если нет.
 2. Проверить profile по user relation → 400 `User profile already created`, если есть.
-3. Проверить непустые exclusion списки через manager с for_key_share; для поиска IDs приводятся к lowercase и дедуплицируются. Неизвестные references → 404 до создания profile. Создать и сохранить profile с `name,height,experience`.
+3. Проверить непустые exclusion списки через manager с for_key_share; один lowercase/deduplicated список используется и для поиска, и для записи. Неизвестные references → 404 до создания profile. Создать и сохранить profile с `name,height,experience`.
 4. Создать первый weight с profile ID и `dto.weight`.
 5. Очистить exclusions для нового profile, затем при непустых input списках сохранить rows с `muscleId`/`equipmentId`.
 6. Commit; после transaction `getUser(userId)` собирает response.
 
 Все write actions в этой transaction используют manager-derived repositories. Не переноси последующий read response внутрь другого injected repo как будто он автоматически видит uncommitted transaction.
 
-Profile creation проверяет уникальные normalized references, но сохраняет исходные списки без дедупликации. Повторяющиеся валидные IDs создают отдельные exclusion rows: unique пары profile/reference в entities нет. Это отличается от replacement methods, где дубликат приводит к count mismatch. DTO профиля имеет IsArray для exclusions и bounds 30–300 для веса; см. [API map](api-map.md).
+Profile creation и replacement methods нормализуют exclusions как множество: lowercase UUID, без повторов, порядок первого появления сохранён. Unique пары profile/reference в entities нет; прямые writers могут обойти сервис. DTO профиля имеет IsArray для exclusions, bounds 30–300 для веса и positive int4 bounds 1–2147483647 для роста; см. [API map](api-map.md).
 
 User row lock сериализует concurrent createProfile для одного user в этом сервисном пути; второй вызов перечитывает profile после lock. Relation uniqueness остаётся отдельной защитой; прямые writers не обязаны следовать сервисному протоколу.
 
@@ -44,7 +44,7 @@ User row lock сериализует concurrent createProfile для одног�
 
 Duration берётся в единице сохранённого `training.duration`; response DTO сознательно не конвертирует её. Не вводи пересчёт volume/repetitions из exercises в рамках изменения profile response.
 
-`updateExperience` и `updateHeight`: `requireProfile(userId)` → изменить/save только если значение отличается → `getUser`. Проверки height > 0, empty-name limit и upper/lower bounds здесь нет. `@IsInt` не означает физически допустимый рост. Отсутствующий profile → 400.
+`updateExperience` и `updateHeight`: `requireProfile(userId)` → изменить/save только если значение отличается → `getUser`. Оба HTTP DTO роста проверяют integer 1–2147483647; это положительное значение в диапазоне storage, без более узких антропометрических правил. В сервисе дополнительной DTO-валидации нет. Empty-name limit не задан. Отсутствующий profile → 400.
 
 ## Exclusions
 
@@ -54,11 +54,11 @@ Replacement methods:
 
 1. Require profile.
 2. Открыть READ COMMITTED transaction, через manager заблокировать profile pessimistic_write; при его отсутствии → 400.
-3. Через manager выполнить `referenceRepository.findBy({id:In(ids)})`.
-4. Если число найденных сущностей отличается от длины input → 404 `One or more muscle/equipment IDs are invalid`.
-5. Тем же manager удалить все exclusions profile и создать/save rows на каждый input ID. После commit вернуть `{ids:input}`.
+3. Привести IDs к lowercase, убрать повторы и через manager выполнить `referenceRepository.findBy({id:In(normalizedIds)})`.
+4. Если число найденных сущностей отличается от длины normalized списка → 404 `One or more muscle/equipment IDs are invalid`.
+5. Тем же manager удалить все exclusions profile и создать/save rows на каждый normalized ID. После commit вернуть `{ids:normalizedIds}`.
 
-`[]` очищает список. Повтор одного валидного ID обычно даёт count mismatch, поскольку query возвращает distinct reference rows: дубликат трактуется как invalid list, а не dedup/no-op. Delete/save атомарны; ошибка insert откатывает прежний список. Profile lock сериализует эти replacement methods для одного profile. Это не гарантия для прямых SQL writers, не соблюдающих протокол lock.
+`[]` очищает список. Повтор одного валидного ID схлопывается; неизвестный ID по-прежнему даёт 404. Delete/save атомарны; ошибка insert откатывает прежний список. Profile lock сериализует эти replacement methods для одного profile. Это не гарантия для прямых SQL writers, не соблюдающих протокол lock.
 
 ## Goal
 

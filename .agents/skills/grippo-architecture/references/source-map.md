@@ -13,6 +13,7 @@ Production metadata проверяй заново для каждой разре
 | Source | Primary skill |
 |---|---|
 | [.dockerignore](../../../../.dockerignore) | [grippo-operations](../../grippo-operations/SKILL.md) |
+| [.eslintrc.cjs](../../../../.eslintrc.cjs) | [grippo-verification](../../grippo-verification/SKILL.md) |
 | [.gitignore](../../../../.gitignore) | [grippo-operations](../../grippo-operations/SKILL.md) |
 | [.agents/skills/grippo-exercise-audit/scripts/inspect_snapshot.py](../../grippo-exercise-audit/scripts/inspect_snapshot.py) | [grippo-exercise-audit](../../grippo-exercise-audit/SKILL.md) |
 | [CLAUDE.md](../../../../CLAUDE.md) | [grippo-architecture](../../grippo-architecture/SKILL.md) |
@@ -79,7 +80,6 @@ Production metadata проверяй заново для каждой разре
 | [src/lib/goal.enum.ts](../../../../src/lib/goal.enum.ts) | [grippo-domain-data](../../grippo-domain-data/SKILL.md) |
 | [src/lib/hash.ts](../../../../src/lib/hash.ts) | [grippo-identity-api](../../grippo-identity-api/SKILL.md) |
 | [src/lib/muscle-group.enum.ts](../../../../src/lib/muscle-group.enum.ts) | [grippo-domain-data](../../grippo-domain-data/SKILL.md) |
-| [src/lib/muscle-load.enum.ts](../../../../src/lib/muscle-load.enum.ts) | [grippo-domain-data](../../grippo-domain-data/SKILL.md) |
 | [src/lib/muscle.enum.ts](../../../../src/lib/muscle.enum.ts) | [grippo-domain-data](../../grippo-domain-data/SKILL.md) |
 | [src/lib/user-role.enum.ts](../../../../src/lib/user-role.enum.ts) | [grippo-domain-data](../../grippo-domain-data/SKILL.md) |
 | [src/lib/weight-type.enum.ts](../../../../src/lib/weight-type.enum.ts) | [grippo-domain-data](../../grippo-domain-data/SKILL.md) |
@@ -112,6 +112,7 @@ Production metadata проверяй заново для каждой разре
 | [src/modules/exercise-examples/exercise-example.controller.ts](../../../../src/modules/exercise-examples/exercise-example.controller.ts) | [grippo-domain-data](../../grippo-domain-data/SKILL.md) |
 | [src/modules/exercise-examples/exercise-example.module.ts](../../../../src/modules/exercise-examples/exercise-example.module.ts) | [grippo-domain-data](../../grippo-domain-data/SKILL.md) |
 | [src/modules/exercise-examples/exercise-example.service.ts](../../../../src/modules/exercise-examples/exercise-example.service.ts) | [grippo-domain-data](../../grippo-domain-data/SKILL.md) |
+| [src/modules/exercise-examples/exercise-example-response.mapper.ts](../../../../src/modules/exercise-examples/exercise-example-response.mapper.ts) | [grippo-domain-data](../../grippo-domain-data/SKILL.md) |
 | [src/modules/exercise-examples/exercise-translations-revision.ts](../../../../src/modules/exercise-examples/exercise-translations-revision.ts) | [grippo-domain-data](../../grippo-domain-data/SKILL.md) |
 | [src/modules/exercise-metrics/dto/exercise-metrics.response.ts](../../../../src/modules/exercise-metrics/dto/exercise-metrics.response.ts) | [grippo-domain-data](../../grippo-domain-data/SKILL.md) |
 | [src/modules/exercise-metrics/exercise-metrics.controller.ts](../../../../src/modules/exercise-metrics/exercise-metrics.controller.ts) | [grippo-domain-data](../../grippo-domain-data/SKILL.md) |

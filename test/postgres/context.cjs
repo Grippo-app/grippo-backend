@@ -25,6 +25,7 @@ function allowedSource(relative) {
         || /^src\/i18n\/(exercise-example-i18n\.service|i18n\.types|locale\.helper)\.ts$/.test(relative)
         || /^src\/modules\/(users|weight-history|trainings|exercise-examples)\/[^/]+\.service\.ts$/.test(relative)
         || relative === 'src/modules/exercise-examples/exercise-translations-revision.ts'
+        || relative === 'src/modules/exercise-examples/exercise-example-response.mapper.ts'
         || /^src\/modules\/(users|weight-history|trainings|exercise-examples|muscles|equipments)\/dto\/(?!.*\.spec\.ts$)[^/]+\.ts$/.test(relative);
 }
 

@@ -8,7 +8,7 @@
 
 - [DatabaseService](../../../../src/database/database.service.ts): PostgreSQL, `entities: [join(__dirname, '..', 'entities', '*.entity.{ts,js}')]`, `migrations: []`; `POSTGRES_SYNC/LOGS/MIGRATIONS` явно parsed booleans с default false, некорректный ввод отклоняется. В production synchronize/migrationsRun=true запрещены, installExtensions=false; текущий Compose выключает все flags. DB port валидируется как integer 1..65535. Actual remote config здесь не установлен.
 - [dataSourceProviders](../../../../src/database/database.provider.ts): async provider `'DATA_SOURCE'` создает `DataSource`, вызывает `initialize()`, возвращает подключенный объект.
-- [DatabaseModule](../../../../src/database/database.module.ts): импортирует `ConfigModule.forRoot()`, предоставляет и экспортирует data source и repository providers. Feature-модули импортируют `DatabaseModule` и повторно включают `...repositoryProviders` в `providers`.
+- [DatabaseModule](../../../../src/database/database.module.ts): импортирует `ConfigModule`, предоставляет и экспортирует data source и repository providers. Feature-модули импортируют `DatabaseModule` без повторной регистрации repositories. `.env` загружает единственный `ConfigModule.forRoot()` в AppModule.
 - [repositoryProviders](../../../../src/database/repository.providers.ts): `createRepositoryProvider(token, Entity)` → factory `dataSource.getRepository(Entity)`, inject `'DATA_SOURCE'`. Нет `@nestjs/typeorm` или `forFeature`.
 - [SnakeNamingStrategy](../../../../src/common/snake-naming.strategy.ts): свойства camelCase становятся SQL snake_case, явно заданные имена сохраняются. Scalar FK и `@JoinColumn` с одинаковым SQL-именем относятся к одному столбцу; не добавляй второй FK из-за разницы имен TS/SQL.
 
@@ -107,7 +107,7 @@
 - Nullable enums `category`, `weightType`, `forceType`, `experience`.
 - Коллекции `exerciseExampleBundles`, `exercises`, `equipmentRefs`, `translations`: inverse `OneToMany`, `cascade: ['remove']`.
 - `componentsEntity`: inverse `OneToOne`, `cascade: true`.
-- `components`: публичное поле с `@ApiProperty`, **не колонка и не relation**. Сервисы строят его из componentsEntity, затем удаляют внутреннее поле перед выдачей.
+- Публичный `components` описан в response DTO, а не entity. Общий [mapper](../../../../src/modules/exercise-examples/exercise-example-response.mapper.ts) строит его из componentsEntity и удаляет внутреннее поле перед выдачей.
 - Сервисный запрет delete используемого example и `SET NULL` на FK Exercises — разные уровни. `cascade: ['remove']` на inverse relation также не равен SQL delete; учитывай разницу `remove(loaded entity)` и используемого сейчас `delete(criteria)`.
 
 ### 10. ExerciseExampleBundlesEntity → `exercise_example_bundles`
@@ -116,7 +116,7 @@
 
 - `percentage`, `exerciseExampleId`, `muscleId`: columns с `default: null` без explicit nullable.
 - `exerciseExample` и `muscle`: `ManyToOne`, FK `exercise_example_id` и `muscle_id`, `onDelete: CASCADE`, orphan delete.
-- Это join entity «шаблон упражнения → мышца + процент». Ни unique пары, ни DB check 0..100, ни DB-ограничение суммы процентов 100 не заданы. Текущий [request DTO](../../../../src/modules/exercise-examples/dto/exercise-example.request.ts) проверяет integer percentage 0..100 и сумму массива ровно 100 через `ExerciseMuscleTotalConstraint`; это API validation, не DB invariant. Прямые service/manager writes обходят request pipe; дубликаты muscleId отдельно не запрещены.
+- Это join entity «шаблон упражнения → мышца + процент». Ни unique пары, ни DB check 0..100, ни DB-ограничение суммы процентов 100 не заданы. Текущий [request DTO](../../../../src/modules/exercise-examples/dto/exercise-example.request.ts) проверяет integer percentage 0..100, сумму массива ровно 100 через `ExerciseMuscleTotalConstraint` и уникальность muscleId без учёта регистра. Сервис повторяет проверку уникальности references; прямые manager writes обходят эти защиты.
 
 ### 11. ExerciseExamplesEquipmentsEntity → `exercise_examples_equipments`
 
@@ -253,7 +253,6 @@ exercise_examples
 | [weight-type.enum.ts](../../../../src/lib/weight-type.enum.ts) | `free`, `fixed`, `body_weight`; это классификация, не замена components |
 | [force-type.enum.ts](../../../../src/lib/force-type.enum.ts) | `push`, `pull`, `hinge` |
 | [user-role.enum.ts](../../../../src/lib/user-role.enum.ts) | `default`, `admin` |
-| [muscle-load.enum.ts](../../../../src/lib/muscle-load.enum.ts) | `low`, `medium`, `high`; в изученном `src` нет потребителя кроме объявления |
 | [muscle-group.enum.ts](../../../../src/lib/muscle-group.enum.ts) | `chest_muscles`, `back_muscles`, `abdominal_muscles`, `legs`, `arms_and_forearms`, `shoulder_muscles` |
 | [muscle.enum.ts](../../../../src/lib/muscle.enum.ts) | 21 тип мышц: 3 pectoralis; 4 back; rectus_abdominis/obliques; calf/gluteal/hamstrings/quadriceps/adductors/abductors; 3 deltoids; biceps/triceps/forearm |
 | [equipment-group.enum.ts](../../../../src/lib/equipment-group.enum.ts) | `free_weight`, `machines`, `cable_machines`, `body_weight`, `benches_and_racks` |

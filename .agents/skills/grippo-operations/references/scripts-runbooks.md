@@ -184,7 +184,7 @@ schema и API smoke проверяются отдельно; health SELECT 1 э�
 
 1. Не root (`EUID != 0`) → `exec sudo -E bash "$0" "$@"`. Ошибка sudo прекращает script; аргументы передаются, но script ими не управляет. Environment сохраняется по sudo policy.
 2. Диагностика `df -h /`, `du -xhd1 /var | sort -h`, аналогично `/home`, при наличии `/var/lib/docker` — `du -sh`. Ошибки подавляются `|| true`.
-3. Если docker доступен: `docker system df`; `docker system prune -af`; `docker volume prune -f`; `docker builder prune --all --force`; размер `/var/lib/docker`; повтор `docker system df`. Все failures подавлены `|| true`, success messages безусловны. Это daemon-wide cleanup, затрагивающий другие проекты. Нельзя считать любой неиспользуемый volume disposable.
+3. Если docker доступен: `docker system df`; `docker system prune -af`; `docker volume prune -f`; `docker builder prune --all --force`; размер `/var/lib/docker`; повтор `docker system df`. Для prune success выводится только при exit 0; failure даёт warning без raw stderr, выполнение продолжается. Ошибки диагностических команд подавляются `|| true`. Это daemon-wide cleanup, затрагивающий другие проекты. Нельзя считать любой неиспользуемый volume disposable.
 4. `export DEBIAN_FRONTEND=noninteractive`; `apt-get clean`; `apt-get autoremove --purge -y`. Нет проверки apt-get перед вызовом; failure только warn, выполнение продолжается.
 5. Если найден journalctl: usage; `journalctl --vacuum-size=200M`; usage. Failures warn/ignore; без binary — skip.
 6. `rm -rf /tmp/*`, затем `rm -rf /var/tmp/*`; failures warn. Glob не включает обычные dotfiles. Нет age/ownership/exclusion checks: удаляются и свежие файлы других процессов.

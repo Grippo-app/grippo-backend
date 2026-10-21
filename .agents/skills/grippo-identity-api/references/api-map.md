@@ -60,9 +60,9 @@ Email normalization/verification для password registration в service нет.
 
 | Request DTO | Реальные validators и ограничения |
 |---|---|
-| [CreateUserProfileRequest](../../../../src/modules/users/dto/create-user-profile.request.ts) | `name: IsString`; `weight: IsNumber(maxDecimalPlaces:1) + Min(30) + Max(300)`; `height: IsInt`; `experience: IsEnum(ExperienceEnum)`; exclusions: `IsOptional + IsArray + IsUUID('all',{each:true}) + Type(String)` |
+| [CreateUserProfileRequest](../../../../src/modules/users/dto/create-user-profile.request.ts) | `name: IsString`; `weight: IsNumber(maxDecimalPlaces:1) + Min(30) + Max(300)`; `height: IsInt + Min(1) + Max(2147483647)`; `experience: IsEnum(ExperienceEnum)`; exclusions: `IsOptional + IsArray + IsUUID('all',{each:true}) + Type(String)`, сервис нормализует как множество |
 | [UpdateExperienceRequest](../../../../src/modules/users/dto/update-experience.request.ts) | `experience: IsEnum` |
-| [UpdateHeightRequest](../../../../src/modules/users/dto/update-height.request.ts) | `height: IsInt`, без bounds |
+| [UpdateHeightRequest](../../../../src/modules/users/dto/update-height.request.ts) | `height: IsInt + Min(1) + Max(2147483647)` |
 | [UpdateExcludedIdsDto](../../../../src/modules/users/dto/update-excluded-ids.dto.ts) | `ids: IsArray + IsUUID('all',{each:true})`; empty array допустим; уникальность не проверена DTO |
 | [GoalRequest](../../../../src/modules/users/dto/goal.request.ts) | `primaryGoal: IsEnum`; `secondaryGoal: IsOptional+IsEnum`; `target: IsOptional+IsDateString`; `personalizations: IsOptional+IsArray+IsEnum(each:true)` |
 

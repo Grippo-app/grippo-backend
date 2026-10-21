@@ -1,8 +1,5 @@
 import { SupportedLanguage, SUPPORTED_LANGUAGES } from './i18n.types';
 
-export const isSupportedLanguage = (value: string): value is SupportedLanguage =>
-    SUPPORTED_LANGUAGES.includes(value as SupportedLanguage);
-
 export interface LocaleRange {
     languages: readonly SupportedLanguage[];
     specificity: number;
@@ -34,7 +31,3 @@ export const parseLocaleRange = (value?: string | null): LocaleRange | undefined
         default: return undefined;
     }
 };
-
-/** Normalizes a locale to its preferred storage/read code, without likely-subtag inference. */
-export const tryNormalizeLocale = (value?: string | null): SupportedLanguage | undefined =>
-    value?.trim() === '*' ? undefined : parseLocaleRange(value)?.languages[0];

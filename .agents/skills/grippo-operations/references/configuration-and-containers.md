@@ -47,8 +47,8 @@ Selector hash связан с планом; active-context pointer больше 
 
 Backend получает application secrets через runtime env, а не build args/files.
 PostgreSQL получает только `POSTGRES_USER/PASSWORD/DB`, а не всю `.env`.
-`AppModule` использует global ConfigModule, DatabaseModule также вызывает
-ConfigModule.forRoot; process environment имеет приоритет над dotenv.
+`AppModule` один раз загружает global ConfigModule через forRoot; DatabaseModule
+импортирует ConfigModule без повторной загрузки `.env`. Process environment имеет приоритет над dotenv.
 Наличие ConfigService generic не выполняет conversion: текущий DatabaseService
 отдельно парсит DB port/boolean flags и запрещает schema automation в production,
 включая автоматическую установку extensions через TypeORM.

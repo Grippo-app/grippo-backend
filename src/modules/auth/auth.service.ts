@@ -11,7 +11,6 @@ import {RegisterRequest} from './dto/register.request';
 import {GoogleLoginRequest} from './dto/google-login.request';
 import {AppleLoginRequest} from './dto/apple-login.request';
 import {Hash} from '../../lib/hash';
-import {ConfigService} from "@nestjs/config";
 import {UserRoleEnum} from '../../lib/user-role.enum';
 import {GoogleAuthService} from './services/google-auth.service';
 import {AppleAuthService} from './services/apple-auth.service';
@@ -23,7 +22,6 @@ export class AuthService {
 
     constructor(
         private readonly jwtService: JwtService,
-        private readonly config: ConfigService,
         private readonly tokenService: TokenService,
         private readonly googleAuthService: GoogleAuthService,
         private readonly appleAuthService: AppleAuthService,

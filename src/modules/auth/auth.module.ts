@@ -11,7 +11,6 @@ import {AuthController} from './auth.controller';
 import {JwtStrategy} from '../../common/jwt.strategy';
 
 import {DatabaseModule} from '../../database/database.module';
-import {repositoryProviders} from '../../database/repository.providers';
 
 @Module({
     imports: [
@@ -36,7 +35,6 @@ import {repositoryProviders} from '../../database/repository.providers';
         AppleAuthService,
         GoogleAuthService,
         TokenService,
-        ...repositoryProviders,
     ],
     controllers: [AuthController],
     exports: [
@@ -45,7 +43,6 @@ import {repositoryProviders} from '../../database/repository.providers';
         AppleAuthService,
         GoogleAuthService,
         TokenService,
-        ...repositoryProviders,
     ],
 })
 export class AuthModule {

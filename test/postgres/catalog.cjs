@@ -200,6 +200,67 @@ async function runCatalog(ctx) {
       .transform(body, {type: 'body', metatype: TrainingsRequest});
   }
 
+  await runCase('catalog rejects duplicate muscle and equipment IDs before writes for direct create and replacement callers', async () => {
+    const example = await seedExample();
+    const snapshot = await catalogSnapshot(example.id);
+    const counts = await catalogCounts();
+    for (const action of ['create', 'replace']) for (const field of ['exerciseExampleBundles', 'equipmentRefs']) {
+      for (const mixedCase of [false, true]) {
+        const id = field === 'exerciseExampleBundles' ? example.dictionary.muscle.id : example.dictionary.equipment.id;
+        const repeated = mixedCase ? id.toUpperCase() : id;
+        const rows = field === 'exerciseExampleBundles'
+          ? [{muscleId: id, percentage: 50}, {muscleId: repeated, percentage: 50}]
+          : [{equipmentId: id}, {equipmentId: repeated}];
+        const body = {...example.body, imageUrl: 'synthetic://must-not-save', [field]: rows};
+        let writes = 0;
+        const writing = operation('catalog', {save: () => { writes += 1; }, delete: () => { writes += 1; }});
+        const rejected = await outcome(action === 'create'
+          ? writing.service.createExerciseExample(body)
+          : writing.service.updateExerciseExample(example.id, body));
+        assert(!rejected.ok && status(rejected.error) === 400, 'duplicate references must return 400 without relying on ValidationPipe');
+        assert.equal(writes, 0, 'duplicate checks must precede graph writes');
+        same(await catalogCounts(), counts, 'duplicate rejection must not create parent or child rows');
+        same(await catalogSnapshot(example.id), snapshot, 'duplicate replacement must preserve every prior row and timestamp');
+      }
+    }
+  });
+
+  await runCase('localized catalog and training reads share public components without leaking storage or inventing relations', async () => {
+    const example = await seedExample();
+    const identity = await seedUser();
+    const body = trainingBody(example.id);
+    body.exercises[1].exerciseExampleId = null;
+    const {id} = await operation('training').service.createTraining(body, identity.user);
+    const catalog = operation('catalog').service;
+    const trainings = operation('training').service;
+    const checkExample = value => {
+      assert.equal(value.name, 'Synthetic UA', 'locale mapping must precede public response mapping');
+      same(value.components, example.body.components, 'components must preserve multiplier, required:false and null channels');
+      assert(!Object.hasOwn(value, 'componentsEntity') && !Object.hasOwn(value, 'translations'), 'public response must hide internal relations');
+    };
+    const detail = await catalog.getExerciseExampleById(example.id, identity.user, 'ua');
+    const listed = (await catalog.getExerciseExamples(identity.user, 'ua')).find(row => row.entity.id === example.id);
+    for (const row of [detail, listed]) {
+      checkExample(row.entity);
+      assert.equal(row.usageCount, 1, 'personal stats must survive mapping');
+      assert(row.entity.exerciseExampleBundles[0].muscle && row.entity.equipmentRefs[0].equipment,
+        'catalog must preserve loaded dictionary relations');
+    }
+    const trainingDetail = await trainings.getTrainingById(id, identity.user, 'ua');
+    const trainingList = (await trainings.getTrainings(identity.user, '2000-01-01', '2100-01-01', 'ua')).find(row => row.id === id);
+    for (const training of [trainingDetail, trainingList]) {
+      checkExample(training.exercises[0].exerciseExample);
+      assert.equal(training.exercises[1].exerciseExample, null, 'absent examples must stay null');
+      assert.equal(training.exercises[0].name, body.exercises[0].name, 'historical exercise names must stay unchanged');
+      same(training.exercises.map(exercise => exercise.orderIndex), [0, 1], 'exercise order must survive mapping');
+      same(training.exercises[0].iterations.map(iteration => iteration.orderIndex), [0, 1], 'iteration order must survive mapping');
+      assert.equal(training.exercises[0].iterations[0].bodyMultiplier, 0.60, 'historical multipliers must not follow current components');
+      assert(!Object.hasOwn(training.exercises[0].exerciseExample, 'equipmentRefs'), 'training must not invent unloaded equipment relations');
+    }
+    assert(trainingDetail.exercises[0].exerciseExample.exerciseExampleBundles[0].muscle, 'training detail must retain loaded muscle bundles');
+    assert(!Object.hasOwn(trainingList.exercises[0].exerciseExample, 'exerciseExampleBundles'), 'training list must not invent unloaded muscle bundles');
+  });
+
   for (const action of ['create', 'replace']) {
     await runCase(`training ${action} normalizes aggregate precision through ValidationPipe and persists supplied values`, async () => {
       const example = await seedExample();
@@ -1001,8 +1062,8 @@ async function runCatalog(ctx) {
     }
   });
 
-  assert.equal(results.length, 33, 'Catalog scenario inventory changed; review the documented coverage');
+  assert.equal(results.length, 35, 'Catalog scenario inventory changed; review the documented coverage');
   return results;
 }
 
-module.exports = {runCatalog, expectedCases: 33};
+module.exports = {runCatalog, expectedCases: 35};

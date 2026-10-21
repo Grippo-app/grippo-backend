@@ -76,8 +76,8 @@
 | Components parent обязателен object; четыре ключа обязательны и nullable | Swagger ApiProperty и runtime IsDefined/IsObject согласованы; поддерживать явные null в clients, массивы не допустимая форма |
 | muscle size/sensitivity numeric имеют Number/null transformer | Entity hydration и raw SQL различаются; наличие TS number само по себе тип ответа не гарантирует |
 | iteration nullable weight/bodyMultiplier transformers сохраняют null | В текущем IterationsEntity from использует value === null ? null : parseFloat(value); прежний вывод о NaN из hydrated SQL null больше не описывает этот путь. Raw SQL и нечисловые значения требуют отдельной проверки |
-| Catalog API checks и DB constraints различаются | Текущий DTO проверяет percentage integer 0..100 и total100; DB этого не проверяет, direct service/import обходят pipe. Unique pairs/dedup отсутствуют на обоих уровнях |
+| Catalog API checks и DB constraints различаются | DTO проверяет percentage integer 0..100, total100 и уникальность references; service повторяет проверку уникальности. DB constraints для этих правил не заданы; прямые manager/import обходят сервис |
 | Training aggregates приходят от клиента | Метрики и training summary могут расходиться с iterations |
-| Catalog exclusions repos injected, но в queries не используются | Не обещать фильтрацию, не удалять данные по exclusions |
+| Catalog read methods не применяют exclusions | Не обещать фильтрацию, не удалять данные по exclusions |
 | Update тренировки пересоздает children | exercise.createdAt/lastUsed/recent меняются при редактировании |
 | Goal comments говорят об AI context | Нельзя заявлять наличие AI generation/inference integration по этим enum |

@@ -71,8 +71,8 @@ SQL сортирует training.created_at ASC, затем exercises.order_index
 Для каждого exercise:
 
 - i18n меняет name/description вложенного example и удаляет translations; собственное exercise.name остается.
-- `attachComponentsToExerciseExample` допускает отсутствующий/null example; для существующего example без componentsEntity бросает BadRequest. Одна неполная запись каталога может сорвать чтение связанных тренировок.
-- Сервис строит `components`, удаляет `componentsEntity`. Helper продублирован в catalog service; изменение формы требует проверки обоих путей.
+- TrainingsService пропускает отсутствующий/null example; общий [mapper](../../../../src/modules/exercise-examples/exercise-example-response.mapper.ts) получает существующий example и без componentsEntity бросает BadRequest. Одна неполная запись каталога может сорвать чтение связанных тренировок.
+- Mapper строит `components`, удаляет `componentsEntity`; его используют catalog и training services. Изменение формы требует проверки обоих путей.
 
 ## Метрики
 

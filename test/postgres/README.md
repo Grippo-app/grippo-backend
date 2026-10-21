@@ -1,7 +1,7 @@
 # PostgreSQL regression tests
 
 Постоянные проверки настоящих services → TypeORM → PostgreSQL. Исходное
-покрытие — 47 сценариев: 14 identity и 33 catalog/trainings. Это число можно
+покрытие — 52 сценария: 17 identity и 35 catalog/trainings. Это число можно
 увеличивать при добавлении regression cases.
 
 ## Запуск
@@ -52,8 +52,8 @@ entities с проектной naming strategy.
 
 | Группа | Покрытие |
 |---|---|
-| Identity — 14 сценариев | Default goal, конкурентное создание profile/goal, удаление последнего веса, обе замены exclusions, поздние rollback, FK/CHECK/UNIQUE, user/profile cascades |
-| Catalog/trainings — 33 сценария | Create/replace/delete и реальный lock/FK/rollback, точность training aggregates; old→new language enum/UNIQUE, revision/409 guards, импорты BR/PT, no-op/conflicts/source changes, late rollback, обе очередности importer/PUT, reconciliation потерянного COMMIT |
+| Identity — 17 сценариев | Default goal, конкурентное создание profile/goal, удаление последнего веса, обе замены exclusions, set-семантика IDs и границы роста, поздние rollback, FK/CHECK/UNIQUE, user/profile cascades |
+| Catalog/trainings — 35 сценариев | Create/replace/delete и реальный lock/FK/rollback, точность training aggregates, отказ при повторных references и публичный response; old→new language enum/UNIQUE, revision/409 guards, импорты BR/PT, no-op/conflicts/source changes, late rollback, обе очередности importer/PUT, reconciliation потерянного COMMIT |
 | Runtime guards — 7 проверок | Отказ от чужого runtime/параметров подключения, safe environment/lifecycle; inert CLI import/args и private backup bytes/hash/permissions/independent copies, без обращения к БД |
 
 В исходных 13 конкурентных сценариях и двух новых importer/PUT ожидание подтверждается `pg_blocking_pids`

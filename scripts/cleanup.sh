@@ -65,16 +65,25 @@ if command -v docker >/dev/null 2>&1; then
   docker system df || true
 
   log_info "[Docker] Prune containers, images, networks, build cache"
-  docker system prune -af > /dev/null 2>&1 || true
-  log_success "docker system prune -af completed"
+  if docker system prune -af > /dev/null 2>&1; then
+    log_success "docker system prune -af completed"
+  else
+    log_warn "docker system prune -af failed, continuing"
+  fi
 
   log_info "[Docker] Prune unused volumes"
-  docker volume prune -f > /dev/null 2>&1 || true
-  log_success "docker volume prune -f completed"
+  if docker volume prune -f > /dev/null 2>&1; then
+    log_success "docker volume prune -f completed"
+  else
+    log_warn "docker volume prune -f failed, continuing"
+  fi
 
   log_info "[Docker] Prune builder / buildx cache"
-  docker builder prune --all --force > /dev/null 2>&1 || true
-  log_success "docker builder prune --all --force completed"
+  if docker builder prune --all --force > /dev/null 2>&1; then
+    log_success "docker builder prune --all --force completed"
+  else
+    log_warn "docker builder prune --all --force failed, continuing"
+  fi
 
   if [ -d /var/lib/docker ]; then
     log_info "[Docker] Size of /var/lib/docker after cleanup"

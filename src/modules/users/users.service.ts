@@ -40,6 +40,8 @@ export class UsersService {
 
     async createProfile(userId: string, dto: CreateUserProfileRequest): Promise<UserResponse> {
         const manager = this.usersRepository.manager;
+        const muscleIds = this.normalizeExcludedIds(dto.excludeMuscleIds ?? []);
+        const equipmentIds = this.normalizeExcludedIds(dto.excludeEquipmentIds ?? []);
 
         await manager.transaction('READ COMMITTED', async transactionalEntityManager => {
             const usersRepo = transactionalEntityManager.getRepository(UsersEntity);
@@ -61,8 +63,7 @@ export class UsersService {
                 throw new BadRequestException('User profile already created');
             }
 
-            if (dto.excludeMuscleIds?.length) {
-                const muscleIds = [...new Set(dto.excludeMuscleIds.map(id => id.toLowerCase()))];
+            if (muscleIds.length) {
                 const muscles = await transactionalEntityManager.getRepository(MusclesEntity).find({
                     select: {id: true},
                     where: {id: In(muscleIds)},
@@ -73,8 +74,7 @@ export class UsersService {
                 }
             }
 
-            if (dto.excludeEquipmentIds?.length) {
-                const equipmentIds = [...new Set(dto.excludeEquipmentIds.map(id => id.toLowerCase()))];
+            if (equipmentIds.length) {
                 const equipments = await transactionalEntityManager.getRepository(EquipmentsEntity).find({
                     select: {id: true},
                     where: {id: In(equipmentIds)},
@@ -99,8 +99,8 @@ export class UsersService {
             });
 
             await excludedMusclesRepo.delete({profile: {id: profile.id}});
-            if (dto.excludeMuscleIds?.length) {
-                const muscles = dto.excludeMuscleIds.map(muscleId =>
+            if (muscleIds.length) {
+                const muscles = muscleIds.map(muscleId =>
                     excludedMusclesRepo.create({
                         profile: {id: profile.id},
                         muscleId,
@@ -110,8 +110,8 @@ export class UsersService {
             }
 
             await excludedEquipmentsRepo.delete({profile: {id: profile.id}});
-            if (dto.excludeEquipmentIds?.length) {
-                const equipments = dto.excludeEquipmentIds.map(equipmentId =>
+            if (equipmentIds.length) {
+                const equipments = equipmentIds.map(equipmentId =>
                     excludedEquipmentsRepo.create({
                         profile: {id: profile.id},
                         equipmentId,
@@ -233,6 +233,7 @@ export class UsersService {
 
     async updateExcludedMuscles(user: UsersEntity, muscleIds: string[]): Promise<{ ids: string[] }> {
         const profile = await this.requireProfile(user.id);
+        const normalizedIds = this.normalizeExcludedIds(muscleIds);
         await this.usersRepository.manager.transaction('READ COMMITTED', async manager => {
             const lockedProfile = await manager.getRepository(UserProfilesEntity).findOne({
                 where: {id: profile.id},
@@ -242,24 +243,25 @@ export class UsersService {
                 throw new BadRequestException('User profile not created yet');
             }
 
-            const existingMuscles = await manager.getRepository(MusclesEntity).findBy({id: In(muscleIds)});
-            if (existingMuscles.length !== muscleIds.length) {
+            const existingMuscles = await manager.getRepository(MusclesEntity).findBy({id: In(normalizedIds)});
+            if (existingMuscles.length !== normalizedIds.length) {
                 throw new NotFoundException('One or more muscle IDs are invalid');
             }
 
             const excludedRepo = manager.getRepository(ExcludedMusclesEntity);
             await excludedRepo.delete({profile: {id: profile.id}});
-            const entities = muscleIds.map(id => excludedRepo.create({
+            const entities = normalizedIds.map(id => excludedRepo.create({
                 profile: {id: profile.id},
                 muscleId: id,
             }));
             await excludedRepo.save(entities);
         });
-        return {ids: muscleIds};
+        return {ids: normalizedIds};
     }
 
     async updateExcludedEquipments(user: UsersEntity, equipmentIds: string[]): Promise<{ ids: string[] }> {
         const profile = await this.requireProfile(user.id);
+        const normalizedIds = this.normalizeExcludedIds(equipmentIds);
         await this.usersRepository.manager.transaction('READ COMMITTED', async manager => {
             const lockedProfile = await manager.getRepository(UserProfilesEntity).findOne({
                 where: {id: profile.id},
@@ -269,20 +271,20 @@ export class UsersService {
                 throw new BadRequestException('User profile not created yet');
             }
 
-            const existingEquipments = await manager.getRepository(EquipmentsEntity).findBy({id: In(equipmentIds)});
-            if (existingEquipments.length !== equipmentIds.length) {
+            const existingEquipments = await manager.getRepository(EquipmentsEntity).findBy({id: In(normalizedIds)});
+            if (existingEquipments.length !== normalizedIds.length) {
                 throw new NotFoundException('One or more equipment IDs are invalid');
             }
 
             const excludedRepo = manager.getRepository(ExcludedEquipmentsEntity);
             await excludedRepo.delete({profile: {id: profile.id}});
-            const entities = equipmentIds.map(id => excludedRepo.create({
+            const entities = normalizedIds.map(id => excludedRepo.create({
                 profile: {id: profile.id},
                 equipmentId: id,
             }));
             await excludedRepo.save(entities);
         });
-        return {ids: equipmentIds};
+        return {ids: normalizedIds};
     }
 
     async getExcludedEquipments(user: UsersEntity): Promise<EquipmentResponse[]> {
@@ -553,6 +555,10 @@ export class UsersService {
         });
 
         return goal ? this.toGoalResponse(goal) : null;
+    }
+
+    private normalizeExcludedIds(ids: string[]): string[] {
+        return [...new Set(ids.map(id => id.toLowerCase()))];
     }
 
     private async requireProfile(userId: string): Promise<UserProfilesEntity> {

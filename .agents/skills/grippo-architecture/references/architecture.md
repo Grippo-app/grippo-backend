@@ -21,7 +21,7 @@ forbidNonWhitelisted: true})`, `LoggingInterceptor`, вызывает `setupSwag
 provider нет; не обещай отдельный TypeORM shutdown hook.
 
 [app.module.ts](../../../../src/app.module.ts) загружает `.env` через global
-`ConfigModule`. `DatabaseModule` дополнительно вызывает `ConfigModule.forRoot()`.
+`ConfigModule`. `DatabaseModule` импортирует ConfigModule без повторной загрузки `.env`.
 `I18nModule` — global: middleware назначает `req.locale` для `*` routes.
 
 Цепочка запроса: middleware локали → route guards → interceptor → pipe/DTO →
@@ -66,13 +66,13 @@ DB не накапливала запросы. Это readiness DB, не про�
 | `PushTokensModule` | Хранение/reassignment/delete push tokens | DatabaseModule |
 | `AdminModule` | Единый `AdminController`, делегирует feature services | ExerciseExampleModule, UsersModule, TrainingsModule, WeightHistoryModule, PushTokensModule |
 
-Обычные feature modules регистрируют service и `...repositoryProviders`.
+Обычные feature modules регистрируют свой service и импортируют `DatabaseModule`.
 UsersModule, TrainingsModule, ExerciseExampleModule, WeightHistoryModule и
 PushTokensModule экспортируют свой service; ExerciseMetricsModule, MusclesModule
 и EquipmentsModule exports не объявляют. Сам import такого module не делает его
-service доступным новому consumer. `DatabaseModule` уже экспортирует repositories;
-повторная регистрация — существующий паттерн, а не требование TypeORM.
-`AuthModule` дополнительно экспортирует auth services, strategy и repositories.
+service доступным новому consumer. Repositories регистрируются и экспортируются
+только в `DatabaseModule`; feature modules используют эти exports.
+`AuthModule` дополнительно экспортирует auth services и strategy.
 `AdminModule` собственного service не имеет.
 
 ## Database wiring
@@ -90,8 +90,7 @@ boolean либо trimmed case-insensitive true/false принимаются, и�
 ошибку. DB port валидируется как integer 1..65535. В `NODE_ENV=production`
 synchronize/migrationsRun=true запрещены, installExtensions=false;
 Compose принудительно выключает все три flags. Generic `<boolean>` сам по себе
-conversion не выполняет. `extra.charset` —
-имеющийся config, не гарантия реальной PostgreSQL collation.
+conversion не выполняет.
 
 [repository.providers.ts](../../../../src/database/repository.providers.ts)
 определяет 18 tokens; каждый factory вызывает `dataSource.getRepository(entity)`.
@@ -126,8 +125,7 @@ Transaction boundary принадлежит service. Работай через �
 
 В исходниках не обнаружены queue workers, Redis, message broker, SMTP/email
 verification service, object storage SDK, payment integration или notification
-sender. Наличие зависимости в lockfile не доказывает её использование. `morgan`
-зависимость установлена, но в bootstrap не подключена.
+sender. Наличие зависимости в lockfile не доказывает её использование.
 
 ## Небольшой новый feature
 

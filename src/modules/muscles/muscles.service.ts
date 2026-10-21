@@ -7,8 +7,6 @@ import {MuscleGroupsResponse, MuscleResponse} from './dto/muscle-response';
 @Injectable()
 export class MusclesService {
     constructor(
-        @Inject('MUSCLES_REPOSITORY')
-        private readonly musclesRepository: Repository<MusclesEntity>,
         @Inject('MUSCLE_GROUPS_REPOSITORY')
         private readonly muscleGroupsRepository: Repository<MuscleGroupsEntity>
     ) {

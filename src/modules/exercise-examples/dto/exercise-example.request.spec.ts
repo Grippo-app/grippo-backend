@@ -71,6 +71,19 @@ describe('ExerciseExampleRequest through the application ValidationPipe', () => 
     });
 
     describe.each(arrayFields)('%s must be a required array', field => {
+        it.each([false, true])('rejects duplicate reference IDs, including mixed case: %s', async mixedCase => {
+            const id = 'abcdefab-cdef-4abc-8def-abcdefabcdef';
+            const repeated = mixedCase ? id.toUpperCase() : id;
+            const rows = field === 'exerciseExampleBundles'
+                ? [{muscleId: id, percentage: 50}, {muscleId: repeated, percentage: 50}]
+                : [{equipmentId: id}, {equipmentId: repeated}];
+            const input = payload({[field]: rows});
+            for (const metatype of [ExerciseExampleRequest, ExerciseExampleUpdateRequest]) {
+                await expect(new ValidationPipe({transform: true, whitelist: true, forbidNonWhitelisted: true})
+                    .transform(input, {type: 'body', metatype})).rejects.toBeInstanceOf(BadRequestException);
+            }
+        });
+
         it('rejects an omitted field', async () => {
             const input = payload(); delete input[field];
             await expectFieldError(input, field);

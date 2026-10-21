@@ -21,7 +21,7 @@
 
 `getExerciseExampleById` загружает те же catalog relations и персональную статистику одного example; global popularity в response не возвращается. `lastUsed` берется по createdAt выполненного exercise, не по training date.
 
-В constructor есть injected excluded repositories, но ни один из этих read methods не применяет excludedMuscles/excludedEquipments. Наличие DI не доказывает фильтрацию. Пагинации и фильтров в этих endpoints нет; не добавляй их молча ради общего performance правила.
+Эти read methods не применяют excludedMuscles/excludedEquipments. Пагинации и фильтров в этих endpoints нет; не добавляй их молча ради общего performance правила.
 
 ## Административный CRUD
 
@@ -40,13 +40,13 @@
 
 LocalizedText имеет language IsIn(SUPPORTED_LANGUAGES), value — ValidateIf(value !== undefined) + IsString. `name: [{language:'en'}]` проходит требования array/element без обязательного текста; явный value:null отвергается API, пустая строка после trim превращается в null. Duplicate language отдельно не запрещен. Nullable storage/response не означает nullable request; прямой вызов сервиса обходит DTO.
 
-`exerciseExampleBundles`: обязательный непустой array через IsArray/ArrayNotEmpty; каждый элемент IsObject + ValidateNested/Type, muscleId UUID, percentage integer с Min(0)/Max(100). `ExerciseMuscleTotalConstraint` дополнительно проверяет array, object rows, integer/bounds и сумму **ровно 100**. Сумму считают по rows, не по уникальным мышцам; дубликаты muscleId не запрещены, zero contribution допустим при общей сумме 100.
+`exerciseExampleBundles`: обязательный непустой array через IsArray/ArrayNotEmpty; каждый элемент IsObject + ValidateNested/Type, muscleId UUID, percentage integer с Min(0)/Max(100). `ExerciseMuscleTotalConstraint` дополнительно проверяет array, object rows, integer/bounds и сумму **ровно 100**. ArrayUnique запрещает повтор muscleId без учёта регистра; zero contribution допустим при общей сумме 100.
 
-`equipmentRefs`: обязательный array через IsArray, каждый элемент IsObject + ValidateNested/Type с equipmentId UUID; `[]` допустим. Явных IsDefined на этих arrays нет, но IsArray отвергает absent/null, а bundles дополнительно требует ArrayNotEmpty/total. Сервис продолжает использовать `.map()` и напрямую не повторяет эти API проверки.
+`equipmentRefs`: обязательный array через IsArray, каждый элемент IsObject + ValidateNested/Type с equipmentId UUID; ArrayUnique запрещает повторы без учёта регистра; `[]` допустим. Явных IsDefined на этих arrays нет, но IsArray отвергает absent/null, а bundles дополнительно требует ArrayNotEmpty/total. Сервис напрямую не повторяет все API проверки формы массива.
 
-DB entity не содержит bounds/sum/unique-pair constraints для bundles. Прямой вызов сервиса обходит DTO bounds/sum; manager/import могут обходить и сервис. Create/update вызывают `validateReferences` внутри своей transaction: уникальные lowercased IDs проверяются через её manager с `for_key_share`, неизвестные muscle/equipment дают BadRequest до записи children. Дедупликация IDs поиска не запрещает повторные входные связи.
+DB entity не содержит bounds/sum/unique-pair constraints для bundles. Прямой вызов сервиса обходит DTO bounds/sum; manager/import могут обходить и сервис. Create/update вызывают `validateReferences` внутри своей transaction: повторы lowercased IDs дают BadRequest до записи; существование проверяется через её manager с `for_key_share`, неизвестные muscle/equipment также дают BadRequest до записи children.
 
-`id?: string` у ExerciseExampleRequest без decorators не разрешает отправлять id при строгом global whitelist. ID обновления передается в query.
+ExerciseExampleRequest не принимает id; ID обновления передаётся в query.
 
 ### Persistence create/update
 
@@ -83,7 +83,7 @@ DTO проверяет boolean required и числовой multiplier; серв
 {"externalWeight":null,"bodyWeight":{"required":true,"multiplier":0.75},"extraWeight":{"required":false},"assistWeight":{"required":false}}
 ```
 
-Read helper строит эти object/null по entity, body.required всегда true. Нет componentsEntity → BadRequest; для списка достаточно одного такого example, чтобы весь read завершился ошибкой. Helper есть и в TrainingsService; актуализируй оба при разрешенном изменении контракта.
+Общий [response mapper](../../../../src/modules/exercise-examples/exercise-example-response.mapper.ts) строит эти object/null по entity, body.required всегда true. Нет componentsEntity → BadRequest; для списка достаточно одного такого example, чтобы весь read завершился ошибкой. Mapper используют catalog и training services; при изменении контракта проверяй оба пути. Публичные поля и Swagger metadata описаны в response DTO отдельно от entity.
 
 ## Переводы: запись, fallback, выдача
 

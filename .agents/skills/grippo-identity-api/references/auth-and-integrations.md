@@ -9,7 +9,7 @@
 - [Hash](../../../../src/lib/hash.ts) — синхронные `bcryptjs.genSaltSync/hashSync/compareSync`.
 - [GoogleAuthService](../../../../src/modules/auth/services/google-auth.service.ts), [AppleAuthService](../../../../src/modules/auth/services/apple-auth.service.ts) — внешняя verification.
 
-AuthModule импортирует `PassportModule.register({defaultStrategy:'jwt'})`, `JwtModule.registerAsync`, `DatabaseModule`; регистрирует и экспортирует JWT strategy, auth/provider/token services и `repositoryProviders`. В остальных feature modules repositories также подключены собственным provider array, без `TypeOrmModule.forFeature`.
+AuthModule импортирует `PassportModule.register({defaultStrategy:'jwt'})`, `JwtModule.registerAsync`, `DatabaseModule`; регистрирует и экспортирует JWT strategy и auth/provider/token services. Repositories предоставляет импортированный DatabaseModule, без повторных provider arrays и `TypeOrmModule.forFeature`.
 
 ## Password flow — факты
 
@@ -69,7 +69,7 @@ Lookup по `appleId=sub`, далее по email если он есть. Для 
 
 **Наблюдаемые ограничения, не утверждение об exploit:** exchange не проверяет HTTP status, парсит JSON без response size bound; оба HTTPS helpers без timeout/retry. Network/JSON/key-import errors могут выйти обычным Error; `AuthService` rethrows, а не всегда конвертирует их в 401. Unknown `kid` при непустом cache инициирует refetch на каждый verification. На cold cache parallel requests не объединяются. Не обещай, что все Apple failures соответствуют Swagger 401.
 
-**Зависимость для проверки:** [package.json](../../../../package.json) не объявляет `jsonwebtoken` прямой dependency, хотя service использует default import. Он может присутствовать транзитивно; это необходимо проверять по lock/install, не исправлять dependency в документационной задаче.
+`jsonwebtoken` объявлен прямой runtime dependency в [package.json](../../../../package.json); `@types/jsonwebtoken` — devDependency. Apple service использует default import.
 
 ## JWT lifecycle — факты
 

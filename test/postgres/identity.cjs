@@ -336,8 +336,69 @@ async function runIdentity({ ds, entities: E, services, signal }) {
     for (const table of children) equal(await scalarCount(`SELECT count(*) FROM "${table}" WHERE profile_id = $1`, [profile.id]), 0);
     return { deletedUserAndProfile: true, cascadedChildTables: children.length };
   });
-  assert.equal(results.length, 14, 'Identity scenario inventory changed; review the documented coverage');
+
+  for (const kind of ['muscles', 'equipments']) {
+    const muscle = kind === 'muscles';
+    const refs = muscle ? muscles : equipments;
+    const Entity = muscle ? E.ExcludedMusclesEntity : E.ExcludedEquipmentsEntity;
+    const refKey = muscle ? 'muscleId' : 'equipmentId';
+    const dtoKey = muscle ? 'excludeMuscleIds' : 'excludeEquipmentIds';
+    const method = muscle ? 'updateExcludedMuscles' : 'updateExcludedEquipments';
+    await test(`I12-${kind} create and replace exclusions normalize case and collapse duplicates`, async () => {
+      const { user, profile } = await withProfile({
+        [dtoKey]: [refs[1].id.toUpperCase(), refs[0].id, refs[1].id, refs[0].id.toUpperCase()],
+      });
+      const other = await withProfile({ [dtoKey]: [refs[3].id] });
+      const storedIds = async profileId => (await repo(Entity).findBy({ profileId }))
+        .map(row => row[refKey]).sort();
+      equal(await storedIds(profile.id), [refs[0].id, refs[1].id].sort());
+      equal(await users[method](user, [refs[2].id.toUpperCase(), refs[2].id, refs[1].id, refs[1].id.toUpperCase()]),
+        { ids: [refs[2].id, refs[1].id] });
+      equal(await storedIds(profile.id), [refs[1].id, refs[2].id].sort());
+      equal(await storedIds(other.profile.id), [refs[3].id]);
+
+      const before = await repo(Entity).find({ where: { profileId: profile.id }, order: { id: 'ASC' } });
+      const invalid = await settle(users[method](user, [refs[0].id, randomUUID()]));
+      httpFailure(invalid, 404); assertionCount += 2;
+      equal(await repo(Entity).find({ where: { profileId: profile.id }, order: { id: 'ASC' } }), before);
+      equal(await users[method](user, [refs[0].id, refs[0].id.toUpperCase()]), { ids: [refs[0].id] });
+      equal(await storedIds(profile.id), [refs[0].id]);
+      equal(await users[method](user, []), { ids: [] });
+      equal(await storedIds(profile.id), []);
+      equal(await storedIds(other.profile.id), [refs[3].id]);
+      return { createAndReplaceUseSetSemantics: true, lowerCaseResponseIds: true, invalidReferencesPreserveRows: true,
+        emptyListClears: true, otherProfilePreserved: true };
+    });
+  }
+
+  await test('I13 profile height DTOs enforce the same positive PostgreSQL integer bounds', async () => {
+    const { ValidationPipe } = require('@nestjs/common');
+    const { CreateUserProfileRequest } = require('../../src/modules/users/dto/create-user-profile.request.ts');
+    const { UpdateHeightRequest } = require('../../src/modules/users/dto/update-height.request.ts');
+    const pipe = new ValidationPipe({ transform: true, whitelist: true, forbidNonWhitelisted: true });
+    const valid = [1, 175, 2147483647];
+    const invalid = [undefined, null, '175', 175.5, -1, 0, 2147483648, NaN, Infinity];
+    for (const Dto of [CreateUserProfileRequest, UpdateHeightRequest]) {
+      const body = height => Dto === CreateUserProfileRequest ? profileDto({ height }) : { height };
+      for (const height of valid) {
+        const transformed = await pipe.transform(body(height), { type: 'body', metatype: Dto });
+        equal(transformed.height, height);
+      }
+      for (const height of invalid) {
+        const outcome = await settle(pipe.transform(body(height), { type: 'body', metatype: Dto }));
+        httpFailure(outcome, 400); assertionCount += 2;
+      }
+    }
+    const user = await newUser();
+    const created = await users.createProfile(user.id, profileDto({ height: valid[2] }));
+    equal(created.profile.height, valid[2]);
+    const updated = await users.updateHeight(user.id, valid[0]);
+    equal(updated.profile.height, valid[0]);
+    return { acceptedBoundaryBodies: valid.length * 2, rejectedBodies: invalid.length * 2,
+      createAndUpdatePostgresBoundaries: true };
+  });
+  assert.equal(results.length, 17, 'Identity scenario inventory changed; review the documented coverage');
   return results;
 }
 
-module.exports = { runIdentity, expectedCases: 14 };
+module.exports = { runIdentity, expectedCases: 17 };

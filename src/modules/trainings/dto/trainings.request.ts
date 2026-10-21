@@ -34,8 +34,6 @@ function IsNumberWithPrecision(maxDecimalPlaces: number): PropertyDecorator {
 }
 
 export class ExerciseIterationRequest {
-    id?: string;
-
     @ApiProperty({type: 'number', example: 20, nullable: true, required: false, minimum: -WEIGHT_MAX, maximum: WEIGHT_MAX})
     @IsNumberWithPrecision(1)
     @Min(-WEIGHT_MAX)
@@ -79,8 +77,6 @@ export class ExerciseIterationRequest {
 }
 
 export class TrainingExerciseRequest {
-    id?: string;
-
     @ApiProperty({type: 'string', example: 'bench press'})
     @IsString()
     name: string;

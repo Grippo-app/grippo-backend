@@ -11,8 +11,7 @@ import {ExerciseExamplesEntity} from '../../entities/exercise-examples.entity';
 import {ExerciseExampleI18nService} from '../../i18n/exercise-example-i18n.service';
 import {SupportedLanguage} from '../../i18n/i18n.types';
 import {UserProfilesEntity} from '../../entities/user-profiles.entity';
-import {ExerciseExampleComponentsEntity} from '../../entities/exercise-example-components.entity';
-import {ExerciseComponentsDto} from '../exercise-examples/dto/exercise-components.dto';
+import {mapExerciseExampleResponse} from '../exercise-examples/exercise-example-response.mapper';
 
 @Injectable()
 export class TrainingsService {
@@ -20,8 +19,6 @@ export class TrainingsService {
         private readonly exerciseExampleI18nService: ExerciseExampleI18nService,
         @Inject('USER_PROFILES_REPOSITORY') private readonly userProfilesRepository: Repository<UserProfilesEntity>,
         @Inject('TRAININGS_REPOSITORY') private readonly trainingsRepository: Repository<TrainingsEntity>,
-        @Inject('EXERCISES_REPOSITORY') private readonly exercisesRepository: Repository<ExercisesEntity>,
-        @Inject('ITERATIONS_REPOSITORY') private readonly iterationsRepository: Repository<IterationsEntity>,
     ) {
     }
 
@@ -91,7 +88,7 @@ export class TrainingsService {
             this.exerciseExampleI18nService.translateExercisesCollection(training.exercises, language);
             training.exercises.sort((a, b) => (a.orderIndex ?? 0) - (b.orderIndex ?? 0) || (+a.createdAt - +b.createdAt));
             for (const exercise of training.exercises) {
-                this.attachComponentsToExerciseExample(exercise.exerciseExample);
+                if (exercise.exerciseExample) mapExerciseExampleResponse(exercise.exerciseExample);
                 if (!exercise.iterations) continue;
                 exercise.iterations.sort((a, b) => (a.orderIndex ?? 0) - (b.orderIndex ?? 0) || (+a.createdAt - +b.createdAt));
             }
@@ -129,7 +126,7 @@ export class TrainingsService {
             this.exerciseExampleI18nService.translateExercisesCollection(training.exercises, language);
             training.exercises.sort((a, b) => (a.orderIndex ?? 0) - (b.orderIndex ?? 0) || (+a.createdAt - +b.createdAt));
             for (const exercise of training.exercises) {
-                this.attachComponentsToExerciseExample(exercise.exerciseExample);
+                if (exercise.exerciseExample) mapExerciseExampleResponse(exercise.exerciseExample);
                 if (!exercise.iterations) continue;
                 exercise.iterations.sort((a, b) => (a.orderIndex ?? 0) - (b.orderIndex ?? 0) || (+a.createdAt - +b.createdAt));
             }
@@ -261,33 +258,6 @@ export class TrainingsService {
                 }
             }
         });
-    }
-
-    private buildComponentsResponse(componentsEntity: ExerciseExampleComponentsEntity): ExerciseComponentsDto {
-        return {
-            externalWeight: componentsEntity.externalWeightRequired === null ? null : {required: componentsEntity.externalWeightRequired},
-            bodyWeight: componentsEntity.bodyWeightMultiplier === null
-                ? null
-                : {required: true, multiplier: componentsEntity.bodyWeightMultiplier},
-            extraWeight: componentsEntity.extraWeightRequired === null ? null : {required: componentsEntity.extraWeightRequired},
-            assistWeight: componentsEntity.assistWeightRequired === null ? null : {required: componentsEntity.assistWeightRequired},
-        };
-    }
-
-    private attachComponentsToExerciseExample(example: ExerciseExamplesEntity | null | undefined): void {
-        if (!example) {
-            return;
-        }
-
-        if (!example.componentsEntity) {
-            throw new BadRequestException('Components are required for exercise example');
-        }
-
-        const components = this.buildComponentsResponse(example.componentsEntity);
-        (example as ExerciseExamplesEntity & { components: ExerciseComponentsDto }).components = components;
-        delete (example as ExerciseExamplesEntity & {
-            componentsEntity?: ExerciseExampleComponentsEntity
-        }).componentsEntity;
     }
 
     /**

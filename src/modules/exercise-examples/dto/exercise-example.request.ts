@@ -5,6 +5,7 @@ import {ExperienceEnum} from "../../../lib/experience.enum";
 import {ForceTypeEnum} from "../../../lib/force-type.enum";
 import {
     ArrayNotEmpty,
+    ArrayUnique,
     IsArray,
     IsDefined,
     IsEnum,
@@ -75,8 +76,6 @@ export class ExerciseExampleLocalizedTextDto {
 }
 
 export class ExerciseExampleRequest {
-    id?: string;
-
     @ApiProperty({type: () => [ExerciseExampleLocalizedTextDto], example: [{language: 'en', value: 'Bench press'}]})
     @ValidateNested({each: true})
     @Type(() => ExerciseExampleLocalizedTextDto)
@@ -123,6 +122,7 @@ export class ExerciseExampleRequest {
     @ApiProperty({type: [ExerciseExampleBundleRequest], minItems: 1, description: 'Muscle contributions with whole-number percentages totaling 100.'})
     @IsArray()
     @ArrayNotEmpty()
+    @ArrayUnique(row => typeof row?.muscleId === 'string' ? row.muscleId.toLowerCase() : row)
     @IsObject({each: true})
     @Validate(ExerciseMuscleTotalConstraint)
     @ValidateNested({each: true})
@@ -131,6 +131,7 @@ export class ExerciseExampleRequest {
 
     @ApiProperty({type: [ExerciseExampleEquipmentRefsRequest], description: 'Equipment references. An empty array is allowed.'})
     @IsArray()
+    @ArrayUnique(row => typeof row?.equipmentId === 'string' ? row.equipmentId.toLowerCase() : row)
     @IsObject({each: true})
     @ValidateNested({each: true})
     @Type(() => ExerciseExampleEquipmentRefsRequest)

@@ -16,8 +16,6 @@ import {ForceTypeEnum} from "../lib/force-type.enum";
 import {ExperienceEnum} from "../lib/experience.enum";
 import {ExerciseExampleTranslationEntity} from "./exercise-example-translation.entity";
 import {ExerciseExampleComponentsEntity} from "./exercise-example-components.entity";
-import {ApiProperty} from "@nestjs/swagger";
-import {ExerciseComponentsDto} from "../modules/exercise-examples/dto/exercise-components.dto";
 
 @Entity({name: 'exercise_examples'})
 export class ExerciseExamplesEntity {
@@ -76,6 +74,4 @@ export class ExerciseExamplesEntity {
     })
     componentsEntity: ExerciseExampleComponentsEntity;
 
-    @ApiProperty({type: () => ExerciseComponentsDto})
-    components: ExerciseComponentsDto;
 }

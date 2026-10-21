@@ -8,7 +8,7 @@
 
 `resolveLanguage` объединяет array header через comma, разбирает строгий qvalue (default1, 0..1, до3 decimals), игнорирует malformed/unknown/duplicate parameters. Для каждого candidate самое specific совпадение управляет q: explicit pt-region > bare pt > wildcard; primary aliases > wildcard. При одинаковой specificity duplicate q0 доминирует, иначе max q и исходная позиция. Затем max q>0, исходная позиция и порядок allowlist; если кандидатов нет — en без406.
 
-`parseLocaleRange`/`tryNormalizeLocale`: trim → underscore-to-hyphen → Intl.Locale structural parse; en/ru и явные ua/uk aliases, без maximize и сопоставления чужого primary по региону. Explicit pt-region PT → pt-PT; прочие pt-регионы → pt-BR; bare pt предлагает BR/PT с приоритетом BR. Helper не возвращает wildcard как storage code. Write body использует только canonical codes: `uk`, `pt`, `pt_BR` и `pt-AO` допустимы для нормализации header, но не как `language` в body.
+`parseLocaleRange`: trim → underscore-to-hyphen → Intl.Locale structural parse; en/ru и явные ua/uk aliases, без maximize и сопоставления чужого primary по региону. Explicit pt-region PT → pt-PT; прочие pt-регионы → pt-BR; bare pt предлагает BR/PT с приоритетом BR. Wildcard возвращает весь allowlist со specificity 0. Write body использует только canonical codes: `uk`, `pt`, `pt_BR` и `pt-AO` допустимы для нормализации header, но не как `language` в body.
 
 Сценарии, непосредственно следующие из алгоритма:
 

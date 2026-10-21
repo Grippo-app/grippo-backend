@@ -20,8 +20,10 @@ export class CreateUserProfileRequest {
     @Expose()
     weight: number;
 
-    @ApiProperty({example: 175, type: 'number', description: '175 = 175cm'})
+    @ApiProperty({example: 175, type: 'integer', minimum: 1, maximum: 2147483647, description: 'Height in centimeters'})
     @IsInt()
+    @Min(1)
+    @Max(2147483647)
     @Expose()
     height: number;
 
@@ -37,7 +39,7 @@ export class CreateUserProfileRequest {
     @ApiProperty({
         example: ['2e0faf2b-31a5-4c63-ac15-454be132796f'],
         type: 'array',
-        description: 'Excluded muscle ids',
+        description: 'Excluded muscle IDs (case-insensitive; duplicate IDs are collapsed)',
         required: false,
     })
     @IsArray()
@@ -50,7 +52,7 @@ export class CreateUserProfileRequest {
     @ApiProperty({
         example: ['b17ae8af-2d78-4e77-b45b-39253c28247a'],
         type: 'array',
-        description: 'Excluded equipment ids',
+        description: 'Excluded equipment IDs (case-insensitive; duplicate IDs are collapsed)',
         required: false,
     })
     @IsArray()

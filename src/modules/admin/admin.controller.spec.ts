@@ -14,7 +14,7 @@ import {PushTokensService} from '../push-tokens/push-tokens.service';
 import {ExerciseExampleI18nService} from '../../i18n/exercise-example-i18n.service';
 import {LanguageMiddleware} from '../../i18n/language.middleware';
 import {SUPPORTED_LANGUAGES, SupportedLanguage} from '../../i18n/i18n.types';
-import {tryNormalizeLocale} from '../../i18n/locale.helper';
+import {parseLocaleRange} from '../../i18n/locale.helper';
 import {ExerciseExampleController} from '../exercise-examples/exercise-example.controller';
 import {TrainingsController} from '../trainings/trainings.controller';
 import {ExerciseExamplesEntity} from '../../entities/exercise-examples.entity';
@@ -111,6 +111,16 @@ describe('Isolated catalog/admin HTTP contracts', () => {
         {name: 'nested muscle array', field: 'exerciseExampleBundles', value: [[muscle(100)]]},
         {name: 'nested equipment array', field: 'equipmentRefs', value: [[{equipmentId}]]},
         {name: 'null equipment entry', field: 'equipmentRefs', value: [null]},
+        {name: 'duplicate muscles', field: 'exerciseExampleBundles', value: [muscle(50), muscle(50)]},
+        {name: 'duplicate equipment', field: 'equipmentRefs', value: [{equipmentId}, {equipmentId}]},
+        {name: 'mixed-case duplicate muscles', field: 'exerciseExampleBundles', value: [
+            {muscleId: 'abcdefab-cdef-4abc-8def-abcdefabcdef', percentage: 50},
+            {muscleId: 'ABCDEFAB-CDEF-4ABC-8DEF-ABCDEFABCDEF', percentage: 50},
+        ]},
+        {name: 'mixed-case duplicate equipment', field: 'equipmentRefs', value: [
+            {equipmentId: 'abcdefab-cdef-4abc-8def-abcdefabcdef'},
+            {equipmentId: 'ABCDEFAB-CDEF-4ABC-8DEF-ABCDEFABCDEF'},
+        ]},
         {name: 'empty muscle array', field: 'exerciseExampleBundles', value: []},
         {name: 'out of range values totaling 100', field: 'exerciseExampleBundles',
             value: [muscle(-1), {muscleId: secondMuscleId, percentage: 101}]},
@@ -260,6 +270,23 @@ describe('Isolated catalog/admin HTTP contracts', () => {
         expect(schemas.ExerciseExampleLocalizedTextDto).toMatchObject({properties: {language: {enum: [...SUPPORTED_LANGUAGES]}}});
         expect(schemas.ExerciseExampleRequest).not.toHaveProperty('properties.translationsRevision');
         expect(schemas.ExerciseExampleUpdateRequest).toHaveProperty('properties.translationsRevision');
+        const responseSchema = schemas.ExerciseExampleResponseDto;
+        if (!('properties' in responseSchema)) throw new Error('ExerciseExampleResponseDto must define its properties');
+        expect(Object.keys(responseSchema.properties).sort()).toEqual([
+            'id', 'name', 'description', 'imageUrl', 'category', 'weightType', 'forceType', 'experience',
+            'createdAt', 'updatedAt', 'exerciseExampleBundles', 'equipmentRefs', 'components',
+        ].sort());
+        expect(schemas.ExerciseExampleBundleResponseDto).toHaveProperty('properties.muscle');
+        expect(schemas.ExerciseExampleBundleResponseDto).toMatchObject({
+            properties: {muscleId: {type: 'string', format: 'uuid', nullable: true}},
+        });
+        expect(schemas.ExerciseExampleMuscleResponseDto).toHaveProperty('properties.sensitivity');
+        expect(schemas.ExerciseExampleMuscleResponseDto).not.toHaveProperty('properties.muscleGroupId');
+        expect(schemas.ExerciseExampleEquipmentRefResponseDto).toHaveProperty('properties.equipment');
+        expect(schemas.ExerciseExampleEquipmentRefResponseDto).toMatchObject({
+            properties: {equipmentId: {type: 'string', format: 'uuid', nullable: true}},
+        });
+        expect(schemas.ExerciseExampleEquipmentResponseDto).not.toHaveProperty('properties.equipmentGroupId');
         expect(document.paths['/admin/exercise-examples'].put.responses['409']).toMatchObject({content: {'application/json': {schema: {properties: {code: {enum: ['EXERCISE_TRANSLATIONS_STALE', 'EXERCISE_TRANSLATIONS_INCOMPLETE']}}}}}});
         for (const path of ['/exercise-examples', '/exercise-examples/{id}', '/trainings', '/trainings/{id}', '/admin/users/{id}/trainings']) {
             const operation = document.paths[path].get;
@@ -293,7 +320,7 @@ describe('Grippo language negotiation', () => {
         expect(i18n.resolveLanguage(header as string | string[] | undefined)).toBe(expected);
     });
 
-    it.each([['pt', 'pt-BR'], ['pt-Latn-PT', 'pt-PT'], ['fr-UA', undefined], ['*', undefined]])('normalizes a standalone locale %s to %s', (tag, expected) => {
-        expect(tryNormalizeLocale(tag)).toBe(expected);
+    it.each([['pt', 'pt-BR'], ['pt-Latn-PT', 'pt-PT'], ['fr-UA', undefined], ['*', 'en']])('parses the first supported locale for %s as %s', (tag, expected) => {
+        expect(parseLocaleRange(tag)?.languages[0]).toBe(expected);
     });
 });

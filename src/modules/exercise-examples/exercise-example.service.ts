@@ -10,8 +10,6 @@ import {ExerciseExampleUpdateRequest} from './dto/exercise-example-update.reques
 import {calculateTranslationsRevision} from './exercise-translations-revision';
 import {ExerciseExamplesEquipmentsEntity} from "../../entities/exercise-examples-equipments.entity";
 import {ExerciseExampleTranslationEntity} from "../../entities/exercise-example-translation.entity";
-import {ExcludedEquipmentsEntity} from "../../entities/excluded-equipments.entity";
-import {ExcludedMusclesEntity} from "../../entities/excluded-muscles.entity";
 import {ExercisesEntity} from "../../entities/exercises.entity";
 import {ExerciseExampleI18nService} from "../../i18n/exercise-example-i18n.service";
 import {DEFAULT_LANGUAGE, SupportedLanguage, SUPPORTED_LANGUAGES} from "../../i18n/i18n.types";
@@ -20,6 +18,7 @@ import {ExerciseExampleComponentsEntity} from "../../entities/exercise-example-c
 import {ExerciseComponentsDto} from "./dto/exercise-components.dto";
 import {MusclesEntity} from "../../entities/muscles.entity";
 import {EquipmentsEntity} from "../../entities/equipments.entity";
+import {mapExerciseExampleResponse} from './exercise-example-response.mapper';
 
 @Injectable()
 export class ExerciseExampleService {
@@ -27,10 +26,6 @@ export class ExerciseExampleService {
         private readonly exerciseExampleI18nService: ExerciseExampleI18nService,
         @Inject('USER_PROFILES_REPOSITORY') private readonly userProfilesRepository: Repository<UserProfilesEntity>,
         @Inject('EXERCISE_EXAMPLES_REPOSITORY') private readonly exerciseExamplesRepository: Repository<ExerciseExamplesEntity>,
-        @Inject('EXERCISE_EXAMPLE_BUNDLES_REPOSITORY') private readonly exerciseExampleBundlesRepository: Repository<ExerciseExampleBundlesEntity>,
-        @Inject('EXERCISE_EXAMPLES_EQUIPMENTS_REPOSITORY') private readonly exerciseExamplesEquipmentsRepository: Repository<ExerciseExamplesEquipmentsEntity>,
-        @Inject('EXCLUDED_EQUIPMENTS_REPOSITORY') private readonly excludedEquipmentsRepository: Repository<ExcludedEquipmentsEntity>,
-        @Inject('EXCLUDED_MUSCLES_REPOSITORY') private readonly excludedMusclesEntity: Repository<ExcludedMusclesEntity>,
         @Inject('EXERCISES_REPOSITORY') private readonly exercisesRepository: Repository<ExercisesEntity>,
     ) {
     }
@@ -96,12 +91,8 @@ export class ExerciseExampleService {
         });
 
         this.exerciseExampleI18nService.translateExamples(entities, language);
-        for (const entity of entities) {
-            this.attachComponentsToExerciseExample(entity);
-        }
-
         return entities.map((entity) => ({
-            entity,
+            entity: mapExerciseExampleResponse(entity),
             usageCount: statsMap.get(entity.id)?.usageCount ?? 0,
             lastUsed: statsMap.get(entity.id)?.lastUsed ?? null,
         }));
@@ -133,10 +124,8 @@ export class ExerciseExampleService {
             .getRawOne<{ usageCount: string; lastUsed: Date | null }>();
 
         this.exerciseExampleI18nService.translateExample(entity, language);
-        this.attachComponentsToExerciseExample(entity);
-
         return {
-            entity,
+            entity: mapExerciseExampleResponse(entity),
             usageCount: Number(stat?.usageCount ?? 0),
             lastUsed: stat?.lastUsed ?? null,
         };
@@ -337,7 +326,11 @@ export class ExerciseExampleService {
         bundles: ExerciseExampleRequest['exerciseExampleBundles'],
         equipmentRefs: ExerciseExampleRequest['equipmentRefs'],
     ): Promise<void> {
-        const muscleIds = [...new Set(bundles.map(bundle => bundle.muscleId.toLowerCase()))];
+        const muscleIds = bundles.map(bundle => bundle.muscleId.toLowerCase());
+        const equipmentIds = equipmentRefs.map(ref => ref.equipmentId.toLowerCase());
+        if (new Set(muscleIds).size !== muscleIds.length || new Set(equipmentIds).size !== equipmentIds.length) {
+            throw new BadRequestException('Muscle and equipment references must not contain duplicate IDs');
+        }
         if (muscleIds.length > 0) {
             const muscles = await manager.find(MusclesEntity, {
                 select: {id: true},
@@ -350,7 +343,6 @@ export class ExerciseExampleService {
             }
         }
 
-        const equipmentIds = [...new Set(equipmentRefs.map(ref => ref.equipmentId.toLowerCase()))];
         if (equipmentIds.length > 0) {
             const equipments = await manager.find(EquipmentsEntity, {
                 select: {id: true},
@@ -495,33 +487,6 @@ export class ExerciseExampleService {
             }
         }
 
-    }
-
-    private buildComponentsResponse(componentsEntity: ExerciseExampleComponentsEntity): ExerciseComponentsDto {
-        return {
-            externalWeight: componentsEntity.externalWeightRequired === null ? null : {required: componentsEntity.externalWeightRequired},
-            bodyWeight: componentsEntity.bodyWeightMultiplier === null
-                ? null
-                : {required: true, multiplier: componentsEntity.bodyWeightMultiplier},
-            extraWeight: componentsEntity.extraWeightRequired === null ? null : {required: componentsEntity.extraWeightRequired},
-            assistWeight: componentsEntity.assistWeightRequired === null ? null : {required: componentsEntity.assistWeightRequired},
-        };
-    }
-
-    private attachComponentsToExerciseExample(example: ExerciseExamplesEntity | null | undefined): void {
-        if (!example) {
-            return;
-        }
-
-        if (!example.componentsEntity) {
-            throw new BadRequestException('Components are required for exercise example');
-        }
-
-        const components = this.buildComponentsResponse(example.componentsEntity);
-        (example as ExerciseExamplesEntity & { components: ExerciseComponentsDto }).components = components;
-        delete (example as ExerciseExamplesEntity & {
-            componentsEntity?: ExerciseExampleComponentsEntity
-        }).componentsEntity;
     }
 
     private async resolveProfileId(user: any): Promise<string> {

@@ -1,19 +1,13 @@
 import {Inject, Injectable} from '@nestjs/common';
 import {Repository} from 'typeorm';
 import {EquipmentGroupResponse, EquipmentResponse} from './dto/equipment-response';
-import {ExcludedEquipmentsEntity} from '../../entities/excluded-equipments.entity';
 import {EquipmentGroupsEntity} from '../../entities/equipment-groups.entity';
-import {EquipmentsEntity} from '../../entities/equipments.entity';
 
 @Injectable()
 export class EquipmentsService {
     constructor(
-        @Inject('EQUIPMENTS_REPOSITORY')
-        private readonly equipmentsRepository: Repository<EquipmentsEntity>,
         @Inject('EQUIPMENT_GROUPS_REPOSITORY')
         private readonly equipmentGroupsRepository: Repository<EquipmentGroupsEntity>,
-        @Inject('EXCLUDED_EQUIPMENTS_REPOSITORY')
-        private readonly excludedEquipmentsRepository: Repository<ExcludedEquipmentsEntity>,
     ) {
     }
 
