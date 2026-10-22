@@ -1,7 +1,7 @@
 # PostgreSQL regression tests
 
 Постоянные проверки настоящих services → TypeORM → PostgreSQL. Исходное
-покрытие — 52 сценария: 17 identity и 35 catalog/trainings. Это число можно
+покрытие — 58 сценариев: 17 identity и 41 catalog/trainings. Это число можно
 увеличивать при добавлении regression cases.
 
 ## Запуск
@@ -53,7 +53,7 @@ entities с проектной naming strategy.
 | Группа | Покрытие |
 |---|---|
 | Identity — 17 сценариев | Default goal, конкурентное создание profile/goal, удаление последнего веса, обе замены exclusions, set-семантика IDs и границы роста, поздние rollback, FK/CHECK/UNIQUE, user/profile cascades |
-| Catalog/trainings — 35 сценариев | Create/replace/delete и реальный lock/FK/rollback, точность training aggregates, отказ при повторных references и публичный response; old→new language enum/UNIQUE, revision/409 guards, импорты BR/PT, no-op/conflicts/source changes, late rollback, обе очередности importer/PUT, reconciliation потерянного COMMIT |
+| Catalog/trainings — 41 сценарий | Create/replace/delete и реальный lock/FK/rollback, точность training aggregates, отказ при повторных references и публичный response; old→new language enum/UNIQUE, revision/409 guards, импорты BR/PT, no-op/conflicts/source changes, late rollback, обе очередности importer/PUT, reconciliation потерянного COMMIT; additive equipment enum/catalog SQL, idempotency/conflicts, concurrent publication lock, required equipment response fields and independent UUID exclusions |
 | Runtime guards — 7 проверок | Отказ от чужого runtime/параметров подключения, safe environment/lifecycle; inert CLI import/args и private backup bytes/hash/permissions/independent copies, без обращения к БД |
 
 В исходных 13 конкурентных сценариях и двух новых importer/PUT ожидание подтверждается `pg_blocking_pids`
@@ -84,4 +84,5 @@ entities с проектной naming strategy.
 - [run.cjs](run.cjs) — команда запуска и обработка прерывания.
 - [context.cjs](context.cjs) — настоящие repositories/services и одноразовые БД.
 - [identity.cjs](identity.cjs) и [catalog.cjs](catalog.cjs) — сценарии.
+- [equipments.cjs](equipments.cjs) — equipment SQL и service-сценарии внутри catalog suite.
 - [runtime.guard.cjs](runtime.guard.cjs) — проверки защиты runner.

@@ -12,6 +12,7 @@ NestJS 10 / Express, TypeScript, TypeORM 0.3, PostgreSQL 15.5; Node 20 в Docker
 | Сложная задача, распределение ownership, интеграция | [grippo-orchestrator](.agents/skills/grippo-orchestrator/SKILL.md) |
 | Модульные границы, DI, кодстайл | [grippo-architecture](.agents/skills/grippo-architecture/SKILL.md) |
 | Entities, trainings, catalog, dictionaries, metrics | [grippo-domain-data](.agents/skills/grippo-domain-data/SKILL.md) |
+| Новое оборудование по описанию или handoff из mobile: контракт, план, enum и каталог | [grippo-equipment-create](.agents/skills/grippo-equipment-create/SKILL.md) |
 | Новое упражнение под ключ через AI: карточка, исследования, переводы, изображение и сохранение | [grippo-exercise-create](.agents/skills/grippo-exercise-create/SKILL.md) |
 | Командный аудит упражнений: техника, проценты, сложность, оборудование, переводы и научный поиск | [grippo-exercise-audit](.agents/skills/grippo-exercise-audit/SKILL.md) |
 | Auth, users/profile/goals, admin, weight/push, i18n | [grippo-identity-api](.agents/skills/grippo-identity-api/SKILL.md) |
@@ -121,6 +122,12 @@ tests выполнять можно. Не используй lint --fix/format �
 [checks](.agents/skills/grippo-verification/references/checks.md).
 Поддержка этих существующих тестов в рамках изменения не требует нового
 разрешения; посторонняя тестовая инфраструктура остаётся за пределами scope.
+
+В Git оставляй необходимые поддерживаемые файлы, skills и agents; разовые планы,
+отчёты и заметки храни в игнорируемом `tasks/` или временной папке только пока нужны.
+После любой задачи, skill или agent-прохода обязательна проверка и очистка своих
+ненужных артефактов, даже без orchestrator, в разрешённых границах работы, по
+[правилам lifecycle](.agents/skills/grippo-orchestrator/references/workflow.md#завершение-и-очистка).
 
 Перед завершением проверь итоговый diff и acceptance criteria. Исправь применимые
 blocking findings; внешние ограничения укажи как незавершённые проверки/шаги.

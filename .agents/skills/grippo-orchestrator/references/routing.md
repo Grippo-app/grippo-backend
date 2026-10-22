@@ -4,6 +4,7 @@
 |---|---|---|---|
 | Новое поле тренировки | domain-data | architecture: DTO/entity/schema; identity: ownership | Create/read/replace, история, null/default, агрегаты |
 | Изменение веса/достижений | domain-data | identity: weight history; исторические значения | Формула, numeric conversion, границы дат, profile filter |
+| Новое оборудование / handoff из mobile | [equipment-create](../../grippo-equipment-create/SKILL.md), domain-specialist | Реальный каталог/schema, mobile wire mapping и release evidence; operations для внешнего применения | План по контракту, отдельный UUID, additive enum/data, повторы/конфликты, старые связи/exclusions, совместимость |
 | Новое упражнение под ключ через AI | [exercise-create](../../grippo-exercise-create/SKILL.md) | exercise-audit для содержания; domain/identity для API; imagegen для изображения | Канон/дубликаты, все локали, refs/components, финальное изображение/URL, payload, create/readback |
 | Локализованное поле каталога | domain-data + identity-api | I18n middleware/fallback, admin write DTO | Все затронутые target локали из текущего SUPPORTED_LANGUAGES, missing/null/blank translation, raw admin translations |
 | Правильность упражнений, мышц/процентов, сложности и оборудования | [exercise-audit](../../grippo-exercise-audit/SKILL.md) | Отдельные coach/biomechanics/muscle-map/difficulty/equipment; researcher + evidence-analyst для науки; domain-data для контракта | Канон, многопервоисточный поиск, all-ID/owner coverage, конкретные и условные after |

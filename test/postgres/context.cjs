@@ -26,6 +26,7 @@ function allowedSource(relative) {
         || /^src\/modules\/(users|weight-history|trainings|exercise-examples)\/[^/]+\.service\.ts$/.test(relative)
         || relative === 'src/modules/exercise-examples/exercise-translations-revision.ts'
         || relative === 'src/modules/exercise-examples/exercise-example-response.mapper.ts'
+        || relative === 'src/modules/equipments/equipments.service.ts'
         || /^src\/modules\/(users|weight-history|trainings|exercise-examples|muscles|equipments)\/dto\/(?!.*\.spec\.ts$)[^/]+\.ts$/.test(relative);
 }
 
@@ -85,6 +86,7 @@ const types = {
     WeightHistoryService: load('src/modules/weight-history/weight-history.service.ts').WeightHistoryService,
     TrainingsService: load('src/modules/trainings/trainings.service.ts').TrainingsService,
     ExerciseExampleService: load('src/modules/exercise-examples/exercise-example.service.ts').ExerciseExampleService,
+    EquipmentsService: load('src/modules/equipments/equipments.service.ts').EquipmentsService,
 };
 const tokenEntities = {
     USERS_REPOSITORY: 'UsersEntity', USER_PROFILES_REPOSITORY: 'UserProfilesEntity',
@@ -95,6 +97,7 @@ const tokenEntities = {
     ITERATIONS_REPOSITORY: 'IterationsEntity', EXERCISE_EXAMPLES_REPOSITORY: 'ExerciseExamplesEntity',
     EXERCISE_EXAMPLE_BUNDLES_REPOSITORY: 'ExerciseExampleBundlesEntity',
     EXERCISE_EXAMPLES_EQUIPMENTS_REPOSITORY: 'ExerciseExamplesEquipmentsEntity',
+    EQUIPMENT_GROUPS_REPOSITORY: 'EquipmentGroupsEntity',
 };
 
 function pgConfig(config, database, applicationName) {

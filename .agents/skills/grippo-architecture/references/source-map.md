@@ -34,6 +34,8 @@ Production metadata проверяй заново для каждой разре
 | [scripts/import-exercise-translations.cjs](../../../../scripts/import-exercise-translations.cjs) | [grippo-operations](../../grippo-operations/SKILL.md) |
 | [scripts/internal/exercise-translations.cjs](../../../../scripts/internal/exercise-translations.cjs) | [grippo-domain-data](../../grippo-domain-data/SKILL.md) |
 | [scripts/sql/add-portuguese-locales.sql](../../../../scripts/sql/add-portuguese-locales.sql) | [grippo-operations](../../grippo-operations/SKILL.md) |
+| [scripts/sql/add-butterfly-forearm-enum.sql](../../../../scripts/sql/add-butterfly-forearm-enum.sql) | [grippo-domain-data](../../grippo-domain-data/SKILL.md) |
+| [scripts/sql/add-butterfly-forearm-equipment.sql](../../../../scripts/sql/add-butterfly-forearm-equipment.sql) | [grippo-domain-data](../../grippo-domain-data/SKILL.md) |
 | [scripts/internal/logger.sh](../../../../scripts/internal/logger.sh) | [grippo-operations](../../grippo-operations/SKILL.md) |
 | [scripts/internal/operations.py](../../../../scripts/internal/operations.py) | [grippo-operations](../../grippo-operations/SKILL.md) |
 | [scripts/validate-agent-kit.py](../../../../scripts/validate-agent-kit.py) | [grippo-verification](../../grippo-verification/SKILL.md) |
@@ -153,6 +155,7 @@ Production metadata проверяй заново для каждой разре
 | [test/postgres/README.md](../../../../test/postgres/README.md) | [grippo-verification](../../grippo-verification/SKILL.md) |
 | [test/postgres/catalog.cjs](../../../../test/postgres/catalog.cjs) | [grippo-verification](../../grippo-verification/SKILL.md) |
 | [test/postgres/context.cjs](../../../../test/postgres/context.cjs) | [grippo-verification](../../grippo-verification/SKILL.md) |
+| [test/postgres/equipments.cjs](../../../../test/postgres/equipments.cjs) | [grippo-verification](../../grippo-verification/SKILL.md) |
 | [test/postgres/identity.cjs](../../../../test/postgres/identity.cjs) | [grippo-verification](../../grippo-verification/SKILL.md) |
 | [test/postgres/run.cjs](../../../../test/postgres/run.cjs) | [grippo-verification](../../grippo-verification/SKILL.md) |
 | [test/postgres/runtime.cjs](../../../../test/postgres/runtime.cjs) | [grippo-verification](../../grippo-verification/SKILL.md) |

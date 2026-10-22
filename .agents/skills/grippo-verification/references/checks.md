@@ -92,7 +92,7 @@ Runner создаёт новый временный cluster/процесс и о
 credentials и параметры запросов в отчёт не выводятся. Создание свежей тестовой
 схемы не означает разрешение synchronize рабочей БД.
 
-Текущая suite содержит 52 сценария (17 identity, 35 catalog/training):
+Текущая suite содержит 58 сценариев (17 identity, 41 catalog/training/equipment):
 конкурентное создание профиля/goal, замена exclusions, защита последнего веса,
 конкурентные catalog CRUD/training create/replace, FK/CHECK/UNIQUE,
 CASCADE/SET NULL и полный rollback после поздней серверной ошибки. Regression
@@ -107,6 +107,10 @@ PID блокирующей transaction; задержка сама по себе 
 импорт/no-op/conflicts, поздний rollback, обе очередности importer/PUT с реальным
 ожиданием lock и reconciliation потерянного COMMIT. Runtime guards также проверяют
 inert import CLI и три независимых private backup artifacts; рабочие SQL rows не нужны.
+Шесть equipment cases в [equipments.cjs](../../../../test/postgres/equipments.cjs)
+проверяют additive enum/catalog SQL, повтор с сохранением UUID/timestamps,
+конфликты, реальный lock конкурентной публикации, explicit schema/enum guards,
+обязательные поля response и независимые UUID exclusions.
 
 При изменении entities/FK/constraints/schema/defaults, ownership, CRUD
 users/profile/goals/exclusions/weight, каталога/тренировок, transaction manager

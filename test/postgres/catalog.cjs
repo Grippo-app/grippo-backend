@@ -8,6 +8,7 @@ const {ValidationPipe} = require('@nestjs/common');
 const fs = require('node:fs');
 const path = require('node:path');
 const importer = require('../../scripts/internal/exercise-translations.cjs');
+const {runEquipmentCases, expectedCases: equipmentCases} = require('./equipments.cjs');
 
 function deferred() {
   let resolve;
@@ -1062,8 +1063,9 @@ async function runCatalog(ctx) {
     }
   });
 
-  assert.equal(results.length, 35, 'Catalog scenario inventory changed; review the documented coverage');
+  await runEquipmentCases(ctx, {runCase, same, outcome, code, bounded, blockedBy, seedExample, seedUser});
+  assert.equal(results.length, 35 + equipmentCases, 'Catalog scenario inventory changed; review the documented coverage');
   return results;
 }
 
-module.exports = {runCatalog, expectedCases: 35};
+module.exports = {runCatalog, expectedCases: 35 + equipmentCases};
