@@ -92,7 +92,7 @@ Runner создаёт новый временный cluster/процесс и о
 credentials и параметры запросов в отчёт не выводятся. Создание свежей тестовой
 схемы не означает разрешение synchronize рабочей БД.
 
-Текущая suite содержит 58 сценариев (17 identity, 41 catalog/training/equipment):
+Текущая suite содержит 101 сценарий (17 identity, 84 catalog/training/equipment):
 конкурентное создание профиля/goal, замена exclusions, защита последнего веса,
 конкурентные catalog CRUD/training create/replace, FK/CHECK/UNIQUE,
 CASCADE/SET NULL и полный rollback после поздней серверной ошибки. Regression
@@ -111,6 +111,32 @@ inert import CLI и три независимых private backup artifacts; ра
 проверяют additive enum/catalog SQL, повтор с сохранением UUID/timestamps,
 конфликты, реальный lock конкурентной публикации, explicit schema/enum guards,
 обязательные поля response и независимые UUID exclusions.
+Восемь kettlebell cases в [kettlebells.cjs](../../../../test/postgres/kettlebells.cjs)
+проверяют read-only preflight, обязательное согласованное name, сохранность
+существующего UUID/timestamps, нормализованные конфликты имён, обе конкурентные
+публикации с одинаковым/разным name, response/exclusions/refs.
+Восемь assisted pull-up/dip cases в [assisted-pull-up-dip.cjs](../../../../test/postgres/assisted-pull-up-dip.cjs)
+проверяют metadata-discovered enum/schema, preflight с фиксированным name,
+сохранение UUID/timestamps, конфликты и direct/array enum consumers, обе
+конкурентные записи с одинаковым/конфликтующим name после lock wait при
+repeatable-read default, public response и независимые exclusions с сохранением турника/брусьев/butterfly/
+butterfly_forearm/kettlebells и exercise refs.
+Девять plate-loaded row cases в [plate-loaded-row.cjs](../../../../test/postgres/plate-loaded-row.cjs)
+проверяют read-only preflight с несогласованным name, обязательное name в data,
+фактический enum/schema, негативные metadata, direct/array consumers, сохранение
+UUID/timestamps, конфликты и обе конкурентные публикации с доказанным ожиданием,
+прежний response и независимые exclusions для новой тяги, row_cable и row_bench.
+Девять Belt Squat cases в [belt-squat.cjs](../../../../test/postgres/belt-squat.cjs)
+проверяют preflight с необязательным name и статус уже опубликованной строки,
+обязательное согласованное name в data step, metadata/schema/enum consumers,
+повтор с сохранением UUID/timestamps, конфликты и обе конкурентные публикации
+с реальным ожиданием lock. Сохраняются прежний response, parent group ID,
+старые squat/соседние equipment и exercise refs, независимые UUID exclusions.
+Девять Plate-Loaded Seated Dip cases в [plate-loaded-seated-dip.cjs](../../../../test/postgres/plate-loaded-seated-dip.cjs)
+проверяют read-only preflight, metadata/enum consumers, явное stored name,
+сохранение UUID/timestamps, конфликты и обе конкурентные публикации с реальным
+ожиданием lock. Сохраняются response/group ID, triceps_machines/dip_bars/
+assisted_pull_up_dip и прежние additions, exercise refs и независимые exclusions.
 
 При изменении entities/FK/constraints/schema/defaults, ownership, CRUD
 users/profile/goals/exclusions/weight, каталога/тренировок, transaction manager

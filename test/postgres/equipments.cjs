@@ -5,6 +5,11 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const {randomUUID} = require('node:crypto');
+const {runKettlebellCases, expectedCases: kettlebellCases} = require('./kettlebells.cjs');
+const {runAssistedPullUpDipCases, expectedCases: assistedPullUpDipCases} = require('./assisted-pull-up-dip.cjs');
+const {runPlateLoadedRowCases, expectedCases: plateLoadedRowCases} = require('./plate-loaded-row.cjs');
+const {runBeltSquatCases, expectedCases: beltSquatCases} = require('./belt-squat.cjs');
+const {runPlateLoadedSeatedDipCases, expectedCases: plateLoadedSeatedDipCases} = require('./plate-loaded-seated-dip.cjs');
 
 async function runEquipmentCases(ctx, helpers) {
   const {ds, E} = ctx;
@@ -199,6 +204,11 @@ async function runEquipmentCases(ctx, helpers) {
   } finally {
     await ds.query(`DROP SCHEMA IF EXISTS ${fixtureSchema} CASCADE`);
   }
+  await runKettlebellCases(ctx, helpers);
+  await runAssistedPullUpDipCases(ctx, helpers);
+  await runPlateLoadedRowCases(ctx, helpers);
+  await runBeltSquatCases(ctx, helpers);
+  await runPlateLoadedSeatedDipCases(ctx, helpers);
 }
 
-module.exports = {runEquipmentCases, expectedCases: 6};
+module.exports = {runEquipmentCases, expectedCases: 6 + kettlebellCases + assistedPullUpDipCases + plateLoadedRowCases + beltSquatCases + plateLoadedSeatedDipCases};

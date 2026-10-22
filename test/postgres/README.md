@@ -1,7 +1,7 @@
 # PostgreSQL regression tests
 
 Постоянные проверки настоящих services → TypeORM → PostgreSQL. Исходное
-покрытие — 58 сценариев: 17 identity и 41 catalog/trainings. Это число можно
+покрытие — 101 сценарий: 17 identity и 84 catalog/trainings. Это число можно
 увеличивать при добавлении regression cases.
 
 ## Запуск
@@ -53,7 +53,7 @@ entities с проектной naming strategy.
 | Группа | Покрытие |
 |---|---|
 | Identity — 17 сценариев | Default goal, конкурентное создание profile/goal, удаление последнего веса, обе замены exclusions, set-семантика IDs и границы роста, поздние rollback, FK/CHECK/UNIQUE, user/profile cascades |
-| Catalog/trainings — 41 сценарий | Create/replace/delete и реальный lock/FK/rollback, точность training aggregates, отказ при повторных references и публичный response; old→new language enum/UNIQUE, revision/409 guards, импорты BR/PT, no-op/conflicts/source changes, late rollback, обе очередности importer/PUT, reconciliation потерянного COMMIT; additive equipment enum/catalog SQL, idempotency/conflicts, concurrent publication lock, required equipment response fields and independent UUID exclusions |
+| Catalog/trainings — 84 сценария | Create/replace/delete и реальный lock/FK/rollback, точность training aggregates, отказ при повторных references и публичный response; old→new language enum/UNIQUE, revision/409 guards, импорты BR/PT, no-op/conflicts/source changes, late rollback, обе очередности importer/PUT, reconciliation потерянного COMMIT; additive equipment enum/catalog SQL, idempotency/conflicts, concurrent publication lock, required equipment response fields and independent UUID exclusions; kettlebell и assisted pull-up/dip metadata preflight, explicit stored name, preserved existing UUID/timestamps, normalized name conflicts and concurrent same/different-name publication; assisted equipment сохранность турника/брусьев/butterfly/butterfly_forearm/kettlebells, separate UUID exclusions, direct/array enum consumers; plate-loaded row metadata guards, unresolved-name preflight, row_cable/row_bench preservation and independent exclusions; belt squat metadata/preflight, required explicit name, exact UUID/timestamp reuse, same/different-name publication locks, preservation of squat equipment and neighboring additions with independent exclusions; plate-loaded seated dip metadata/preflight, explicit stored name, exact UUID/timestamp reuse, publication locks, сохранение triceps_machines/dip_bars/assisted_pull_up_dip и предыдущих добавлений, independent exclusions |
 | Runtime guards — 7 проверок | Отказ от чужого runtime/параметров подключения, safe environment/lifecycle; inert CLI import/args и private backup bytes/hash/permissions/independent copies, без обращения к БД |
 
 В исходных 13 конкурентных сценариях и двух новых importer/PUT ожидание подтверждается `pg_blocking_pids`
@@ -85,4 +85,9 @@ entities с проектной naming strategy.
 - [context.cjs](context.cjs) — настоящие repositories/services и одноразовые БД.
 - [identity.cjs](identity.cjs) и [catalog.cjs](catalog.cjs) — сценарии.
 - [equipments.cjs](equipments.cjs) — equipment SQL и service-сценарии внутри catalog suite.
+- [kettlebells.cjs](kettlebells.cjs) — preflight/schema/data SQL гирь, конфликты, блокировки и сохранность UUID/связей.
+- [assisted-pull-up-dip.cjs](assisted-pull-up-dip.cjs) — preflight/schema/data SQL гравитрона с подтверждённым name `Assisted Pull-Up / Dip`, конфликты, блокировки, сохранность старого оборудования/refs и независимые exclusions.
+- [plate-loaded-row.cjs](plate-loaded-row.cjs) — девять preflight/schema/data-сценариев рычажной тяги: обязательное согласованное name, quoted metadata, конфликты/locks, сохранение row_cable/row_bench и независимые exclusions.
+- [belt-squat.cjs](belt-squat.cjs) — девять preflight/schema/data-сценариев Belt Squat: обязательное согласованное name, quoted metadata, конфликты/locks, сохранение squat_rack/smith_machines/hack_squat_machines и соседних добавлений, публичный response и независимые exclusions.
+- [plate-loaded-seated-dip.cjs](plate-loaded-seated-dip.cjs) — девять preflight/schema/data-сценариев Plate-Loaded Seated Dip: явное name, quoted metadata, конфликты/locks, сохранение triceps_machines/dip_bars/assisted_pull_up_dip и соседних добавлений, публичный response и независимые exclusions.
 - [runtime.guard.cjs](runtime.guard.cjs) — проверки защиты runner.

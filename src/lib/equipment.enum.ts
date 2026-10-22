@@ -1,6 +1,7 @@
 export enum EquipmentEnum {
     // Free Weight
     DUMBBELLS = "dumbbells",
+    KETTLEBELLS = "kettlebells",
     BARBELL = "barbell",
     EZ_BAR = "ez_bar",
     V_BAR = "v_bar",
@@ -12,6 +13,10 @@ export enum EquipmentEnum {
     CLOSE_GRIP_HANDLE = "close_grip_handle",
 
     // Machine
+    PLATE_LOADED_ROW = "plate_loaded_row",
+    BELT_SQUAT = "belt_squat",
+    PLATE_LOADED_SEATED_DIP = "plate_loaded_seated_dip",
+    ASSISTED_PULL_UP_DIP = "assisted_pull_up_dip",
     AB_MACHINES = "ab_machines",
     BUTTERFLY = "butterfly",
     BUTTERFLY_FOREARM = "butterfly_forearm",
