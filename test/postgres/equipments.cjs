@@ -14,8 +14,8 @@ const {runPlateLoadedSeatedDipCases, expectedCases: plateLoadedSeatedDipCases} =
 async function runEquipmentCases(ctx, helpers) {
   const {ds, E} = ctx;
   const {runCase, same, outcome, code, bounded, blockedBy, seedExample, seedUser} = helpers;
-  const enumSql = fs.readFileSync(path.resolve(__dirname, '../../scripts/sql/add-butterfly-forearm-enum.sql'), 'utf8');
-  const dataSql = fs.readFileSync(path.resolve(__dirname, '../../scripts/sql/add-butterfly-forearm-equipment.sql'), 'utf8');
+  const enumSql = fs.readFileSync(path.resolve(__dirname, 'fixtures/equipment-publication/add-butterfly-forearm-enum.sql'), 'utf8');
+  const dataSql = fs.readFileSync(path.resolve(__dirname, 'fixtures/equipment-publication/add-butterfly-forearm-equipment.sql'), 'utf8');
   const fixtureSchema = 'grippo_equipment_rehearsal';
   const sqlTable = `${fixtureSchema}.equipments`;
   const groupTable = `${fixtureSchema}.equipment_groups`;

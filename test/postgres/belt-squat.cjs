@@ -9,7 +9,7 @@ const {randomUUID} = require('node:crypto');
 async function runBeltSquatCases(ctx, helpers) {
   const {ds, E} = ctx;
   const {runCase, same, outcome, code, bounded, blockedBy, seedExample, seedUser} = helpers;
-  const readSql = name => fs.readFileSync(path.resolve(__dirname, `../../scripts/sql/${name}.sql`), 'utf8');
+  const readSql = name => fs.readFileSync(path.resolve(__dirname, `fixtures/equipment-publication/${name}.sql`), 'utf8');
   const preflightSql = readSql('preflight-belt-squat');
   const enumSql = readSql('add-belt-squat-enum');
   const dataSql = readSql('add-belt-squat-equipment');

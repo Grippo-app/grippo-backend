@@ -9,7 +9,7 @@ const {randomUUID} = require('node:crypto');
 async function runAssistedPullUpDipCases(ctx, helpers) {
   const {ds, E} = ctx;
   const {runCase, same, outcome, code, bounded, blockedBy, seedExample, seedUser} = helpers;
-  const readSql = name => fs.readFileSync(path.resolve(__dirname, `../../scripts/sql/${name}.sql`), 'utf8');
+  const readSql = name => fs.readFileSync(path.resolve(__dirname, `fixtures/equipment-publication/${name}.sql`), 'utf8');
   const preflightSql = readSql('preflight-assisted-pull-up-dip');
   const enumSql = readSql('add-assisted-pull-up-dip-enum');
   const dataSql = readSql('add-assisted-pull-up-dip-equipment');

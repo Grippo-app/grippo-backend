@@ -90,4 +90,5 @@ entities с проектной naming strategy.
 - [plate-loaded-row.cjs](plate-loaded-row.cjs) — девять preflight/schema/data-сценариев рычажной тяги: обязательное согласованное name, quoted metadata, конфликты/locks, сохранение row_cable/row_bench и независимые exclusions.
 - [belt-squat.cjs](belt-squat.cjs) — девять preflight/schema/data-сценариев Belt Squat: обязательное согласованное name, quoted metadata, конфликты/locks, сохранение squat_rack/smith_machines/hack_squat_machines и соседних добавлений, публичный response и независимые exclusions.
 - [plate-loaded-seated-dip.cjs](plate-loaded-seated-dip.cjs) — девять preflight/schema/data-сценариев Plate-Loaded Seated Dip: явное name, quoted metadata, конфликты/locks, сохранение triceps_machines/dip_bars/assisted_pull_up_dip и соседних добавлений, публичный response и независимые exclusions.
+- [fixtures/equipment-publication/](fixtures/equipment-publication/) — опубликованные preflight/schema/data SQL для equipment regression tests.
 - [runtime.guard.cjs](runtime.guard.cjs) — проверки защиты runner.
