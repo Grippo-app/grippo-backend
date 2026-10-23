@@ -1,8 +1,10 @@
--- Prepared only (not applied): separate, explicitly approved schema operation; psql ON_ERROR_STOP=1.
--- First SET grippo.catalog_schema to the verified schema in this session.
--- Run alone, without an outer transaction/psql -1: COMMIT must precede data SQL.
--- Never use synchronize or recreate an existing enum for this transition.
--- Run the read-only preflight first. This appends only the new equipment label;
+-- Historical equipment-publication regression fixture: additive enum step.
+-- Archived after confirmed publication/readback; retained for isolated PostgreSQL regression coverage.
+-- Not an operational script; no live access is authorized by this fixture.
+-- Uses explicit grippo.catalog_schema and actual enum metadata.
+-- Its COMMIT precedes data SQL; no surrounding transaction.
+-- Enum extension is additive, without synchronize or enum recreation.
+-- This fixture appends only the new equipment label;
 -- it does not publish a row or alter any existing equipment types.
 BEGIN ISOLATION LEVEL READ COMMITTED;
 SET LOCAL lock_timeout = '5s';

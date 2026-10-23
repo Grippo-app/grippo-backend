@@ -1,9 +1,11 @@
--- Prepared only (not applied): separate, explicitly approved catalog publication; psql ON_ERROR_STOP=1.
--- Requires committed enum SQL and confirmed compatibility of supported clients.
--- First SET grippo.catalog_schema AND grippo.ankle_cuff_name in this session.
--- Owner confirmed server name 'Ankle Cuff' on 2026-10-23; supply it explicitly.
+-- Historical equipment-publication regression fixture: catalog data step.
+-- Archived after confirmed publication/readback; retained for isolated PostgreSQL regression coverage.
+-- Not an operational script; no live access is authorized by this fixture.
+-- Uses explicit grippo.catalog_schema and grippo.ankle_cuff_name.
+-- Owner confirmed server name 'Ankle Cuff' on 2026-10-23; supplied explicitly.
 -- Name has NO default; mobile translations do not define the stored name.
--- Run alone without an outer transaction/psql -1. No UPDATE/DELETE or exercise refs.
+-- The enum fixture COMMIT precedes this data fixture; no surrounding transaction.
+-- No UPDATE/DELETE or exercise refs.
 -- Keep cord_handles and all prior equipment types and records intact;
 -- preview IDs must never be supplied as persistent equipment/group identities.
 BEGIN ISOLATION LEVEL READ COMMITTED;

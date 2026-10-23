@@ -138,26 +138,26 @@ UUID/timestamps, конфликты и обе конкурентные публ�
 ожиданием lock. Сохраняются response/group ID, triceps_machines/dip_bars/
 assisted_pull_up_dip и прежние additions, exercise refs и независимые exclusions.
 Девять Ankle Cuff cases в [ankle-cuff.cjs](../../../../test/postgres/ankle-cuff.cjs)
-проверяют подготовленный preflight/schema/data SQL, metadata/enum consumers,
+проверяют preflight/schema/data SQL из regression fixtures, metadata/enum consumers,
 обязательное явное name, повтор с сохранением UUID/timestamps, конфликты и обе
 конкурентные публикации с доказанным ожиданием lock. Сохраняются cord_handles,
 соседнее оборудование/refs, публичный response и независимые сохранённые UUID exclusions.
 Девять Plate-Loaded Incline Chest Press cases в [plate-loaded-incline-chest-press.cjs](../../../../test/postgres/plate-loaded-incline-chest-press.cjs)
-проверяют подготовленный metadata/preflight/schema/data SQL, явное name,
+проверяют metadata/preflight/schema/data SQL из regression fixtures, явное name,
 повтор с сохранением UUID/timestamps, конфликты и конкурентные публикации
 с доказанным ожиданием lock. Сохраняются chest_press_machines,
 incline_bench_with_rack, shoulder_press_machines и прежние additions/refs/exclusions;
 проверяются group/response и независимые incline/chest press exclusions
 после свежего чтения user/service, без изменения exclusions других профилей.
 Девять Vertical Leg Press cases в [vertical-leg-press.cjs](../../../../test/postgres/vertical-leg-press.cjs)
-проверяют подготовленный metadata/preflight/schema/data SQL, четыре legacy
+проверяют metadata/preflight/schema/data SQL из regression fixtures, четыре legacy
 label guards, явное name, UUID/timestamp reuse, конфликты и обе конкурентные
 публикации с доказанным ожиданием lock. Сохраняются leg_press_machine,
 hack_squat_machines, smith_machines, squat_rack, предыдущие additions/refs/exclusions;
 проверяются group/response и независимые old-leg/vertical exclusions через
 свежие user/service reads, без изменения exclusions других профилей.
 Девять Landmine cases в [landmine.cjs](../../../../test/postgres/landmine.cjs)
-проверяют подготовленный metadata/preflight/schema/data SQL, barbell/plate_loaded_row
+проверяют metadata/preflight/schema/data SQL из regression fixtures, barbell/plate_loaded_row
 label guards, явное name, UUID/timestamp reuse, конфликты и обе конкурентные
 публикации с доказанным ожиданием lock. Сохраняются barbell, plate_loaded_row,
 предыдущие additions/refs/exclusions; проверяются free_weight parent/response

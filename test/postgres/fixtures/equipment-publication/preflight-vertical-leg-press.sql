@@ -1,12 +1,11 @@
--- Prepared only (not applied): read-only preflight for an explicitly selected/authorized DB.
--- psql ON_ERROR_STOP=1; first SET grippo.catalog_schema to the verified schema.
--- Optional grippo.vertical_leg_press_name enables agreed-name checks; no default.
--- Owner confirmed server name 'Vertical Leg Press' on 2026-10-23; supply it explicitly.
+-- Historical equipment-publication regression fixture: read-only preflight.
+-- Archived after confirmed publication/readback; retained for isolated PostgreSQL regression coverage.
+-- Not an operational script; no live access is authorized by this fixture.
+-- Uses explicit grippo.catalog_schema; optional grippo.vertical_leg_press_name has no default.
+-- Owner confirmed server name 'Vertical Leg Press' on 2026-10-23; supplied explicitly.
 -- Emits schema metadata/status only, never catalog rows/names/UUIDs.
--- No live access is authorized by this file. Run without an outer transaction.
--- Review this snapshot before the separately approved enum COMMIT, then repeat
--- before separately approved data publication after client compatibility review.
--- Target schema/enum name and persistent UUIDs are discovered, never inferred.
+-- Snapshot checks are repeated inside the data publication transaction.
+-- Schema/enum metadata and persistent UUIDs are discovered, never inferred.
 BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY;
 SET LOCAL lock_timeout = '5s';
 SET LOCAL statement_timeout = '30s';

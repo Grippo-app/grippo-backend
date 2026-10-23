@@ -1,10 +1,13 @@
--- Prepared only (not applied): separate, explicitly approved catalog publication; psql ON_ERROR_STOP=1.
--- Requires committed enum SQL and confirmed compatibility of supported clients.
--- First SET grippo.catalog_schema AND grippo.landmine_name in this session.
--- Owner confirmed server name 'Landmine' on 2026-10-23; supply it explicitly.
+-- Historical equipment-publication regression fixture: catalog data step.
+-- Archived after confirmed publication/readback; retained for isolated PostgreSQL regression coverage.
+-- Not an operational script; no live access is authorized by this fixture.
+-- Uses explicit grippo.catalog_schema and grippo.plate_loaded_decline_chest_press_name.
+-- Owner confirmed server name 'Plate-Loaded Decline Chest Press' on 2026-10-23; supplied explicitly.
 -- Name has NO default; mobile translations do not define the stored name.
--- Run alone without an outer transaction/psql -1. No UPDATE/DELETE or exercise refs.
--- Keep barbell, plate_loaded_row and all prior equipment types and records intact;
+-- The enum fixture COMMIT precedes this data fixture; no surrounding transaction.
+-- No UPDATE/DELETE or exercise refs.
+-- Keep chest_press_machines, decline_bench, decline_bench_with_rack
+-- and all prior equipment types and records intact;
 -- preview IDs must never be supplied as persistent equipment/group identities.
 BEGIN ISOLATION LEVEL READ COMMITTED;
 SET LOCAL lock_timeout = '5s';
@@ -13,14 +16,14 @@ SET LOCAL statement_timeout = '30s';
 DO $equipment_data$
 DECLARE
     catalog_schema text := current_setting('grippo.catalog_schema', true);
-    equipment_name text := current_setting('grippo.landmine_name', true);
+    equipment_name text := current_setting('grippo.plate_loaded_decline_chest_press_name', true);
     equipment_table regclass;
     group_table regclass;
     enum_oid oid;
     enum_schema name;
     enum_name name;
     consumers integer;
-    free_weight_ids uuid[];
+    machine_ids uuid[];
     existing_count integer;
     existing_id uuid;
     existing_group_id uuid;
@@ -33,7 +36,7 @@ BEGIN
     END IF;
     IF equipment_name IS NULL OR equipment_name !~ '[^[:space:]]'
         OR equipment_name <> btrim(equipment_name) THEN
-        RAISE EXCEPTION 'Set grippo.landmine_name to the explicitly agreed nonblank, trimmed server name first';
+        RAISE EXCEPTION 'Set grippo.plate_loaded_decline_chest_press_name to the explicitly agreed nonblank, trimmed server name first';
     END IF;
     equipment_table := to_regclass(format('%I.equipments', catalog_schema));
     group_table := to_regclass(format('%I.equipment_groups', catalog_schema));
@@ -62,31 +65,32 @@ BEGIN
     WHERE a.attrelid = equipment_table AND a.attname = 'type'
       AND a.attnum > 0 AND NOT a.attisdropped AND t.typtype = 'e';
     IF enum_oid IS NULL OR NOT EXISTS (
-        SELECT FROM pg_enum WHERE enumtypid = enum_oid AND enumlabel = 'landmine'
-    ) THEN RAISE EXCEPTION 'Commit the verified landmine enum operation first'; END IF;
-    IF NOT EXISTS (SELECT FROM pg_enum WHERE enumtypid = enum_oid AND enumlabel = 'barbell')
-        OR NOT EXISTS (SELECT FROM pg_enum WHERE enumtypid = enum_oid AND enumlabel = 'plate_loaded_row') THEN
-        RAISE EXCEPTION 'Expected existing barbell and plate_loaded_row equipment enum labels are missing';
+        SELECT FROM pg_enum WHERE enumtypid = enum_oid AND enumlabel = 'plate_loaded_decline_chest_press'
+    ) THEN RAISE EXCEPTION 'Commit the verified plate_loaded_decline_chest_press enum operation first'; END IF;
+    IF NOT EXISTS (SELECT FROM pg_enum WHERE enumtypid = enum_oid AND enumlabel = 'chest_press_machines')
+        OR NOT EXISTS (SELECT FROM pg_enum WHERE enumtypid = enum_oid AND enumlabel = 'decline_bench')
+        OR NOT EXISTS (SELECT FROM pg_enum WHERE enumtypid = enum_oid AND enumlabel = 'decline_bench_with_rack') THEN
+        RAISE EXCEPTION 'Expected existing chest press and decline bench equipment enum labels are missing';
     END IF;
     SELECT count(*) INTO consumers FROM pg_attribute a JOIN pg_class c ON c.oid = a.attrelid
     WHERE a.atttypid IN (enum_oid, (SELECT typarray FROM pg_type WHERE oid = enum_oid))
       AND a.attnum > 0 AND NOT a.attisdropped AND c.relkind IN ('r','p');
     IF consumers <> 1 THEN RAISE EXCEPTION 'Unexpected equipment enum consumers; review schema first'; END IF;
 
-    EXECUTE format('SELECT array_agg(id ORDER BY id) FROM %s WHERE type::text = %L', group_table, 'free_weight')
-        INTO free_weight_ids;
-    IF coalesce(cardinality(free_weight_ids), 0) <> 1 OR free_weight_ids[1] IS NULL THEN
-        RAISE EXCEPTION 'Expected exactly one free_weight equipment group';
+    EXECUTE format('SELECT array_agg(id ORDER BY id) FROM %s WHERE type::text = %L', group_table, 'machines')
+        INTO machine_ids;
+    IF coalesce(cardinality(machine_ids), 0) <> 1 OR machine_ids[1] IS NULL THEN
+        RAISE EXCEPTION 'Expected exactly one machines equipment group';
     END IF;
-    EXECUTE format('SELECT count(*) FROM %s WHERE type::text = %L', equipment_table, 'landmine') INTO existing_count;
-    IF existing_count > 1 THEN RAISE EXCEPTION 'Duplicate landmine equipment; resolve explicitly'; END IF;
+    EXECUTE format('SELECT count(*) FROM %s WHERE type::text = %L', equipment_table, 'plate_loaded_decline_chest_press') INTO existing_count;
+    IF existing_count > 1 THEN RAISE EXCEPTION 'Duplicate plate_loaded_decline_chest_press equipment; resolve explicitly'; END IF;
     IF existing_count = 1 THEN
-        EXECUTE format('SELECT id, equipment_group_id, name, created_at, updated_at FROM %s WHERE type::text = %L', equipment_table, 'landmine')
+        EXECUTE format('SELECT id, equipment_group_id, name, created_at, updated_at FROM %s WHERE type::text = %L', equipment_table, 'plate_loaded_decline_chest_press')
             INTO existing_id, existing_group_id, existing_name, existing_created_at, existing_updated_at;
-        IF existing_id IS NULL OR existing_group_id IS DISTINCT FROM free_weight_ids[1]
+        IF existing_id IS NULL OR existing_group_id IS DISTINCT FROM machine_ids[1]
             OR existing_name IS DISTINCT FROM equipment_name
             OR existing_created_at IS NULL OR existing_updated_at IS NULL THEN
-            RAISE EXCEPTION 'Existing landmine equipment conflicts with the confirmed contract';
+            RAISE EXCEPTION 'Existing plate_loaded_decline_chest_press equipment conflicts with the confirmed contract';
         END IF;
     END IF;
     -- An earlier import under another/NULL type requires an explicit resolution.
@@ -96,8 +100,8 @@ BEGIN
     IF existing_id IS NULL THEN
         EXECUTE format('INSERT INTO %s (id, name, type, equipment_group_id, created_at, updated_at)
             VALUES (pg_catalog.gen_random_uuid(), $1, %L::%I.%I, $2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)',
-            equipment_table, 'landmine', enum_schema, enum_name)
-            USING equipment_name, free_weight_ids[1];
+            equipment_table, 'plate_loaded_decline_chest_press', enum_schema, enum_name)
+            USING equipment_name, machine_ids[1];
     END IF;
 END
 $equipment_data$;
