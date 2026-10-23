@@ -92,7 +92,7 @@ Runner создаёт новый временный cluster/процесс и о
 credentials и параметры запросов в отчёт не выводятся. Создание свежей тестовой
 схемы не означает разрешение synchronize рабочей БД.
 
-Текущая suite содержит 101 сценарий (17 identity, 84 catalog/training/equipment):
+Текущая suite содержит 146 сценариев (17 identity, 129 catalog/training/equipment):
 конкурентное создание профиля/goal, замена exclusions, защита последнего веса,
 конкурентные catalog CRUD/training create/replace, FK/CHECK/UNIQUE,
 CASCADE/SET NULL и полный rollback после поздней серверной ошибки. Regression
@@ -137,6 +137,39 @@ UUID/timestamps, конфликты и обе конкурентные публ�
 сохранение UUID/timestamps, конфликты и обе конкурентные публикации с реальным
 ожиданием lock. Сохраняются response/group ID, triceps_machines/dip_bars/
 assisted_pull_up_dip и прежние additions, exercise refs и независимые exclusions.
+Девять Ankle Cuff cases в [ankle-cuff.cjs](../../../../test/postgres/ankle-cuff.cjs)
+проверяют подготовленный preflight/schema/data SQL, metadata/enum consumers,
+обязательное явное name, повтор с сохранением UUID/timestamps, конфликты и обе
+конкурентные публикации с доказанным ожиданием lock. Сохраняются cord_handles,
+соседнее оборудование/refs, публичный response и независимые сохранённые UUID exclusions.
+Девять Plate-Loaded Incline Chest Press cases в [plate-loaded-incline-chest-press.cjs](../../../../test/postgres/plate-loaded-incline-chest-press.cjs)
+проверяют подготовленный metadata/preflight/schema/data SQL, явное name,
+повтор с сохранением UUID/timestamps, конфликты и конкурентные публикации
+с доказанным ожиданием lock. Сохраняются chest_press_machines,
+incline_bench_with_rack, shoulder_press_machines и прежние additions/refs/exclusions;
+проверяются group/response и независимые incline/chest press exclusions
+после свежего чтения user/service, без изменения exclusions других профилей.
+Девять Vertical Leg Press cases в [vertical-leg-press.cjs](../../../../test/postgres/vertical-leg-press.cjs)
+проверяют подготовленный metadata/preflight/schema/data SQL, четыре legacy
+label guards, явное name, UUID/timestamp reuse, конфликты и обе конкурентные
+публикации с доказанным ожиданием lock. Сохраняются leg_press_machine,
+hack_squat_machines, smith_machines, squat_rack, предыдущие additions/refs/exclusions;
+проверяются group/response и независимые old-leg/vertical exclusions через
+свежие user/service reads, без изменения exclusions других профилей.
+Девять Landmine cases в [landmine.cjs](../../../../test/postgres/landmine.cjs)
+проверяют подготовленный metadata/preflight/schema/data SQL, barbell/plate_loaded_row
+label guards, явное name, UUID/timestamp reuse, конфликты и обе конкурентные
+публикации с доказанным ожиданием lock. Сохраняются barbell, plate_loaded_row,
+предыдущие additions/refs/exclusions; проверяются free_weight parent/response
+и независимые Barbell/Landmine exclusions через свежие user/service reads,
+без изменения exclusions других профилей.
+Девять Plate-Loaded Decline Chest Press cases в [plate-loaded-decline-chest-press.cjs](../../../../test/postgres/plate-loaded-decline-chest-press.cjs)
+проверяют metadata/preflight/schema/data SQL, три legacy label guards, обязательное
+явное name с синтетическими fixture names,
+UUID/timestamp reuse, conflicts/locks, сохранения chest_press_machines,
+decline_bench, decline_bench_with_rack и предыдущих additions/refs/exclusions,
+response и независимые chest/decline exclusions. Объявленный inventory не является
+результатом запуска; при затрагивающих его изменениях требуется полная PostgreSQL suite.
 
 При изменении entities/FK/constraints/schema/defaults, ownership, CRUD
 users/profile/goals/exclusions/weight, каталога/тренировок, transaction manager

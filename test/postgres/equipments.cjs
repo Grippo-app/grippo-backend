@@ -10,6 +10,11 @@ const {runAssistedPullUpDipCases, expectedCases: assistedPullUpDipCases} = requi
 const {runPlateLoadedRowCases, expectedCases: plateLoadedRowCases} = require('./plate-loaded-row.cjs');
 const {runBeltSquatCases, expectedCases: beltSquatCases} = require('./belt-squat.cjs');
 const {runPlateLoadedSeatedDipCases, expectedCases: plateLoadedSeatedDipCases} = require('./plate-loaded-seated-dip.cjs');
+const {runAnkleCuffCases, expectedCases: ankleCuffCases} = require('./ankle-cuff.cjs');
+const {runPlateLoadedInclineChestPressCases, expectedCases: plateLoadedInclineChestPressCases} = require('./plate-loaded-incline-chest-press.cjs');
+const {runVerticalLegPressCases, expectedCases: verticalLegPressCases} = require('./vertical-leg-press.cjs');
+const {runLandmineCases, expectedCases: landmineCases} = require('./landmine.cjs');
+const {runPlateLoadedDeclineChestPressCases, expectedCases: plateLoadedDeclineChestPressCases} = require('./plate-loaded-decline-chest-press.cjs');
 
 async function runEquipmentCases(ctx, helpers) {
   const {ds, E} = ctx;
@@ -209,6 +214,11 @@ async function runEquipmentCases(ctx, helpers) {
   await runPlateLoadedRowCases(ctx, helpers);
   await runBeltSquatCases(ctx, helpers);
   await runPlateLoadedSeatedDipCases(ctx, helpers);
+  await runAnkleCuffCases(ctx, helpers);
+  await runPlateLoadedInclineChestPressCases(ctx, helpers);
+  await runVerticalLegPressCases(ctx, helpers);
+  await runLandmineCases(ctx, helpers);
+  await runPlateLoadedDeclineChestPressCases(ctx, helpers);
 }
 
-module.exports = {runEquipmentCases, expectedCases: 6 + kettlebellCases + assistedPullUpDipCases + plateLoadedRowCases + beltSquatCases + plateLoadedSeatedDipCases};
+module.exports = {runEquipmentCases, expectedCases: 6 + kettlebellCases + assistedPullUpDipCases + plateLoadedRowCases + beltSquatCases + plateLoadedSeatedDipCases + ankleCuffCases + plateLoadedInclineChestPressCases + verticalLegPressCases + landmineCases + plateLoadedDeclineChestPressCases};

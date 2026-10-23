@@ -3,12 +3,14 @@ export enum EquipmentEnum {
     DUMBBELLS = "dumbbells",
     KETTLEBELLS = "kettlebells",
     BARBELL = "barbell",
+    LANDMINE = "landmine",
     EZ_BAR = "ez_bar",
     V_BAR = "v_bar",
     TRAP_BAR = "trap_bar",
     ROPE = "rope",
     STRAIGHT_BAR = "straight_bar",
     CORD_HANDLES = "cord_handles",
+    ANKLE_CUFF = "ankle_cuff",
     WIDE_GRIP_HANDLE = "wide_grip_handle",
     CLOSE_GRIP_HANDLE = "close_grip_handle",
 
@@ -24,6 +26,8 @@ export enum EquipmentEnum {
     LEG_EXTENSION_MACHINES = "leg_extension_machines",
     LEG_CURL_MACHINES = "leg_curl_machines",
     CHEST_PRESS_MACHINES = "chest_press_machines",
+    PLATE_LOADED_INCLINE_CHEST_PRESS = "plate_loaded_incline_chest_press",
+    PLATE_LOADED_DECLINE_CHEST_PRESS = "plate_loaded_decline_chest_press",
     BICEPS_MACHINES = "biceps_machines",
     SMITH_MACHINES = "smith_machines",
     HACK_SQUAT_MACHINES = "hack_squat_machines",
@@ -36,6 +40,7 @@ export enum EquipmentEnum {
     ABDUCTOR_MACHINE = "abductor_machine",
     ADDUCTOR_MACHINE = "adductor_machine",
     LEG_PRESS_MACHINE = "leg_press_machine",
+    VERTICAL_LEG_PRESS = "vertical_leg_press",
 
     // Cable Machine
     LAT_PULLDOWN = "lat_pulldown",
